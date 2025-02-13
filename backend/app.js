@@ -1,20 +1,21 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const dotenv = require('dotenv');
+const connectDB = require('./src/config/db');
+const userRoutes = require('./src/routes/users');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+dotenv.config();
+const app = express();
+const PORT = process.env.PORT || 3001;
 
-var app = express();
-
-app.use(logger('dev'));
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Kết nối DB
+connectDB();
 
-module.exports = app;
+// Định tuyến
+app.use('/api/user', userRoutes);
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
+});
