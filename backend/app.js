@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./src/config/db');
 const userRoutes = require('./src/routes/users');
+const categoryRoutes = require('./src/routes/category');
 const cors = require("cors");
 
 dotenv.config();
@@ -17,6 +18,7 @@ connectDB();
 
 // Định tuyến
 app.use('/api/user', userRoutes);
+app.use('/api/categories', categoryRoutes);
 
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
