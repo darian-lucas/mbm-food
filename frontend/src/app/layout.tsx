@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { manrope } from "@/utils";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Introduce from "./introduce/introduce";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,7 +21,7 @@ export default function RootLayout({
         className={manrope.className}>
             <Header/>           
             <main>{children}</main>   
-            <Introduce></Introduce>
+            {/* <Introduce></Introduce> */}
             <Footer/>
       </body>
     </html>
