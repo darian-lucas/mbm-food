@@ -4,6 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Home(): JSX.Element {
+  const categories = [
+    { name: "Pizza", img: "/images/pizza.jpg" },
+    { name: "Gà rán", img: "/images/fried-chicken.jpg" },
+    { name: "Mì Ý", img: "/images/spaghetti.jpg" },
+    { name: "Bún Bò", img: "/images/bun-bo.jpg" },
+  ];
   return (
     <main className={styles.home}>
       {/* Banner */}
@@ -11,33 +17,32 @@ export default function Home(): JSX.Element {
         <Image
           src="/images/banner-1.png"
           alt="Banner chính"
-          width={1410}
+          width={1420}
           height={400}
           className={styles.bannerImage}
         />
       </section>
-
       {/* Danh mục nổi bật */}
       <section className={styles.section}>
+        <h2 className={styles.titlelitter}>Nổi Bật</h2>
         <h2 className={styles.title}>Danh mục nổi bật</h2>
         <div className={styles.categoryList}>
-          {["Pizza", "Gà rán", "Mì Ý"].map((category, index) => (
+          {categories.map((category, index) => (
             <Link key={index} href="#">
               <div className={styles.categoryItem}>
+                <p>{category.name}</p>
                 <Image
-                  src="/images/category-placeholder.jpg"
-                  alt={category}
-                  width={100}
-                  height={100}
+                  src={category.img}
+                  alt={category.name}
+                  width={50}
+                  height={50}
                 />
-                <p>{category}</p>
               </div>
             </Link>
           ))}
         </div>
       </section>
-
-      {/* Giới thiệu */}
+      ;{/* Giới thiệu */}
       <section className={styles.about}>
         <h2>Dola Food</h2>
         <p>
@@ -51,13 +56,14 @@ export default function Home(): JSX.Element {
           height={300}
         />
       </section>
-
       {/* Món ăn nổi bật */}
       <section className={styles.section}>
         <h2>Món ăn nổi bật</h2>
         <div className={styles.foodList}>
-          {[{ name: "Pizza Hải Sản", price: "150.000đ" },
-            { name: "Gà Sốt Tỏi", price: "120.000đ" }].map((food, index) => (
+          {[
+            { name: "Pizza Hải Sản", price: "150.000đ" },
+            { name: "Gà Sốt Tỏi", price: "120.000đ" },
+          ].map((food, index) => (
             <div key={index} className={styles.foodItem}>
               <Image
                 src="/images/food-placeholder.jpg"
@@ -72,7 +78,6 @@ export default function Home(): JSX.Element {
           ))}
         </div>
       </section>
-
       {/* Chương trình khuyến mãi */}
       <section className={styles.section}>
         <h2>Khuyến mãi hấp dẫn</h2>
@@ -88,13 +93,14 @@ export default function Home(): JSX.Element {
           ))}
         </div>
       </section>
-
       {/* Tin tức mới nhất */}
       <section className={styles.section}>
         <h2>Tin tức mới nhất</h2>
         <div className={styles.newsList}>
-          {[{ title: "Ưu đãi 50% cho khách hàng mới", date: "10/02/2025" },
-            { title: "Khai trương chi nhánh mới", date: "15/02/2025" }].map((news, index) => (
+          {[
+            { title: "Ưu đãi 50% cho khách hàng mới", date: "10/02/2025" },
+            { title: "Khai trương chi nhánh mới", date: "15/02/2025" },
+          ].map((news, index) => (
             <div key={index} className={styles.newsItem}>
               <Image
                 src="/images/news-placeholder.jpg"
@@ -109,7 +115,6 @@ export default function Home(): JSX.Element {
           ))}
         </div>
       </section>
-
       {/* Đăng ký nhận tin */}
       <section className={styles.subscribe}>
         <h2>Đăng ký nhận tin</h2>
