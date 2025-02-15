@@ -4,6 +4,7 @@
   text-align: center;
   padding: 5px 0;
   font-size: 18px;
+  min-height: 40px; /* Đảm bảo không bị co */
 }
 
 .headerMain {
@@ -12,7 +13,10 @@
   align-items: center;
   padding: 10px 50px;
   background-color: white;
+  height: 300px;
+  min-height: 80px; /* Đặt chiều cao tối thiểu */
 }
+
 
 .logo {
   display: flex;

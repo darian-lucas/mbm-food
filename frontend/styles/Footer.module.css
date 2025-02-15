@@ -1,0 +1,114 @@
+.footer {
+  background-color: #046a38;
+  color: white;
+  padding: 100px 0;
+  font-family: Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+  min-height: 250px;
+  font-size: 16px;
+}
+
+.footerSection h4 {
+  margin-top: 20px;
+}
+
+.footerContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footerSection {
+  width: 23%;
+  min-width: 250px;
+}
+
+.footerSection h3 {
+  border-bottom: 2px solid #e31837;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.footerSection p,
+.footerSection ul {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.paymentMethods {
+  display: flex;
+  gap: 10px;
+}
+
+.paymentMethods img {
+  width: 50px;
+  height: auto;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  margin-top: 10px;
+}
+
+.iconWrapper {
+  width: 32px;
+  height: 32px;
+  background-color: #e31837;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.iconWrapper img {
+  width: 16px;
+  height: 16px;
+}
+
+
+.footerSection ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footerSection ul li {
+  margin-bottom: 8px;
+}
+
+.footerSection ul li a {
+  text-decoration: none;
+  color: white;
+  transition: 0.3s;
+}
+
+.footerSection ul li a:hover {
+  color: #e31837;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.socialIcons a {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: 0.3s ease-in-out;
+}
+
+.socialIcons a:hover {
+  background-color: #e31837;
+}
