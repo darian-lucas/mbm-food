@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { manrope } from "@/utils";
-import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
