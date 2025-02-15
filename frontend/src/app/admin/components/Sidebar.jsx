@@ -1,24 +1,42 @@
-// components/Sidebar.js
-import React from 'react';
+"use client";
+import React, { useState } from "react";
+import styles from "../styles/Sidebar.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faUsers, faUserFriends, faBox, faHeart, faShoppingCart, faFileInvoice, faHistory, faCog, faEnvelope, faFile, faLanguage, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
-const Sidebar = () => {
+export default function Sidebar() {
+    const [activeIndex, setActiveIndex] = useState(0);
     const menuItems = [
-        'Dashboard', 'Vendors', 'Customers', 'Products', 'Wishlist',
-        'Orders', 'Invoice', 'History', 'Settings', 'Message', 'Pages', 'Language', 'Login'
+        { name: "Dashboard", icon: faHome },
+        { name: "Vendors", icon: faUsers },
+        { name: "Customers", icon: faUserFriends },
+        { name: "Products", icon: faBox },
+        { name: "Wishlist", icon: faHeart },
+        { name: "Orders", icon: faShoppingCart },
+        { name: "Invoice", icon: faFileInvoice },
+        { name: "History", icon: faHistory },
+        { name: "Settings", icon: faCog },
+        { name: "Message", icon: faEnvelope },
+        { name: "Pages", icon: faFile },
+        { name: "Language", icon: faLanguage },
+        { name: "Login", icon: faSignOutAlt }
     ];
 
     return (
-        <div className="w-60 h-screen bg-white shadow-md fixed top-0 left-0 p-5">
-            <div className="text-center text-xl font-bold text-blue-600 mb-6">SHERAH</div>
-            <ul>
+        <div className={styles.sidebar}>
+            <div className={styles.logo}>SHERAH</div>
+            <ul className={styles.sidebarMenu}>
                 {menuItems.map((item, index) => (
-                    <li key={index} className="px-4 py-3 cursor-pointer text-gray-700 hover:bg-blue-100 border-l-4 border-transparent hover:border-blue-500">
-                        <i className={`fas fa-${item.toLowerCase()} mr-3`}></i>{item}
+                    <li
+                        key={index}
+                        className={`${styles.sidebarItem} ${activeIndex === index ? styles.sidebarItemActive : ""}`}
+                        onClick={() => setActiveIndex(index)}
+                    >
+                        <FontAwesomeIcon icon={item.icon} className={styles.icon} />
+                        {item.name}
                     </li>
                 ))}
             </ul>
         </div>
     );
-};
-
-export default Sidebar;
+}
