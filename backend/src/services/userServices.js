@@ -8,8 +8,8 @@ const register = async (userData) => {
     return { message: 'Đăng ký thành công!' };
 };
 //dang nhap
-const login = async (username, password) => {
-    const user = await User.findOne({ username });
+const login = async (email, password) => {
+    const user = await User.findOne({email});
     if (!user) throw new Error('Tên đăng nhập không tồn tại');
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -20,7 +20,7 @@ const login = async (username, password) => {
         process.env.JWT_SECRET || 'defaultSecret', // Cung cấp fallback để tránh lỗi
         { expiresIn: '1h' }
     );
-    
+
     return { token };
 };
 
@@ -48,4 +48,3 @@ const findUserByName = async (username) => {
 };
 
 module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };
-
