@@ -12,7 +12,7 @@ export default function Header(): JSX.Element {
     { href: "/", label: "Trang chủ" },
     { href: "/san-pham", label: "Sản phẩm", isDropdown: true },
     { href: "/gioi-thieu", label: "Giới thiệu" },
-    { href: "/tin-tuc", label: "Tin tức" },
+    { href: "/news", label: "Tin tức" },
     { href: "/lien-he", label: "Liên hệ" },
     { href: "/faq", label: "Câu hỏi thường gặp" },
     { href: "/he-thong-cua-hang", label: "Hệ thống cửa hàng" },

@@ -1,7 +1,5 @@
-// import Header from "../components/Header";
-// import Footer from "../components/Footer";
 import Image from "next/image";
-import "../introduce/introduce.css";
+import "./new.css";
 
 export default function Introduce() {
     return (
@@ -43,7 +41,7 @@ export default function Introduce() {
                             <Image src="/images/tiet-lo-tinh-cach-qua-cach-an-pizza.png" alt="Tiết lộ tính cách" width={200} height={100}/>
                         </div>
                         <div className="card-content">
-                            <a href=""><h2 className="card-title">Tiết lộ tính cách qua cách ăn pizza cực thú vị</h2></a>
+<a href=""><h2 className="card-title">Tiết lộ tính cách qua cách ăn pizza cực thú vị</h2></a>
                             <p className="card-date">27/02/2024</p>
                             <p>1. Ăn vỏ bánh trước tiên: Nhóm người này có tính cách hướng nội, thích sự khác biệt...</p>
                         </div>
