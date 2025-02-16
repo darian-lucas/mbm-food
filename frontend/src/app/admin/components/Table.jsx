@@ -31,7 +31,13 @@ export default function Table() {
                     {users.map((user, index) => (
                         <tr key={index}>
                             <td><input type="checkbox" /></td>
-                            <td><img className={styles.avatar} src="https://via.placeholder.com/40" alt="" /> {user.name}</td>
+                            <td>
+                                <div className={styles.avatarContainer}>
+                                    <img className={styles.avatar} src="https://via.placeholder.com/40" alt="Avatar" />
+                                    <span className={styles.name}>{user.name}</span>
+                                </div>
+                            </td>
+
                             <td>{user.email}</td>
                             <td>{user.orders}</td>
                             <td>{user.country}</td>

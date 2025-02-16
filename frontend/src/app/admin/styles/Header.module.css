@@ -5,7 +5,7 @@
     background-color: #ffffff;
     padding: 15px 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.151);
     margin-bottom: 20px;
     font-size:13px;
    
@@ -20,7 +20,7 @@
     width: 100%;
     padding: 10px 40px 10px 15px;
     border-radius: 8px;
-    border: 1px solid #d1d5db;
+    border: 2px solid #d1d5db;
 }
 
 .searchBox .icon {
@@ -28,7 +28,8 @@
     top: 50%;
     right: 15px;
     transform: translateY(-50%);
-    color: #6b7280;
+    color: #000000d8;
+    font-size: 15px;
 }
 
 .userInfo {
