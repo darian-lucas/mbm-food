@@ -292,7 +292,7 @@ export default function Home(): JSX.Element {
           <div className={styles.aboutImage}>
             <Image
               src="/images/pizza0.png"
-              alt="Dola Food"
+              alt="MBM Food"
               width={403}
               height={403}
             />
@@ -797,7 +797,7 @@ export default function Home(): JSX.Element {
             <h3>Hoàng Dung</h3>
             <p className={styles.danhgiaRole}>Nhân viên văn phòng</p>
             <p className={styles.danhgiaComment}>
-              Các món ăn ở Dola Food đều rất ngon. Con tôi cũng rất thích, mỗi
+              Các món ăn ở MBM Food đều rất ngon. Con tôi cũng rất thích, mỗi
               tuần đều dẫn con tôi đến đây ăn. Không những ngon mà không gian
               còn rất thoải mái.
             </p>
@@ -809,7 +809,7 @@ export default function Home(): JSX.Element {
       </section>
       <section className={styles["lydo-section"]}>
         <p className={styles["lydo-subtitle"]}>Lý do</p>
-        <h2 className={styles["lydo-title"]}>Tại sao chọn Dola Food?</h2>
+        <h2 className={styles["lydo-title"]}>Tại sao chọn MBM Food?</h2>
         <div className={styles["lydo-grid"]}>
           {reasons.map((item, index) => (
             <div key={index} className={styles["lydo-item"]}>
