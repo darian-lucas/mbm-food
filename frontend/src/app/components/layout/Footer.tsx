@@ -15,7 +15,7 @@ export default function Footer(): JSX.Element {
             pizza hàng đầu, nổi tiếng với chất lượng món ăn tuyệt vời, dịch vụ
             tận tâm và mức độ hài lòng cao từ phía khách hàng.
           </p>
-          <h4>HÌNH THỨC THANH TOÁN</h4>
+          <h3>HÌNH THỨC THANH TOÁN</h3>
           <div className={styles.paymentMethods}>
             <Image src="/images/payment-cash.png" alt="Tiền mặt" width={50} height={50} />
             <Image src="/images/payment-bank.png" alt="Chuyển khoản" width={50} height={50} />
