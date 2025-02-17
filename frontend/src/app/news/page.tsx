@@ -1,7 +1,7 @@
 import Image from "next/image";
 import "./new.css";
 
-export default function Introduce() {
+export default function New() {
     return (
         <main className="container">
             <section>

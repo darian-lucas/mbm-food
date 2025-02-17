@@ -11,7 +11,7 @@ export default function Header(): JSX.Element {
   const menuItems = [
     { href: "/", label: "Trang chủ" },
     { href: "/san-pham", label: "Sản phẩm", isDropdown: true },
-    { href: "/gioi-thieu", label: "Giới thiệu" },
+    { href: "/about", label: "Giới thiệu" },
     { href: "/news", label: "Tin tức" },
     { href: "/lien-he", label: "Liên hệ" },
     { href: "/faq", label: "Câu hỏi thường gặp" },
