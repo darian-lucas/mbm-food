@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faUsers, faUserFriends, faBox, faHeart, faShoppingCart, faCog, faEnvelope, faLanguage, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 export default function Sidebar() {
+    
     const [activeIndex, setActiveIndex] = useState(0);
 
     const menuItems = [

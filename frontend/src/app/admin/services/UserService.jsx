@@ -5,6 +5,11 @@ const getAllUsers = async () => {
     return response.json();
 };
 
+const getUserById = async (id) => {
+    const response = await fetch(`${API_URL}/${id}`);
+    return response.json();
+};
+
 const deleteUser = async (id) => {
     await fetch(`${API_URL}/${id}`, { method: "DELETE" });
 };
@@ -41,4 +46,4 @@ const findUserByName = async (username) => {
     return response.json();
 };
 
-export default { getAllUsers, deleteUser, register, login, updateUser, findUserByName };
+export default { getAllUsers, getUserById, deleteUser, register, login, updateUser, findUserByName };

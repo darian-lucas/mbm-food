@@ -1,9 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from 'next/router'; // Thêm useRouter để điều hướng
 import userService from "../services/userService";
 import styles from "../styles/Table.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 export default function Table() {
     const [users, setUsers] = useState([]);
@@ -87,7 +89,9 @@ export default function Table() {
                             <td>
                                 <div className={styles.avatarContainer}>
                                     <img className={styles.avatar} src={user.avatar || "https://via.placeholder.com/40"} alt="Avatar" />
-                                    <span className={styles.name}>{user.username}</span>
+                                    <Link href={`admin/custumerList/${user._id}/page`}>
+                                        <span className={styles.name}>{user.username}</span>
+                                    </Link>
                                 </div>
                             </td>
                             <td>{user.email}</td>
