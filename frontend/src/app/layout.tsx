@@ -9,16 +9,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
+  const pathname = usePathname(); // Lấy đường dẫn hiện tại
+
+  // Kiểm tra nếu là trang admin, dùng AdminLayout, ngược lại dùng ClientLayout
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <html lang="en">
-      <body
-        className={manrope.className}>
-            <Header/>           
-            <main>{children}</main>   
-            <Footer/>     
+      <body className={manrope.className}>
+        {isAdmin ? <AdminLayout>{children}</AdminLayout> : <ClientLayout>{children}</ClientLayout>}
       </body>
     </html>
   );

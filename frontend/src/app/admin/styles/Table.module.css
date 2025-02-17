@@ -1,0 +1,50 @@
+.tableContainer {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-size: 13px;
+}
+
+.statusPaid {
+    background-color: #fecaca;
+    color: #b91c1c;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.statusActive {
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 2px solid #3b82f6;
+}
+.avatarContainer {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 10px; /* Khoảng cách giữa avatar và name */
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3b82f6;
+}
+
+.name {
+    font-size: 14px;
+    font-weight: 500;
+}
