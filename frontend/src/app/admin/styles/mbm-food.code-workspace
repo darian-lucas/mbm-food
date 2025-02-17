@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		},
+		{
+			"path": "../../../../../../E-commerce HTML Dashboard"
+		},
+		{
+			"path": "../../../../../../layout_admin"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "layout_admin"
+	}
+}
