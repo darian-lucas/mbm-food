@@ -47,4 +47,11 @@ const findUserByName = async (username) => {
     return user;
 };
 
-module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };
+// Tìm người dùng theo ID
+const findUserById = async (userId) => {
+    const user = await User.findById(userId);
+    if (!user) throw new Error('Không tìm thấy người dùng');
+    return user;
+};
+
+module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, findUserById, register, login };

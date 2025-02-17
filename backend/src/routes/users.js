@@ -1,24 +1,35 @@
 const express = require('express');
-const { register, login, getAllUsers, deleteUser, updateUser, findUserByName } = require('../controllers/userController');
+const { 
+    register, 
+    login, 
+    getAllUsers, 
+    deleteUser, 
+    updateUser, 
+    findUserByName, 
+    findUserById 
+} = require('../controllers/userController');
 
 const router = express.Router();
 
-// Dang ki
+// Đăng ký
 router.post('/register', register);
 
-// dang nhap
+// Đăng nhập
 router.post('/login', login);
 
 // Lấy tất cả người dùng
 router.get('/', getAllUsers);
 
-// Xóa người dùng
-router.delete('/:id', deleteUser);
+// Lấy người dùng theo ID
+router.get('/:id', findUserById);
+
+// Tìm kiếm người dùng theo tên
+router.get('/search', findUserByName);
 
 // Cập nhật người dùng
 router.put('/:id', updateUser);
 
-// Tìm kiếm người dùng theo tên
-router.get('/search', findUserByName);
+// Xóa người dùng
+router.delete('/:id', deleteUser);
 
 module.exports = router;
