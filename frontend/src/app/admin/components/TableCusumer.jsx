@@ -89,7 +89,7 @@ export default function Table() {
                             <td>
                                 <div className={styles.avatarContainer}>
                                     <img className={styles.avatar} src={user.avatar || "https://via.placeholder.com/40"} alt="Avatar" />
-                                    <Link href={`admin/custumerList/${user._id}/page`}>
+                                    <Link href={`custumerList/${user._id}`}>
                                         <span className={styles.name}>{user.username}</span>
                                     </Link>
                                 </div>
