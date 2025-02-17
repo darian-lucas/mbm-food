@@ -14,24 +14,24 @@ exports.getByIdProduct = async (id) => {
 
 // lấy sp theo danh mục
 exports.getByCategory = async (idcate, query) => {
-  let limit = query.limit ? query.limit : 4;
+  let limit = query.limit ? query.limit : 100;
   delete query.limit;
   let products = await productModel.find({ idcate: idcate }).limit(limit);
   return products;
 };
 
 // Tạo sản phẩm mới
-exports.createProduct = async (name, idcate, description, variants) => {
-  const model = new productModel({ name, idcate, description, variants });
+exports.createProduct = async (name, idcate, description, variants, hot,view) => {
+  const model = new productModel({ name, idcate, description, variants, hot, view });
   await model.save();
   return model;
 };
 
 // Cập nhật sản phẩm
-exports.updateProduct = async (id, name, idcate, description, variants) => {
+exports.updateProduct = async (id, name, idcate, description, variants, hot,view) => {
   const model = await productModel.findByIdAndUpdate(
     id,
-    { name, idcate, description, variants },
+    { name, idcate, description, variants, hot,view },
     { new: true }
   );
   return model;

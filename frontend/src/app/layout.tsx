@@ -1,6 +1,4 @@
 "use client"; // Đặt "use client" vì có usePathname
-
-
 import { manrope } from "@/utils";
 import { usePathname } from "next/navigation";
 import "./globals.css";

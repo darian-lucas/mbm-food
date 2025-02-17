@@ -10,7 +10,7 @@ exports.getAllProducts = async (req, res, next) => {
   }
 };
 
-// Lấy chi tiết một sản phẩm theo ID
+// Lấy chi tiết một sản phẩm
 exports.getByIdProduct = async (req, res, next) => {
   try {
     let { id } = req.params;
@@ -21,6 +21,7 @@ exports.getByIdProduct = async (req, res, next) => {
   }
 };
 
+// lấy sp theo danh mục
 exports.getByCategory = async (req, res) => {
   try {
     const { idcate } = req.params;
@@ -35,8 +36,8 @@ exports.getByCategory = async (req, res) => {
 // Thêm sản phẩm mới
 exports.createProduct = async (req, res, next) => {
   try {
-    let { name, idcate, description, variants } = req.body;
-    const result = await productServices.createProduct(name, idcate, description, variants);
+    let { name, idcate, description, variants, hot,view } = req.body;
+    const result = await productServices.createProduct(name, idcate, description, variants, hot,view);
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -47,8 +48,8 @@ exports.createProduct = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
   try {
     let { id } = req.params;
-    let { name, idcate, description, variants } = req.body;
-    const result = await productServices.updateProduct(id, name, idcate, description, variants);
+    let { name, idcate, description, variants , hot,view} = req.body;
+    const result = await productServices.updateProduct(id, name, idcate, description, variants, hot,view);
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -65,3 +66,4 @@ exports.deleteProduct = async (req, res, next) => {
     res.status(404).json({ status: false });
   }
 };
+
