@@ -3,7 +3,7 @@ import "../about/About.css";
 
 export default function About() {
   return (
-    <div className="bodywrap">
+    <div className="about-container">
       <section className="bread-crumb">
         <div className="container">
           <ul className="breadcrumb">
@@ -146,49 +146,49 @@ export default function About() {
               </div>
               <div className="swiper-slide item swiper-slide-active">
                 <div className="image">
-                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                  <Image src={"/images/image2_about3.png"} alt={""} width={500} height={100}></Image>
                 </div>
                 <div className="thumb-content">
-                  <div className="title">Bếp trưởng</div>
+                  <div className="title">Bếp phó</div>
                   <div className="content">
-                    <span>David Latham</span>                    
-							        Người đưa ra nhiều công thức cho tất cả món ăn
+                    <span>Marry Jenica</span>                    
+							        Quản lý chất lượng món ăn
                   </div>
                 </div>
               </div>
               <div className="swiper-slide item swiper-slide-active">
                 <div className="image">
-                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                  <Image src={"/images/image3_about3.png"} alt={""} width={500} height={100}></Image>
                 </div>
                 <div className="thumb-content">
-                  <div className="title">Bếp trưởng</div>
+                  <div className="title">Phụ bếp</div>
                   <div className="content">
-                    <span>David Latham</span>                    
-							        Người đưa ra nhiều công thức cho tất cả món ăn
+                    <span>Joseph Carter</span>                    
+							        Người lam ra các món ăn
                   </div>
                 </div>
               </div>
               <div className="swiper-slide item swiper-slide-active">
                 <div className="image">
-                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                  <Image src={"/images/image4_about3.png"} alt={""} width={500} height={100}></Image>
                 </div>
                 <div className="thumb-content">
-                  <div className="title">Bếp trưởng</div>
+                  <div className="title">Phụ bếp</div>
                   <div className="content">
-                    <span>David Latham</span>                    
-							        Người đưa ra nhiều công thức cho tất cả món ăn
+                    <span>Njelina Rose</span>                    
+							        Người làm ra các món ăn
                   </div>
                 </div>
               </div>
               <div className="swiper-slide item swiper-slide-active">
                 <div className="image">
-                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                  <Image src={"/images/image5_about3.png"} alt={""} width={500} height={100}></Image>
                 </div>
                 <div className="thumb-content">
-                  <div className="title">Bếp trưởng</div>
+                  <div className="title">Phụ bếp</div>
                   <div className="content">
-                    <span>David Latham</span>                    
-							        Người đưa ra nhiều công thức cho tất cả món ăn
+                    <span>Rubina Jenny</span>                    
+							        Người làm ra các món ăn
                   </div>
                 </div>
               </div>
