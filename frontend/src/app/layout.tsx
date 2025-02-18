@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+"use client"; // Đặt "use client" vì có usePathname
 import { manrope } from "@/utils";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";

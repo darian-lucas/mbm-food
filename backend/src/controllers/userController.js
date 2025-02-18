@@ -1,5 +1,6 @@
 const authService = require('../services/userServices');
-//Dang ki thong bao thanh cong
+
+// Đăng ký tài khoản
 const register = async (req, res) => {
     try {
         const result = await authService.register(req.body);
@@ -8,7 +9,8 @@ const register = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-//Dang nhap tra ve token
+
+// Đăng nhập trả về token
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -18,7 +20,8 @@ const login = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-//lay tat ca user
+
+// Lấy tất cả người dùng
 const getAllUsers = async (req, res) => {
     try {
         const users = await authService.getAllUsers();
@@ -27,7 +30,8 @@ const getAllUsers = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-//xoa user dua tren id
+
+// Xóa người dùng theo ID
 const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -37,7 +41,8 @@ const deleteUser = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-//update user dua tren id
+
+// Cập nhật người dùng theo ID
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -48,7 +53,8 @@ const updateUser = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-//tim user dua tren name
+
+// Tìm người dùng theo tên
 const findUserByName = async (req, res) => {
     try {
         const { username } = req.query;
@@ -59,4 +65,15 @@ const findUserByName = async (req, res) => {
     }
 };
 
-module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };
+// Tìm người dùng theo ID
+const findUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await authService.findUserById(id);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
+module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, findUserById, register, login };
