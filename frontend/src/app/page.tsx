@@ -472,16 +472,23 @@ export default function Home(): JSX.Element {
                 />
                 <h3 className={styles.discountItemName}>{item.name}</h3>
                 <p className={styles.discountItemDesc}>{item.description}</p>
-                <p className={styles.discountFoodPrice}>
-                  Giá chỉ từ: <span>{item.price}</span>
-                </p>
-                <button className={styles.discountAddButton}>Thêm</button>
+                <a href="#" className={styles.menufoodMore}>
+                  Xem thêm
+                </a>
+                <div className={styles.discountPriceContainer}>
+                  <div className={styles.discountFoodPrice}>
+                    <p>Giá chỉ từ:</p>
+                    <span>{item.price}</span>
+                  </div>
+                  <button className={styles.discountAddButton}>Thêm</button>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
       {/* Danh sách bán chạy */}
+      <section className="styles.bestSelling">
       <div className={styles.bestSellingWrapper}>
         <h2 className={styles.bestSellingTitle}>Món ăn</h2>
         <span className={styles.bestSellingSubtitle}>Được bán nhiều nhất</span>
@@ -511,15 +518,22 @@ export default function Home(): JSX.Element {
 
               <h3 className={styles.bestSellingItemName}>{item.name}</h3>
               <p className={styles.bestSellingItemDesc}>{item.description}</p>
-              <p className={styles.bestSellingFoodPrice}>
-                Giá chỉ từ: <span>{item.price}</span>
-              </p>
-
-              <button className={styles.bestSellingAddButton}>Thêm</button>
+              <a href="#" className={styles.menufoodMore}>
+                Xem thêm
+              </a>
+              <div className={styles.bestSellingContainer}>
+                <div className={styles.bestSellingFoodPrice}>
+                  <p>Giá chỉ từ:</p>
+                  <span>{item.price}</span>
+                </div>
+                <button className={styles.bestSellingAddButton}>Thêm</button>
+              </div>
             </div>
           ))}
         </div>
       </div>
+      </section>
+      <section className="styles.specialBanner">
       <div className={styles.specialBannerContainer}>
         {specialBannerImages.map((banner, index) => (
           <div key={index} className={styles.specialBannerItem}>
@@ -544,6 +558,8 @@ export default function Home(): JSX.Element {
           </div>
         ))}
       </div>
+      </section>
+      {/* Menu */}
       <section className={styles.menufoodContainer}>
         <div className={styles.menufoodsubtitle}>Tất cả</div>
         <h2 className={styles.menufoodTitle}>Menu dành cho bạn</h2>
@@ -825,7 +841,12 @@ export default function Home(): JSX.Element {
       <section className={styles.subscribe}>
         {/* Hình ảnh bên trái */}
         <div className={styles.imageLeft}>
-          <Image src="/images/left-image.png" alt="Decor" width={300} height={250} />
+          <Image
+            src="/images/left-image.png"
+            alt="Decor"
+            width={300}
+            height={250}
+          />
         </div>
 
         {/* Nội dung chính */}
@@ -843,7 +864,12 @@ export default function Home(): JSX.Element {
 
         {/* Hình ảnh bên phải */}
         <div className={styles.imageRight}>
-          <Image src="/images/right-image.png" alt="Pizza" width={300} height={300} />
+          <Image
+            src="/images/right-image.png"
+            alt="Pizza"
+            width={300}
+            height={300}
+          />
         </div>
       </section>
     </main>

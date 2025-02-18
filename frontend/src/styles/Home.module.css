@@ -33,7 +33,8 @@
 }
 
 .bannerImage {
-  height: auto;
+  width: 1280px;
+  height: 300px;
   border-radius: 10px;
   display: block;
   margin: 0 auto;
@@ -271,7 +272,6 @@
   background: #e51735;
 }
 
-/* Icon trái tim */
 .heartIcon {
   position: absolute;
   top: 10px;
@@ -487,11 +487,12 @@
   transition: 0.5s;
 }
 .discountItem h3 {
-  white-space: nowrap; /* Không cho xuống dòng */
-  overflow: hidden; /* Ẩn nội dung bị tràn */
-  text-overflow: ellipsis; /* Hiển thị "..." khi quá dài */
-  max-width: 100%; /* Đảm bảo không vượt quá khung */
-  display: block; /* Giúp áp dụng hiệu ứng ellipsis */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+  font-size: 20px;
 }
 
 .discountItem h3:hover{
@@ -501,7 +502,7 @@
 
 .discountItemDesc {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   
   line-clamp: 2;
@@ -511,15 +512,31 @@
   text-align: justify;
   max-width: 100%;
 }
+
+.discountPriceContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .discountFoodPrice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
-  margin-top: 10px;
 }
 
 .discountFoodPrice span {
   color: #e51735;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.discountFoodPrice p{
+  margin: 0;
 }
 
 .discountAddButton {
@@ -529,7 +546,9 @@
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  white-space: nowrap;
 }
+
 
 .discountAddButton:hover {
   background: #004d23;
@@ -583,7 +602,7 @@
 }
 .bestSellingItemDesc{
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   
   line-clamp: 2;
@@ -641,15 +660,29 @@
   margin-bottom: 10px;
 }
 
+.bestSellingContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .bestSellingFoodPrice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
   font-size: 16px;
   font-weight: bold;
-  margin-top: 5px;
 }
 
 .bestSellingFoodPrice span {
   color: #E51735;
-  font-size: 18px;
+  font-size: 16px;
+}
+
+.bestSellingFoodPrice p{
+  margin: 0;
 }
 
 .bestSellingAddButton {
@@ -658,12 +691,12 @@
   padding: 10px;
   border: none;
   border-radius: 6px;
-  margin-top: 10px;
   cursor: pointer;
-  width: 100%;
   font-size: 14px;
   transition: background 0.3s;
+  white-space: nowrap;
 }
+
 
 .bestSellingAddButton:hover {
   background: #0f552b;
@@ -831,6 +864,8 @@
   color: #E51735;
   text-decoration: none;
   font-size: 14px;
+  float: left;
+  margin-top: -15px;
 }
 
 .menufoodAdd {
@@ -840,6 +875,8 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: -35px;
+  height: 40px;
 }
 
 .menufoodAdd:hover {
