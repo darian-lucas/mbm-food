@@ -261,7 +261,7 @@ export default function Home(): JSX.Element {
           src="/images/banner-1.png"
           alt="Banner chính"
           width={1280}
-          height={300}
+          height={500}
           className={styles.bannerImage}
         />
       </section>
