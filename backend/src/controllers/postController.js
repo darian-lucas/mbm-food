@@ -9,14 +9,6 @@ exports.getAllPosts = async (req, res) => {
     }
 };
 
-exports.getLimitedPosts = async (req, res) => {
-    try {
-        const posts = await postService.getLimitedPosts(4);
-        res.json(posts);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
 
 exports.getPostById = async (req, res) => {
     try {
@@ -46,6 +38,18 @@ exports.getHotPosts = async (req, res) => {
     }
 };
 
+
+
+///api clientclient
+exports.getNewestFourPostsFooter = async (req, res) => {
+    try {
+        const posts = await postService.getNewestFourPostsFooter();
+        res.json(posts);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 exports.getNewestFourPosts = async (req, res) => {
     try {
         const posts = await postService.getNewestFourPosts();
@@ -54,6 +58,29 @@ exports.getNewestFourPosts = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+// API lấy 4 bài viết hot
+exports.getHotPosts4 = async (req, res) => {
+    try {
+        const posts = await postService.getHotPosts4();
+        res.json(posts);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+// API lấy tất cả bài viết với các trường 'title', 'create_at', 'imageSummary', và 'content'
+exports.getAllPostsSummary = async (req, res) => {
+    try {
+        const posts = await postService.getAllPostsSummary();
+        res.json(posts);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
+////.....////
+
+
 
 exports.createPost = async (req, res) => {
     try {
@@ -64,11 +91,14 @@ exports.createPost = async (req, res) => {
             return res.status(400).json({ message: 'Thiếu dữ liệu cần thiết' });
         }
 
+        // Gọi service để tạo bài viết mới
         const newPost = await postService.createPost({
             title,
             content,
             summary,
             imageSummary,
+            
+            
             author,
             status,
             hot,
@@ -90,6 +120,8 @@ exports.updatePost = async (req, res) => {
             content,
             summary,
             imageSummary,
+           
+            
             author,
             status,
             hot

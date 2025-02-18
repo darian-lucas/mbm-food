@@ -9,7 +9,7 @@ const postSchema = new mongoose.Schema({
     status: { 
         type: Number, 
         default: 1,  // Mặc định là "kích hoạt"
-        enum: [1, 2]  // Chỉ nhận giá trị 1 (kích hoạt) hoặc 2 (không kích hoạt)
+        enum: [1, 2]  // Chỉ nhận giá traị 1 (kích hoạt) hoặc 2 (không kích hoạt)
     },
     author: { type: String, required: true },  // Tác giả bài viết
     view: { type: Number, default: 0 },  // Số lượt xem bài viết
