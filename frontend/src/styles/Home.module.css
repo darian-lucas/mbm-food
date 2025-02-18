@@ -1196,28 +1196,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
 }
 
 .subscribeForm input {
-  width: 350px;
+  width: 300px;
   padding: 12px;
-  border-radius: 5px;
-  border: none;
+  border-radius: 5px 0 0 5px;
   font-size: 16px;
+  border-radius: 5px 0 0 5px;
+  border: 1px solid #ccc;
+  outline: none;
 }
 
 .subscribeForm button {
   background-color: #006A31;
   color: white;
-  border: none;
+  border: 1px solid #006A31; 
   padding: 12px 20px;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   cursor: pointer;
   transition: background 0.3s;
+  margin-right: 0;
 }
 
 .subscribeForm button:hover {
-  background-color: #004d00;
+  background-color: #004d23;
 }

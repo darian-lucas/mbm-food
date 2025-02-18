@@ -37,7 +37,7 @@
 .searchBox input {
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 5px 0 0 5px;
   outline: none;
   width: 400px;
   height: 36px;
@@ -49,6 +49,7 @@
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   width: 40px;
   height: 36px;
   padding: 0;
