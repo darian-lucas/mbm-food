@@ -30,6 +30,7 @@
   border-bottom: 2px solid #e31837;
   padding-bottom: 5px;
   margin-bottom: 10px;
+  font-size: 18px;
 }
 
 .footerSection p,
@@ -43,10 +44,11 @@
   gap: 10px;
 }
 
-.paymentMethods img {
+/* .paymentMethods img {
   width: 50px;
-  height: auto;
-}
+  height: 30px;
+  object-fit: cover;
+} */
 
 .infoItem {
   display: flex;

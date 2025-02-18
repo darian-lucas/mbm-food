@@ -1,5 +1,5 @@
 "use client";
-import styles from "/styles/Header.module.css";
+import styles from "@/styles/Header.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -37,6 +37,7 @@ export default function Header(): JSX.Element {
             alt="Dola Food"
             width={150}
             height={75}
+            priority
           />
         </Link>
         <div className={styles.searchBox}>
