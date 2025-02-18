@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
+const generateSlug = require("../middleware/slug");
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.ObjectId;
 
 const productSchema = new Schema(
   {
     name: { type: String, required: true },
+    slug: { type: String, unique: true },
     idcate: { type: ObjectId, ref: "category" },
     description: [
       {
@@ -20,13 +22,17 @@ const productSchema = new Schema(
         price: { type: Number, required: true },
         sale_price: { type: Number, default: 0 },
         image: { type: String, required: true },
+        stock: { type: Number, default: 100 },
       },
     ],
     hot: { type: Number, default: 0 },
     view: { type: Number, default: 0 },
+    status: { type: String, enum: ["active", "unactive"], default: "active" }
   },
 
   { timestamps: true }
 );
+
+productSchema.pre("save", generateSlug);
 
 module.exports = mongoose.model("product", productSchema);
