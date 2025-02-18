@@ -3,124 +3,199 @@ import "../about/About.css";
 
 export default function About() {
   return (
-    <>
-      <header className="headerAbout">
+    <div className="bodywrap">
+      <section className="bread-crumb">
         <div className="container">
-          <p>Trang chủ &gt;     
-            <b style={{color: "red"}}>Giới thiệu</b>
-            </p>
+          <ul className="breadcrumb">
+            <li className="home">
+              <a href="/">
+                <span>Trang chủ</span>
+              </a>
+            </li>
+            <li className="mr_lr">
+              <svg
+                width="10"
+                height="10"
+                viewBox="-96 0 512 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
+              </svg>
+            </li>
+            <li>
+              <strong>
+                <span>Giới thiệu</span>
+              </strong>
+            </li>
+          </ul>
         </div>
-      </header>
-      <main className="container">
-        <section className="section">
-          <div className="about-flex">
-            <div className="about-image">
-              <Image
-                src="/images/about-page.png"
-                alt="A person holding two pizzas"
-                width={500}
-                height={500}
-              />
-            </div>
-            <div className="about-text">
-              <h2>Về Chúng Tôi</h2>
-              <h1>MBM</h1>
-              <p>
-                Chào mừng bạn đến với MBM - điểm đến lý tưởng cho những người yêu thương thức pizza tại thành phố! MBM tự hào là địa chỉ pizza hàng đầu, nổi tiếng với chất lượng món ăn tuyệt vời, dịch vụ tận tâm và mức độ hài lòng cao từ phía khách hàng.
-              </p>
-              <ul>
-                <li>Chất lượng món ăn hàng đầu</li>
-                <li>Dịch vụ chăm sóc khách hàng xuất sắc</li>
-                <li>Menu đa dạng phong phú</li>
-                <li>Chất lượng nguyên liệu cao cấp</li>
-                <li>Không gian thoải mái và ấm cúng</li>
-                <li>Ưu đãi và khuyến mãi hấp dẫn</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-        <section className="section">
-          <h2>Tại sao chọn</h2>
-          <h1>MBM</h1>
-          <p>
-            Đến với MBM, bạn sẽ không chỉ là khách hàng mà còn là thành viên của một cộng đồng yêu thích thức phẩm ngon. Hãy để chúng tôi đưa bạn vào hành trình khám phá hương vị tuyệt vời của pizza và ẩm thực đa dạng tại MBM!
-          </p>
-          <div className="features">
-            <div className="feature">
-              <i className="fas fa-clock" style={{ color: "#f59e0b" }}></i>
-              <div>
-                <h3>Tốc độ nhanh</h3>
-                <p>Thời gian chế biến nhanh nhưng vẫn đảm bảo chất lượng</p>
+      </section>
+      <section className="section_about_1">
+        <div className="container">
+          <div className="thumb-module">
+            <div className="row">
+              <div className="col-md-6 col-lg-5">
+                <div className="image-effect">
+                  <Image src={"/images/about-page.png"} alt={""} width={500} height={200}></Image>
+                </div>
               </div>
-            </div>
-            <div className="feature">
-              <i className="fas fa-chair" style={{ color: "#ef4444" }}></i>
-              <div>
-                <h3>Không gian thoải mái</h3>
-                <p>Không gian luôn đảm bảo tiêu chí gọn gàng, sạch sẽ, thoáng mát</p>
-              </div>
-            </div>
-            <div className="feature">
-              <i className="fas fa-truck" style={{ color: "#10b981" }}></i>
-              <div>
-                <h3>Đặt hàng nhanh chóng</h3>
-                <p>Dịch vụ giao hàng giúp bạn ngồi ở nhà vẫn được thưởng thức món ăn ngon</p>
+              <div className="col-md-6 col-lg-7">
+                <span className="title-smail">Về chúng tôi</span>
+                <span className="title">MBM</span>
+                <span className="content">
+						      Chào mừng bạn đến với MBM - điểm đến lý tưởng cho những người yêu thưởng thức pizza tại thành phố! MBM tự hào là địa chỉ pizza hàng đầu, 
+                  nổi tiếng với chất lượng món ăn tuyệt vời, dịch vụ tận tâm và mức độ hài lòng cao từ phía khách hàng.
+                </span>
+                <ul>
+                  <li>
+                  <svg fill="#000000" width="16" height="16" viewBox="0 0 24 24" version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.972 6.251c-.967-.538-2.185-.188-2.72.777l-3.713 6.682-2.125-2.125c-.781-.781-2.047-.781-2.828 0-.781.781-.781 2.047 0 2.828l4 4c.378.379.888.587 1.414.587l.277-.02c.621-.087 1.166-.46 1.471-1.009l5-9c.537-.966.189-2.183-.776-2.72z"/></svg>
+                  Chất lượng hàng đầu
+                  </li>
+                  <li>
+                  <svg fill="#000000" width="16" height="16" viewBox="0 0 24 24" version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.972 6.251c-.967-.538-2.185-.188-2.72.777l-3.713 6.682-2.125-2.125c-.781-.781-2.047-.781-2.828 0-.781.781-.781 2.047 0 2.828l4 4c.378.379.888.587 1.414.587l.277-.02c.621-.087 1.166-.46 1.471-1.009l5-9c.537-.966.189-2.183-.776-2.72z"/></svg>
+                  Dịch vụ chăm sóc khách hàng xuất sắc
+                  </li>
+                  <li>
+                  <svg fill="#000000" width="16" height="16" viewBox="0 0 24 24" version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.972 6.251c-.967-.538-2.185-.188-2.72.777l-3.713 6.682-2.125-2.125c-.781-.781-2.047-.781-2.828 0-.781.781-.781 2.047 0 2.828l4 4c.378.379.888.587 1.414.587l.277-.02c.621-.087 1.166-.46 1.471-1.009l5-9c.537-.966.189-2.183-.776-2.72z"/></svg>
+                  Menu đa dạng phong phú
+                  </li>
+                  <li>
+                  <svg fill="#000000" width="16" height="16" viewBox="0 0 24 24" version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.972 6.251c-.967-.538-2.185-.188-2.72.777l-3.713 6.682-2.125-2.125c-.781-.781-2.047-.781-2.828 0-.781.781-.781 2.047 0 2.828l4 4c.378.379.888.587 1.414.587l.277-.02c.621-.087 1.166-.46 1.471-1.009l5-9c.537-.966.189-2.183-.776-2.72z"/></svg>
+                  Chất lượng nguyên liệu cao cấp
+                  </li>
+                  <li>
+                  <svg fill="#000000" width="16" height="16" viewBox="0 0 24 24" version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.972 6.251c-.967-.538-2.185-.188-2.72.777l-3.713 6.682-2.125-2.125c-.781-.781-2.047-.781-2.828 0-.781.781-.781 2.047 0 2.828l4 4c.378.379.888.587 1.414.587l.277-.02c.621-.087 1.166-.46 1.471-1.009l5-9c.537-.966.189-2.183-.776-2.72z"/></svg>
+                  Không gian thoải mái và ấm cúng
+                  </li>
+                  <li>
+                  <svg fill="#000000" width="16" height="16" viewBox="0 0 24 24" version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.972 6.251c-.967-.538-2.185-.188-2.72.777l-3.713 6.682-2.125-2.125c-.781-.781-2.047-.781-2.828 0-.781.781-.781 2.047 0 2.828l4 4c.378.379.888.587 1.414.587l.277-.02c.621-.087 1.166-.46 1.471-1.009l5-9c.537-.966.189-2.183-.776-2.72z"/></svg>
+                  Ưu đãi và khuyến mãi hấp dẫn
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-        </section>
-        <section className="section">
-          <h2>Đầu bếp</h2>
-          <h1>Người tạo ra những món ăn chất lượng</h1>
-          <div className="chefs">
-            <div className="chef">
-              <Image
-                src="/images/image1_about3.png"
-                alt="Chef 1"
-                width={200}
-                height={200}
-              />
-              <h3>Chef 1</h3>
-            </div>
-            <div className="chef">
-              <Image
-                src="/images/image1_about3.png"
-                alt="Chef 2"
-                width={200}
-                height={200}
-              />
-              <h3>Chef 2</h3>
-            </div>
-            <div className="chef">
-              <Image
-                src="/images/image1_about3.png"
-                alt="Chef 3"
-                width={200}
-                height={200}
-              />
-              <h3>Chef 3</h3>
-            </div>
-            <div className="chef">
-              <Image
-                src="/images/image1_about3.png"
-                alt="Chef 4"
-                width={200}
-                height={200}
-              />
-              <h3>Chef 4</h3>
-            </div>
-            <div className="chef">
-              <Image
-                src="/images/image1_about3.png"
-                alt="Chef 5"
-                width={200}
-                height={200}
-              />
-              <h3>Chef 5</h3>
+        </div>
+      </section>
+      <section className="section_about_2">
+        <div className="container">
+          <div className="thumb-module">
+            <div className="row">
+              <div className="col-xl-4">
+                <span className="title-smail">Tại sao chọn</span>
+                <span className="title">MBM</span>
+                <span className="content">                 
+						      Đến với MBM, bạn sẽ không chỉ là khách hàng mà còn là thành viên của một cộng đồng yêu thực phẩm ngon. 
+                  Hãy để chúng tôi đưa bạn vào hành trình khám phá hương vị tuyệt vời của pizza và ẩm thực đa dạng tại MBM!				
+                </span>
+              </div>
+              <div className="col-xl-8">
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="item">
+                      <Image src={"/images/icon1_about2.png"} alt={"Tốc độ nhanh"} width={60} height={50}></Image>
+                      <span className="title-item">Tốc độ nhanh</span>
+                      <span className="content-item">Thời gian chế biến nhanh nhưng vẫn đảm bảo chất lượng</span>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="item">
+                      <Image src={"/images/icon2_about2.png"} alt={"Không gian thoải mái"} width={60} height={100}></Image>
+                      <span className="title-item">Không gian thoải mái</span>
+                      <span className="content-item">Không gian luôn đảm bảo tiêu chí gọn gàn, sạch sẽ, thoáng mát</span>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="item">
+                      <Image src={"/images/icon3_about2.png"} alt={"Đặt hàng nhanh chóng"} width={60} height={100}></Image>
+                      <span className="title-item">Đặt hàng nhanh chóng</span>
+                      <span className="content-item">Dịch vụ giao hàng giúp bạn ngồi ở nhà vẫn được thưởng thức món ăn ngon</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </section>
-      </main>
-    </>
+        </div>
+      </section>
+      <section className="section_about_3">
+        <div className="container">
+          <h3 className="title-index">
+            <b>Đầu bếp</b>
+            <span className="title-name">Người tạo ra những món ăn chất lượng</span>
+          </h3>
+          <div className="swiper-container">
+            <div className="swiper-wrapper">
+              <div className="swiper-slide item swiper-slide-active">
+                <div className="image">
+                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                </div>
+                <div className="thumb-content">
+                  <div className="title">Bếp trưởng</div>
+                  <div className="content">
+                    <span>David Latham</span>                    
+							        Người đưa ra nhiều công thức cho tất cả món ăn
+                  </div>
+                </div>
+              </div>
+              <div className="swiper-slide item swiper-slide-active">
+                <div className="image">
+                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                </div>
+                <div className="thumb-content">
+                  <div className="title">Bếp trưởng</div>
+                  <div className="content">
+                    <span>David Latham</span>                    
+							        Người đưa ra nhiều công thức cho tất cả món ăn
+                  </div>
+                </div>
+              </div>
+              <div className="swiper-slide item swiper-slide-active">
+                <div className="image">
+                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                </div>
+                <div className="thumb-content">
+                  <div className="title">Bếp trưởng</div>
+                  <div className="content">
+                    <span>David Latham</span>                    
+							        Người đưa ra nhiều công thức cho tất cả món ăn
+                  </div>
+                </div>
+              </div>
+              <div className="swiper-slide item swiper-slide-active">
+                <div className="image">
+                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                </div>
+                <div className="thumb-content">
+                  <div className="title">Bếp trưởng</div>
+                  <div className="content">
+                    <span>David Latham</span>                    
+							        Người đưa ra nhiều công thức cho tất cả món ăn
+                  </div>
+                </div>
+              </div>
+              <div className="swiper-slide item swiper-slide-active">
+                <div className="image">
+                  <Image src={"/images/image1_about3.png"} alt={""} width={500} height={100}></Image>
+                </div>
+                <div className="thumb-content">
+                  <div className="title">Bếp trưởng</div>
+                  <div className="content">
+                    <span>David Latham</span>                    
+							        Người đưa ra nhiều công thức cho tất cả món ăn
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
