@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router'; // Thêm useRouter để điều hướng
-import userService from "../services/userService";
+import userService from "../services/UserService";
 import styles from "../styles/Table.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
