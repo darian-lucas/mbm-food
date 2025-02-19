@@ -1,34 +1,30 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const connectDB = require("../backend/src/config/db"); 
-const Product = require("../backend/src/models/ProductModel.js"); 
+const connectDB = require("../backend/src/config/db");
+const Category = require("../backend/src/models/CategoryModel.js");
 
-const removeStockFieldManually = async () => {
+const addCreatedAtToCategories = async () => {
   try {
     await connectDB();
 
-    // Lấy tất cả sản phẩm có chứa stock
-    const products = await Product.find({ "variants.stock": { $exists: true } });
+    // Lọc danh mục chưa có createdAt
+    const categories = await Category.find({ createdAt: { $exists: false } });
 
-    console.log(`🔹 Tìm thấy ${products.length} sản phẩm cần cập nhật...`);
+    console.log(`🔹 Tìm thấy ${categories.length} danh mục cần thêm createdAt...`);
 
-    for (let product of products) {
-      // Lọc bỏ trường stock khỏi từng variant
-      product.variants = product.variants.map(variant => {
-        const { stock, ...updatedVariant } = variant.toObject();
-        return updatedVariant;
-      });
-
-      await product.save(); // Lưu lại thay đổi
-      console.log(`✔ Đã cập nhật sản phẩm: ${product.name}`);
+    for (let category of categories) {
+      category.createdAt = category.updatedAt || new Date(); // Lấy updatedAt hoặc ngày hiện tại
+      await category.save();
+      console.log(`✔ Đã cập nhật danh mục: ${category.name}`);
     }
 
-    console.log("🎉 Hoàn thành xóa stock trong tất cả sản phẩm!");
+    console.log("🎉 Hoàn thành thêm trường createdAt vào tất cả danh mục!");
   } catch (error) {
-    console.error("❌ Lỗi khi cập nhật sản phẩm:", error.message);
+    console.error("❌ Lỗi khi cập nhật danh mục:", error.message);
   } finally {
     mongoose.disconnect();
   }
 };
 
-removeStockFieldManually();
+// Chạy script
+addCreatedAtToCategories();
