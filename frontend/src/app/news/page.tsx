@@ -33,9 +33,23 @@ export default function New() {
     fetchData();
   }, []);
 
+  // Hàm trích xuất URL ảnh từ imageSummary
   const extractImageUrl = (htmlString?: string) => {
     const match = htmlString?.match(/src="([^"]+)"/);
     return match ? match[1] : "/images/default.png";
+  };
+
+  // Hàm giới hạn ký tự và giữ nguyên định dạng HTML
+  const truncateHTML = (html: string, maxLength: number) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+
+    let text = tempDiv.textContent || tempDiv.innerText || "";
+    if (text.length > maxLength) {
+      text = text.substring(0, maxLength) + "...";
+    }
+
+    return text;
   };
 
   return (
@@ -89,7 +103,7 @@ export default function New() {
                           <div className="time-post">
                             {new Date(tintuc.create_at).toLocaleDateString()}
                           </div>
-                          <p>{tintuc.summary}</p>
+                          <p>{truncateHTML(tintuc.summary, 150)}</p>
                         </div>
                       </div>
                     </div>
@@ -120,7 +134,7 @@ export default function New() {
                   {tintucNoibat.map((tintuc) => (
                     <li className="aside-news-item" key={tintuc.id}>
                       <Image
-                        src={tintuc.imageSummary || "/images/default.png"}
+                        src={extractImageUrl(tintuc.imageSummary)}
                         alt={tintuc.title}
                         width={200}
                         height={100}
