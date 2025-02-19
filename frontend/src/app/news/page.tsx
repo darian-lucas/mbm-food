@@ -33,6 +33,11 @@ export default function New() {
     fetchData();
   }, []);
 
+  const extractImageUrl = (htmlString?: string) => {
+    const match = htmlString?.match(/src="([^"]+)"/);
+    return match ? match[1] : "/images/default.png";
+  };
+
   return (
     <div className="about-container">
       <section className="bread-crumb">
@@ -69,7 +74,7 @@ export default function New() {
                         <div className="block-thumb">
                           <a href="#">
                             <Image
-                              src={tintuc.imageSummary || "/images/default.png"}
+                              src={extractImageUrl(tintuc.imageSummary)}
                               alt={tintuc.title}
                               width={940}
                               height={640}
