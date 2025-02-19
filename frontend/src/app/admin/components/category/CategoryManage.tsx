@@ -11,21 +11,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import {
-  IconDelete,
-  IconEdit,
-  IconLeftArrow,
-  IconRightArrow,
-} from "../icons";
+import { IconDelete, IconEdit, IconLeftArrow, IconRightArrow } from "../icons";
 import { Input } from "@/components/ui/input";
-import CategoryServices from "../../services/CategoryServices";
 import { commonClassNames } from "@/constants";
+import Swal from "sweetalert2";
+import CategoryServices from "../../services/CategoryServices";
+import { toast } from "react-toastify";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 interface Category {
-  id: number;
-  image:string;
+  _id: string;
+  image: string;
   createdAt: string;
   description: string;
   name: string;
@@ -38,16 +35,41 @@ const CategoryManage = () => {
   useEffect(() => {
     const showCategories = async () => {
       const data = await CategoryServices.getAllCategories();
-      console.log("🚀 ~ showCategories ~ data:", data)
       setCategories(data);
     };
     showCategories();
   }, []);
 
+  const handleDeleteCategory = async (id: string) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn?",
+      text: "Hành động này không thể hoàn tác!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa ngay!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+
+          await CategoryServices.deleteCategory(id);
+  
+          setCategories((prev) => prev.filter((item) => item._id !== id));
+  
+          toast.success("Xóa danh mục thành công!");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+        }
+      }
+    });
+  };
+  
   return (
     <>
-   <Link
-        href="/manage/course/new"
+      <Link
+        href="/admin/pages/category/new"
         className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 animate-bounce"
       >
         <svg
@@ -78,7 +100,7 @@ const CategoryManage = () => {
           <TableRow>
             <TableHead>Thông tin</TableHead>
             <TableHead>Mô tả</TableHead>
-            <TableHead >Hành động</TableHead>
+            <TableHead>Hành động</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -115,13 +137,13 @@ const CategoryManage = () => {
                   <TableCell className="pl-2">
                     <div className="flex gap-3">
                       <Link
-                        href={`/manage/course/update?slug=${category.slug}`}
+                        href={`/admin/pages/category/update?slug=${category.slug}`}
                         className={commonClassNames.action}
                       >
                         <IconEdit />
                       </Link>
                       <button
-                        onClick={() =>{}}
+                         onClick={() => handleDeleteCategory(category._id)}
                         className={commonClassNames.action}
                       >
                         <IconDelete />
@@ -134,10 +156,16 @@ const CategoryManage = () => {
         </TableBody>
       </Table>
       <div className="flex justify-end gap-3 mt-5">
-        <button className={commonClassNames.paginationButton} onClick={() => {}}>
+        <button
+          className={commonClassNames.paginationButton}
+          onClick={() => {}}
+        >
           <IconLeftArrow />
         </button>
-        <button className={commonClassNames.paginationButton} onClick={() => {}}>
+        <button
+          className={commonClassNames.paginationButton}
+          onClick={() => {}}
+        >
           <IconRightArrow />
         </button>
       </div>

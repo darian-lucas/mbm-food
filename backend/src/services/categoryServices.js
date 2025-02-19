@@ -10,16 +10,18 @@ exports.getByIdCategory = async (id) => {
   return categories;
 };
 
-exports.createCategory = async (name, description) => {
-  const model = new categoryModel({ name, description });
+exports.createCategory = async (name, description, slug,image) => {
+  const model = new categoryModel({ name, description, slug,image });
   await model.save();
   return model;
 };
 
-exports.updateCategory = async (id, name, description) => {
+exports.updateCategory = async (id, name, description,slug,image) => {
   const model = await categoryModel.findByIdAndUpdate(id, {
     name,
     description,
+    slug,
+    image
   });
   return model;
 };
@@ -27,3 +29,4 @@ exports.updateCategory = async (id, name, description) => {
 exports.deleteCategory = async (id) => {
   await categoryModel.deleteOne({ _id: id });
 };
+
