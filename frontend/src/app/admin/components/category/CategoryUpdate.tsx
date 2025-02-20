@@ -1,11 +1,11 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import slugify from "slugify";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 import CategoryServices from "../../services/CategoryServices";
 
 import {
@@ -19,7 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { TCreateCategoryParams } from "../../types";
+
+const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 const formSchema = z.object({
   name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
@@ -28,8 +29,11 @@ const formSchema = z.object({
   image: z.string().optional(),
 });
 
-function CategoryAddNew() {
+function CategoryUpdate() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const slug = searchParams.get("slug");
+  const [categoryId, setCategoryId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -44,42 +48,92 @@ function CategoryAddNew() {
     },
   });
 
+  useEffect(() => {
+    async function fetchCategory() {
+      if (!slug) return;
+      try {
+        const res = await CategoryServices.getCategoryBySlug(slug);
+        if (res?.data) {
+          form.reset(res.data);
+          setPreviewImage(
+            res.data.image.startsWith("http")
+              ? res.data.image
+              : `${API_URL}/images/${res.data.image}`
+          );
+          setCategoryId(res.data._id);
+        } else {
+          toast.error("Không tìm thấy danh mục");
+          router.push("/admin/pages/category");
+        }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        toast.error("Lỗi khi lấy dữ liệu danh mục");
+      }
+    }
+    fetchCategory();
+  }, [slug, form, router]);
+
+  useEffect(() => {
+    const name = form.watch("name");
+    if (name) {
+      form.setValue(
+        "slug",
+        slugify(name, { lower: true, locale: "vi" })
+      );
+    }
+  }, [form]);
+
+  const watchedName = form.watch("name");
+  useEffect(() => {
+    if (watchedName) {
+      form.setValue(
+        "slug",
+        slugify(watchedName, { lower: true, locale: "vi" })
+      );
+    }
+  }, [watchedName, form]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const categoryData: TCreateCategoryParams = {
-        name: values.name,
-        description: values.description || "",
-        slug: values.slug || slugify(values.name, { lower: true, locale: "vi" }),
-        image: file ? URL.createObjectURL(file) : "",
-      };
-
-      const formData = new FormData();
-      formData.append("name", categoryData.name);
-      formData.append("description", categoryData.description);
-      formData.append("slug", categoryData.slug);
-      if (file) {
-        formData.append("image", file);
-      }
-
-      const res = await CategoryServices.createCategory(formData);
-      if (!res?.success) {
-        toast.error(res?.message || "Có lỗi xảy ra");
+      if (!categoryId) {
+        toast.error("Không tìm thấy ID danh mục");
         return;
       }
-      toast.success("Tạo danh mục thành công");
-      router.push("/admin/pages/category/new");
+
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("description", values.description || "");
+      formData.append("slug", values.slug || slugify(values.name, { lower: true, locale: "vi" }));
+      
+      // Xử lý ảnh đơn giản như file add new
+      if (file) {
+        formData.append("image", file);
+      } else if (values.image) {
+        formData.append("image", values.image);
+      }
+
+      const res = await CategoryServices.updateCategory(categoryId, formData);
+      
+      if (!res) {
+        toast.error("Không nhận được phản hồi từ server");
+        return;
+      }
+  
+      if (res.data || res.success) {
+        toast.success("Cập nhật danh mục thành công");
+        router.push("/admin/pages/category");
+      } else {
+        toast.error(res.message || "Có lỗi xảy ra khi cập nhật");
+      }
     } catch (error) {
       console.error(error);
-      toast.error("Lỗi khi tạo danh mục");
+      toast.error("Lỗi khi cập nhật danh mục");
     } finally {
       setIsSubmitting(false);
-      form.reset();
-      setPreviewImage(null);
-      setFile(null);
     }
   }
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
@@ -126,12 +180,10 @@ function CategoryAddNew() {
           )}
         />
 
-   
         <FormField
           control={form.control}
-          name="image"
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          render={({ field }) => (
+          name="image" 
+          render={() => (
             <FormItem>
               <FormLabel>Ảnh đại diện</FormLabel>
               <FormControl>
@@ -170,10 +222,11 @@ function CategoryAddNew() {
           className="w-[120px]"
           disabled={isSubmitting}
         >
-          Tạo danh mục
+          Cập nhật
         </Button>
       </form>
     </Form>
   );
 }
-export default CategoryAddNew;
+
+export default CategoryUpdate;
