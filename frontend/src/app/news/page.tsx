@@ -3,28 +3,35 @@
 import Image from "next/image";
 import "./new.css";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Post {
   id: number;
   title: string;
-  create_at: string | number;
+  create_at: string | number | Date;
   summary: string;
   imageSummary?: string;
 }
 
 export default function New() {
-  const [laytintuc, ganLaytintuc] = useState<Post[]>([]);
-  const [tintucNoibat, ganTintucNoibat] = useState<Post[]>([]);
+  const [laytintuc, setLaytintuc] = useState<Post[]>([]);
+  const [tintucNoibat, setTintucNoibat] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/posts");
-        if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu!");
-        const data: Post[] = await response.json();
+        const [res1, res2] = await Promise.all([
+          fetch("http://localhost:3001/api/posts"),
+          fetch("http://localhost:3001/api/posts/newest/4"),
+        ]);
 
-        ganLaytintuc(data);
-        ganTintucNoibat(data.slice(0, 4)); // Lấy 4 bài viết đầu tiên làm tin tức nổi bật
+        if (!res1.ok || !res2.ok) throw new Error("Lỗi khi lấy dữ liệu!");
+
+        const data1: Post[] = await res1.json();
+        const data2: Post[] = await res2.json();
+
+        setLaytintuc(data1);
+        setTintucNoibat(data2);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -35,7 +42,8 @@ export default function New() {
 
   // Hàm trích xuất URL ảnh từ imageSummary
   const extractImageUrl = (htmlString?: string) => {
-    const match = htmlString?.match(/src="([^"]+)"/);
+    if (!htmlString) return "/images/default.png";
+    const match = htmlString.match(/src=['"]([^'"]+)['"]/);
     return match ? match[1] : "/images/default.png";
   };
 
@@ -86,19 +94,19 @@ export default function New() {
                     <div className="col-fix" key={tintuc.id}>
                       <div className="item-blog">
                         <div className="block-thumb">
-                          <a href="#">
-                            <Image
-                              src={extractImageUrl(tintuc.imageSummary)}
-                              alt={tintuc.title}
-                              width={940}
-                              height={640}
-                              unoptimized
-                            />
-                          </a>
+                        <Link href={`/posts/${tintuc.id}`}>
+                          <Image
+                            src={extractImageUrl(tintuc.imageSummary)}
+                            alt={tintuc.title}
+                            width={940}
+                            height={640}
+                            unoptimized
+                          />
+                        </Link>
                         </div>
                         <div className="block-content">
                           <h3>
-                            <a href="#">{tintuc.title}</a>
+                            <Link href={`/posts/${tintuc.id}`}>{tintuc.title}</Link>
                           </h3>
                           <div className="time-post">
                             {new Date(tintuc.create_at).toLocaleDateString()}
@@ -131,16 +139,18 @@ export default function New() {
               <div className="aside-section">
                 <h2 className="aside-title">Tin tức nổi bật</h2>
                 <ul className="aside-list">
-                  {tintucNoibat.map((tintuc) => (
-                    <li className="aside-news-item" key={tintuc.id}>
-                      <Image
-                        src={extractImageUrl(tintuc.imageSummary)}
-                        alt={tintuc.title}
-                        width={200}
-                        height={100}
-                        unoptimized
-                      />
-                      <a href="#">{tintuc.title}</a>
+                  {tintucNoibat.map((ttnoibat,i) => (
+                    <li className="aside-news-item" key={i}>
+                      <Link href={`/posts/${ttnoibat.id}`}>
+                        <Image
+                          src={extractImageUrl(ttnoibat.imageSummary)}
+                          alt={ttnoibat.title}
+                          width={200}
+                          height={100}
+                          unoptimized
+                        />
+                      </Link>
+                      <Link href={`/posts/${ttnoibat.id}`}>{ttnoibat.title}</Link>
                     </li>
                   ))}
                 </ul>
