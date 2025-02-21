@@ -5,17 +5,20 @@ const {
   createCategory,
   updateCategory,
   deleteCategory,
+  getBySlugCategory
 } = require("../controllers/categoryController");
+const upload = require("../middleware/uploadImage");
 
 const router = express.Router();
 
 router.get('/', getAllCategories);
 
 router.get('/:id', getByIdCategory);
+router.get('/slug/:slug', getBySlugCategory);
 
-router.post('/', createCategory);
+router.post('/',upload.single("image"), createCategory);
 
-router.put('/:id', updateCategory);
+router.put('/:id',upload.single("image"), updateCategory);
 
 router.delete('/:id', deleteCategory);
 
