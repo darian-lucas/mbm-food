@@ -39,7 +39,11 @@ exports.updateCategory = async (req, res, next) => {
   try {
     let { id } = req.params;
     let { name, description, slug } = req.body;
-    let image = req.file ? `${req.file.filename}` : null;
+    const existingCategory = await categoryServices.getByIdCategory(id);
+    if (!existingCategory) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+    let image = req.file ? `${req.file.filename}` : existingCategory.image;
     const result = await categoryServices.updateCategory(
       id,
       name,

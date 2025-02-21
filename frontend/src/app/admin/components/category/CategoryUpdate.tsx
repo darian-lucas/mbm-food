@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
@@ -65,7 +66,7 @@ function CategoryUpdate() {
           toast.error("Không tìm thấy danh mục");
           router.push("/admin/pages/category");
         }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Lỗi khi lấy dữ liệu danh mục");
       }
@@ -76,10 +77,7 @@ function CategoryUpdate() {
   useEffect(() => {
     const name = form.watch("name");
     if (name) {
-      form.setValue(
-        "slug",
-        slugify(name, { lower: true, locale: "vi" })
-      );
+      form.setValue("slug", slugify(name, { lower: true, locale: "vi" }));
     }
   }, [form]);
 
@@ -104,8 +102,11 @@ function CategoryUpdate() {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("description", values.description || "");
-      formData.append("slug", values.slug || slugify(values.name, { lower: true, locale: "vi" }));
-      
+      formData.append(
+        "slug",
+        values.slug || slugify(values.name, { lower: true, locale: "vi" })
+      );
+
       // Xử lý ảnh đơn giản như file add new
       if (file) {
         formData.append("image", file);
@@ -114,12 +115,12 @@ function CategoryUpdate() {
       }
 
       const res = await CategoryServices.updateCategory(categoryId, formData);
-      
+
       if (!res) {
         toast.error("Không nhận được phản hồi từ server");
         return;
       }
-  
+
       if (res.data || res.success) {
         toast.success("Cập nhật danh mục thành công");
         router.push("/admin/pages/category");
@@ -164,8 +165,7 @@ function CategoryUpdate() {
               </FormItem>
             )}
           />
-        </div>
-
+       
         <FormField
           control={form.control}
           name="description"
@@ -173,7 +173,11 @@ function CategoryUpdate() {
             <FormItem>
               <FormLabel>Mô tả danh mục</FormLabel>
               <FormControl>
-                <Input placeholder="Nhập mô tả" {...field} />
+                <Textarea
+                  placeholder="Nhập mô tả..."
+                  {...field}
+                  className="h-[250px]"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -182,12 +186,12 @@ function CategoryUpdate() {
 
         <FormField
           control={form.control}
-          name="image" 
+          name="image"
           render={() => (
             <FormItem>
               <FormLabel>Ảnh đại diện</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-3">
+                <div className="border border-gray-300 p-2 rounded-md h-[250px]">
                   <input
                     type="file"
                     accept="images/*"
@@ -205,7 +209,7 @@ function CategoryUpdate() {
                       alt="Ảnh danh mục"
                       width={250}
                       height={250}
-                      className="rounded-md object-cover"
+                      className="h-[200px] w-auto rounded-lg object-cover mt-2"
                     />
                   )}
                 </div>
@@ -214,6 +218,7 @@ function CategoryUpdate() {
             </FormItem>
           )}
         />
+         </div>
 
         <Button
           isLoading={isSubmitting}

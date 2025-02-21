@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { TCreateCategoryParams } from "../../types";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
@@ -50,7 +51,8 @@ function CategoryAddNew() {
       const categoryData: TCreateCategoryParams = {
         name: values.name,
         description: values.description || "",
-        slug: values.slug || slugify(values.name, { lower: true, locale: "vi" }),
+        slug:
+          values.slug || slugify(values.name, { lower: true, locale: "vi" }),
         image: file ? URL.createObjectURL(file) : "",
       };
 
@@ -79,7 +81,7 @@ function CategoryAddNew() {
       setFile(null);
     }
   }
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
@@ -110,59 +112,61 @@ function CategoryAddNew() {
               </FormItem>
             )}
           />
-        </div>
 
-        <FormField
+<FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Mô tả danh mục</FormLabel>
               <FormControl>
-                <Input placeholder="Nhập mô tả" {...field} />
+                <Textarea
+                  placeholder="Nhập mô tả..."
+                  {...field}
+                  className="h-[250px]"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-   
-        <FormField
-          control={form.control}
-          name="image"
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ảnh đại diện</FormLabel>
-              <FormControl>
-                <div className="flex flex-col gap-3">
-                  <input
-                    type="file"
-                    accept="images/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setFile(file);
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
-                    }}
-                  />
-                  {previewImage && (
-                    <Image
-                      src={previewImage}
-                      alt="Ảnh danh mục"
-                      width={250}
-                      height={250}
-                      className="rounded-md object-cover"
+          <FormField
+            control={form.control}
+            name="image"
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ảnh đại diện</FormLabel>
+                <FormControl>
+                <div className="border border-gray-300 p-2 rounded-md h-[250px]">
+                    <input
+                      type="file"
+                      accept="images/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setFile(file);
+                          setPreviewImage(URL.createObjectURL(file));
+                        }
+                      }}
                     />
-                  )}
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+                    {previewImage && (
+                      <Image
+                        src={previewImage}
+                        alt="Ảnh danh mục"
+                        width={250}
+                        height={250}
+                         className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                      />
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <Button
           isLoading={isSubmitting}
           variant="primary"
