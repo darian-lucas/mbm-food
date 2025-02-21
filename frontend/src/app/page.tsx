@@ -74,13 +74,13 @@ export default function Home(): JSX.Element {
     const fetchProducts = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/products");
-  
+
         if (!response.ok) {
           throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
         }
-  
+
         const data = await response.json();
-  
+
         if (data && Array.isArray(data.data)) {
           setProducts(data.data); // Chỉ lưu nếu đúng định dạng
         } else {
@@ -90,10 +90,10 @@ export default function Home(): JSX.Element {
         console.error("Lỗi khi tải sản phẩm:", error);
       }
     };
-  
+
     fetchProducts();
   }, []);
-  
+
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -370,8 +370,9 @@ export default function Home(): JSX.Element {
                   />
                   <h3 className={styles.foodName}>{food.name}</h3>
                   <p className={styles.foodDesc}>
-                    {food.description[0]?.summary || "Không có mô tả"}
+                    {food.description?.[0]?.summary || "Không có mô tả"}
                   </p>
+
                   <p className={styles.foodPrice}>
                     Giá chỉ từ:{" "}
                     <span>
@@ -462,8 +463,9 @@ export default function Home(): JSX.Element {
                   />
                   <h3 className={styles.discountItemName}>{item.name}</h3>
                   <p className={styles.discountItemDesc}>
-                    {item.description[0]?.summary}
+                    {item.description?.[0]?.summary || "Chưa có mô tả"}
                   </p>
+
                   <a href="#" className={styles.menufoodMore}>
                     Xem thêm
                   </a>
@@ -555,9 +557,8 @@ export default function Home(): JSX.Element {
                 alt={`Effect ${index + 1}`}
                 width={350}
                 height={200}
-                className={`${styles.specialBannerOverlay} ${
-                  styles[`overlay${index}`]
-                }`}
+                className={`${styles.specialBannerOverlay} ${styles[`overlay${index}`]
+                  }`}
               />
             </div>
           ))}
@@ -592,9 +593,8 @@ export default function Home(): JSX.Element {
                 {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
                     <Image
-                      src={`/images/${
-                        item.variants[0]?.image || "default.png"
-                      }`}
+                      src={`/images/${item.variants[0]?.image || "default.png"
+                        }`}
                       alt={item.name}
                       width={100}
                       height={70}
@@ -603,7 +603,7 @@ export default function Home(): JSX.Element {
                     <div className={styles.menufoodContent}>
                       <h4 className={styles.menufoodItemName}>{item.name}</h4>
                       <p className={styles.menufoodItemDesc}>
-                        {item.description[0]?.summary || "Không có mô tả"}
+                        {item.description?.[0]?.summary || "Không có mô tả"}
                       </p>
                       <p className={styles.menufoodPrice}>
                         Giá chỉ từ:{" "}
