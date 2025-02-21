@@ -55,7 +55,7 @@ export default function Home(): JSX.Element {
         const response = await fetch("http://localhost:3001/api/categories");
         const data = await response.json();
 
-        console.log("Dữ liệu từ API:", data);
+        // console.log("Dữ liệu từ API:", data);
 
         if (data && Array.isArray(data.data)) {
           setCategories(data.data.slice(0, 5));
@@ -71,11 +71,29 @@ export default function Home(): JSX.Element {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data.data)) // Lưu toàn bộ sản phẩm
-      .catch((error) => console.error("Lỗi khi tải sản phẩm:", error));
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/products");
+  
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
+        }
+  
+        const data = await response.json();
+  
+        if (data && Array.isArray(data.data)) {
+          setProducts(data.data); // Chỉ lưu nếu đúng định dạng
+        } else {
+          console.error("Dữ liệu từ API không đúng định dạng mong đợi:", data);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải sản phẩm:", error);
+      }
+    };
+  
+    fetchProducts();
   }, []);
+  
 
   useEffect(() => {
     const fetchNews = async () => {
