@@ -192,10 +192,11 @@ export default function Home(): JSX.Element {
     Array(hotFoodItems.length).fill(false)
   );
   const discountItems = products
-    .filter((product) =>
-      product.variants.some((variant) => variant.sale_price !== undefined)
-    )
-    .slice(0, 4);
+  .filter((product) =>
+    product.variants.some((variant) => variant.sale_price && variant.sale_price > 0)
+  )
+  .slice(0, 4);
+
 
   const [discountFavorites, setDiscountFavorites] = useState<boolean[]>(
     Array(discountItems.length).fill(false)
