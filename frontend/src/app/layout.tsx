@@ -1,7 +1,5 @@
 "use client";
 import { manrope } from "@/utils";
-import ClientLayout from "./layout/ClientLayout";
-import AdminLayout from "./layout/AdminLayout"
 import { usePathname } from "next/navigation";
 
 import "./globals.css";
