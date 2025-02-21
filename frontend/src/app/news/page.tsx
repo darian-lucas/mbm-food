@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import "./new.css";
+import "../../styles/new.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { fetchNews, fetchFeaturedNews, Post } from "../../services/post";
@@ -9,6 +9,7 @@ import { fetchNews, fetchFeaturedNews, Post } from "../../services/post";
 export default function New() {
   const [laytintuc, setLaytintuc] = useState<Post[]>([]);
   const [tintucNoibat, setTintucNoibat] = useState<Post[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -18,31 +19,39 @@ export default function New() {
           fetchFeaturedNews(),
         ]);
 
+        if (!news.length) throw new Error("Không có bài viết nào.");
+        if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
+
         setLaytintuc(news);
         setTintucNoibat(featuredNews);
+        setError(null);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
+        setError("Không thể tải dữ liệu. Vui lòng thử lại sau.");
       }
     };
 
     getData();
   }, []);
 
-  //Hàm truy xuất để lấy url
+  // Trích xuất URL hình ảnh từ HTML nếu có
   const extractImageUrl = (htmlString?: string) => {
     if (!htmlString) return "/images/default.png";
     const match = htmlString.match(/src=['"]([^'"]+)['"]/);
     return match ? match[1] : "/images/default.png";
   };
 
-  //Hàm xử lý lấy html giữ nguyên định dạng
+  // Cắt bớt nội dung HTML mà vẫn giữ định dạng
   const truncateHTML = (html: string, maxLength: number) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
-
     const text = tempDiv.textContent || tempDiv.innerText || "";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
+
+  if (error) {
+    return <p className="error-message">{error}</p>;
+  }
 
   return (
     <div className="about-container">
@@ -50,15 +59,11 @@ export default function New() {
         <div className="container">
           <ul className="breadcrumb">
             <li className="home">
-              <a href="/">
+              <Link href="/">
                 <span>Trang chủ</span>
-              </a>
+              </Link>
             </li>
-            <li className="mr_lr">
-              <svg width="10" height="10" viewBox="-96 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
-              </svg>
-            </li>
+            <li className="mr_lr">/</li>
             <li>
               <strong>
                 <span>Tin tức</span>
@@ -78,7 +83,7 @@ export default function New() {
                     <div className="col-fix" key={tintuc._id}>
                       <div className="item-blog">
                         <div className="block-thumb">
-                          <Link href={`/news/${tintuc._id}`}>
+                          <Link href={`/news/${encodeURIComponent(tintuc._id)}`}>
                             <Image
                               src={extractImageUrl(tintuc.imageSummary)}
                               alt={tintuc.title}
@@ -90,7 +95,9 @@ export default function New() {
                         </div>
                         <div className="block-content">
                           <h3>
-                            <Link href={`/news/${tintuc._id}`}>{tintuc.title}</Link>
+                            <Link href={`/news/${encodeURIComponent(tintuc._id)}`}>
+                              {tintuc.title}
+                            </Link>
                           </h3>
                           <div className="time-post">
                             {new Date(tintuc.create_at).toLocaleDateString()}
@@ -109,14 +116,14 @@ export default function New() {
               <div className="aside-section">
                 <h2 className="aside-title">Danh mục tin tức</h2>
                 <ul className="aside-list">
-                  <li><a href="/">Trang chủ</a></li>
-                  <li><a href="#">Giới thiệu</a></li>
-                  <li><a href="#">Sản phẩm</a></li>
-                  <li><a className="font-bold" href="#">Tin tức</a></li>
-                  <li><a href="#">Liên hệ</a></li>
-                  <li><a href="#">Câu hỏi thường gặp</a></li>
-                  <li><a href="#">Hệ thống cửa hàng</a></li>
-                  <li><a href="#">Đặt bàn</a></li>
+                  <li><Link href="/">Trang chủ</Link></li>
+                  <li><Link href="#">Giới thiệu</Link></li>
+                  <li><Link href="#">Sản phẩm</Link></li>
+                  <li><Link className="font-bold" href="#">Tin tức</Link></li>
+                  <li><Link href="#">Liên hệ</Link></li>
+                  <li><Link href="#">Câu hỏi thường gặp</Link></li>
+                  <li><Link href="#">Hệ thống cửa hàng</Link></li>
+                  <li><Link href="#">Đặt bàn</Link></li>
                 </ul>
               </div>
 
@@ -125,7 +132,7 @@ export default function New() {
                 <ul className="aside-list">
                   {tintucNoibat.map((ttnoibat, i) => (
                     <li className="aside-news-item" key={i}>
-                      <Link href={`/news/${ttnoibat._id}`}>
+                      <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
                         <Image
                           src={extractImageUrl(ttnoibat.imageSummary)}
                           alt={ttnoibat.title}
@@ -134,7 +141,9 @@ export default function New() {
                           unoptimized
                         />
                       </Link>
-                      <Link href={`/news/${ttnoibat._id}`}>{ttnoibat.title}</Link>
+                      <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
+                        {ttnoibat.title}
+                      </Link>
                     </li>
                   ))}
                 </ul>

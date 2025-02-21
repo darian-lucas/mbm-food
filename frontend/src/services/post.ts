@@ -1,5 +1,5 @@
 export interface Post {
-  _id: number;
+  _id: string;
   title: string;
   create_at: string | number | Date;
   summary: string;
@@ -19,7 +19,7 @@ export const fetchFeaturedNews = async (): Promise<Post[]> => {
 };
 
 export interface Post {
-  _id: number;
+  _id: string;
   title: string;
   create_at: string | number | Date;
   content: string;
