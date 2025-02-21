@@ -36,8 +36,8 @@ exports.getByCategory = async (req, res) => {
 // Thêm sản phẩm mới
 exports.createProduct = async (req, res, next) => {
   try {
-    let { name, idcate, description, variants, hot,view } = req.body;
-    const result = await productServices.createProduct(name, idcate, description, variants, hot,view);
+    let { name, idcate, description, variants, hot,view,slug, status } = req.body;
+    const result = await productServices.createProduct(name, idcate, description, variants, hot,view,slug, status);
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -48,8 +48,8 @@ exports.createProduct = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
   try {
     let { id } = req.params;
-    let { name, idcate, description, variants , hot,view} = req.body;
-    const result = await productServices.updateProduct(id, name, idcate, description, variants, hot,view);
+    let { name, idcate, description, variants , hot,view,slug, status} = req.body;
+    const result = await productServices.updateProduct(id, name, idcate, description, variants, hot,view,slug, status);
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });
