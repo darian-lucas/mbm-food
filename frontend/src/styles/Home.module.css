@@ -509,7 +509,7 @@
   box-orient: vertical;
   
   overflow: hidden;
-  text-align: justify;
+  text-align: left;
   max-width: 100%;
 }
 
@@ -958,6 +958,14 @@
   border-top-right-radius: 10px;
 }
 
+.newsImgWrapper img {
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+
 .newsContent {
   padding: 15px;
 }
@@ -966,6 +974,12 @@
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .newsDate {
@@ -978,9 +992,9 @@
   font-size: 14px;
   color: #666;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-clamp: 3;
+  line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
 }

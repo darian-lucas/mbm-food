@@ -7,84 +7,97 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
-import { FaChevronRight } from "react-icons/fa";
+// import { FaChevronRight } from "react-icons/fa";
+interface Category {
+  _id: string;
+  name: string;
+  image: string;
+}
+interface Product {
+  _id: string;
+  name: string;
+  idcate: string;
+  description: { summary: string }[];
+  variants: { price: number; image: string; sale_price?: number }[];
+  hot?: number;
+}
+interface News {
+  _id: string;
+  title: string;
+  content: string;
+  summary: string;
+  imageSummary?: string;
+  create_at: string;
+  status: number;
+  author: string;
+  view: number;
+  hot: number;
+}
+
 export default function Home(): JSX.Element {
-  const categories = [
-    { name: "Pizza", img: "/images/pizza.png" },
-    { name: "Khai Vị", img: "/images/khaivi.png" },
-    { name: "Mì Ý", img: "/images/myy.png" },
-    { name: "Salad", img: "/images/salad.png" },
-    // { name: "Nước Uống", img: "/images/salad.png" },
-  ];
-  const foodItems = [
-    {
-      name: "Pizza Hải Sản",
-      price: "150.000đ",
-      desc: "Pizza hải sản với phô mai thơm ngon.",
-      img: "/images/hot1.png",
-    },
-    {
-      name: "Gà Sốt Tỏi",
-      price: "120.000đ",
-      desc: "Gà chiên giòn phủ sốt tỏi hấp dẫn.",
-      img: "/images/hot2.png",
-    },
-    {
-      name: "Mì Ý Sốt Bò",
-      price: "135.000đ",
-      desc: "Mì Ý thơm ngon với sốt bò đặc biệt.",
-      img: "/images/hot3.png",
-    },
-    {
-      name: "Bánh Mì Bò",
-      price: "90.000đ",
-      desc: "Bánh mì bò với sốt đậm đà.",
-      img: "/images/hot4.png",
-    },
-    {
-      name: "Burger Gà",
-      price: "85.000đ",
-      desc: "Burger gà chiên giòn hấp dẫn.",
-      img: "/images/hot5.png",
-    },
-  ];
+  const [newsData, setNewsData] = useState<News[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [menuFavorites, setMenuFavorites] = useState<boolean[]>([]);
+  const handleScrollToCategory = (categoryId: string) => {
+    const section = document.getElementById(categoryId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/categories");
+        const data = await response.json();
+
+        console.log("Dữ liệu từ API:", data);
+
+        if (data && Array.isArray(data.data)) {
+          setCategories(data.data.slice(0, 5));
+        } else {
+          console.error("Dữ liệu từ API không đúng định dạng mong đợi:", data);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải danh mục:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data.data)) // Lưu toàn bộ sản phẩm
+      .catch((error) => console.error("Lỗi khi tải sản phẩm:", error));
+  }, []);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/posts");
+        const data = await response.json();
+
+        if (data && Array.isArray(data)) {
+          setNewsData(data);
+        } else {
+          console.error("Dữ liệu từ API không đúng định dạng:", data);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải tin tức:", error);
+      }
+    };
+
+    fetchNews();
+  }, []);
   const promoData = [
     { name: "Khuyến mãi 1", img: "/images/promo-1.png" },
     { name: "Khuyến mãi 2", img: "/images/promo-2.png" },
     { name: "Khuyến mãi 3", img: "/images/promo-3.png" },
     { name: "Khuyến mãi 4", img: "/images/promo-4.png" },
-  ];
-  const discountItems = [
-    {
-      name: "Gà Giòn Xốt Tương Tỏi Hàn Quốc",
-      price: "99.000đ",
-      img: "/images/hot1.png",
-      description:
-        "Những miếng gà tươi ngon tẩm bột chiên giòn phủ xốt tương tỏi kiểu Hàn được chế biến theo công thức đặc biệt pha chút vị the nhè nhẹ và mùi thơm của gừng, tỏi mang đến cảm giác mới lạ khi thưởng thức.",
-    },
-    {
-      name: "Gà Giòn Xốt Hàn - Truyền Thống",
-      price: "429.000đ",
-      img: "/images/hot1.png",
-      description:
-        "Những miếng gà tươi ngon tẩm bột chiên giòn phủ xốt tương tỏi kiểu Hàn được chế biến theo công thức đặc biệt pha chút vị the nhè nhẹ và mùi thơm của gừng, tỏi mang đến cảm giác mới lạ khi thưởng thức.",
-    },
-    {
-      name: "Gà Giòn Xốt Hàn - Truyền Thống",
-      price: "249.000đ",
-      img: "/images/hot1.png",
-      description:
-        "Những miếng gà tươi ngon tẩm bột chiên giòn phủ xốt tương tỏi kiểu Hàn được chế biến theo công thức đặc biệt pha chút vị the nhè nhẹ và mùi thơm của gừng, tỏi mang đến cảm giác mới lạ khi thưởng thức.",
-    },
-    {
-      name: "Gà Nướng BBQ (2 miếng)",
-      price: "99.000đ",
-      img: "/images/hot1.png",
-      description:
-        "Những miếng gà tươi ngon tẩm bột chiên giòn phủ xốt tương tỏi kiểu Hàn được chế biến theo công thức đặc biệt pha chút vị the nhè nhẹ và mùi thơm của gừng, tỏi mang đến cảm giác mới lạ khi thưởng thức.",
-    },
   ];
   const bestSellingItems = [
     {
@@ -132,62 +145,6 @@ export default function Home(): JSX.Element {
     { base: "/images/bannereff2.png", overlay: "/images/bannereff5.png" },
     { base: "/images/bannereff3.png", overlay: "/images/bannereff6.png" },
   ];
-  const menuItems = [
-    {
-      name: "Pizza Puff, Gà BBQ Nướng Dứa",
-      description:
-        "Gà nướng dứa cùng phô mai thơm béo và sốt Thousand Island. 1 Ăn vỏ bánh trước tiên: Nhóm người tạo...",
-      price: "99.000đ",
-      img: "/images/pizza1.png",
-    },
-    {
-      name: "Pizza Chất - Gà Nướng Dứa",
-      description:
-        "Hoà quyện vị giác với thịt gà nướng cùng với dứa và nhiều loại phô mai thượng hạng...",
-      price: "89.000đ",
-      img: "/images/pizza2.png",
-    },
-    {
-      name: "Pizza Chất, Giăm Bông & Thịt Xông Khói",
-      description:
-        "Vị truyền thống với thịt xông khói và thịt nguội hoà trộn với cà chua, phô mai và sốt béo...",
-      price: "89.000đ",
-      img: "/images/pizza3.png",
-    },
-    {
-      name: "Pizza Chất, Thanh Cua và Xúc Xích Cocktail",
-      description:
-        "Sự kết hợp hài hoà phô mai, thịt xông khói với mùi tây, thanh cua và sốt Thousand Island...",
-      price: "89.000đ",
-      img: "/images/pizza4.png",
-    },
-  ];
-  const newsData = [
-    {
-      title: "Để bánh pizza mua ở đâu đảm bảo chất lượng?",
-      date: "27/02/2024",
-      desc: "Nếu bạn muốn tự làm bánh pizza tại nhà thì có thể chọn mua đế bánh pizza để tiết kiệm thời gian hơn...",
-      img: "/images/news1.png",
-    },
-    {
-      title: "Cách làm pizza xốt Mayonnaise thơm béo ngon ngất ngây",
-      date: "27/02/2024",
-      desc: "Các món pizza xốt Mayonnaise luôn góp mặt vào menu “vàng” của chuỗi cửa hàng Dola trên toàn quốc...",
-      img: "/images/news2.png",
-    },
-    {
-      title: "Pasta là món ăn của nước nào? Pasta và Spaghetti có gì khác?",
-      date: "27/02/2024",
-      desc: "Bất kỳ ai đã từng thưởng thức một trong các loại Pasta, chắc hẳn sẽ không thể nào quên được cảm giác...",
-      img: "/images/news3.png",
-    },
-    {
-      title: "Tiết lộ tính cách qua cách ăn pizza cực thú vị",
-      date: "27/02/2024",
-      desc: "1. Ăn vỏ bánh trước tiên: Nhóm người tạo ảnh hưởng, thích sự khác biệt...",
-      img: "/images/news4.png",
-    },
-  ];
   const reasons = [
     {
       img: "/images/quality.png",
@@ -210,17 +167,21 @@ export default function Home(): JSX.Element {
       text: "Ưu đãi và khuyến mãi hấp dẫn",
     },
   ];
+  const hotFoodItems = products.filter((food) => food.hot === 1);
   const [foodFavorites, setFoodFavorites] = useState(
-    Array(foodItems.length).fill(false)
+    Array(hotFoodItems.length).fill(false)
   );
-  const [discountFavorites, setDiscountFavorites] = useState(
+  const discountItems = products
+    .filter((product) =>
+      product.variants.some((variant) => variant.sale_price !== undefined)
+    )
+    .slice(0, 4);
+
+  const [discountFavorites, setDiscountFavorites] = useState<boolean[]>(
     Array(discountItems.length).fill(false)
   );
   const [bestSellingFavorites, setBestSellingFavorites] = useState(
     Array(bestSellingItems.length).fill(false)
-  );
-  const [menuFavorites, setMenuFavorites] = useState(
-    Array(menuItems.length).fill(false)
   );
   const toggleFoodFavorite = (index: number) => {
     setFoodFavorites((prev) => {
@@ -270,12 +231,12 @@ export default function Home(): JSX.Element {
         <h2 className={styles.titlelitter}>Nổi Bật</h2>
         <h2 className={styles.title}>Danh mục nổi bật</h2>
         <div className={styles.categoryList}>
-          {categories.map((category, index) => (
-            <Link key={index} href="#" className={styles.categoryLink}>
+          {categories.slice(0, 4).map((category) => (
+            <Link key={category._id} href="#" className={styles.categoryLink}>
               <div className={styles.categoryItem}>
                 <p>{category.name}</p>
                 <Image
-                  src={category.img}
+                  src={`/images/${category.image}`}
                   alt={category.name}
                   width={50}
                   height={50}
@@ -361,39 +322,46 @@ export default function Home(): JSX.Element {
             1024: { slidesPerView: 2 },
           }}
         >
-          {foodItems.map((food, index) => (
-            <SwiperSlide key={index} className={styles.slideItem}>
-              <div className={styles.foodItem}>
-                {/* Icon trái tim */}
-                <button
-                  className={styles.heartIcon}
-                  onClick={() => toggleFoodFavorite(index)}
-                >
-                  <Heart
-                    size={20}
-                    className={
-                      foodFavorites[index]
-                        ? styles.heartActive
-                        : styles.heartInactive
-                    }
-                  />
-                </button>
+          {products
+            .filter((product) => product.hot === 1) // Lọc sản phẩm có hot === 1
+            .map((food, index) => (
+              <SwiperSlide key={food._id} className={styles.slideItem}>
+                <div className={styles.foodItem}>
+                  {/* Icon trái tim */}
+                  <button
+                    className={styles.heartIcon}
+                    onClick={() => toggleFoodFavorite(index)}
+                  >
+                    <Heart
+                      size={20}
+                      className={
+                        foodFavorites[index]
+                          ? styles.heartActive
+                          : styles.heartInactive
+                      }
+                    />
+                  </button>
 
-                <Image
-                  src={food.img}
-                  alt={food.name}
-                  width={250}
-                  height={200}
-                />
-                <h3 className={styles.foodName}>{food.name}</h3>
-                <p className={styles.foodDesc}>{food.desc}</p>
-                <p className={styles.foodPrice}>
-                  Giá chỉ từ: <span>{food.price}</span>
-                </p>
-                <button className={styles.addButton}>Thêm</button>
-              </div>
-            </SwiperSlide>
-          ))}
+                  <Image
+                    src={`/images/${food.variants[0]?.image || "default.png"}`}
+                    alt={food.name}
+                    width={250}
+                    height={200}
+                  />
+                  <h3 className={styles.foodName}>{food.name}</h3>
+                  <p className={styles.foodDesc}>
+                    {food.description[0]?.summary || "Không có mô tả"}
+                  </p>
+                  <p className={styles.foodPrice}>
+                    Giá chỉ từ:{" "}
+                    <span>
+                      {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
+                    </span>
+                  </p>
+                  <button className={styles.addButton}>Thêm</button>
+                </div>
+              </SwiperSlide>
+            ))}
         </Swiper>
       </section>
       {/* Chương trình khuyến mãi */}
@@ -449,115 +417,131 @@ export default function Home(): JSX.Element {
       <section className={styles.discountproductSection}>
         <div className={styles.discountWrapper}>
           <div className={styles.discountList}>
-            {discountItems.map((item, index) => (
-              <div key={index} className={styles.discountItem}>
+            {discountItems.map((item, index) => {
+              const variant = item.variants[0]; // Lấy biến thể đầu tiên
+              return (
+                <div key={item._id} className={styles.discountItem}>
+                  <button
+                    className={styles.favoriteIcon}
+                    onClick={() => toggleDiscountFavorite(index)}
+                  >
+                    <Heart
+                      size={20}
+                      className={
+                        discountFavorites[index]
+                          ? styles.heartActive
+                          : styles.heartInactive
+                      }
+                    />
+                  </button>
+                  <Image
+                    src={`/images/${variant.image}`}
+                    alt={item.name}
+                    width={250}
+                    height={200}
+                  />
+                  <h3 className={styles.discountItemName}>{item.name}</h3>
+                  <p className={styles.discountItemDesc}>
+                    {item.description[0]?.summary}
+                  </p>
+                  <a href="#" className={styles.menufoodMore}>
+                    Xem thêm
+                  </a>
+                  <div className={styles.discountPriceContainer}>
+                    <div className={styles.discountFoodPrice}>
+                      <p>Giá chỉ từ:</p>
+                      <span>
+                        {variant.sale_price
+                          ? `${variant.sale_price.toLocaleString()}đ`
+                          : `${variant.price.toLocaleString()}đ`}
+                      </span>
+                    </div>
+                    <button className={styles.discountAddButton}>Thêm</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+      {/* Danh sách bán chạy */}
+      <section className="styles.bestSelling">
+        <div className={styles.bestSellingWrapper}>
+          <h2 className={styles.bestSellingTitle}>Món ăn</h2>
+          <span className={styles.bestSellingSubtitle}>
+            Được bán nhiều nhất
+          </span>
+
+          <div className={styles.bestSellingList}>
+            {bestSellingItems.map((item, index) => (
+              <div key={index} className={styles.bestSellingItem}>
+                {item.isNew && (
+                  <span className={styles.bestSellingNewTag}>Mới</span>
+                )}
+
                 <button
-                  className={styles.favoriteIcon}
-                  onClick={() => toggleDiscountFavorite(index)}
+                  className={styles.bestSellingFavoriteIcon}
+                  onClick={() => toggleBestSellingFavorite(index)}
                 >
                   <Heart
                     size={20}
                     className={
-                      discountFavorites[index]
+                      bestSellingFavorites[index]
                         ? styles.heartActive
                         : styles.heartInactive
                     }
                   />
                 </button>
+
                 <Image
                   src={item.img}
                   alt={item.name}
-                  width={250}
+                  width={230}
                   height={200}
                 />
-                <h3 className={styles.discountItemName}>{item.name}</h3>
-                <p className={styles.discountItemDesc}>{item.description}</p>
+
+                <h3 className={styles.bestSellingItemName}>{item.name}</h3>
+                <p className={styles.bestSellingItemDesc}>{item.description}</p>
                 <a href="#" className={styles.menufoodMore}>
                   Xem thêm
                 </a>
-                <div className={styles.discountPriceContainer}>
-                  <div className={styles.discountFoodPrice}>
+                <div className={styles.bestSellingContainer}>
+                  <div className={styles.bestSellingFoodPrice}>
                     <p>Giá chỉ từ:</p>
                     <span>{item.price}</span>
                   </div>
-                  <button className={styles.discountAddButton}>Thêm</button>
+                  <button className={styles.bestSellingAddButton}>Thêm</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-      {/* Danh sách bán chạy */}
-      <section className="styles.bestSelling">
-      <div className={styles.bestSellingWrapper}>
-        <h2 className={styles.bestSellingTitle}>Món ăn</h2>
-        <span className={styles.bestSellingSubtitle}>Được bán nhiều nhất</span>
-
-        <div className={styles.bestSellingList}>
-          {bestSellingItems.map((item, index) => (
-            <div key={index} className={styles.bestSellingItem}>
-              {item.isNew && (
-                <span className={styles.bestSellingNewTag}>Mới</span>
-              )}
-
-              <button
-                className={styles.bestSellingFavoriteIcon}
-                onClick={() => toggleBestSellingFavorite(index)}
-              >
-                <Heart
-                  size={20}
-                  className={
-                    bestSellingFavorites[index]
-                      ? styles.heartActive
-                      : styles.heartInactive
-                  }
-                />
-              </button>
-
-              <Image src={item.img} alt={item.name} width={230} height={200} />
-
-              <h3 className={styles.bestSellingItemName}>{item.name}</h3>
-              <p className={styles.bestSellingItemDesc}>{item.description}</p>
-              <a href="#" className={styles.menufoodMore}>
-                Xem thêm
-              </a>
-              <div className={styles.bestSellingContainer}>
-                <div className={styles.bestSellingFoodPrice}>
-                  <p>Giá chỉ từ:</p>
-                  <span>{item.price}</span>
-                </div>
-                <button className={styles.bestSellingAddButton}>Thêm</button>
-              </div>
+      <section className="styles.specialBanner">
+        <div className={styles.specialBannerContainer}>
+          {specialBannerImages.map((banner, index) => (
+            <div key={index} className={styles.specialBannerItem}>
+              {/* Hình nền chính */}
+              <Image
+                src={banner.base}
+                alt={`Banner ${index + 1}`}
+                width={350}
+                height={200}
+                className={styles.specialBannerBase}
+              />
+              {/* Hình hiệu ứng đè lên */}
+              <Image
+                src={banner.overlay}
+                alt={`Effect ${index + 1}`}
+                width={350}
+                height={200}
+                className={`${styles.specialBannerOverlay} ${
+                  styles[`overlay${index}`]
+                }`}
+              />
             </div>
           ))}
         </div>
-      </div>
-      </section>
-      <section className="styles.specialBanner">
-      <div className={styles.specialBannerContainer}>
-        {specialBannerImages.map((banner, index) => (
-          <div key={index} className={styles.specialBannerItem}>
-            {/* Hình nền chính */}
-            <Image
-              src={banner.base}
-              alt={`Banner ${index + 1}`}
-              width={350}
-              height={200}
-              className={styles.specialBannerBase}
-            />
-            {/* Hình hiệu ứng đè lên */}
-            <Image
-              src={banner.overlay}
-              alt={`Effect ${index + 1}`}
-              width={350}
-              height={200}
-              className={`${styles.specialBannerOverlay} ${
-                styles[`overlay${index}`]
-              }`}
-            />
-          </div>
-        ))}
-      </div>
       </section>
       {/* Menu */}
       <section className={styles.menufoodContainer}>
@@ -565,189 +549,76 @@ export default function Home(): JSX.Element {
         <h2 className={styles.menufoodTitle}>Menu dành cho bạn</h2>
 
         <div className={styles.menufoodTabs}>
-          {categories.map((category, index) => (
-            <div key={index} className={styles.menufoodTab}>
+          {categories.slice(0, 5).map((category) => (
+            <div
+              key={category._id}
+              className={styles.menufoodTab}
+              onClick={() => handleScrollToCategory(category._id)}
+            >
               {category.name}
             </div>
           ))}
         </div>
 
-        <h3 className={styles.menufoodCategoryTitle}>Pizza</h3>
+        {categories.map((category) => {
+          const filteredProducts = products
+            .filter((product) => product.idcate === category._id)
+            .slice(0, 4);
 
-        <div className={styles.menufoodGrid}>
-          {menuItems.map((item, index) => (
-            <div key={index} className={styles.menufoodCard}>
-              <Image
-                src={item.img}
-                alt={item.name}
-                width={100}
-                height={100}
-                className={styles.menufoodImage}
-              />
-              <div className={styles.menufoodContent}>
-                <h4 className={styles.menufoodItemName}>{item.name}</h4>
-                <p className={styles.menufoodItemDesc}>{item.description}</p>
-                <p className={styles.menufoodPrice}>
-                  Giá chỉ từ: <span>{item.price}</span>
-                </p>
-                <div className={styles.menufoodActions}>
-                  <a href="#" className={styles.menufoodMore}>
-                    Xem thêm
-                  </a>
-                  <button className={styles.menufoodAdd}>Thêm</button>
-                </div>
+          return (
+            <div key={category._id} id={category._id}>
+              <h3 className={styles.menufoodCategoryTitle}>{category.name}</h3>
+              <div className={styles.menufoodGrid}>
+                {filteredProducts.map((item, index) => (
+                  <div key={item._id} className={styles.menufoodCard}>
+                    <Image
+                      src={`/images/${
+                        item.variants[0]?.image || "default.png"
+                      }`}
+                      alt={item.name}
+                      width={100}
+                      height={70}
+                      className={styles.menufoodImage}
+                    />
+                    <div className={styles.menufoodContent}>
+                      <h4 className={styles.menufoodItemName}>{item.name}</h4>
+                      <p className={styles.menufoodItemDesc}>
+                        {item.description[0]?.summary || "Không có mô tả"}
+                      </p>
+                      <p className={styles.menufoodPrice}>
+                        Giá chỉ từ:{" "}
+                        <span>
+                          {item.variants[0]?.price
+                            ? item.variants[0].price.toLocaleString() + "đ"
+                            : "Liên hệ"}
+                        </span>
+                      </p>
+                      <div className={styles.menufoodActions}>
+                        <a href="#" className={styles.menufoodMore}>
+                          Xem thêm
+                        </a>
+                        <button className={styles.menufoodAdd}>Thêm</button>
+                      </div>
+                    </div>
+                    <button
+                      className={styles.menufoodFavorite}
+                      onClick={() => handleToggleFavorite(index)}
+                    >
+                      <Heart
+                        size={20}
+                        className={
+                          menuFavorites[index]
+                            ? styles.heartActive
+                            : styles.heartInactive
+                        }
+                      />
+                    </button>
+                  </div>
+                ))}
               </div>
-              <button
-                className={styles.menufoodFavorite}
-                onClick={() => handleToggleFavorite(index)}
-              >
-                <Heart
-                  size={20}
-                  className={
-                    menuFavorites[index]
-                      ? styles.heartActive
-                      : styles.heartInactive
-                  }
-                />
-              </button>
             </div>
-          ))}
-        </div>
-
-        <button className={styles.menufoodViewMore}>
-          Xem chi tiết &raquo;
-        </button>
-
-        <h3 className={styles.menufoodCategoryTitle}>Pizza</h3>
-        <div className={styles.menufoodGrid}>
-          {menuItems.map((item, index) => (
-            <div key={index} className={styles.menufoodCard}>
-              <Image
-                src={item.img}
-                alt={item.name}
-                width={100}
-                height={100}
-                className={styles.menufoodImage}
-              />
-              <div className={styles.menufoodContent}>
-                <h4 className={styles.menufoodItemName}>{item.name}</h4>
-                <p className={styles.menufoodItemDesc}>{item.description}</p>
-                <p className={styles.menufoodPrice}>
-                  Giá chỉ từ: <span>{item.price}</span>
-                </p>
-                <div className={styles.menufoodActions}>
-                  <a href="#" className={styles.menufoodMore}>
-                    Xem thêm
-                  </a>
-                  <button className={styles.menufoodAdd}>Thêm</button>
-                </div>
-              </div>
-              <button
-                className={styles.menufoodFavorite}
-                onClick={() => handleToggleFavorite(index)}
-              >
-                <Heart
-                  size={20}
-                  className={
-                    menuFavorites[index]
-                      ? styles.heartActive
-                      : styles.heartInactive
-                  }
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <button className={styles.menufoodViewMore}>
-          Xem chi tiết &raquo;
-        </button>
-
-        <h3 className={styles.menufoodCategoryTitle}>Pizza</h3>
-        <div className={styles.menufoodGrid}>
-          {menuItems.map((item, index) => (
-            <div key={index} className={styles.menufoodCard}>
-              <Image
-                src={item.img}
-                alt={item.name}
-                width={100}
-                height={100}
-                className={styles.menufoodImage}
-              />
-              <div className={styles.menufoodContent}>
-                <h4 className={styles.menufoodItemName}>{item.name}</h4>
-                <p className={styles.menufoodItemDesc}>{item.description}</p>
-                <p className={styles.menufoodPrice}>
-                  Giá chỉ từ: <span>{item.price}</span>
-                </p>
-                <div className={styles.menufoodActions}>
-                  <a href="#" className={styles.menufoodMore}>
-                    Xem thêm
-                  </a>
-                  <button className={styles.menufoodAdd}>Thêm</button>
-                </div>
-              </div>
-              <button
-                className={styles.menufoodFavorite}
-                onClick={() => handleToggleFavorite(index)}
-              >
-                <Heart
-                  size={20}
-                  className={
-                    menuFavorites[index]
-                      ? styles.heartActive
-                      : styles.heartInactive
-                  }
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <button className={styles.menufoodViewMore}>
-          Xem chi tiết &raquo;
-        </button>
-
-        <h3 className={styles.menufoodCategoryTitle}>Pizza</h3>
-        <div className={styles.menufoodGrid}>
-          {menuItems.map((item, index) => (
-            <div key={index} className={styles.menufoodCard}>
-              <Image
-                src={item.img}
-                alt={item.name}
-                width={100}
-                height={100}
-                className={styles.menufoodImage}
-              />
-              <div className={styles.menufoodContent}>
-                <h4 className={styles.menufoodItemName}>{item.name}</h4>
-                <p className={styles.menufoodItemDesc}>{item.description}</p>
-                <p className={styles.menufoodPrice}>
-                  Giá chỉ từ: <span>{item.price}</span>
-                </p>
-                <div className={styles.menufoodActions}>
-                  <a href="#" className={styles.menufoodMore}>
-                    Xem thêm
-                  </a>
-                  <button className={styles.menufoodAdd}>Thêm</button>
-                </div>
-              </div>
-              <button
-                className={styles.menufoodFavorite}
-                onClick={() => handleToggleFavorite(index)}
-              >
-                <Heart
-                  size={20}
-                  className={
-                    menuFavorites[index]
-                      ? styles.heartActive
-                      : styles.heartInactive
-                  }
-                />
-              </button>
-            </div>
-          ))}
-        </div>
+          );
+        })}
 
         <button className={styles.menufoodViewMore}>
           Xem chi tiết &raquo;
@@ -757,20 +628,27 @@ export default function Home(): JSX.Element {
         <h3 className={styles.subTitle}>Tin tức</h3>
         <h2 className={styles.mainTitle}>Tin tức mới nhất</h2>
         <div className={styles.newsList}>
-          {newsData.map((news, index) => (
-            <div key={index} className={styles.newsItem}>
-              <Image
-                src={news.img}
-                alt={news.title}
-                width={300}
-                height={200}
-                className={styles.newsImg}
-              />
+          {newsData.map((news) => (
+            <div key={news._id} className={styles.newsItem}>
+              {/* Lấy ảnh từ imageSummary nếu có */}
+              {news.imageSummary && (
+                <div className={styles.newsImgWrapper}>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: news.imageSummary }}
+                  />
+                </div>
+              )}
+
               <div className={styles.newsContent}>
                 <h3 className={styles.newsTitle}>{news.title}</h3>
-                <p className={styles.newsDate}>{news.date}</p>
-                <p className={styles.newsDesc}>{news.desc}</p>
-                <Link href="#">Đọc tiếp</Link>
+                <p className={styles.newsDate}>
+                  {new Date(news.create_at).toLocaleDateString("vi-VN")}
+                </p>
+                <p
+                  className={styles.newsDesc}
+                  dangerouslySetInnerHTML={{ __html: news.summary }}
+                />
+                <Link href={`/news/${news._id}`}>Đọc tiếp</Link>
               </div>
             </div>
           ))}
@@ -803,7 +681,7 @@ export default function Home(): JSX.Element {
 
         <div className={styles.danhgiaCard}>
           <Image
-            src="/images/user1.jpg"
+            src="/images/danhgia_1.webp"
             alt="Hoàng Dung"
             width={60}
             height={60}
@@ -818,9 +696,9 @@ export default function Home(): JSX.Element {
               còn rất thoải mái.
             </p>
           </div>
-          <button className={styles.danhgiaNext}>
+          {/* <button className={styles.danhgiaNext}>
             <FaChevronRight />
-          </button>
+          </button> */}
         </div>
       </section>
       <section className={styles["lydo-section"]}>
