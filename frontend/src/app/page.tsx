@@ -40,7 +40,9 @@ export default function Home(): JSX.Element {
   const [newsData, setNewsData] = useState<News[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [menuFavorites, setMenuFavorites] = useState<boolean[]>([]);
+  const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
+    {}
+  );
   const handleScrollToCategory = (categoryId: string) => {
     const section = document.getElementById(categoryId);
     if (section) {
@@ -207,13 +209,13 @@ export default function Home(): JSX.Element {
     });
   };
 
-  const handleToggleFavorite = (index: number) => {
-    setMenuFavorites((prev) => {
-      const newFavorites = [...prev];
-      newFavorites[index] = !newFavorites[index];
-      return newFavorites;
-    });
+  const handleToggleFavorite = (productId: string) => {
+    setMenuFavorites((prev) => ({
+      ...prev,
+      [productId]: !prev[productId],
+    }));
   };
+
   return (
     <main className={styles.home}>
       {/* Banner */}
@@ -569,7 +571,7 @@ export default function Home(): JSX.Element {
             <div key={category._id} id={category._id}>
               <h3 className={styles.menufoodCategoryTitle}>{category.name}</h3>
               <div className={styles.menufoodGrid}>
-                {filteredProducts.map((item, index) => (
+                {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
                     <Image
                       src={`/images/${
@@ -602,12 +604,12 @@ export default function Home(): JSX.Element {
                     </div>
                     <button
                       className={styles.menufoodFavorite}
-                      onClick={() => handleToggleFavorite(index)}
+                      onClick={() => handleToggleFavorite(item._id)}
                     >
                       <Heart
                         size={20}
                         className={
-                          menuFavorites[index]
+                          menuFavorites[item._id]
                             ? styles.heartActive
                             : styles.heartInactive
                         }
