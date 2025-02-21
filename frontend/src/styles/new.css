@@ -152,6 +152,37 @@
       max-width: 33.333333%;
   }
 }
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+  color: black;
+}
+.toggle-button:hover {
+  background: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+  color: #006a31;
+}
+
+.submenu {
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.submenu li {
+  padding: 5px 0;
+}
+
 .aside-section {
   border-radius: 8px;
   padding: 16px;

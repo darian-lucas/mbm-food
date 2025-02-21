@@ -28,6 +28,7 @@ export default function NewsDetail() {
         } else {
           setPost(data);
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         setError("Lỗi khi lấy bài viết");
       } finally {

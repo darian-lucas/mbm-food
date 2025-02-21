@@ -9,6 +9,7 @@ import { fetchNews, fetchFeaturedNews, Post } from "../../services/post";
 export default function New() {
   const [laytintuc, setLaytintuc] = useState<Post[]>([]);
   const [tintucNoibat, setTintucNoibat] = useState<Post[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -117,9 +118,24 @@ export default function New() {
                 <h2 className="aside-title">Danh mục tin tức</h2>
                 <ul className="aside-list">
                   <li><Link href="/">Trang chủ</Link></li>
-                  <li><Link href="#">Giới thiệu</Link></li>
-                  <li><Link href="#">Sản phẩm</Link></li>
-                  <li><Link className="font-bold" href="#">Tin tức</Link></li>
+                  <li><Link href="/about">Giới thiệu</Link></li>
+                  {/* Mục sản phẩm có submenu */}
+                  <li className="menu-item">
+                    <Link href="/products">Sản phẩm</Link>
+                    <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
+                      {isOpen ? "−" : "+"}
+                    </button>
+                  </li>
+                  {isOpen && (
+                    <ul className="submenu">
+                      <li><Link href="/products/pizza">Pizza</Link></li>
+                      <li><Link href="/products/khaivi">Khai vị</Link></li>
+                      <li><Link href="/products/myy">Mỳ Ý</Link></li>
+                      <li><Link href="/products/salad">Salad</Link></li>
+                      <li><Link href="/products/thucuong">Thức uống</Link></li>
+                    </ul>
+                  )}
+                  <li><Link className="font-bold" href="/news">Tin tức</Link></li>
                   <li><Link href="#">Liên hệ</Link></li>
                   <li><Link href="#">Câu hỏi thường gặp</Link></li>
                   <li><Link href="#">Hệ thống cửa hàng</Link></li>
