@@ -4,60 +4,44 @@ import Image from "next/image";
 import "./new.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-interface Post {
-  id: number;
-  title: string;
-  create_at: string | number | Date;
-  summary: string;
-  imageSummary?: string;
-}
+import { fetchNews, fetchFeaturedNews, Post } from "../../services/post";
 
 export default function New() {
   const [laytintuc, setLaytintuc] = useState<Post[]>([]);
   const [tintucNoibat, setTintucNoibat] = useState<Post[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getData = async () => {
       try {
-        const [res1, res2] = await Promise.all([
-          fetch("http://localhost:3001/api/posts"),
-          fetch("http://localhost:3001/api/posts/newest/4"),
+        const [news, featuredNews] = await Promise.all([
+          fetchNews(),
+          fetchFeaturedNews(),
         ]);
 
-        if (!res1.ok || !res2.ok) throw new Error("Lỗi khi lấy dữ liệu!");
-
-        const data1: Post[] = await res1.json();
-        const data2: Post[] = await res2.json();
-
-        setLaytintuc(data1);
-        setTintucNoibat(data2);
+        setLaytintuc(news);
+        setTintucNoibat(featuredNews);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Lỗi khi lấy dữ liệu:", error);
       }
     };
 
-    fetchData();
+    getData();
   }, []);
 
-  // Hàm trích xuất URL ảnh từ imageSummary
+  //Hàm truy xuất để lấy url
   const extractImageUrl = (htmlString?: string) => {
     if (!htmlString) return "/images/default.png";
     const match = htmlString.match(/src=['"]([^'"]+)['"]/);
     return match ? match[1] : "/images/default.png";
   };
 
-  // Hàm giới hạn ký tự và giữ nguyên định dạng HTML
+  //Hàm xử lý lấy html giữ nguyên định dạng
   const truncateHTML = (html: string, maxLength: number) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
 
-    let text = tempDiv.textContent || tempDiv.innerText || "";
-    if (text.length > maxLength) {
-      text = text.substring(0, maxLength) + "...";
-    }
-
-    return text;
+    const text = tempDiv.textContent || tempDiv.innerText || "";
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
   return (
@@ -91,22 +75,22 @@ export default function New() {
               <div className="list-blogs">
                 <div className="row row-fix">
                   {laytintuc.map((tintuc) => (
-                    <div className="col-fix" key={tintuc.id}>
+                    <div className="col-fix" key={tintuc._id}>
                       <div className="item-blog">
                         <div className="block-thumb">
-                        <Link href={`/posts/${tintuc.id}`}>
-                          <Image
-                            src={extractImageUrl(tintuc.imageSummary)}
-                            alt={tintuc.title}
-                            width={940}
-                            height={640}
-                            unoptimized
-                          />
-                        </Link>
+                          <Link href={`/news/${tintuc._id}`}>
+                            <Image
+                              src={extractImageUrl(tintuc.imageSummary)}
+                              alt={tintuc.title}
+                              width={940}
+                              height={640}
+                              unoptimized
+                            />
+                          </Link>
                         </div>
                         <div className="block-content">
                           <h3>
-                            <Link href={`/posts/${tintuc.id}`}>{tintuc.title}</Link>
+                            <Link href={`/news/${tintuc._id}`}>{tintuc.title}</Link>
                           </h3>
                           <div className="time-post">
                             {new Date(tintuc.create_at).toLocaleDateString()}
@@ -120,7 +104,7 @@ export default function New() {
               </div>
             </div>
 
-            {/* Bên phải: Danh mục & Tin tức nổi bật */}
+            {/* Sidebar */}
             <div className="col-xl-4">
               <div className="aside-section">
                 <h2 className="aside-title">Danh mục tin tức</h2>
@@ -139,9 +123,9 @@ export default function New() {
               <div className="aside-section">
                 <h2 className="aside-title">Tin tức nổi bật</h2>
                 <ul className="aside-list">
-                  {tintucNoibat.map((ttnoibat,i) => (
+                  {tintucNoibat.map((ttnoibat, i) => (
                     <li className="aside-news-item" key={i}>
-                      <Link href={`/posts/${ttnoibat.id}`}>
+                      <Link href={`/news/${ttnoibat._id}`}>
                         <Image
                           src={extractImageUrl(ttnoibat.imageSummary)}
                           alt={ttnoibat.title}
@@ -150,12 +134,12 @@ export default function New() {
                           unoptimized
                         />
                       </Link>
-                      <Link href={`/posts/${ttnoibat.id}`}>{ttnoibat.title}</Link>
+                      <Link href={`/news/${ttnoibat._id}`}>{ttnoibat.title}</Link>
                     </li>
                   ))}
                 </ul>
               </div>
-            </div> {/* Kết thúc cột bên phải */}
+            </div> {/* Kết thúc sidebar */}
           </div>
         </div>
       </div>
