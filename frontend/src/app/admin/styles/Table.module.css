@@ -1,16 +1,17 @@
 .tableContainer {
-    background-color: #ffffff;
+    max-width: 100%;
+    margin: 40px auto;
+    background: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    font-size: 13px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 .tableContainer table thead th {
     background-color: #9dfca5; /* Màu nâu nhạt */
     color: rgb(0, 0, 0); /* Màu chữ trắng để dễ đọc */
     padding: 10px;
     text-align: left;
-    font-size: 14px;
+    font-size: 15px;
    
 }
 
@@ -49,7 +50,12 @@
     align-items: center; /* Căn giữa theo chiều dọc */
     gap: 5px; /* Khoảng cách giữa avatar và name */
 }
-
+.avatarContainer a {
+    text-decoration: none;
+    color: rgb(0, 0, 0); /* Màu chữ trắng để dễ đọc */
+    text-align: left;
+    font-size: 15px;
+}
 .avatar {
     width: 30px;
     height: 30px;
@@ -58,10 +64,7 @@
     border: 2px solid #3b82f6;
 }
 
-.name {
-    font-size: 13px;
-    font-weight: 500;
-}
+
 /* Định dạng header chứa ô tìm kiếm */
 .headerActions {
     display: flex;

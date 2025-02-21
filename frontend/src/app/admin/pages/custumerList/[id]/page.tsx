@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'; // Thay vì next/router
 import userService from '../../../services/UserService'; // Đảm bảo đường dẫn đúng
 import styles from '../../../styles/DetailUser.module.css'; // Import CSS module
 
+
 const UserDetailPage = () => {
     const { id } = useParams(); // Lấy id từ params
     const [user, setUser] = useState(null);
@@ -40,6 +41,11 @@ const UserDetailPage = () => {
 
     return (
         <div className="container mt-4">
+            <h4>Users Management</h4>
+            <div className={styles.titleTable}>
+                <p>Admin/</p>
+                <p className={styles.titles}>User Profiles</p>
+            </div>
             <div className="row">
                 {/* Sidebar */}
                 <div className="col-md-3">
@@ -65,7 +71,7 @@ const UserDetailPage = () => {
                     </div>
 
                     <div className="card p-3" style={{ fontSize: '13px' }}>
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex justify-content-between ">
                             <p>Total spent: <strong>${totalSpent}</strong> on <strong>{totalOrders} orders</strong></p>
                         </div>
                         <table className="table">
