@@ -371,7 +371,7 @@ export default function Home(): JSX.Element {
                   />
                   <h3 className={styles.foodName}>{food.name}</h3>
                   <p className={styles.foodDesc}>
-                    {food.description[0]?.summary || "Không có mô tả"}
+                    {food.description || "Không có mô tả"}
                   </p>
                   <p className={styles.foodPrice}>
                     Giá chỉ từ:{" "}
