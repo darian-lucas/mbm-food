@@ -16,7 +16,7 @@ const productSchema = new Schema(
     //     image: { type: String },
     //   },
     // ],
-    // description: { type: String },
+    description: { type: String },
     variants: [
       {
         option: { type: String },
