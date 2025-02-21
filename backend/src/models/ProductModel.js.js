@@ -8,14 +8,15 @@ const productSchema = new Schema(
     name: { type: String, required: true },
     slug: { type: String, unique: true },
     idcate: { type: ObjectId, ref: "category" },
-    description: [
-      {
-        summary: { type: String },
-        title: { type: String },
-        content: { type: String },
-        image: { type: String },
-      },
-    ],
+    // description: [
+    //   {
+    //     summary: { type: String },
+    //     title: { type: String },
+    //     content: { type: String },
+    //     image: { type: String },
+    //   },
+    // ],
+    // description: { type: String },
     variants: [
       {
         option: { type: String },

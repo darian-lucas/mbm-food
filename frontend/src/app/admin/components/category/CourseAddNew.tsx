@@ -113,23 +113,23 @@ function CategoryAddNew() {
             )}
           />
 
-<FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả danh mục</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Nhập mô tả..."
-                  {...field}
-                  className="h-[250px]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả danh mục</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Nhập mô tả..."
+                    {...field}
+                    className="h-[250px]"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -139,7 +139,7 @@ function CategoryAddNew() {
               <FormItem>
                 <FormLabel>Ảnh đại diện</FormLabel>
                 <FormControl>
-                <div className="border border-gray-300 p-2 rounded-md h-[250px]">
+                  <div className="border border-gray-300 p-2 rounded-md h-[250px]">
                     <input
                       type="file"
                       accept="images/*"
@@ -157,7 +157,7 @@ function CategoryAddNew() {
                         alt="Ảnh danh mục"
                         width={250}
                         height={250}
-                         className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                        className="h-[200px] w-auto rounded-lg object-cover mt-2"
                       />
                     )}
                   </div>

@@ -60,7 +60,6 @@ exports.updateCategory = async (req, res, next) => {
 exports.getBySlugCategory = async (req, res, next) => {
   try {
     let { slug } = req.params;
-    console.log("🚀 ~ exports.getBySlugCategory= ~ slug:", slug)
     const result = await categoryServices.getBySlugCategory(slug);
 
     if (!result) {
