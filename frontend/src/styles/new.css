@@ -76,17 +76,26 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .col-fix {
   flex: 1 1 calc(50% - 10px); /* Chia thành 2 cột mỗi hàng */
   max-width: calc(50% - 10px);
+  display: flex;
 }
 
 .item-blog {
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Đảm bảo các box có chiều cao bằng nhau */
+}
+
+.block-thumb {
   overflow: hidden;
 }
 
@@ -97,11 +106,9 @@
   border-top-right-radius: 10px;
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
+  object-fit: cover;
 }
 
-.block-thumb {
-  overflow: hidden;
-}
 
 .block-thumb:hover img {
   transform: scale(1.1);
@@ -109,6 +116,9 @@
 
 .block-content {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Đảm bảo phần nội dung lấp đầy phần còn lại */
 }
 
 .block-content h3 {
@@ -119,7 +129,6 @@
 
 .block-content h3 a {
   text-decoration: none;
-  color: #333;
 }
 
 .block-content h3 a:hover {
@@ -135,13 +144,17 @@
 }
 .block-content {
   font-size: 14px;
-  color: #888;
   margin-bottom: 10px;
 }
 
 .block-content p {
   font-size: 14px;
-  color: #555;
+  flex-grow: 1; /* Đảm bảo đoạn mô tả chiếm phần còn lại */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Giới hạn số dòng */
+  -webkit-box-orient: vertical;
 }
 
 
