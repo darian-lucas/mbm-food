@@ -2,7 +2,30 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    flex: 2; /* Chiếm 2 phần */
+    margin-right: 20px; /* Tạo khoảng cách với sidebar */
 }
+
+.article-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .aside-section {
+    flex: 1; /* Chiếm 1 phần */
+  }
+  
+  @media (max-width: 992px) { /* Responsive cho màn hình nhỏ */
+    .article-container {
+      flex-direction: column;
+    }
+  
+    .article-main {
+      margin-right: 0;
+    }
+  }
+  
 
 container>breadcrumb>home a>span{
     text-decoration: none;
