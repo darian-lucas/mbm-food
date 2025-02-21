@@ -33,8 +33,13 @@ export default function NewsTable() {
         if (search.trim() === "") {
             loadNews();
         } else {
-            const result = await newsService.findNewsByTitle(search);
-            setNews(result ? [result] : []);
+            try {
+                const data = await newsService.searchNewsByTitle(search);
+                setNews(data);
+            } catch (error) {
+                console.error("Lỗi tìm kiếm bài viết:", error);
+                alert("Không thể tìm kiếm bài viết!");
+            }
         }
     };
 
@@ -46,26 +51,7 @@ export default function NewsTable() {
         setEditId(id);
         setIsEditing(true);
     };
-    const deleteNews = async (id: string) => {
-        const userInput = prompt("Nhập 'OK' để xác nhận xóa bài viết:");
-        
-        if (userInput !== "OK") {
-            alert("Xóa bài viết đã bị hủy.");
-            return;
-        }
-    
-        try {
-            await newsService.deleteNews(id);
-            alert("Xóa bài viết thành công!");
-            loadNews(); // Cập nhật danh sách sau khi xóa
-        } catch (error) {
-            alert("Xóa bài viết thất bại!");
-            console.error("Lỗi xóa bài viết:", error);
-        }
-    };
-    
-    
-    
+
     return (
         <div className={styles.tableContainer}>
             <h4>News Management</h4>
@@ -74,7 +60,7 @@ export default function NewsTable() {
                 <p className={styles.titles}>News List</p>
             </div>
             <div className={styles.headerActions}>
-            <button className={styles.addButton} onClick={handleAdd}>
+                <button className={styles.addButton} onClick={handleAdd}>
                     <FontAwesomeIcon icon={faPlus} /> Thêm bài viết
                 </button>
                 <div className={styles.searchContainer}>
@@ -86,7 +72,6 @@ export default function NewsTable() {
                     />
                     <button onClick={handleSearch}>🔍</button>
                 </div>
-                
             </div>
 
             <table className="table table-hover">
@@ -114,7 +99,7 @@ export default function NewsTable() {
                                 <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(post._id)}>
                                     <FontAwesomeIcon icon={faPen} />
                                 </button>
-                                <button className="btn btn-danger btn-sm" onClick={() => deleteNews(post._id)}>
+                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(post._id)}>
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
                             </td>

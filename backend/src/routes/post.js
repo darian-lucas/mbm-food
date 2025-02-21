@@ -16,6 +16,8 @@ router.get('/posts/newest/footer/4', postController.getNewestFourPostsFooter);
 router.get('/posts/news',postController.getAllPostsSummary);
 
 //////......///
+// tim bai viet theo ten
+router.get('/posts/search', postController.searchPostsByTitle);
 // Lấy tất cả bài viết
 router.get('/posts', postController.getAllPosts);
 
