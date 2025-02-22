@@ -103,7 +103,7 @@ export default function New() {
                           <div className="time-post">
                             {new Date(tintuc.create_at).toLocaleDateString()}
                           </div>
-                          <p>{truncateHTML(tintuc.summary, 150)}</p>
+                          <p>{truncateHTML(tintuc.content, 150)}</p>
                         </div>
                       </div>
                     </div>
@@ -152,8 +152,8 @@ export default function New() {
                         <Image
                           src={extractImageUrl(ttnoibat.imageSummary)}
                           alt={ttnoibat.title}
-                          width={200}
-                          height={100}
+                          width={120}
+                          height={120}
                           unoptimized
                         />
                       </Link>
