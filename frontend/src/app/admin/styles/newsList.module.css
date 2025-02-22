@@ -6,6 +6,10 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+.tableContainer .mainTitle h4{
+    font-size: 25px;
+    
+}
 .tableContainer table thead th {
     background-color: #9dfca5; /* Màu nâu nhạt */
     color: rgb(0, 0, 0); /* Màu chữ trắng để dễ đọc */
@@ -14,7 +18,11 @@
     font-size: 13px;
    
 }
-.titleTable{
+.mainTitle{
+    padding-bottom: 10px;
+}
+.mainTitle .titleTable{
+   
     display: flex;
     .titles{
         color:#3b82f6;

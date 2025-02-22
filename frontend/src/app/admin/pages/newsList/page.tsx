@@ -54,10 +54,12 @@ export default function NewsTable() {
 
     return (
         <div className={styles.tableContainer}>
+            <div className={styles.mainTitle}>
             <h4>News Management</h4>
             <div className={styles.titleTable}>
                 <p>Admin/</p>
                 <p className={styles.titles}>News List</p>
+            </div>
             </div>
             <div className={styles.headerActions}>
                 <button className={styles.addButton} onClick={handleAdd}>

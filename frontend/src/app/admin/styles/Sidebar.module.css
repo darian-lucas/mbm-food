@@ -9,6 +9,13 @@
     padding-top: 20px;
     font-size: 13px;
 }
+.link {
+    text-decoration: none; /* Xóa gạch chân */
+    color: inherit; /* Giữ nguyên màu chữ */
+    display: flex; /* Giữ bố cục như cũ */
+    align-items: center;
+    gap: 10px;
+}
 
 .logo {
     text-align: center;
