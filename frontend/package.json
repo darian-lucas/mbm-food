@@ -28,6 +28,12 @@
     "sweetalert2": "^11.17.2",
     "swiper": "^11.2.4",
     "tailwind-merge": "^3.0.1",
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.3",
+    "swiper": "^11.2.4",
+    "react-icons": "^5.4.0",
+    "react-toastify": "^11.0.3",
+    "swiper": "^11.2.4",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
