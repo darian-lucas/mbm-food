@@ -10,7 +10,7 @@ export default function Header(): JSX.Element {
 
   const menuItems = [
     { href: "/", label: "Trang chủ" },
-    { href: "/san-pham", label: "Sản phẩm", isDropdown: true },
+    { href: "/product", label: "Sản phẩm", isDropdown: true },
     { href: "/gioi-thieu", label: "Giới thiệu" },
     { href: "/tin-tuc", label: "Tin tức" },
     { href: "/lien-he", label: "Liên hệ" },
@@ -20,11 +20,11 @@ export default function Header(): JSX.Element {
   ];
 
   const productCategories = [
-    { href: "/san-pham/pizza", label: "Pizza" },
-    { href: "/san-pham/khai-vi", label: "Khai Vị" },
-    { href: "/san-pham/my-y", label: "Mỳ Ý" },
-    { href: "/san-pham/salad", label: "Salad" },
-    { href: "/san-pham/nuoc-uong", label: "Nước Uống" },
+    { href: "/product/pizza", label: "Pizza" },
+    { href: "/product/khai-vi", label: "Khai Vị" },
+    { href: "/product/my-y", label: "Mỳ Ý" },
+    { href: "/product/salad", label: "Salad" },
+    { href: "/product/nuoc-uong", label: "Nước Uống" },
   ];
 
   return (

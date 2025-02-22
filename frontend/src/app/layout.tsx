@@ -3,10 +3,7 @@ import { manrope } from "@/utils";
 import ClientLayout from "./layout/ClientLayout";
 import AdminLayout from "./layout/AdminLayout"
 import { usePathname } from "next/navigation";
-
 import "./globals.css";
-import ClientLayout from "@/app/layout/ClientLayout";
-import AdminLayout from "@/app/layout/AdminLayout"; // Import AdminLayout
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

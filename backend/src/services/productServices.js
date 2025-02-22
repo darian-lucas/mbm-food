@@ -41,3 +41,9 @@ exports.updateProduct = async (id, name, idcate, description, variants, hot,view
 exports.deleteProduct = async (id) => {
   await productModel.deleteOne({ _id: id });
 };
+
+// lấy api của slug
+exports.getBySlugProduct = async (slug) => {
+  const product= await productModel.findOne({ slug }); 
+  return product;
+};
