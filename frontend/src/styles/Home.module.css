@@ -610,7 +610,7 @@
   box-orient: vertical;
   
   overflow: hidden;
-  text-align: justify;
+  text-align: left;
   max-width: 100%;
 }
 .bestSellingItem:hover {
