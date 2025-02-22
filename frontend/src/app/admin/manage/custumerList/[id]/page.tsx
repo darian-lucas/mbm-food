@@ -1,18 +1,28 @@
 "use client"; // Đảm bảo rằng đây là Client Component
-
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation'; // Thay vì next/router
 import userService from '../../../services/UserService'; // Đảm bảo đường dẫn đúng
 import styles from '../../../styles/DetailUser.module.css'; // Import CSS module
-
+import slugify from "slugify";
 
 const UserDetailPage = () => {
     const { id } = useParams(); // Lấy id từ params
     const [user, setUser] = useState(null);
-
+    const [slug, setSlug] = useState("");
+    const router = useRouter();
     useEffect(() => {
         if (id) {
-            userService.getUserById(id).then(data => setUser(data));
+            userService.getUserById(id).then(data => {
+                setUser(data);
+                if (data.username) {
+                    const newSlug = slugify(data.username, { lower: true, strict: true });
+                    setSlug(newSlug);
+    
+                    // Thay đổi URL mà không tải lại trang
+                    router.replace(`/admin/manage/custumerList/profile?=${newSlug}&${id}`);
+                }
+            });
         }
     }, [id]);
 

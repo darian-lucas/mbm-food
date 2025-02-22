@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import newsService from "../services/NewsService";
+import slugify from "slugify";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -18,6 +20,7 @@ const modules = {
 export default function EditPost({ id, onClose, onSuccess }) {
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
   const [summary, setSummary] = useState("");
   const [imageSummary, setImageSummary] = useState("");
@@ -30,6 +33,7 @@ export default function EditPost({ id, onClose, onSuccess }) {
         const post = await newsService.getNewsById(id);
         setAuthor(post.author);
         setTitle(post.title);
+        setSlug(post.slug);
         setContent(post.content);
         setSummary(post.summary);
         setImageSummary(post.imageSummary);
@@ -40,10 +44,17 @@ export default function EditPost({ id, onClose, onSuccess }) {
     }
     fetchPost();
   }, [id]);
+  const router = useRouter();
+  // useEffect(() => {
+  //   if (title) {
+  //     const newSlug = slugify(title, { lower: true, strict: true });
+  //     router.replace(`/admin/manage/editPost/${newSlug}`);
+  //   }
+  // }, [title]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedData = { author, title, content, summary, imageSummary, status: status ? 1 : 0 };
+    const updatedData = { author, title, slug, content, summary, imageSummary, status: status ? 1 : 0 };
     try {
       await newsService.updateNews(id, updatedData);
       alert("Bài viết đã được cập nhật!");
@@ -60,7 +71,8 @@ export default function EditPost({ id, onClose, onSuccess }) {
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Tên người đăng bài" className="w-full p-2 border rounded mb-3" value={author} onChange={(e) => setAuthor(e.target.value)} required />
         <input type="text" placeholder="Tiêu đề" className="w-full p-2 border rounded mb-3" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        
+        <input type="text" placeholder="Slug URL" className="w-full p-2 border rounded mb-3" value={slug} onChange={(e) => setSlug(e.target.value)} required />
+
         <label className="block font-bold mb-2">Nội dung bài viết:</label>
         <ReactQuill value={content} onChange={setContent} modules={modules} className="mb-4" />
         
