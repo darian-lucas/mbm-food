@@ -13,20 +13,25 @@ import {
 import Image from "next/image";
 import { IconDelete, IconEdit, IconLeftArrow, IconRightArrow } from "../icons";
 import { Input } from "@/components/ui/input";
-import { commonClassNames } from "@/constants";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import ProductServices from "../../services/ProductServices";
+import CategoryServices from "../../services/CategoryServices";
+import { commonClassNames } from "../../constants";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 interface Product {
+  name: string;
   _id: string;
-  image: string;
   createdAt: string;
   description: string;
-  name: string;
-  price:number;
+  variants: {
+    option: string;
+    image: string;
+    price: number;
+    sale_price: number;
+  }[];
   slug: string;
   status: string;
   idcate: string;
@@ -34,14 +39,20 @@ interface Product {
 
 const ProductManage = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
+    []
+  );
 
   useEffect(() => {
-    const showProducts = async () => {
-      const data = await ProductServices.getAllProducts();
-      console.log("🚀 ~ showProducts ~ data:", data)
-      setProducts(data);
+    const fetchData = async () => {
+      const productData = await ProductServices.getAllProducts();
+      setProducts(productData);
+
+      const categoryData = await CategoryServices.getAllCategories();
+      setCategories(categoryData);
     };
-    showProducts();
+
+    fetchData();
   }, []);
 
   const handleDeleteProduct = async (id: string) => {
@@ -56,20 +67,19 @@ const ProductManage = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-
           await ProductServices.deleteProduct(id);
-  
+
           setProducts((prev) => prev.filter((item) => item._id !== id));
-  
+
           toast.success("Xóa sản phẩm thành công!");
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           toast.error("Có lỗi xảy ra, vui lòng thử lại!");
         }
       }
     });
   };
-  
+
   return (
     <>
       <Link
@@ -115,20 +125,20 @@ const ProductManage = () => {
             products.map((product) => {
               return (
                 <TableRow key={product.slug}>
-                  <TableCell className="pr-20">
+                  <TableCell>
                     <div className="flex items-center gap-3">
                       <Image
                         alt=""
-                        src={`${API_URL}/images/${product.image}`}
+                        src={`${API_URL}/images/${product.variants[0].image}`}
                         width={100}
                         height={100}
                         className="flex-shrink-0 size-14 rounded-lg object-contain"
                       />
                       <div className="flex flex-col gap-1">
-                        <h3 className="font-bold text-sm lg:text-base whitespace-nowrap">
+                        <h3 className="font-bold text-sm whitespace-nowrap">
                           {product.name}
                         </h3>
-                        <h4 className="text-xs lg:text-sm text-slate-500">
+                        <h4 className="text-xs text-slate-500">
                           {new Date(product.createdAt).toLocaleDateString(
                             "vi-VI"
                           )}
@@ -136,16 +146,22 @@ const ProductManage = () => {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{product.price}</TableCell>
-                  <TableCell>{product.idcate}</TableCell>
+                  <TableCell>
+                    {product.variants[0].price.toLocaleString("vi")} VNĐ
+                  </TableCell>
+                  <TableCell className="px-3">
+                    {" "}
+                    {categories.find((cate) => cate._id === product.idcate)
+                      ?.name || "Không xác định"}
+                  </TableCell>
                   <TableCell className="">
                     <div className="flex items-center gap-20">
-                      <p className="line-clamp-1">{product.description}</p>
+                      <p className="line-clamp-1 pl-3">{product.description}</p>
                     </div>
                   </TableCell>
-                  <TableCell>{product.status}</TableCell>
-                  <TableCell className="pl-2">
-                    <div className="flex gap-3">
+                  <TableCell className="pl-4"><span className={commonClassNames.status}>{product.status}</span></TableCell>
+                  <TableCell className="px-3">
+                    <div className="flex gap-3 ">
                       <Link
                         href={`/admin/pages/category/update?slug=${product.slug}`}
                         className={commonClassNames.action}
@@ -153,7 +169,7 @@ const ProductManage = () => {
                         <IconEdit />
                       </Link>
                       <button
-                         onClick={() => handleDeleteProduct(product._id)}
+                        onClick={() => handleDeleteProduct(product._id)}
                         className={commonClassNames.action}
                       >
                         <IconDelete />

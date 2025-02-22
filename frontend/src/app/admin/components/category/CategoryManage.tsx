@@ -13,10 +13,10 @@ import {
 import Image from "next/image";
 import { IconDelete, IconEdit, IconLeftArrow, IconRightArrow } from "../icons";
 import { Input } from "@/components/ui/input";
-import { commonClassNames } from "@/constants";
 import Swal from "sweetalert2";
 import CategoryServices from "../../services/CategoryServices";
 import { toast } from "react-toastify";
+import { commonClassNames } from "../../constants";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
