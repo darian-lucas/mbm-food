@@ -86,11 +86,14 @@ export default function NewsDetail() {
     const match = htmlString.match(/<img[^>]+src="([^">]+)"/);
     return match ? match[1] : null;
   };
-  //Cắt bớt nội dung và giữ định dạng
   
-
+  const getFormattedSummary = (summary: string | undefined): JSX.Element | null => {
+    if (!summary) return null;
+    return <div dangerouslySetInnerHTML={{ __html: summary }} />;
+  };
+  
   // Lấy URL ảnh từ `imageSummary`
-  const imageSrc = extractImageSrc(post.imageSummary) || "/images/default.png";
+  // const imageSrc = (post.imageSummary) || "/images/default.png";
 
   return (
     <div className="about-container">
@@ -138,12 +141,16 @@ export default function NewsDetail() {
                                   <a className="title-goto-wrapper">Nội dung chính</a>
                                       <div className="dola-toc">
                                           <ol className="toc-list">
-                                              <li className="toc-list-item is-active-li">
-                                                  <a href="" className="toc-link node-name--H2 is-active-link">1. Mua bánh pizza ở đâu</a>
-                                              </li>
-                                              <li className="toc-list-item">
-                                                  <a href="" className="toc-link node-name--H2 ">2. Nên chọn đế bánh pizza tươi hay đế bánh pizza làm sẵn?</a>
-                                              </li>
+                                          <li className="toc-list-item is-active-li">
+                                            <a href="" className="toc-link node-name--H2 is-active-link">
+                                              {getFormattedSummary(post.summary)}
+                                            </a>
+                                          </li>
+                                          {/* <li className="toc-list-item">
+                                            <a href="" className="toc-link node-name--H2">
+                                              {getFormattedSummary(post.summary)}
+                                            </a>
+                                          </li> */}
                                           </ol>
                                       </div>
                               </div>
@@ -194,8 +201,8 @@ export default function NewsDetail() {
                                   <Image
                                     src={extractImageSrc(ttnoibat.imageSummary)}
                                     alt={ttnoibat.title}
-                                    width={200}
-                                    height={100}
+                                    width={120}
+                                    height={120}
                                     unoptimized
                                   />
                                 </Link>
