@@ -13,6 +13,21 @@ const getAllProducts = async () => {
   }
 };
 
+const createProduct = async (formData: FormData) => {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: formData,
+    });
+    if (!response.ok) {
+      throw new Error(`Lỗi khi tạo danh mục: ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Lỗi khi tạo sản phẩm:", error);
+  }
+};
+
 const deleteProduct = async (id: string) => {
   const response = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
@@ -23,7 +38,8 @@ const deleteProduct = async (id: string) => {
 
 const ProductServices = {
   getAllProducts,
-  deleteProduct
+  deleteProduct,
+  createProduct
 };
 
 export default ProductServices;
