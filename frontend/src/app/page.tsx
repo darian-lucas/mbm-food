@@ -19,7 +19,7 @@ interface Product {
   _id: string;
   name: string;
   idcate: string;
-  description: { summary: string }[];
+  description: string;
   variants: { price: number; image: string; sale_price?: number }[];
   hot?: number;
 }
@@ -371,7 +371,7 @@ export default function Home(): JSX.Element {
                   />
                   <h3 className={styles.foodName}>{food.name}</h3>
                   <p className={styles.foodDesc}>
-                    {food.description[0]?.summary || "Không có mô tả"}
+                    {food.description || "Không có mô tả"}
                   </p>
                   <p className={styles.foodPrice}>
                     Giá chỉ từ:{" "}
@@ -463,7 +463,7 @@ export default function Home(): JSX.Element {
                   />
                   <h3 className={styles.discountItemName}>{item.name}</h3>
                   <p className={styles.discountItemDesc}>
-                    {item.description[0]?.summary}
+                    {item.description || "Không có mô tả"}
                   </p>
                   <a href="#" className={styles.menufoodMore}>
                     Xem thêm
@@ -604,7 +604,7 @@ export default function Home(): JSX.Element {
                     <div className={styles.menufoodContent}>
                       <h4 className={styles.menufoodItemName}>{item.name}</h4>
                       <p className={styles.menufoodItemDesc}>
-                        {item.description[0]?.summary || "Không có mô tả"}
+                        {item.description || "Không có mô tả"}
                       </p>
                       <p className={styles.menufoodPrice}>
                         Giá chỉ từ:{" "}
