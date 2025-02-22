@@ -19,7 +19,18 @@ body {
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .flexCenter {
+    @apply flex items-center justify-center;
+  }
+}
+
+.table-responsive {
+  @media screen and (max-width: 1023.98px) {
+    th,
+    td {
+      &:not(:first-child) {
+        padding-left: 100px;
+      }
+    }
   }
 }
