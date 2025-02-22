@@ -14,15 +14,15 @@ export default function Sidebar() {
 
     const menuItems = [
         { name: "Dashboard", icon: faHome, path: "/admin" },
-        { name: "Category", icon: faLayerGroup, path: "/admin/pages/category" },
-        { name: "Customers", icon: faUserFriends, path: "/admin/pages/custumerList" },
-        { name: "Products", icon: faBox, path: "/admin/pages/products" },
-        { name: "Banner", icon: faHeart, path: "/admin/pages/banner" },
-        { name: "Orders", icon: faShoppingCart, path: "/admin/pages/orders" },
-        { name: "News", icon: faNewspaper, path: "/admin/pages/newsList" }, // Đường dẫn mới
-        { name: "Settings", icon: faCog, path: "/admin/pages/settings" },
-        { name: "Message", icon: faEnvelope, path: "/admin/pages/messages" },
-        { name: "Language", icon: faLanguage, path: "/admin/pages/language" },
+        { name: "Category", icon: faLayerGroup, path: "/admin/manage/category" },
+        { name: "Customers", icon: faUserFriends, path: "/admin/manage/custumerList" },
+        { name: "Products", icon: faBox, path: "/admin/manage/products" },
+        { name: "Banner", icon: faHeart, path: "/admin/manage/banner" },
+        { name: "Orders", icon: faShoppingCart, path: "/admin/manage/orders" },
+        { name: "News", icon: faNewspaper, path: "/admin/manage/newsList" }, // Đường dẫn mới
+        { name: "Settings", icon: faCog, path: "/admin/manage/settings" },
+        { name: "Message", icon: faEnvelope, path: "/admin/manage/messages" },
+        { name: "Language", icon: faLanguage, path: "/admin/manage/language" },
         { name: "Login", icon: faSignOutAlt, path: "/login" }
     ];
 

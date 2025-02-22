@@ -83,7 +83,7 @@ const ProductManage = () => {
   return (
     <>
       <Link
-        href="/admin/pages/product/new"
+        href="/admin/manage/product/new"
         className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 animate-bounce"
       >
         <svg
@@ -163,7 +163,7 @@ const ProductManage = () => {
                   <TableCell className="px-3">
                     <div className="flex gap-3 ">
                       <Link
-                        href={`/admin/pages/category/update?slug=${product.slug}`}
+                        href={`/admin/manage/product/update?slug=${product.slug}`}
                         className={commonClassNames.action}
                       >
                         <IconEdit />

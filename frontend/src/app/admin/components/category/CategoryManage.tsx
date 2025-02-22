@@ -69,7 +69,7 @@ const CategoryManage = () => {
   return (
     <>
       <Link
-        href="/admin/pages/category/new"
+        href="/admin/manage/category/new"
         className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 animate-bounce"
       >
         <svg
@@ -137,7 +137,7 @@ const CategoryManage = () => {
                   <TableCell className="pl-2">
                     <div className="flex gap-3">
                       <Link
-                        href={`/admin/pages/category/update?slug=${category.slug}`}
+                        href={`/admin/manage/category/update?slug=${category.slug}`}
                         className={commonClassNames.action}
                       >
                         <IconEdit />
