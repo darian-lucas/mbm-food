@@ -74,13 +74,13 @@ export default function Home(): JSX.Element {
     const fetchProducts = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/products");
-  
+
         if (!response.ok) {
           throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
         }
-  
+
         const data = await response.json();
-  
+
         if (data && Array.isArray(data.data)) {
           setProducts(data.data); // Chỉ lưu nếu đúng định dạng
         } else {
@@ -90,10 +90,9 @@ export default function Home(): JSX.Element {
         console.error("Lỗi khi tải sản phẩm:", error);
       }
     };
-  
+
     fetchProducts();
   }, []);
-  
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -192,11 +191,12 @@ export default function Home(): JSX.Element {
     Array(hotFoodItems.length).fill(false)
   );
   const discountItems = products
-  .filter((product) =>
-    product.variants.some((variant) => variant.sale_price && variant.sale_price > 0)
-  )
-  .slice(0, 4);
-
+    .filter((product) =>
+      product.variants.some(
+        (variant) => variant.sale_price && variant.sale_price > 0
+      )
+    )
+    .slice(0, 4);
 
   const [discountFavorites, setDiscountFavorites] = useState<boolean[]>(
     Array(discountItems.length).fill(false)
@@ -650,28 +650,35 @@ export default function Home(): JSX.Element {
         <h2 className={styles.mainTitle}>Tin tức mới nhất</h2>
         <div className={styles.newsList}>
           {newsData.map((news) => (
-            <div key={news._id} className={styles.newsItem}>
-              {/* Lấy ảnh từ imageSummary nếu có */}
-              {news.imageSummary && (
-                <div className={styles.newsImgWrapper}>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: news.imageSummary }}
-                  />
-                </div>
-              )}
+            <Link
+              href={`/news/${news._id}`}
+              key={news._id}
+              className={styles.newsLink}
+            >
+              <div className={styles.newsItem}>
+                {news.imageSummary && (
+                  <div className={styles.newsImgWrapper}>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: news.imageSummary }}
+                    />
+                  </div>
+                )}
 
-              <div className={styles.newsContent}>
-                <h3 className={styles.newsTitle}>{news.title}</h3>
-                <p className={styles.newsDate}>
-                  {new Date(news.create_at).toLocaleDateString("vi-VN")}
-                </p>
-                <p
-                  className={styles.newsDesc}
-                  dangerouslySetInnerHTML={{ __html: news.summary }}
-                />
-                <Link href={`/news/${news._id}`}>Đọc tiếp</Link>
+                <div className={styles.newsContent}>
+                  <h3 className={styles.newsTitle}>{news.title}</h3>
+                  <p className={styles.newsDate}>
+                    {new Date(news.create_at).toLocaleDateString("vi-VN")}
+                  </p>
+                  <p
+                    className={styles.newsDesc}
+                    dangerouslySetInnerHTML={{ __html: news.summary }}
+                  />
+                  <Link href={`/news/${news._id}`} className={styles.readMore}>
+                    Đọc tiếp
+                  </Link>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

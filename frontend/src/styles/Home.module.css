@@ -938,6 +938,11 @@
   flex-wrap: wrap;
 }
 
+.newsLink{
+  text-decoration: none;
+  color: black;
+}
+
 .newsItem {
   width: 280px;
   background: white;
@@ -984,7 +989,7 @@
 }
 
 .newsDate {
-  color: E51735;
+  color: black;
   font-size: 14px;
   margin-bottom: 5px;
 }
