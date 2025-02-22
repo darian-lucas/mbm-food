@@ -387,7 +387,7 @@
 }
 
 .discountSection {
-  width: 100%;
+  width: 100vw;
   height: 600px;
   padding: 60px 50px;
   background: #006A31;
@@ -400,6 +400,7 @@
   overflow: visible;
   margin-bottom: 100px;
   min-height: 300px;
+  margin-left: calc(-50vw + 50%);
 }
 
 .discountHeader {
@@ -609,7 +610,7 @@
   box-orient: vertical;
   
   overflow: hidden;
-  text-align: justify;
+  text-align: left;
   max-width: 100%;
 }
 .bestSellingItem:hover {
@@ -937,6 +938,11 @@
   flex-wrap: wrap;
 }
 
+.newsLink{
+  text-decoration: none;
+  color: black;
+}
+
 .newsItem {
   width: 280px;
   background: white;
@@ -983,7 +989,7 @@
 }
 
 .newsDate {
-  color: E51735;
+  color: black;
   font-size: 14px;
   margin-bottom: 5px;
 }
@@ -1170,10 +1176,13 @@
   justify-content: center;
   gap: 20px;
   padding: 50px 20px;
-  width: 100%;
+  width: 100vw;
   position: relative;
   height: 400px;
+  margin-left: calc(-50vw + 50%);
+  margin-bottom: -20px;
 }
+
 
 .imageLeft,
 .imageRight {
