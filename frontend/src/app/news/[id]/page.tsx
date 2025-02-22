@@ -8,7 +8,7 @@ import { fetchFeaturedNews, fetchNewsDetail, Post } from "../../../services/post
 import "../../../styles/id.css";
 
 export default function NewsDetail() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [tintucNoibat, setTintucNoibat] = useState<Post[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -106,10 +106,10 @@ export default function NewsDetail() {
               </Link>
             </li>
             <li className="mr_lr"> / </li>
-            <li>   
-                <Link href="/news">
-                  <span>Tin tức</span>
-                </Link>
+            <li>
+              <Link href="/news">
+                <span>Tin tức</span>
+              </Link>
             </li>
             <li className="mr_lr"> / </li>
             <li>
