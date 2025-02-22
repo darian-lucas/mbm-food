@@ -20,7 +20,7 @@ const createProduct = async (formData: FormData) => {
       body: formData,
     });
     if (!response.ok) {
-      throw new Error(`Lỗi khi tạo danh mục: ${response.statusText}`);
+      throw new Error(`Lỗi khi tạo sản phẩm: ${response.statusText}`);
     }
     return await response.json();
   } catch (error) {

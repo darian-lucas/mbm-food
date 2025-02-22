@@ -10,6 +10,8 @@ const {
  getBySlugProduct,
 } = require("../controllers/productController");
 
+const upload = require("../middleware/uploadImage");
+
 const router = express.Router();
 
 router.get('/', getAllProducts);
@@ -18,7 +20,7 @@ router.get('/:id', getByIdProduct);
 
 router.get('/categories/:idcate', getByCategory);
 
-router.post('/', createProduct);
+router.post('/',upload.single("image"), createProduct);
 
 router.put('/:id', updateProduct);
 

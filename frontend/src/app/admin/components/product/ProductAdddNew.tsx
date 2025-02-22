@@ -76,6 +76,7 @@ function ProductAddNew() {
   }, []);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("🚀 ~ onSubmit ~ values:", values)
     setIsSubmitting(true);
     try {
       const productData: TCreateProductParams = {
@@ -94,6 +95,7 @@ function ProductAddNew() {
           },
         ],
       };
+      console.log("🚀 ~ onSubmit ~ productData:", productData)
 
       const formData = new FormData();
       formData.append("name", productData.name);
@@ -114,15 +116,15 @@ function ProductAddNew() {
         return;
       }
       toast.success("Tạo sản phẩm thành công");
-      router.push("/admin/pages/category/new");
+      router.push("/admin/manage/products/new");
     } catch (error) {
       console.error(error);
       toast.error("Lỗi khi tạo sản phẩm");
     } finally {
       setIsSubmitting(false);
-      form.reset();
-      setPreviewImage(null);
-      setFile(null);
+      // form.reset();
+      // setPreviewImage(null);
+      // setFile(null);
     }
   }
 
