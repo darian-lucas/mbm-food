@@ -463,7 +463,7 @@ export default function Home(): JSX.Element {
                   />
                   <h3 className={styles.discountItemName}>{item.name}</h3>
                   <p className={styles.discountItemDesc}>
-                    {item.description}
+                    {item.description || "Không có mô tả"}
                   </p>
                   <a href="#" className={styles.menufoodMore}>
                     Xem thêm
