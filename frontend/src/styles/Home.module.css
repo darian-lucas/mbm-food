@@ -1229,6 +1229,7 @@
   border-radius: 5px 0 0 5px;
   border: 1px solid #ccc;
   outline: none;
+  color: black;
 }
 
 .subscribeForm button {
