@@ -21,7 +21,7 @@ router.post('/login', login);
 router.get('/', getAllUsers);
 
 // Lấy người dùng theo ID
-router.get('/:id', findUserById);
+// router.get('/:id', findUserById);
 
 // Tìm kiếm người dùng theo tên
 router.get('/search', findUserByName);
