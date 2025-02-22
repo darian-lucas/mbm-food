@@ -16,7 +16,7 @@ const productSchema = new Schema(
     //     image: { type: String },
     //   },
     // ],
-    // description: { type: String },
+    description: { type: String },
     variants: [
       {
         option: { type: String },
@@ -27,7 +27,7 @@ const productSchema = new Schema(
     ],
     hot: { type: Number, default: 0 },
     view: { type: Number, default: 0 },
-    status: { type: String, enum: ["active", "unactive"], default: "active" }
+    status: { type: String, enum: ["Active", "Unactive"], default: "Active" }
   },
 
   { timestamps: true }

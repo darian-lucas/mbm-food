@@ -125,3 +125,9 @@
 .row {
     margin-top: 20px;
 }
+.titleTable{
+    display: flex;
+    .titles{
+        color:#3b82f6;
+    }
+}

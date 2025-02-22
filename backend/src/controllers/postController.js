@@ -8,6 +8,18 @@ exports.getAllPosts = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+// API tìm kiếm bài viết theo tên (title)
+exports.searchPostsByTitle = async (req, res) => {
+    try {
+        const { title } = req.query;
+        if (!title) return res.status(400).json({ message: 'Vui lòng nhập tiêu đề để tìm kiếm' });
+
+        const posts = await postService.searchPostsByTitle(title);
+        res.json(posts);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
 
 exports.getPostById = async (req, res) => {

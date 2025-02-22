@@ -13,10 +13,10 @@ import {
 import Image from "next/image";
 import { IconDelete, IconEdit, IconLeftArrow, IconRightArrow } from "../icons";
 import { Input } from "@/components/ui/input";
-import { commonClassNames } from "@/constants";
 import Swal from "sweetalert2";
 import CategoryServices from "../../services/CategoryServices";
 import { toast } from "react-toastify";
+import { commonClassNames } from "../../constants";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
@@ -69,7 +69,7 @@ const CategoryManage = () => {
   return (
     <>
       <Link
-        href="/admin/pages/category/new"
+        href="/admin/manage/category/new"
         className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 animate-bounce"
       >
         <svg
@@ -137,7 +137,7 @@ const CategoryManage = () => {
                   <TableCell className="pl-2">
                     <div className="flex gap-3">
                       <Link
-                        href={`/admin/pages/category/update?slug=${category.slug}`}
+                        href={`/admin/manage/category/update?slug=${category.slug}`}
                         className={commonClassNames.action}
                       >
                         <IconEdit />

@@ -9,6 +9,10 @@ exports.getAllPosts = async () => {
 exports.getLimitedPosts = async (limit) => {
     return await Post.find().limit(limit);
 };
+// Tìm kiếm bài viết theo tên (title) và lấy tất cả các trường
+exports.searchPostsByTitle = async (title) => {
+    return await Post.find({ title: { $regex: title, $options: 'i' } }); // Lấy tất cả các trường
+};
 
 // Lấy bài viết theo id
 exports.getPostById = async (id) => {
