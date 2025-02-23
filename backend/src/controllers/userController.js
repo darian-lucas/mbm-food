@@ -24,12 +24,20 @@ const login = async (req, res) => {
 // Lấy tất cả người dùng
 const getAllUsers = async (req, res) => {
     try {
-        const users = await authService.getAllUsers();
-        res.status(200).json(users);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+
+        console.log(`Fetching users - Page: ${page}, Limit: ${limit}`);
+
+        const result = await authService.getAllUsers(page, limit);
+        res.status(200).json(result);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("Error fetching users:", error); // Log lỗi chi tiết
+        res.status(500).json({ message: "Lỗi lấy danh sách người dùng", error: error.message });
     }
 };
+
+
 
 // Xóa người dùng theo ID
 const deleteUser = async (req, res) => {
@@ -96,5 +104,6 @@ module.exports = {
     findUserById, 
     register, 
     login, 
-    activateUser 
+    activateUser, 
+    getAllUsers
 };

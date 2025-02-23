@@ -27,10 +27,31 @@ const login = async (email, password) => {
     return { token };
 };
 
-// Lấy tất cả người dùng
-const getAllUsers = async () => {
-    return await User.find();
+// Lấy tất cả người dùng và phân trang
+const getAllUsers = async (page = 1, limit = 5) => {
+    try {
+        page = Math.max(1, page);
+        limit = Math.max(1, limit);
+
+        const skip = (page - 1) * limit;
+        console.log(`Querying users - Skip: ${skip}, Limit: ${limit}`);
+
+        const users = await User.find().skip(skip).limit(limit);
+        const totalUsers = await User.countDocuments();
+
+        return {
+            users,
+            totalUsers,
+            totalPages: Math.ceil(totalUsers / limit),
+            currentPage: page
+        };
+    } catch (error) {
+        console.error("Database query error:", error);
+        throw new Error("Không thể truy vấn danh sách người dùng");
+    }
 };
+
+
 
 // Xóa người dùng theo ID
 const deleteUser = async (userId) => {

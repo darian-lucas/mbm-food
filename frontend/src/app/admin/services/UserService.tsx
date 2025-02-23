@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:3001/api/user";
 
-const getAllUsers = async () => {
-    const response = await fetch(API_URL);
+const getAllUsers = async (page = 1, limit = 5) => {
+    const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`);
     return response.json();
 };
 

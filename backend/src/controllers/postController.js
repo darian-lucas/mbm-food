@@ -2,10 +2,16 @@ const postService = require('../services/postServices');
 
 exports.getAllPosts = async (req, res) => {
     try {
-        const posts = await postService.getAllPosts();
-        res.json(posts);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        const page = parseInt(req.query.page) || null;
+        const limit = parseInt(req.query.limit) || null;
+
+        console.log(`Fetching posts - Page: ${page}, Limit: ${limit}`);
+
+        const result = await postService.getAllPosts(page, limit);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        res.status(500).json({ message: "Lỗi lấy danh sách bài viết", error: error.message });
     }
 };
 // API tìm kiếm bài viết theo tên (title)

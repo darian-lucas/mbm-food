@@ -1,9 +1,36 @@
 const Post = require('../models/Post');
 
 // Lấy tất cả bài viết
-exports.getAllPosts = async () => {
-    return await Post.find();
+exports.getAllPosts = async (page, limit) => {
+    try {
+        if (!page || !limit) {
+            const posts = await Post.find();
+            return {
+                posts,
+                totalPosts: posts.length,
+                totalPages: 1,
+                currentPage: 1
+            };
+        }
+
+        page = Math.max(1, parseInt(page));
+        limit = Math.max(1, parseInt(limit));
+        const skip = (page - 1) * limit;
+
+        const posts = await Post.find().skip(skip).limit(limit);
+        const totalPosts = await Post.countDocuments();
+
+        return {
+            posts,
+            totalPosts,
+            totalPages: Math.ceil(totalPosts / limit),
+            currentPage: page
+        };
+    } catch (error) {
+        throw new Error("Không thể lấy danh sách bài viết");
+    }
 };
+
 
 // Lấy bài viết với giới hạn số lượng
 exports.getLimitedPosts = async (limit) => {

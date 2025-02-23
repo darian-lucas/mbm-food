@@ -1,9 +1,16 @@
 const API_URL = "http://localhost:3001/api/posts";
 
-const getAllNews = async () => {
-    const response = await fetch(API_URL);
-    return response.json();
+const getAllNews = async (page: number = 1, limit: number = 5) => {
+    try {
+        const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`);
+        if (!response.ok) throw new Error(`Lỗi ${response.status}: ${response.statusText}`);
+        return await response.json();
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách bài viết:", error);
+        throw error;
+    }
 };
+
 
 const getNewsById = async (id: string) => {
     const response = await fetch(`${API_URL}/${id}`);
