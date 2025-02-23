@@ -29,19 +29,39 @@ export default function NewsTable() {
         loadNews();
     };
 
-    const handleSearch = async () => {
-        if (search.trim() === "") {
-            loadNews();
-        } else {
-            try {
-                const data = await newsService.searchNewsByTitle(search);
-                setNews(data);
-            } catch (error) {
-                console.error("Lỗi tìm kiếm bài viết:", error);
-                alert("Không thể tìm kiếm bài viết!");
+    // Hàm tìm kiếm với debounce (tránh gọi API liên tục)
+    let debounceTimer: NodeJS.Timeout;
+    const handleInputChange = (event: Event) => {
+        const inputElement = event.target as HTMLInputElement;
+        const value = inputElement.value;
+        setSearch(value);
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(async () => {
+            if (value.trim() === "") {
+                loadNews();
+            } else {
+                try {
+                    const data = await newsService.searchNewsByTitle(value);
+                    setNews(data);
+                } catch (error) {
+                    console.error("Lỗi tìm kiếm bài viết:", error);
+                }
             }
-        }
+        }, 300); // Chờ 300ms sau khi ngừng nhập rồi mới gọi API
     };
+
+    useEffect(() => {
+        const searchInput = document.getElementById("searchInput") as HTMLInputElement;
+        if (searchInput) {
+            searchInput.addEventListener("input", handleInputChange);
+        }
+        return () => {
+            if (searchInput) {
+                searchInput.removeEventListener("input", handleInputChange);
+            }
+        };
+    }, []);
 
     const handleAdd = () => {
         setIsAdding(true);
@@ -55,11 +75,11 @@ export default function NewsTable() {
     return (
         <div className={styles.tableContainer}>
             <div className={styles.mainTitle}>
-            <h4>News Management</h4>
-            <div className={styles.titleTable}>
-                <p>Admin/</p>
-                <p className={styles.titles}>News List</p>
-            </div>
+                <h4>News Management</h4>
+                <div className={styles.titleTable}>
+                    <p>Admin/</p>
+                    <p className={styles.titles}>News List</p>
+                </div>
             </div>
             <div className={styles.headerActions}>
                 <button className={styles.addButton} onClick={handleAdd}>
@@ -67,12 +87,11 @@ export default function NewsTable() {
                 </button>
                 <div className={styles.searchContainer}>
                     <input
+                        id="searchInput"
                         type="text"
                         placeholder="Tìm kiếm tiêu đề..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
                     />
-                    <button onClick={handleSearch}>🔍</button>
+                    <button onClick={loadNews}>🔍</button>
                 </div>
             </div>
 

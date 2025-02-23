@@ -129,7 +129,12 @@ const ProductManage = () => {
                     <div className="flex items-center gap-3">
                       <Image
                         alt=""
-                        src={`${API_URL}/images/${product.variants[0].image}`}
+                        src={
+                          product.variants?.[0]?.image
+                            ? `${API_URL}/images/${product.variants[0].image}`
+                            : "/placeholder.jpg" // Ảnh mặc định nếu không có ảnh
+                        }
+                        
                         width={100}
                         height={100}
                         className="flex-shrink-0 size-14 rounded-lg object-contain"
@@ -147,7 +152,9 @@ const ProductManage = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {product.variants[0].price.toLocaleString("vi")} VNĐ
+                  {product.variants?.[0]?.price ? `${product.variants[0].price.toLocaleString("vi")} VNĐ` : "Chưa có giá"}
+
+
                   </TableCell>
                   <TableCell className="px-3">
                     {" "}

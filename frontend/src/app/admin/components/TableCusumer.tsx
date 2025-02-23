@@ -1,10 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/router'; // Thêm useRouter để điều hướng
 import userService from "../services/UserService";
 import styles from "../styles/Table.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faToggleOn, faToggleOff } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 export default function Table() {
@@ -22,19 +21,23 @@ export default function Table() {
         setUsers(data);
     };
 
-    const handleDelete = async (id) => {
-        await userService.deleteUser(id);
+    const handleToggleActive = async (id, currentStatus) => {
+        await userService.activateUser(id, !currentStatus);
         loadUsers();
     };
 
-    const handleSearch = async () => {
-        if (search.trim() === "") {
-            loadUsers();
-        } else {
-            const user = await userService.findUserByName(search);
-            setUsers(user ? [user] : []);
-        }
-    };
+    useEffect(() => {
+        const delaySearch = setTimeout(async () => {
+            if (search.trim() === "") {
+                loadUsers();
+            } else {
+                const user = await userService.findUserByName(search);
+                setUsers(user ? [user] : []);
+            }
+        }, 500);
+
+        return () => clearTimeout(delaySearch);
+    }, [search]);
 
     const handleEdit = (user) => {
         setEditingUser(user._id);
@@ -63,7 +66,7 @@ export default function Table() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <button onClick={handleSearch}>🔍</button>
+                    <button>🔍</button>
                 </div>
             </div>
 
@@ -75,6 +78,7 @@ export default function Table() {
                         <th>Email</th>
                         <th>Address</th>
                         <th>Role</th>
+                        <th>Status</th>
                         <th>Join On</th>
                         <th>Action</th>
                     </tr>
@@ -97,13 +101,22 @@ export default function Table() {
                             <td>{user.email}</td>
                             <td>{user.address}</td>
                             <td><span className={styles.role}>{user.role}</span></td>
+                            <td>
+                                <span className={user.isActive ? styles.active : styles.inactive}>
+                                    {user.isActive ? "Active" : "Inactive"}
+                                </span>
+                            </td>
                             <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                             <td>
                                 <button className="btn btn-success btn-sm me-2" onClick={() => handleEdit(user)}>
                                     <FontAwesomeIcon icon={faPen} />
                                 </button>
-                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(user._id)}>
-                                    <FontAwesomeIcon icon={faTrash} />
+                                <button 
+                                    className={`btn btn-sm ${user.isActive ? "btn-warning" : "btn-primary"}`} 
+                                    onClick={() => handleToggleActive(user._id, user.isActive)}
+                                >
+                                    <FontAwesomeIcon icon={user.isActive ? faToggleOff : faToggleOn} /> 
+                                    {user.isActive ? " Deactivate" : " Activate"}
                                 </button>
                             </td>
                         </tr>
@@ -111,7 +124,6 @@ export default function Table() {
                 </tbody>
             </table>
 
-            {/* Form chỉnh sửa - Ẩn hiện với nền mờ */}
             {editingUser && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
@@ -141,6 +153,7 @@ export default function Table() {
                         >
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
+                            <option value="staff">Staff</option>
                         </select>
                         <div className={styles.modalButtons}>
                             <button onClick={handleUpdate}>Update</button>

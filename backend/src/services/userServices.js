@@ -1,46 +1,52 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-//dang ki 
+
+// Đăng ký người dùng
 const register = async (userData) => {
     const user = new User(userData);
     await user.save();
     return { message: 'Đăng ký thành công!' };
 };
-//dang nhap
+
+// Đăng nhập
 const login = async (email, password) => {
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     if (!user) throw new Error('Tên đăng nhập không tồn tại');
+    if (!user.isActive) throw new Error('Tài khoản đã bị vô hiệu hóa');
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) throw new Error('Mật khẩu không chính xác');
 
     const token = jwt.sign(
         { userId: user._id, role: user.role },
-        process.env.JWT_SECRET || 'defaultSecret', // Cung cấp fallback để tránh lỗi
+        process.env.JWT_SECRET || 'defaultSecret',
         { expiresIn: '1h' }
     );
 
     return { token };
 };
 
-//lay tat ca
+// Lấy tất cả người dùng
 const getAllUsers = async () => {
     return await User.find();
 };
-//xoa tren id
+
+// Xóa người dùng theo ID
 const deleteUser = async (userId) => {
     const user = await User.findByIdAndDelete(userId);
     if (!user) throw new Error('Người dùng không tồn tại');
     return { message: 'Xóa người dùng thành công' };
 };
-//update nguoi dung tren id
+
+// Cập nhật người dùng theo ID
 const updateUser = async (userId, updateData) => {
     const user = await User.findByIdAndUpdate(userId, updateData, { new: true });
     if (!user) throw new Error('Người dùng không tồn tại');
     return { message: 'Cập nhật thành công', user };
 };
-//tim nguoi dung tren name
+
+// Tìm người dùng theo username
 const findUserByName = async (username) => {
     const user = await User.findOne({ username });
     if (!user) throw new Error('Không tìm thấy người dùng');
@@ -54,4 +60,20 @@ const findUserById = async (userId) => {
     return user;
 };
 
-module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, findUserById, register, login };
+// Kích hoạt hoặc vô hiệu hóa người dùng
+const activateUser = async (userId, isActive) => {
+    const user = await User.findByIdAndUpdate(userId, { isActive }, { new: true });
+    if (!user) throw new Error('Người dùng không tồn tại');
+    return { message: isActive ? 'Tài khoản đã được kích hoạt' : 'Tài khoản đã bị vô hiệu hóa', user };
+};
+
+module.exports = { 
+    getAllUsers, 
+    deleteUser, 
+    updateUser, 
+    findUserByName, 
+    findUserById, 
+    register, 
+    login, 
+    activateUser 
+};

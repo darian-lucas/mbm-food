@@ -9,12 +9,49 @@ import slugify from "slugify";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const modules = {
-  toolbar: [
-    ["bold", "italic", "underline"],
-    ["link", "image"],
-    [{ list: "ordered" }, { list: "bullet" }],
-  ],
+// 📝 Quill modules cho "Nội dung bài viết" (đầy đủ tính năng)
+const fullModules = {
+  toolbar: {
+    container: [
+      ["bold", "italic", "underline"],
+      ["link", "image"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["blockquote"],
+      [{ align: [] }],
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+    ],
+    handlers: {
+      image: function () {
+        const editor = this.quill;
+        const imageUrl = prompt("Nhập URL của hình ảnh:");
+        if (imageUrl) {
+          const range = editor.getSelection();
+          editor.insertEmbed(range.index, "image", imageUrl);
+        }
+      },
+    },
+  },
+};
+
+// 📝 Quill modules cho "Tóm tắt bài viết" (chỉ hỗ trợ văn bản đơn giản)
+const textOnlyModules = {
+  toolbar: [["bold", "italic", "underline"], ["blockquote"]],
+};
+
+// 🖼️ Quill modules cho "Hình ảnh tóm tắt" (chỉ có chức năng chèn ảnh)
+const imageOnlyModules = {
+  toolbar: {
+    container: [["image"]],
+    handlers: {
+      image: function () {
+        const editor = this.quill;
+        const imageUrl = prompt("Nhập URL của hình ảnh:");
+        if (imageUrl) {
+          editor.setContents([{ insert: { image: imageUrl } }]); // Chỉ chèn hình ảnh
+        }
+      },
+    },
+  },
 };
 
 export default function EditPost({ id, onClose, onSuccess }) {
@@ -44,13 +81,6 @@ export default function EditPost({ id, onClose, onSuccess }) {
     }
     fetchPost();
   }, [id]);
-  const router = useRouter();
-  // useEffect(() => {
-  //   if (title) {
-  //     const newSlug = slugify(title, { lower: true, strict: true });
-  //     router.replace(`/admin/manage/editPost/${newSlug}`);
-  //   }
-  // }, [title]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,13 +104,15 @@ export default function EditPost({ id, onClose, onSuccess }) {
         <input type="text" placeholder="Slug URL" className="w-full p-2 border rounded mb-3" value={slug} onChange={(e) => setSlug(e.target.value)} required />
 
         <label className="block font-bold mb-2">Nội dung bài viết:</label>
-        <ReactQuill value={content} onChange={setContent} modules={modules} className="mb-4" />
+        <ReactQuill value={content} onChange={setContent} modules={fullModules} className="mb-4" />
         
+        {/* 📝 Quill nhưng chỉ hỗ trợ văn bản đơn giản */}
         <label className="block font-bold mb-2">Tóm tắt bài viết:</label>
-        <ReactQuill value={summary} onChange={setSummary} modules={modules} className="mb-4" />
-        
+        <ReactQuill value={summary} onChange={setSummary} modules={textOnlyModules} className="mb-4" />
+
+        {/* 🖼️ Quill nhưng chỉ có tính năng chèn ảnh */}
         <label className="block font-bold mb-2">Hình ảnh tóm tắt:</label>
-        <ReactQuill value={imageSummary} onChange={setImageSummary} modules={modules} className="mb-4" />
+        <ReactQuill value={imageSummary} onChange={setImageSummary} modules={imageOnlyModules} className="mb-4" />
         
         <label className="block font-bold mb-2 flex items-center">
           <input type="checkbox" className="mr-2" checked={status} onChange={(e) => setStatus(e.target.checked)} />

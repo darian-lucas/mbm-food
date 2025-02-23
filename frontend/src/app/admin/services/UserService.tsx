@@ -46,4 +46,22 @@ const findUserByName = async (username) => {
     return response.json();
 };
 
-export default { getAllUsers, getUserById, deleteUser, register, login, updateUser, findUserByName };
+const activateUser = async (id, isActive) => {
+    const response = await fetch(`${API_URL}/${id}/activate`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive }),
+    });
+    return response.json();
+};
+
+export default { 
+    getAllUsers, 
+    getUserById, 
+    deleteUser, 
+    register, 
+    login, 
+    updateUser, 
+    findUserByName, 
+    activateUser 
+};
