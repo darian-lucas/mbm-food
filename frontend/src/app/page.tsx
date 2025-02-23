@@ -100,8 +100,8 @@ export default function Home(): JSX.Element {
         const response = await fetch("http://localhost:3001/api/posts");
         const data = await response.json();
 
-        if (data && Array.isArray(data)) {
-          setNewsData(data);
+        if (data && Array.isArray(data.posts)) {
+          setNewsData(data.posts); // Lấy đúng mảng "posts"
         } else {
           console.error("Dữ liệu từ API không đúng định dạng:", data);
         }
@@ -112,6 +112,7 @@ export default function Home(): JSX.Element {
 
     fetchNews();
   }, []);
+
   const promoData = [
     { name: "Khuyến mãi 1", img: "/images/promo-1.png" },
     { name: "Khuyến mãi 2", img: "/images/promo-2.png" },
@@ -344,11 +345,27 @@ export default function Home(): JSX.Element {
           }}
         >
           {products
-            .filter((product) => product.hot === 1) // Lọc sản phẩm có hot === 1
+            .filter((product) => product.hot === 1)
             .map((food, index) => (
               <SwiperSlide key={food._id} className={styles.slideItem}>
                 <div className={styles.foodItem}>
-                  {/* Icon trái tim */}
+                  <Image
+                    src={`/images/${food.variants[0]?.image || "default.png"}`}
+                    alt={food.name}
+                    width={150}
+                    height={150}
+                  />
+                  <div className={styles.foodContent}>
+                    <h3 className={styles.foodName}>{food.name}</h3>
+                    <p className={styles.foodDesc}>
+                      {food.description || "Không có mô tả"}
+                    </p>
+                    <p className={styles.viewMore}>Xem thêm</p>
+                    <p className={styles.foodPriceLabel}>Giá chỉ từ: </p>
+                    <span className={styles.foodPrice}>
+                      {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
+                    </span>
+                  </div>
                   <button
                     className={styles.heartIcon}
                     onClick={() => toggleFoodFavorite(index)}
@@ -362,23 +379,6 @@ export default function Home(): JSX.Element {
                       }
                     />
                   </button>
-
-                  <Image
-                    src={`/images/${food.variants[0]?.image || "default.png"}`}
-                    alt={food.name}
-                    width={250}
-                    height={200}
-                  />
-                  <h3 className={styles.foodName}>{food.name}</h3>
-                  <p className={styles.foodDesc}>
-                    {food.description || "Không có mô tả"}
-                  </p>
-                  <p className={styles.foodPrice}>
-                    Giá chỉ từ:{" "}
-                    <span>
-                      {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
-                    </span>
-                  </p>
                   <button className={styles.addButton}>Thêm</button>
                 </div>
               </SwiperSlide>
