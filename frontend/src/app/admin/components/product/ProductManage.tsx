@@ -115,7 +115,7 @@ const ProductManage = () => {
             <TableHead>Thông tin</TableHead>
             <TableHead>Giá</TableHead>
             <TableHead>Danh mục</TableHead>
-            <TableHead>Mô tả</TableHead>
+            {/* <TableHead>Mô tả</TableHead> */}
             <TableHead>Trạng thái</TableHead>
             <TableHead>Hành động</TableHead>
           </TableRow>
@@ -154,11 +154,11 @@ const ProductManage = () => {
                     {categories.find((cate) => cate._id === product.idcate)
                       ?.name || "Không xác định"}
                   </TableCell>
-                  <TableCell className="">
+                  {/* <TableCell className="">
                     <div className="flex items-center gap-20">
                       <p className="line-clamp-1 pl-3">{product.description}</p>
                     </div>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="pl-4"><span className={commonClassNames.status}>{product.status}</span></TableCell>
                   <TableCell className="px-3">
                     <div className="flex gap-3 ">
