@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
-// import styles from "@/app/components/Login.module.css";
 import styles from "@/styles/Login.module.css";
 
 interface LoginForm {
@@ -23,38 +22,51 @@ const Login = () => {
         body: JSON.stringify(data),
       });
 
-      const result: { token?: string; message?: string } = await res.json();
-      if (!res.ok) throw new Error(result.message || "Login failed");
+      const result: { token?: string; userId?: string; message?: string } = await res.json();
+      if (!res.ok) throw new Error(result.message || "Đăng nhập thất bại");
 
+      // Lưu token và userId vào localStorage
       localStorage.setItem("token", result.token || "");
+      localStorage.setItem("userId", result.userId || "");
+
+      // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
       router.push("/");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("An unexpected error occurred");
+        setError("Đã xảy ra lỗi không mong muốn");
       }
     }
   };
-  
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Login</h2>
+      <h2 className={styles.title}>Đăng nhập</h2>
       {error && <p className={styles.error}>{error}</p>}
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        <input type="email" placeholder="Email" {...register("email", { required: true })} className={styles.input} />
-        <input type="password" placeholder="Password" {...register("password", { required: true })} className={styles.input} />
+        <input
+          type="email"
+          placeholder="Email"
+          {...register("email", { required: true })}
+          className={styles.input}
+        />
+        <input
+          type="password"
+          placeholder="Mật khẩu"
+          {...register("password", { required: true })}
+          className={styles.input}
+        />
         <div className={styles.rememberForgot}>
           <label>
             <input type="checkbox" /> Ghi nhớ đăng nhập
           </label>
-          <a href="#" className={styles.link}>Quên mật khẩu</a>
+          <a href="#" className={styles.link}>Quên mật khẩu?</a>
         </div>
         <button type="submit" className={styles.button}>Đăng nhập</button>
       </form>
       <p>
-        Bạn chưa có tài khoản ? <a href="/register" className={styles.link}>Đăng ký</a>
+        Bạn chưa có tài khoản? <a href="/register" className={styles.link}>Đăng ký</a>
       </p>
     </div>
   );
