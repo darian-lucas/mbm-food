@@ -285,7 +285,7 @@ function ProductAddNew() {
           className="w-[120px]"
           disabled={isSubmitting}
         >
-          Tạo danh mục
+          Tạo sản phẩm
         </Button>
       </form>
     </Form>
