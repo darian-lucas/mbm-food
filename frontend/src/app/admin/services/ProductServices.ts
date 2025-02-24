@@ -13,6 +13,12 @@ const getAllProducts = async () => {
   }
 };
 
+const getProductById = async (id: string) => {
+  const response = await fetch(`${API_URL}/${id}`);
+  if (!response.ok) throw new Error("Lấy sản phẩm thất bại");
+  return response.json();
+};
+
 const createProduct = async (formData: FormData) => {
   try {
     const response = await fetch(API_URL, {
@@ -28,6 +34,25 @@ const createProduct = async (formData: FormData) => {
   }
 };
 
+const getProductBySlug = async (slug: string) => {
+  const response = await fetch(`${API_URL}/slug/${slug}`);
+  if (!response.ok) throw new Error("Lấy sản phẩm thất bại");
+  return response.json();
+};
+
+const updateProduct = async (id: string, data: FormData) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      body: data,
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Lỗi khi cập nhật sản phẩm:", error);
+    return null;
+  }
+};
+
 const deleteProduct = async (id: string) => {
   const response = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
@@ -39,7 +64,10 @@ const deleteProduct = async (id: string) => {
 const ProductServices = {
   getAllProducts,
   deleteProduct,
-  createProduct
+  createProduct,
+  getProductById,
+  updateProduct,
+  getProductBySlug
 };
 
 export default ProductServices;

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useRef, useEffect } from "react";
 import slugify from "slugify";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import CategoryServices from "../../services/CategoryServices";
 import { Editor } from "@tinymce/tinymce-react";
 import { Plus, Trash2 } from "lucide-react";
@@ -49,15 +49,22 @@ const formSchema = z.object({
   variants: z.array(variantSchema),
 });
 
-function ProductAddNew() {
+function ProductUpdate() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const slug = searchParams.get("slug");
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [categoryId, setCategoryId] = useState<string | null>(null);
   const [previewImages, setPreviewImages] = useState<(string | null)[]>([null]);
   const [files, setFiles] = useState<(File | null)[]>([null]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const editorRef = useRef<Editor | null>(null);
   const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
     []
   );
+  const [product, setProduct] = useState<TCreateProductParams | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,22 +85,73 @@ function ProductAddNew() {
     },
   });
 
-  // const { fields, append, remove } = form.useFieldArray({
-  //   name: "variants",
-  // });
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: "variants",
   });
 
+  // Fetch product data and categories
   useEffect(() => {
     const fetchData = async () => {
-      const categoryData = await CategoryServices.getAllCategories();
-      setCategories(categoryData);
+      setIsLoading(true);
+      try {
+        const categoryData = await CategoryServices.getAllCategories();
+        setCategories(categoryData);
+
+        // Fetch product data
+        if (slug) {
+          const productData = await ProductServices.getProductBySlug(
+            slug as string
+          );
+          setProduct(productData);
+          setCategoryId(productData._id);
+
+          // Set form values
+          form.setValue("name", productData.name);
+          form.setValue("description", productData.description || "");
+          form.setValue("slug", productData.slug || "");
+          form.setValue("hot", productData.hot || 0);
+          form.setValue("idcate", productData.idcate || "");
+
+          // Set variants
+          if (productData.variants && productData.variants.length > 0) {
+            const formattedVariants = productData.variants.map(
+              (variant: any) => ({
+                _id: variant._id || "",
+                option: variant.option || "",
+                price: variant.price ? variant.price.toString() : "0",
+                sale_price: variant.sale_price
+                  ? variant.sale_price.toString()
+                  : "0",
+                image: variant.image || "",
+              })
+            );
+
+            replace(formattedVariants);
+
+            // Set preview images
+            const newPreviewImages = productData.variants.map((variant: any) =>
+              variant.image
+                ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/${variant.image}`
+                : null
+            );
+            setPreviewImages(newPreviewImages);
+            setFiles(new Array(newPreviewImages.length).fill(null));
+            setExistingImages(
+              productData.variants.map((v: any) => v.image || "")
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Không thể tải dữ liệu sản phẩm");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [slug, form, replace]);
 
   const handleImageChange = (index: number, file: File) => {
     const newFiles = [...files];
@@ -109,20 +167,28 @@ function ProductAddNew() {
     append({ option: "", price: "", sale_price: "", image: "" });
     setFiles([...files, null]);
     setPreviewImages([...previewImages, null]);
+    setExistingImages([...existingImages, ""]);
   };
 
   const removeVariant = (index: number) => {
     remove(index);
     const newFiles = [...files];
     const newPreviewImages = [...previewImages];
+    const newExistingImages = [...existingImages];
     newFiles.splice(index, 1);
     newPreviewImages.splice(index, 1);
+    newExistingImages.splice(index, 1);
     setFiles(newFiles);
     setPreviewImages(newPreviewImages);
+    setExistingImages(newExistingImages);
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("🚀 ~ onSubmit ~ values:", values);
+    if (!slug) {
+      toast.error("Không tìm thấy ID sản phẩm");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const productData: TCreateProductParams = {
@@ -136,11 +202,11 @@ function ProductAddNew() {
           option: variant.option || "",
           price: parseFloat(variant.price || "0"),
           sale_price: parseFloat(variant.sale_price || "0"),
-          image: files[index] ? (files[index] as File).name : "", // Để trống ban đầu, sẽ cập nhật sau khi upload
+          image: files[index]
+            ? (files[index] as File).name
+            : existingImages[index], // Giữ ảnh cũ nếu không có tệp mới
         })),
       };
-
-      console.log("🚀 ~ onSubmit ~ productData:", productData);
 
       const formData = new FormData();
       formData.append("name", productData.name);
@@ -158,30 +224,42 @@ function ProductAddNew() {
           String(variant.sale_price)
         );
 
-        // Thêm tệp hình ảnh nếu có
+        // Thêm tệp hình ảnh mới nếu có
         if (files[index]) {
           formData.append(`variants[${index}][image]`, files[index] as File);
+        } else if (existingImages[index]) {
+          formData.append(`variants[${index}][image]`, existingImages[index]);
         }
       });
 
-      // Gửi formData đến server
-      const response = await ProductServices.createProduct(formData);
+      // Gọi API cập nhật sản phẩm
+      if (!categoryId) {
+        throw new Error("Category ID is null");
+      }
+      const response = await ProductServices.updateProduct(
+        categoryId,
+        formData
+      );
       if (response.success) {
-        toast.success("Tạo sản phẩm thành công");
-        router.push("/admin/manage/products/new");
+        toast.success("Cập nhật sản phẩm thành công");
+        router.push("/admin/manage/products");
       } else {
         toast.error(response.message || "Có lỗi xảy ra");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Lỗi khi tạo sản phẩm");
+      toast.error("Lỗi khi cập nhật sản phẩm");
     } finally {
       setIsSubmitting(false);
-      form.reset();
-      setFiles([null]);
-      setPreviewImages([null]);
     }
   }
+
+  if (isLoading) {
+    return (
+      <div className="py-10 text-center">Đang tải dữ liệu sản phẩm...</div>
+    );
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
@@ -219,7 +297,15 @@ function ProductAddNew() {
               <FormItem>
                 <FormLabel>Hot</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input
+                    placeholder=""
+                    type="number"
+                    {...field}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 0;
+                      field.onChange(value);
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -232,7 +318,11 @@ function ProductAddNew() {
               <FormItem>
                 <FormLabel>Danh mục</FormLabel>
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Danh mục" />
                     </SelectTrigger>
@@ -331,6 +421,11 @@ function ProductAddNew() {
                           className="h-[200px] w-auto rounded-lg object-cover mt-2"
                         />
                       )}
+                      {existingImages[index] && !previewImages[index] && (
+                        <div className="mt-2 text-sm text-gray-500">
+                          Đang sử dụng ảnh: {existingImages[index]}
+                        </div>
+                      )}
                     </div>
                   </FormControl>
                 </FormItem>
@@ -383,11 +478,11 @@ function ProductAddNew() {
           className="w-[120px]"
           disabled={isSubmitting}
         >
-          Tạo sản phẩm
+          Cập nhật
         </Button>
       </form>
     </Form>
   );
 }
 
-export default ProductAddNew;
+export default ProductUpdate;
