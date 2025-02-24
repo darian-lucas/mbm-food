@@ -27,6 +27,21 @@ exports.searchPostsByTitle = async (req, res) => {
     }
 };
 
+exports.getBySlugPost = async (req, res, next) => {
+  try {
+    let { slug } = req.params;
+    const result = await postService.getBySlugPost(slug);
+
+    if (!result) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.status(200).json({ data: result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 exports.getPostById = async (req, res) => {
     try {

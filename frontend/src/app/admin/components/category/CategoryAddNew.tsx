@@ -70,7 +70,7 @@ function CategoryAddNew() {
         return;
       }
       toast.success("Tạo danh mục thành công");
-      router.push("/admin/pages/category/new");
+      router.push("/admin/manage/category/new");
     } catch (error) {
       console.error(error);
       toast.error("Lỗi khi tạo danh mục");

@@ -34,13 +34,114 @@ exports.getByCategory = async (req, res) => {
 };
 
 // Thêm sản phẩm mới
-exports.createProduct = async (req, res, next) => {
+// exports.createProduct = async (req, res, next) => {
+//   try {
+//     let { name, idcate, description, variants, hot,view,slug } = req.body;
+//      let image = req.file ? `${req.file.filename}` : null;
+//     const result = await productServices.createProduct(name, idcate, description, variants, hot,view,slug);
+//     res.status(200).json({ data: result });
+//   } catch (error) {
+//     res.status(404).json({ error: error.message });
+//   }
+// };
+
+// exports.createProduct = async (req, res, next) => {
+//   try {
+//     let { name, idcate, description, hot, view, slug, price, sale_price } =
+//       req.body;
+//     let image = req.file ? `${req.file.filename}` : null;
+
+//     const variants = [
+//       {
+//         option: "",
+//         image: image || "",
+//         price: parseFloat(price) || 0,
+//         sale_price: parseFloat(sale_price) || 0,
+//       },
+//     ];
+
+//     const result = await productServices.createProduct({
+//       name,
+//       idcate,
+//       description,
+//       variants,
+//       hot: hot ? parseInt(hot) : 0,
+//       view: view ? parseInt(view) : 0,
+//       slug,
+//     });
+
+//     res.status(200).json({ success: true, data: result });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+// exports.createProduct = async (req, res, next) => {
+//   try {
+//     let { name, idcate, description, hot, view, slug, price, sale_price } = req.body;
+//     let image = req.file ? `${req.file.filename}` : "";
+
+//     let variants = [];
+//     if (price && sale_price) {
+//       variants.push({
+//         option: "",
+//         image: image,
+//         price: parseFloat(price),
+//         sale_price: parseFloat(sale_price),
+//       });
+//     }
+
+//     const result = await productServices.createProduct({
+//       name,
+//       idcate,
+//       description,
+//       variants,
+//       hot: hot ? parseInt(hot) : 0,
+//       view: view ? parseInt(view) : 0,
+//       slug,
+//     });
+
+//     res.status(200).json({ success: true, data: result });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+exports.createProduct = async (req, res) => {
   try {
-    let { name, idcate, description, variants, hot,view,slug, status } = req.body;
-    const result = await productServices.createProduct(name, idcate, description, variants, hot,view,slug, status);
-    res.status(200).json({ data: result });
+    const { name, idcate, description, hot, slug } = req.body;
+
+    // Extract variants data
+    const variants = [];
+    let i = 0;
+    while (req.body[`variants[${i}][option]`] !== undefined) {
+      const variant = {
+        option: req.body[`variants[${i}][option]`] || "",
+        price: parseFloat(req.body[`variants[${i}][price]`] || "0"),
+        sale_price: parseFloat(req.body[`variants[${i}][sale_price]`] || "0"),
+        image: req.files[`variants[${i}][image]`]
+          ? req.files[`variants[${i}][image]`][0].filename
+          : "", // Lưu tên file hình ảnh
+      };
+      variants.push(variant);
+      i++;
+    }
+
+    console.log("Variants:", variants);
+
+    const result = await productServices.createProduct({
+      name,
+      idcate,
+      description,
+      variants,
+      hot: parseInt(hot) || 0,
+      slug,
+    });
+
+    res.status(200).json({ success: true, data: result });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    console.error("Create product error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -48,8 +149,19 @@ exports.createProduct = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
   try {
     let { id } = req.params;
-    let { name, idcate, description, variants , hot,view,slug, status} = req.body;
-    const result = await productServices.updateProduct(id, name, idcate, description, variants, hot,view,slug, status);
+    let { name, idcate, description, variants, hot, view, slug, status } =
+      req.body;
+    const result = await productServices.updateProduct(
+      id,
+      name,
+      idcate,
+      description,
+      variants,
+      hot,
+      view,
+      slug,
+      status
+    );
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });
