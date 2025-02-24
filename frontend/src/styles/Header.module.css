@@ -213,3 +213,19 @@
 .productMenuContainer .dropdownMenu .menuItem:hover {
   background-color: #f1f1f1 !important;
 }
+
+.favoriteBadge {
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 17px;
+  right: 5px;
+}

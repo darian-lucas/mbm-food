@@ -24,7 +24,7 @@ const login = async (email, password) => {
         { expiresIn: '1h' }
     );
 
-    return { token };
+    return { token,userId: user._id };
 };
 
 // Lấy tất cả người dùng và phân trang
