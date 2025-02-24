@@ -42,7 +42,7 @@ exports.getByCategory = async (idcate, query) => {
 //   return product;
 // };
 
-exports.createProduct = async ({ name, idcate, description, variants, hot, view, slug }) => {
+exports.createProduct = async ({ name, idcate, description, variants, hot, slug }) => {
   try {
     const product = new productModel({
       name,
@@ -55,7 +55,6 @@ exports.createProduct = async ({ name, idcate, description, variants, hot, view,
         image: variant.image,
       })),
       hot: hot || 0,
-      view: view || 0,
       slug
     });
 

@@ -109,7 +109,7 @@ exports.getByCategory = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const { name, idcate, description, hot, view, slug } = req.body;
+    const { name, idcate, description, hot, slug } = req.body;
 
     // Extract variants data
     const variants = [];
@@ -119,11 +119,15 @@ exports.createProduct = async (req, res) => {
         option: req.body[`variants[${i}][option]`] || "",
         price: parseFloat(req.body[`variants[${i}][price]`] || "0"),
         sale_price: parseFloat(req.body[`variants[${i}][sale_price]`] || "0"),
-        image: req.files[`variants[${i}][image]`] ? req.files[`variants[${i}][image]`][0].filename : "", // Lưu tên file hình ảnh
+        image: req.files[`variants[${i}][image]`]
+          ? req.files[`variants[${i}][image]`][0].filename
+          : "", // Lưu tên file hình ảnh
       };
       variants.push(variant);
       i++;
     }
+
+    console.log("Variants:", variants);
 
     const result = await productServices.createProduct({
       name,
@@ -131,13 +135,12 @@ exports.createProduct = async (req, res) => {
       description,
       variants,
       hot: parseInt(hot) || 0,
-      view: parseInt(view) || 0,
-      slug
+      slug,
     });
 
     res.status(200).json({ success: true, data: result });
   } catch (error) {
-    console.error('Create product error:', error);
+    console.error("Create product error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
