@@ -1,0 +1,143 @@
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    display: flex;
+  }
+  .pic{
+    
+  }
+  .formDetail{
+    background: #e7fff2;
+    border-radius: 15px;
+    padding: 10px;
+    border: 2px solid #006a31;
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .price {
+    font-size: 30px;
+    font-weight: bold;
+    color: #e31837;
+    display: inline-block;
+  }
+  
+  .optionGroup {
+    margin-top: 15px;
+    display: flex;
+  }
+
+  
+  .label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .checkboxLabel {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+  
+  .noteInput {
+    width: 100%;
+    height: 80px;
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .quantityWrapper {
+    margin-top: 15px;
+    display: flex;
+  }
+  
+  .quantityControl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: #006c30 solid 1px;
+    border-radius: 8px;
+    padding: 2px;
+    
+  }
+  
+  .quantityControl button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    border: none;
+    background-color: #006c30;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .quantityControl span {
+    font-size: 18px;    
+  }
+  
+  .buttonGroup {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .addToCart {
+    background-color: #e31836;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .favorite {
+    background-color: #295318;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .buyNow {
+    background-color: #e31836;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .bookNow {
+    background-color: #295318;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+
+  .support {
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  .hotline {
+    font-weight: bold;
+    color: #e31836;
+  }
+  
