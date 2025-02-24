@@ -9,7 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
-import { addFavorite, removeFavorite, checkFavorite, getFavorites } from "../services/Favotite";
+import { addFavorite, removeFavorite, checkFavorite, getFavorites } from "../services/Favorite";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
