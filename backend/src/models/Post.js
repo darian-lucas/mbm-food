@@ -4,6 +4,7 @@ const generateSlug = require("../middleware/slug");
 const postSchema = new mongoose.Schema(
   {
     title: { type: String, required: true }, // Tiêu đề bài viết
+    slug: { type: String, unique: true, required: true }, // Thêm slug và đảm bảo duy nhất
     content: { type: String, required: true }, // Nội dung bài viết (bao gồm cả HTML và hình ảnh)
     summary: { type: String, required: false }, // Tóm tắt bài viết (Chứa title và hình ảnh đầu tiên)
     imageSummary: { type: String, required: false }, // Hình ảnh đầu tiên trong bài viết (URL)
@@ -16,7 +17,6 @@ const postSchema = new mongoose.Schema(
     author: { type: String, required: true },  // Tác giả bài viết
     view: { type: Number, default: 0 },  // Số lượt xem bài viết
     hot: { type: Number, default: 0, enum: [0, 1] },  // Trạng thái bài viết hot
-    slug: { type: String, unique: true }, // Thêm slug
 }, { collation: { locale: 'vi', strength: 2 } });
 
 postSchema.pre("save", generateSlug);

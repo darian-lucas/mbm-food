@@ -92,7 +92,7 @@ export default function New() {
               <div className="list-blogs">
                 <div className="row row-fix">
                   {laytintuc.map((tintuc) => (
-                    <div className="col-fix" key={tintuc.slug}>
+                    <div className="col-fix" key={tintuc._id}>
                       <div className="item-blog">
                         <div className="block-thumb">
                           <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
@@ -159,12 +159,11 @@ export default function New() {
                   {tintucNoibat.map((tintuc) => (
                     <li className="aside-news-item" key={tintuc.slug}>
                       <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                        <Image
+                        <img
                           src={extractImageUrl(tintuc.imageSummary)}
                           alt={tintuc.title}
                           width={120}
                           height={120}
-                          unoptimized
                         />
                       </Link>
                       <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>

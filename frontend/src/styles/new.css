@@ -250,21 +250,34 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
-.aside-news-item a {
-  flex: 1;
+/* .aside-news-item a {
+  flex: 0.4;
   text-decoration: none;
   color: #333;
   font-weight: 500;
+  font-size: 14px;
+  line-height: 1.4;
+} */
+
+.aside-news-item a {
+  flex: 0.9; /* Giúp tiêu đề giãn đều */
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.4;
+  display: block;
+  text-align: justify;
 }
+
 .aside-news-item img {
   width: 120px;
   height: 80px;
   object-fit: cover;
   border-radius: 5px;
 }
+
 
 
 .blog_noibat {

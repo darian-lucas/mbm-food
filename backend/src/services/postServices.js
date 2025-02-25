@@ -47,8 +47,9 @@ exports.getPostById = async (id) => {
 };
 
 exports.getPostBySlug = async (slug) => {
-    return await Post.findOne(slug);
+  return await Post.findOne({ slug: slug }); // Chỉ truyền giá trị slug
 };
+
 
 // Lấy bài viết mới nhất (sắp xếp theo ngày tạo)
 exports.getNewestPosts = async () => {

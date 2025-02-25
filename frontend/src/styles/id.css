@@ -126,16 +126,36 @@
     margin-bottom: 20px;
 }
 
-.title-goto-wrapper {
+.goto-wrapper, .ftoc-head {
+    width: 100%;
+    /* min-height: 150px; */
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+ .ftoc-head, .title-goto-wrapper{
     font-size: 20px;
+    margin-bottom: 15px;
+    position: relative;
+    font-size: 24px;
+    /* font-weight: bold; */
+    color: #006a31;
+    display: inline-block;
+}
+
+.dola-toc .toc-list {
+    color: black;
+    font-size: 16px;
+    padding-left: 20px;
+}
+
+
+ftoc-head .title-goto-wrapper {
+    font-size: 26px;
     font-weight: 700;
     color: #006a31;
     display: block;
     margin-bottom: 10px;
-}
-
-.dola-toc .toc-list {
-    padding-left: 20px;
 }
 
 .toc-list-item {
