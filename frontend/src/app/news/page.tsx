@@ -4,7 +4,17 @@ import Image from "next/image";
 import "../../styles/new.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { fetchNews, fetchFeaturedNews, Post } from "../../services/post";
+import { fetchNews, fetchFeaturedNews } from "../../services/post";
+
+export interface Post {
+  _id: string;
+  title: string;
+  slug: string;
+  create_at: string | number | Date;
+  content: string;
+  imageSummary?: string;
+  author: string;
+}
 
 export default function New() {
   const [laytintuc, setLaytintuc] = useState<Post[]>([]);
@@ -19,10 +29,12 @@ export default function New() {
           fetchNews(),
           fetchFeaturedNews(),
         ]);
-
+  
+        console.log("Dữ liệu từ API:", { news, featuredNews });
+  
         if (!news.length) throw new Error("Không có bài viết nào.");
         if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
-
+  
         setLaytintuc(news);
         setTintucNoibat(featuredNews);
         setError(null);
@@ -31,18 +43,17 @@ export default function New() {
         setError("Không thể tải dữ liệu. Vui lòng thử lại sau.");
       }
     };
-
+  
     getData();
   }, []);
+  
 
-  // Trích xuất URL hình ảnh từ HTML nếu có
   const extractImageUrl = (htmlString?: string) => {
     if (!htmlString) return "/images/default.png";
     const match = htmlString.match(/src=['"]([^'"]+)['"]/);
     return match ? match[1] : "/images/default.png";
   };
 
-  // Cắt bớt nội dung HTML mà vẫn giữ định dạng
   const truncateHTML = (html: string, maxLength: number) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
@@ -96,9 +107,9 @@ export default function New() {
                         </div>
                         <div className="block-content">
                           <h3>
-                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                            {tintuc.title}
-                          </Link>
+                            <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                              {tintuc.title}
+                            </Link>
                           </h3>
                           <div className="time-post">
                             {new Date(tintuc.create_at).toLocaleDateString()}
@@ -119,7 +130,6 @@ export default function New() {
                 <ul className="aside-list">
                   <li><Link href="/">Trang chủ</Link></li>
                   <li><Link href="/about">Giới thiệu</Link></li>
-                  {/* Mục sản phẩm có submenu */}
                   <li className="menu-item">
                     <Link href="/products">Sản phẩm</Link>
                     <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>

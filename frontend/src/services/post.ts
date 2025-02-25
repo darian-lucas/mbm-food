@@ -11,11 +11,15 @@ export interface Post {
 export const fetchNews = async (): Promise<Post[]> => {
   const res = await fetch("http://localhost:3001/api/posts");
   if (!res.ok) throw new Error("Lỗi khi lấy tin tức!");
-  return res.json();
+  const data = await res.json();
+  
+  console.log("Dữ liệu tin tức:", data); // Kiểm tra dữ liệu trả về
+  return data;
 };
 
+
 export const fetchFeaturedNews = async (): Promise<Post[]> => {
-  const res = await fetch("http://localhost:3001/api/posts/newest/4");
+  const res = await fetch(`http://localhost:3001/api/posts/newest/4`);
   if (!res.ok) throw new Error("Lỗi khi lấy tin nổi bật!");
   return res.json();
 };
