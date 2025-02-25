@@ -137,20 +137,21 @@ export default function Home(): JSX.Element {
     const fetchNews = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/posts");
-        const data = await response.json();
-
-        if (data && Array.isArray(data)) {
-          setNewsData(data);
+        const result = await response.json();
+  
+        if (result && Array.isArray(result.posts)) {
+          setNewsData(result.posts); // Lấy danh sách `posts` từ kết quả API
         } else {
-          console.error("Dữ liệu từ API không đúng định dạng:", data);
+          console.error("Dữ liệu từ API không đúng định dạng:", result);
         }
       } catch (error) {
         console.error("Lỗi khi tải tin tức:", error);
       }
     };
-
+  
     fetchNews();
   }, []);
+  
   ///sản phẩm yêu thích
 
   const promoData = [
@@ -706,7 +707,7 @@ export default function Home(): JSX.Element {
                   </p>
                   <p
                     className={styles.newsDesc}
-                    dangerouslySetInnerHTML={{ __html: news.summary }}
+                    dangerouslySetInnerHTML={{ __html: news.content }}
                   />
                   <Link href={`/news/${news._id}`} className={styles.readMore}>
                     Đọc tiếp

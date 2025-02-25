@@ -148,6 +148,7 @@
   display: none;
   flex-direction: column;
   z-index: 1000;
+  text-decoration: none;
 }
 
 .productMenuContainer:hover .dropdownMenu {
@@ -159,6 +160,7 @@
   color: black;
   font-size: 14px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .menuItem:hover {
@@ -215,8 +217,8 @@
 }
 
 .favoriteBadge {
-  background-color: red;
-  color: white;
+  background-color: rgb(6, 247, 6);
+  color: rgb(0, 0, 0);
   font-size: 12px;
   font-weight: bold;
   border-radius: 50%;
@@ -226,6 +228,6 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 17px;
+  bottom: 18px;
   right: 5px;
 }

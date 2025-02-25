@@ -4,7 +4,7 @@ import Image from "next/image";
 import "../../styles/new.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { fetchNews, fetchFeaturedNews, Post } from "../../services/post";
+import { fetchNews, fetchFeaturedNews, Post } from "@/services/post";
 
 export default function New() {
   const [laytintuc, setLaytintuc] = useState<Post[]>([]);
