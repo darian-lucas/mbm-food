@@ -1,9 +1,11 @@
+
 export interface Post {
   _id: string;
   title: string;
   create_at: string | number | Date;
   summary: string;
   imageSummary?: string;
+  slug: string;
 }
 
 export const fetchNews = async (): Promise<Post[]> => {
@@ -18,21 +20,21 @@ export const fetchFeaturedNews = async (): Promise<Post[]> => {
   return res.json();
 };
 
-export interface Post {
+export interface Post { 
   _id: string;
   title: string;
+  slug: string;
   create_at: string | number | Date;
   content: string;
   imageSummary?: string;
   author: string;
 }
 
-export const fetchNewsDetail = async (_id: string): Promise<Post | null> => {
-  if (!_id) return null; // Kiểm tra id hợp lệ
+export const fetchNewsDetail = async (slug: string): Promise<Post | null> => {
+  if (!slug) return null; 
 
   try {
-    const res = await fetch(`http://localhost:3001/api/posts/${_id}`);
-
+    const res = await fetch(`http://localhost:3001/api/posts/slug/${slug}`);
     if (!res.ok) throw new Error("Bài viết không tồn tại");
 
     return await res.json();
@@ -41,4 +43,7 @@ export const fetchNewsDetail = async (_id: string): Promise<Post | null> => {
     return null;
   }
 };
+
+
+
 

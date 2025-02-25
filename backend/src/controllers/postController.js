@@ -32,6 +32,17 @@ exports.getPostById = async (req, res) => {
     }
 };
 
+exports.getPostBySlug = async (req, res) => {
+    try {
+        const post = await postService.getPostBySlug({ slug: req.params.slug });
+        if (!post) return res.status(404).json({ message: 'Không tìm thấy bài viết' });
+        res.json(post);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
 exports.getNewestPosts = async (req, res) => {
     try {
         const posts = await postService.getNewestPosts();

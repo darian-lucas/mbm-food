@@ -81,10 +81,10 @@ export default function New() {
               <div className="list-blogs">
                 <div className="row row-fix">
                   {laytintuc.map((tintuc) => (
-                    <div className="col-fix" key={tintuc._id}>
+                    <div className="col-fix" key={tintuc.slug}>
                       <div className="item-blog">
                         <div className="block-thumb">
-                          <Link href={`/news/${encodeURIComponent(tintuc._id)}`}>
+                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                             <Image
                               src={extractImageUrl(tintuc.imageSummary)}
                               alt={tintuc.title}
@@ -96,9 +96,9 @@ export default function New() {
                         </div>
                         <div className="block-content">
                           <h3>
-                            <Link href={`/news/${encodeURIComponent(tintuc._id)}`}>
-                              {tintuc.title}
-                            </Link>
+                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                            {tintuc.title}
+                          </Link>
                           </h3>
                           <div className="time-post">
                             {new Date(tintuc.create_at).toLocaleDateString()}
@@ -146,19 +146,19 @@ export default function New() {
               <div className="aside-section">
                 <h2 className="aside-title">Tin tức nổi bật</h2>
                 <ul className="aside-list">
-                  {tintucNoibat.map((ttnoibat, i) => (
-                    <li className="aside-news-item" key={i}>
-                      <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
+                  {tintucNoibat.map((tintuc) => (
+                    <li className="aside-news-item" key={tintuc.slug}>
+                      <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                         <Image
-                          src={extractImageUrl(ttnoibat.imageSummary)}
-                          alt={ttnoibat.title}
+                          src={extractImageUrl(tintuc.imageSummary)}
+                          alt={tintuc.title}
                           width={120}
                           height={120}
                           unoptimized
                         />
                       </Link>
-                      <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
-                        {ttnoibat.title}
+                      <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                        {tintuc.title}
                       </Link>
                     </li>
                   ))}

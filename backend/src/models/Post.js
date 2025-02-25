@@ -14,6 +14,7 @@ const postSchema = new mongoose.Schema({
     author: { type: String, required: true },  // Tác giả bài viết
     view: { type: Number, default: 0 },  // Số lượt xem bài viết
     hot: { type: Number, default: 0, enum: [0, 1] },  // Trạng thái bài viết hot
+    slug: { type: String, unique: true }, // Thêm slug
 }, { collation: { locale: 'vi', strength: 2 } });
 
 module.exports = mongoose.model('Post', postSchema);

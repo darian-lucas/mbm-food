@@ -19,6 +19,10 @@ exports.getPostById = async (id) => {
     return await Post.findById(id);
 };
 
+exports.getPostBySlug = async (slug) => {
+    return await Post.findOne(slug);
+};
+
 // Lấy bài viết mới nhất (sắp xếp theo ngày tạo)
 exports.getNewestPosts = async () => {
     return await Post.find().sort({ create_at: -1 });
@@ -47,7 +51,7 @@ exports.getNewestFourPosts = async () => {
     return await Post.find()
         .sort({ create_at: -1 })  // Sắp xếp theo ngày tạo
         .limit(4)  // Giới hạn 4 bài viết
-        .select('title content imageSummary create_at');  // Chỉ lấy các trường cần thiết
+        .select('title content imageSummary create_at slug');  // Chỉ lấy các trường cần thiết
 };
 // Lấy 4 bài viết hot (chỉ lấy 'title' và 'imageSummary')
 exports.getHotPosts4 = async () => {

@@ -8,9 +8,11 @@ import { fetchFeaturedNews, fetchNewsDetail, Post } from "../../../services/post
 import "../../../styles/id.css";
 
 export default function NewsDetail() {
-  const { id } = useParams(); 
+  const { slug } = useParams();
+
   const [post, setPost] = useState<Post | null>(null);
   const [tintucNoibat, setTintucNoibat] = useState<Post[]>([]);
+
   const [isOpen, setIsOpen] = useState(false);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,24 +21,23 @@ export default function NewsDetail() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!id) {
-          setError("Không tìm thấy ID bài viết");
+        if (!slug) {
+          setError("Không tìm thấy slug bài viết");
           setLoading(false);
           return;
         }
   
-        // Gọi tất cả API song song
         const [featuredNews, data] = await Promise.all([
           fetchFeaturedNews(),
-          fetchNewsDetail(id),
+          fetchNewsDetail(slug),
         ]);
   
         if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
-        if (!data)new Error("Bài viết không tồn tại.");
+        if (!data) throw new Error("Bài viết không tồn tại.");
   
-        // Cập nhật state
         setTintucNoibat(featuredNews);
-        setPost(data)
+        setPost(data);
+  
         setError(null);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
@@ -47,34 +48,9 @@ export default function NewsDetail() {
     };
   
     fetchData();
-  }, [id]);
+  }, [slug]);
   
-
-  // useEffect(() => {
-  //   if (!id) {
-  //     setError("Không tìm thấy ID bài viết");
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   const loadPost = async () => {
-  //     try {
-  //       const data = await fetchNewsDetail(id);
-  //       if (!data) {
-  //         setError("Bài viết không tồn tại");
-  //       } else {
-  //         setPost(data);
-  //       }
-  //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //     } catch (error) {
-  //       setError("Lỗi khi lấy bài viết");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   loadPost();
-  // }, [id]);
+  
 
   if (loading) return <p>Đang tải bài viết...</p>;
   if (error) return <p>{error}</p>;
@@ -170,7 +146,7 @@ export default function NewsDetail() {
                             <li><Link href="/about">Giới thiệu</Link></li>
                             {/* Mục sản phẩm có submenu */}
                             <li className="menu-item">
-                              <Link href="/products">Sản phẩm</Link>
+                              <Link href="/san-pham">Sản phẩm</Link>
                               <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
                                 {isOpen ? "−" : "+"}
                               </button>
@@ -197,7 +173,7 @@ export default function NewsDetail() {
                           <ul className="aside-list">
                             {tintucNoibat.map((ttnoibat, i) => (
                               <li className="aside-news-item" key={i}>
-                                <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
+                                <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
                                   <Image
                                     src={extractImageSrc(ttnoibat.imageSummary)}
                                     alt={ttnoibat.title}
@@ -206,7 +182,7 @@ export default function NewsDetail() {
                                     unoptimized
                                   />
                                 </Link>
-                                <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
+                                <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
                                   {ttnoibat.title}
                                 </Link>
                               </li>
