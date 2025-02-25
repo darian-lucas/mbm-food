@@ -27,8 +27,6 @@ router.get('/posts/slug/:slug', postController.getBySlugPost);
 // Lấy bài viết theo id
 router.get('/posts/:id', postController.getPostById);
 
-router.get('/posts/slug/:slug', postController.getPostBySlug);
-
 
 // Lấy các bài viết mới nhất
 router.get('/posts/newest', postController.getNewestPosts);
