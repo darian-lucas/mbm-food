@@ -43,8 +43,8 @@ export const fetchNewsDetail = async (slug: string): Promise<Post | null> => {
 
     return await res.json();
   } catch (error) {
-    console.error("Lỗi khi lấy dữ liệu bài viết:", error);
-    return null;
+    console.error("Lỗi API:", error);
+    throw error;
   }
 };
 

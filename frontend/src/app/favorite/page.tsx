@@ -83,13 +83,13 @@ const FavoritePage = () => {
             <div key={product._id} className="col-md-3 col-sm-6 mb-4">
               <div className={`card border-1 shadow-sm ${styles.productCard}`}>
                 {/* Icon trái tim */}
-                <button><i
+                 <i
                   className={`${styles.favoriteIcon} position-absolute top-0 end-0 p-2`}
                   onClick={() => toggleFavorite(product._id)}
                 >
-                  <Heart size={20} color="#E51735" fill="#E51735" />
+                  <button className="border-0"><Heart size={20} color="#E51735" fill="#E51735" /></button>
 
-                </i></button>
+                </i>
 
                 {/* Hình ảnh sản phẩm */}
                 {product.variants[0]?.image && (
