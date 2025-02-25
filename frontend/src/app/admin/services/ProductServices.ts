@@ -37,7 +37,8 @@ const createProduct = async (formData: FormData) => {
 const getProductBySlug = async (slug: string) => {
   const response = await fetch(`${API_URL}/slug/${slug}`);
   if (!response.ok) throw new Error("Lấy sản phẩm thất bại");
-  return response.json();
+  const result = await response.json();
+  return result.data;
 };
 
 const updateProduct = async (id: string, data: FormData) => {
