@@ -82,10 +82,10 @@ export default function NewsDetail() {
               </Link>
             </li>
             <li className="mr_lr"> / </li>
-            <li>   
-                <Link href="/news">
-                  <span>Tin tức</span>
-                </Link>
+            <li>
+              <Link href="/news">
+                <span>Tin tức</span>
+              </Link>
             </li>
             <li className="mr_lr"> / </li>
             <li>

@@ -59,7 +59,7 @@ const updateCategory = async (id: string, data: FormData) => {
     return await response.json();
   } catch (error) {
     console.error("Lỗi khi cập nhật danh mục:", error);
-    return null;  
+    return null;
   }
 };
 
@@ -69,7 +69,7 @@ const CategoryServices = {
   deleteCategory,
   getCategoryById,
   updateCategory,
-  getCategoryBySlug
+  getCategoryBySlug,
 };
 
 export default CategoryServices;
