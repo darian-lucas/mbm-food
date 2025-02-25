@@ -27,20 +27,16 @@ exports.searchPostsByTitle = async (req, res) => {
     }
 };
 
-exports.getBySlugPost = async (req, res, next) => {
-  try {
-    let { slug } = req.params;
-    const result = await postService.getBySlugPost(slug);
-
-    if (!result) {
-      return res.status(404).json({ error: "Post not found" });
+exports.getPostBySlug = async (req, res) => {
+    try {
+        const post = await postService.getPostBySlug(req.params.slug);
+        if (!post) return res.status(404).json({ message: 'Không tìm thấy bài viết' });
+        res.json(post);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-
-    res.status(200).json({ data: result });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
+
 
 
 exports.getPostById = async (req, res) => {

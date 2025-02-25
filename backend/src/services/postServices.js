@@ -61,9 +61,9 @@ exports.getHotPosts = async () => {
 };
 
 // api theo slug (thân -> sửa để đức làm url trang web)
-exports.getBySlugPost = async (slug) => {
-  return await Post.findOne({ slug });
-};
+// exports.getBySlugPost = async (slug) => {
+//   return await Post.findOne({ slug });
+// };
 
 //api cho client
 // Lấy 4 bài viết mới nhất chỉ với 'imageSummary' và 'title'
