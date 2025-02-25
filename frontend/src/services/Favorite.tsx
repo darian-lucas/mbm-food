@@ -24,18 +24,11 @@ export const addFavorite = async (id_product: string, token: string) => {
     });
 };
 
-export const getFavorites = async (token: string, fetchFavorites?: () => void) => {
-    const data = await fetchAPI(`${API_URL}/list`, {
+export const getFavorites = async (token: string) => {
+    return fetchAPI(`${API_URL}/list`, {
         headers: { Authorization: `Bearer ${token}` },
     });
-
-    if (Array.isArray(data) && fetchFavorites) {
-        fetchFavorites(); // Cập nhật danh sách ngay
-    }
-
-    return data;
 };
-
 
 export const removeFavorite = async (id_product: string, token: string) => {
     return fetchAPI(`${API_URL}/remove/${id_product}`, {
