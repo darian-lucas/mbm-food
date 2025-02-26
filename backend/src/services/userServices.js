@@ -23,8 +23,8 @@ const login = async (email, password) => {
         process.env.JWT_SECRET || 'defaultSecret',
         { expiresIn: '1h' }
     );
-
-    return { token,userId: user._id };
+    
+    return { token };
 };
 
 // Lấy tất cả người dùng và phân trang
@@ -74,27 +74,5 @@ const findUserByName = async (username) => {
     return user;
 };
 
-// Tìm người dùng theo ID
-const findUserById = async (userId) => {
-    const user = await User.findById(userId);
-    if (!user) throw new Error('Không tìm thấy người dùng');
-    return user;
-};
+module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };
 
-// Kích hoạt hoặc vô hiệu hóa người dùng
-const activateUser = async (userId, isActive) => {
-    const user = await User.findByIdAndUpdate(userId, { isActive }, { new: true });
-    if (!user) throw new Error('Người dùng không tồn tại');
-    return { message: isActive ? 'Tài khoản đã được kích hoạt' : 'Tài khoản đã bị vô hiệu hóa', user };
-};
-
-module.exports = { 
-    getAllUsers, 
-    deleteUser, 
-    updateUser, 
-    findUserByName, 
-    findUserById, 
-    register, 
-    login, 
-    activateUser 
-};

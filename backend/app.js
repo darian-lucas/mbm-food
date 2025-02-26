@@ -23,6 +23,8 @@ app.use(express.json({ type: "application/json", charset: "utf-8" }));
 
 
 
+
+
 // Kết nối DB
 connectDB();
 
@@ -36,4 +38,9 @@ app.use('/api/favorite', favoriteRoutes);
 
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
+
 });
+
+
+
+

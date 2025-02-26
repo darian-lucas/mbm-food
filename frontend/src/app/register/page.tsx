@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import styles from "@/styles/Register.module.css";
+import styles from "@/app/components/Register.module.css";
 
 interface RegisterForm {
   username: string;

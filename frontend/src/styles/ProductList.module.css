@@ -51,9 +51,15 @@
   }
   
   .ProductDesc {
-    font-size: 14px;
-    color: gray;
-    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    position: relative;
+    line-height: 1.4 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 !important;
+    word-break: break-word;
   }
   
   .viewMore {
