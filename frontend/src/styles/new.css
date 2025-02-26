@@ -249,10 +249,14 @@
 .aside-news-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 5px;
+  gap: 10px; /* Điều chỉnh khoảng cách giữa ảnh và tiêu đề */
+  margin-bottom: 10px;
 }
-
+.item-blog-small {
+  margin-bottom: 10px;
+  display: flex
+;
+}
 /* .aside-news-item a {
   flex: 0.4;
   text-decoration: none;
@@ -305,6 +309,7 @@
 .item-blog-small .block-thumb {
   min-width: 100px;
   width: 100px;
+  border-radius: 10px;
 }
 .item-blog-small .block-thumb img {
   border-radius: 10px;
@@ -312,7 +317,7 @@
 .item-blog-small .block-content {
   min-width: calc(100% - 100px);
   width: calc(100% - 100px);
-  margin-left: 10px;
+  margin-left: 5px;
 }
 .item-blog-small .block-content h3 {
   font-size: 16px;

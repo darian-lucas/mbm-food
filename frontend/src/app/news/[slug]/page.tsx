@@ -144,23 +144,29 @@ export default function NewsDetail() {
 
           <div className="aside-section">
             <h2 className="aside-title">Tin tức nổi bật</h2>
-            <ul className="aside-list">
-              {tintucNoibat.map((ttnoibat, i) => (
-                <li className="aside-news-item" key={i}>
-                  <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
-                    <img
-                      src={extractImageSrc(ttnoibat.imageSummary) || "/images/default.png"}
-                      alt={ttnoibat.title}
-                      width={120}
-                      height={120}
-                    />
-                  </Link>
-                  <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
-                    {ttnoibat.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div className="item-blog-small">
+              <ul className="aside-list">
+                {tintucNoibat.map((ttnoibat, i) => (
+                  <li className="aside-news-item" key={i}>
+                    <div className="block-thumb">
+                      <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
+                        <img
+                          src={extractImageSrc(ttnoibat.imageSummary) || "/images/default.png"}
+                          alt={ttnoibat.title}
+                          width={120}
+                          height={120}
+                        />
+                      </Link>
+                    </div>
+                    <div className="block-content">
+                      <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
+                        {ttnoibat.title}
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

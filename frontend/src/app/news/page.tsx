@@ -155,23 +155,29 @@ export default function New() {
 
               <div className="aside-section">
                 <h2 className="aside-title">Tin tức nổi bật</h2>
-                <ul className="aside-list">
-                  {tintucNoibat.map((tintuc) => (
-                    <li className="aside-news-item" key={tintuc.slug}>
-                      <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                        <img
-                          src={extractImageUrl(tintuc.imageSummary)}
-                          alt={tintuc.title}
-                          width={120}
-                          height={120}
-                        />
-                      </Link>
-                      <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                        {tintuc.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <div className="item-blog-small">
+                  <ul className="aside-list">
+                    {tintucNoibat.map((tintuc) => (
+                      <li className="aside-news-item" key={tintuc.slug}>
+                        <div className="block-thumb">
+                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                            <img
+                              src={extractImageUrl(tintuc.imageSummary)}
+                              alt={tintuc.title}
+                              width={120}
+                              height={120}
+                            />
+                          </Link>
+                        </div>
+                        <div className="block-content">
+                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                            {tintuc.title}
+                          </Link>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div> {/* Kết thúc sidebar */}
           </div>
