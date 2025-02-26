@@ -58,7 +58,7 @@ const SaladList = () => {
           <Link href={`/product/${item.slug}`}>
             <h3 className={styles.ProductName}>{item.name}</h3>
           </Link>
-          <p className={styles.ProductDesc}>{item.description}</p>
+          <p className={styles.ProductDesc} dangerouslySetInnerHTML={{__html: item.description,}}/>          
           <a href="#" className={styles.viewMore}>Xem thêm</a>
 
           <div className={styles.ProductFooter}>

@@ -6,7 +6,6 @@ import Image from "next/image";
 import styles from "../../../styles/ProductDetail.module.css";
 import { Heart } from "lucide-react";
 
-
 interface Variant {
   option: string;
   price: number;
@@ -66,11 +65,11 @@ const ProductDetail = () => {
           <div className={styles.row}>
             <div className={styles.productLeft}>
               <div className={styles.productImage}>
-                <Image
+                <Image 
                   src={`http://localhost:3001/images/${selectedVariant.image}`}
                   alt={product.name}
                   width={400}
-                  height={400}
+                  height={400}                 
                 />
               </div>
               <div className={styles.voucherContainer}>
@@ -139,57 +138,68 @@ const ProductDetail = () => {
                   </div>
                   <div className={styles.formProduct}>
                     <div className={styles.select}>
-                      <div className={styles.swatch}>
-                        <div className={styles.selectHeader}>
-                          <p>Kích thước: </p>
+                      {product.variants.some(
+                        (variant) => variant.option.trim() !== ""
+                      ) && (
+                        <div className={styles.swatch}>
+                          <div className={styles.selectHeader}>
+                            <p>
+                              Kích thước:{" "}
+                              <span>
+                                {selectedVariant?.option || "Chưa chọn"}
+                              </span>
+                            </p>
+                          </div>
+                          <div className={styles.selectOption}>
+                            {product.variants
+                              .filter((variant) => variant.option.trim() !== "") // Lọc các option rỗng
+                              .map((variant) => (
+                                <label
+                                  key={variant.option}
+                                  className={styles.selectOptionElement}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={
+                                      selectedVariant?.option === variant.option
+                                    }
+                                    onChange={() => setSelectedVariant(variant)}
+                                  />
+                                  {variant.option}
+                                </label>
+                              ))}
+                          </div>
                         </div>
-                        <div className={styles.selectOption}>
-                          {product.variants.map((variant) => (
-                            <label
-                              key={variant.option}
-                              className={styles.selectOptionElement}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedVariant.option === variant.option
-                                }
-                                onChange={() => setSelectedVariant(variant)}
-                              />
-                              {variant.option}
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                      <div className={styles.swatch}>
-                        <div className="selectHeader"></div>
-                        <div className="selectOption"></div>
-                      </div>
-
+                      )}
                       {product.idcate === "67b0a4fbb5a39baf9de368ff" && (
-                        <div className={styles.optionGroup}>
-                          <p className={styles.label}>
-                            Đế:{" "}
-                            <span className={styles.valueRoperties}>
-                              {selectedCrust}
-                            </span>
-                          </p>
-                          <label className={styles.selectOption}>
-                            <input
-                              type="checkbox"
-                              checked={selectedCrust === "Đế dày"}
-                              onChange={() => setSelectedCrust("Đế dày")}
-                            />
-                            Dày
-                          </label>
-                          <label className={styles.selectOption}>
-                            <input
-                              type="checkbox"
-                              checked={selectedCrust === "Đế mỏng"}
-                              onChange={() => setSelectedCrust("Đế mỏng")}
-                            />
-                            Mỏng giòn
-                          </label>
+                        <div className={styles.swatch}>
+                          <div className={styles.selectHeader}>
+                            <p>
+                              Đế:{" "}
+                              <span className={styles.valueRoperties}>
+                                {selectedCrust}
+                              </span>
+                            </p>
+                           
+                          </div>
+                          <div className={styles.selectOption}>
+                            <label>
+                                <input
+                                  type="checkbox"
+                                  checked={selectedCrust === "Đế dày"}
+                                  onChange={() => setSelectedCrust("Đế dày")}
+                                />
+                                Đế dày
+                              </label>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  checked={selectedCrust === "Đế mỏng"}
+                                  onChange={() => setSelectedCrust("Đế mỏng")}
+                                />
+                                Đế mỏng
+                              </label>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -215,7 +225,9 @@ const ProductDetail = () => {
                             >
                               -
                             </button>
-                            <span className={styles.quantityShow}>{quantity}</span>
+                            <span className={styles.quantityShow}>
+                              {quantity}
+                            </span>
                             <button
                               className={styles.btnNum}
                               onClick={increaseQuantity}
@@ -227,8 +239,10 @@ const ProductDetail = () => {
                         </div>
 
                         <div className={styles.addCart}>
-                          <button className={styles.add}>Thêm vào giỏ hàng</button>
-                          <Heart className={styles.heart}/>
+                          <button className={styles.add}>
+                            Thêm vào giỏ hàng
+                          </button>
+                          <Heart className={styles.heart} />
                         </div>
                       </div>
                       <div className={styles.groupBtn}>

@@ -16,10 +16,15 @@
 .productLeft{
   flex: 0 0 58.333333%;
   max-width: 58.333333%;
+  padding: 0 20px;
 }
 .productImage{
-  position: relative;
+  position: relative; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 .voucherContainer{
   border: 1px dashed #006a31;
   padding-bottom: 5px !important;
