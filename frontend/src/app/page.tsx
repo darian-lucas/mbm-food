@@ -9,7 +9,12 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
-import { addFavorite, removeFavorite, checkFavorite, getFavorites } from "../services/Favorite";
+import {
+  addFavorite,
+  removeFavorite,
+  checkFavorite,
+  getFavorites,
+} from "../services/Favorite";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -27,6 +32,7 @@ interface Product {
 interface News {
   _id: string;
   title: string;
+  slug: string;
   content: string;
   summary: string;
   imageSummary?: string;
@@ -43,9 +49,9 @@ export default function Home(): JSX.Element {
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const token = localStorage.getItem("token");
-  const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
-    {}
-  );
+  // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
+  //   {}
+  // );
   const handleScrollToCategory = (categoryId: string) => {
     const section = document.getElementById(categoryId);
     if (section) {
@@ -109,7 +115,7 @@ export default function Home(): JSX.Element {
     fetchProducts();
   }, [token]); // Cập nhật lại nếu token thay đổi
 
-  // Toggle trạng thái yêu thích 
+  // Toggle trạng thái yêu thích
   const toggleFavorite = async (food_id: string) => {
     if (!token) {
       alert("Bạn cần đăng nhập để yêu thích sản phẩm!");
@@ -131,14 +137,12 @@ export default function Home(): JSX.Element {
     setFavorites(newFavorites);
   };
 
-
-
   useEffect(() => {
     const fetchNews = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/posts");
         const result = await response.json();
-  
+
         if (result && Array.isArray(result.posts)) {
           setNewsData(result.posts); // Lấy danh sách `posts` từ kết quả API
         } else {
@@ -148,10 +152,10 @@ export default function Home(): JSX.Element {
         console.error("Lỗi khi tải tin tức:", error);
       }
     };
-  
+
     fetchNews();
   }, []);
-  
+
   ///sản phẩm yêu thích
 
   const promoData = [
@@ -228,10 +232,10 @@ export default function Home(): JSX.Element {
       text: "Ưu đãi và khuyến mãi hấp dẫn",
     },
   ];
-  const hotFoodItems = products.filter((food) => food.hot === 1);
-  const [foodFavorites, setFoodFavorites] = useState(
-    Array(hotFoodItems.length).fill(false)
-  );
+  // const hotFoodItems = products.filter((food) => food.hot === 1);
+  // const [foodFavorites, setFoodFavorites] = useState(
+  //   Array(hotFoodItems.length).fill(false)
+  // );
   const discountItems = products
     .filter((product) =>
       product.variants.some(
@@ -240,12 +244,12 @@ export default function Home(): JSX.Element {
     )
     .slice(0, 4);
 
-  const [discountFavorites, setDiscountFavorites] = useState<boolean[]>(
-    Array(discountItems.length).fill(false)
-  );
-  const [bestSellingFavorites, setBestSellingFavorites] = useState(
-    Array(bestSellingItems.length).fill(false)
-  );
+  // const [discountFavorites, setDiscountFavorites] = useState<boolean[]>(
+  //   Array(discountItems.length).fill(false)
+  // );
+  // const [bestSellingFavorites, setBestSellingFavorites] = useState(
+  //   Array(bestSellingItems.length).fill(false)
+  // );
   // const toggleFoodFavorite = (index: number) => {
   //   setFoodFavorites((prev) => {
   //     const newFavorites = [...prev];
@@ -390,42 +394,31 @@ export default function Home(): JSX.Element {
             .map((food, index) => (
               <SwiperSlide key={food._id} className={styles.slideItem}>
                 <div className={styles.foodItem}>
-                  {/* Icon trái tim */}
-                  <button
-                    className={styles.heartIcon}
-                    onClick={async () => {
-                      await toggleFavorite(food._id);
-                    }}
-                  >
-                    <Heart
-                      size={20}
-                      className={favorites[food._id] ? styles.heartActive : styles.heartInactive}
-                    />
-                  </button>
-
                   <Image
                     src={`/images/${food.variants[0]?.image || "default.png"}`}
                     alt={food.name}
-                    width={250}
-                    height={200}
+                    width={150}
+                    height={140}
                   />
-                  <h3 className={styles.foodName}>{food.name}</h3>
-                  <p className={styles.foodDesc}>
-                    {food.description || "Không có mô tả"}
-                  </p>
-                  <p className={styles.foodPrice}>
-                    Giá chỉ từ:{" "}
-                    <span>
+                  <div className={styles.foodContent}>
+                    <h3 className={styles.foodName}>{food.name}</h3>
+                    <p
+                      className={styles.foodDesc}
+                      dangerouslySetInnerHTML={{
+                        __html: food.description || "Không có mô tả",
+                      }}
+                    />
+                    <p className={styles.viewMore}>Xem thêm</p>
+                    <p className={styles.foodPriceLabel}>Giá chỉ từ: </p>
+                    <span className={styles.foodPrice}>
                       {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
                     </span>
-                  </p>
+                  </div>
                   <button className={styles.addButton}>Thêm</button>
                 </div>
               </SwiperSlide>
             ))}
         </Swiper>
-
-
       </section>
       {/* Chương trình khuyến mãi */}
       <section className={styles.section}>
@@ -492,7 +485,11 @@ export default function Home(): JSX.Element {
                   >
                     <Heart
                       size={20}
-                      className={favorites[item._id] ? styles.heartActive : styles.heartInactive}
+                      className={
+                        favorites[item._id]
+                          ? styles.heartActive
+                          : styles.heartInactive
+                      }
                     />
                   </button>
                   <Image
@@ -502,9 +499,12 @@ export default function Home(): JSX.Element {
                     height={200}
                   />
                   <h3 className={styles.discountItemName}>{item.name}</h3>
-                  <p className={styles.discountItemDesc}>
-                    {item.description || "Không có mô tả"}
-                  </p>
+                  <p
+                    className={styles.discountItemDesc}
+                    dangerouslySetInnerHTML={{
+                      __html: item.description || "Không có mô tả",
+                    }}
+                  ></p>
                   <a href="#" className={styles.menufoodMore}>
                     Xem thêm
                   </a>
@@ -532,7 +532,7 @@ export default function Home(): JSX.Element {
           <span className={styles.bestSellingSubtitle}>
             Được bán nhiều nhất
           </span>
-           {/*cần thêm tính năng yêu thích khi bestSelling dc gọi bằng api*/}
+          {/*cần thêm tính năng yêu thích khi bestSelling dc gọi bằng api*/}
           <div className={styles.bestSellingList}>
             {bestSellingItems.map((item, index) => (
               <div key={index} className={styles.bestSellingItem}>
@@ -541,13 +541,15 @@ export default function Home(): JSX.Element {
                 )}
 
                 <button
-                  className={styles.bestSellingFavoriteIcon}
-                  onClick={() => toggleBestSellingFavorite(index)}
+                  className={styles.heartIcon}
+                  onClick={async () => {
+                    await toggleFavorite(item._id);
+                  }}
                 >
                   <Heart
                     size={20}
                     className={
-                      bestSellingFavorites[index]
+                      favorites[item._id]
                         ? styles.heartActive
                         : styles.heartInactive
                     }
@@ -596,8 +598,9 @@ export default function Home(): JSX.Element {
                 alt={`Effect ${index + 1}`}
                 width={350}
                 height={200}
-                className={`${styles.specialBannerOverlay} ${styles[`overlay${index}`]
-                  }`}
+                className={`${styles.specialBannerOverlay} ${
+                  styles[`overlay${index}`]
+                }`}
               />
             </div>
           ))}
@@ -632,8 +635,9 @@ export default function Home(): JSX.Element {
                 {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
                     <Image
-                      src={`/images/${item.variants[0]?.image || "default.png"
-                        }`}
+                      src={`/images/${
+                        item.variants[0]?.image || "default.png"
+                      }`}
                       alt={item.name}
                       width={100}
                       height={70}
@@ -641,8 +645,12 @@ export default function Home(): JSX.Element {
                     />
                     <div className={styles.menufoodContent}>
                       <h4 className={styles.menufoodItemName}>{item.name}</h4>
-                      <p className={styles.menufoodItemDesc}>
-                        {item.description || "Không có mô tả"}
+                      <p
+                        className={styles.menufoodItemDesc}
+                        dangerouslySetInnerHTML={{
+                          __html: item.description || "Không có mô tả",
+                        }}
+                      >
                       </p>
                       <p className={styles.menufoodPrice}>
                         Giá chỉ từ:{" "}
@@ -660,16 +668,20 @@ export default function Home(): JSX.Element {
                       </div>
                     </div>
                     <button
-                    className={styles.heartIcon}
-                    onClick={async () => {
-                      await toggleFavorite(item._id);
-                    }}
-                  >
-                    <Heart
-                      size={20}
-                      className={favorites[item._id] ? styles.heartActive : styles.heartInactive}
-                    />
-                  </button>
+                      className={styles.heartIcon}
+                      onClick={async () => {
+                        await toggleFavorite(item._id);
+                      }}
+                    >
+                      <Heart
+                        size={20}
+                        className={
+                          favorites[item._id]
+                            ? styles.heartActive
+                            : styles.heartInactive
+                        }
+                      />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -687,7 +699,7 @@ export default function Home(): JSX.Element {
         <div className={styles.newsList}>
           {newsData.map((news) => (
             <Link
-              href={`/news/${news._id}`}
+              href={`/news/${encodeURIComponent(news.slug)}`}
               key={news._id}
               className={styles.newsLink}
             >
@@ -709,7 +721,7 @@ export default function Home(): JSX.Element {
                     className={styles.newsDesc}
                     dangerouslySetInnerHTML={{ __html: news.content }}
                   />
-                  <Link href={`/news/${news._id}`} className={styles.readMore}>
+                  <Link href={`/news/${encodeURIComponent(news.slug)}`} className={styles.readMore}>
                     Đọc tiếp
                   </Link>
                 </div>
