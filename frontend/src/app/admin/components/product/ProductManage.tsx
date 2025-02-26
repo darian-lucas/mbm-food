@@ -83,7 +83,7 @@ const ProductManage = () => {
   return (
     <>
       <Link
-        href="/admin/manage/product/new"
+        href="/admin/manage/products/new"
         className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 animate-bounce"
       >
         <svg
@@ -115,7 +115,7 @@ const ProductManage = () => {
             <TableHead>Thông tin</TableHead>
             <TableHead>Giá</TableHead>
             <TableHead>Danh mục</TableHead>
-            <TableHead>Mô tả</TableHead>
+            {/* <TableHead>Mô tả</TableHead> */}
             <TableHead>Trạng thái</TableHead>
             <TableHead>Hành động</TableHead>
           </TableRow>
@@ -129,7 +129,12 @@ const ProductManage = () => {
                     <div className="flex items-center gap-3">
                       <Image
                         alt=""
-                        src={`${API_URL}/images/${product.variants[0].image}`}
+                        src={
+                          product.variants?.[0]?.image
+                            ? `${API_URL}/images/${product.variants[0].image}`
+                            : "/placeholder.jpg" // Ảnh mặc định nếu không có ảnh
+                        }
+                        
                         width={100}
                         height={100}
                         className="flex-shrink-0 size-14 rounded-lg object-contain"
@@ -147,23 +152,25 @@ const ProductManage = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {product.variants[0].price.toLocaleString("vi")} VNĐ
+                  {product.variants?.[0]?.price ? `${product.variants[0].price.toLocaleString("vi")} VNĐ` : "Chưa có giá"}
+
+
                   </TableCell>
                   <TableCell className="px-3">
                     {" "}
                     {categories.find((cate) => cate._id === product.idcate)
                       ?.name || "Không xác định"}
                   </TableCell>
-                  <TableCell className="">
+                  {/* <TableCell className="">
                     <div className="flex items-center gap-20">
                       <p className="line-clamp-1 pl-3">{product.description}</p>
                     </div>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="pl-4"><span className={commonClassNames.status}>{product.status}</span></TableCell>
                   <TableCell className="px-3">
                     <div className="flex gap-3 ">
                       <Link
-                        href={`/admin/manage/product/update?slug=${product.slug}`}
+                        href={`/admin/manage/products/update?slug=${product.slug}`}
                         className={commonClassNames.action}
                       >
                         <IconEdit />
