@@ -24,34 +24,43 @@ const login = async (email, password) => {
         { expiresIn: '1h' }
     );
     
-    return { token };
+    return { token, userId: user._id };
+};
+
+// Đăng xuất (logout)
+const logout = () => {
+    return { message: 'Đăng xuất thành công' };
+};
+
+// Cập nhật mật khẩu
+const updatePassword = async (userId, oldPassword, newPassword) => {
+    const user = await User.findById(userId);
+    if (!user) throw new Error('Người dùng không tồn tại');
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) throw new Error('Mật khẩu cũ không chính xác');
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    return { message: 'Cập nhật mật khẩu thành công' };
 };
 
 // Lấy tất cả người dùng và phân trang
 const getAllUsers = async (page = 1, limit = 5) => {
-    try {
-        page = Math.max(1, page);
-        limit = Math.max(1, limit);
+    page = Math.max(1, page);
+    limit = Math.max(1, limit);
+    const skip = (page - 1) * limit;
 
-        const skip = (page - 1) * limit;
-        console.log(`Querying users - Skip: ${skip}, Limit: ${limit}`);
+    const users = await User.find().skip(skip).limit(limit);
+    const totalUsers = await User.countDocuments();
 
-        const users = await User.find().skip(skip).limit(limit);
-        const totalUsers = await User.countDocuments();
-
-        return {
-            users,
-            totalUsers,
-            totalPages: Math.ceil(totalUsers / limit),
-            currentPage: page
-        };
-    } catch (error) {
-        console.error("Database query error:", error);
-        throw new Error("Không thể truy vấn danh sách người dùng");
-    }
+    return {
+        users,
+        totalUsers,
+        totalPages: Math.ceil(totalUsers / limit),
+        currentPage: page
+    };
 };
-
-
 
 // Xóa người dùng theo ID
 const deleteUser = async (userId) => {
@@ -67,6 +76,16 @@ const updateUser = async (userId, updateData) => {
     return { message: 'Cập nhật thành công', user };
 };
 
+// Thêm địa chỉ mới
+const addAddress = async (userId, address) => {
+    const user = await User.findById(userId);
+    if (!user) throw new Error('Người dùng không tồn tại');
+    
+    user.address.push(address);
+    await user.save();
+    return { message: 'Đã thêm địa chỉ mới', addresses: user.addresses };
+};
+
 // Tìm người dùng theo username
 const findUserByName = async (username) => {
     const user = await User.findOne({ username });
@@ -74,5 +93,22 @@ const findUserByName = async (username) => {
     return user;
 };
 
-module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };
+const findUserById = async (userId) => {
+    const user = await User.findById(userId);
+    if (!user) throw new Error('Người dùng không tồn tại');
+    return user;
+};
+
+module.exports = { 
+    getAllUsers, 
+    deleteUser, 
+    updateUser, 
+    findUserByName, 
+    findUserById, 
+    register, 
+    login, 
+    logout, 
+    updatePassword, 
+    addAddress 
+};
 
