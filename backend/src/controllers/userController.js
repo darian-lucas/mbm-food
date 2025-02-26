@@ -74,37 +74,4 @@ const findUserByName = async (req, res) => {
     }
 };
 
-// Tìm người dùng theo ID
-const findUserById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await authService.findUserById(id);
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-};
-
-// Kích hoạt/Vô hiệu hóa người dùng
-const activateUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { isActive } = req.body; // Nhận trạng thái từ request body
-        const result = await authService.activateUser(id, isActive);
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
-
-module.exports = { 
-    getAllUsers, 
-    deleteUser, 
-    updateUser, 
-    findUserByName, 
-    findUserById, 
-    register, 
-    login, 
-    activateUser, 
-    getAllUsers
-};
+module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };

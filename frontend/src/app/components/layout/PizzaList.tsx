@@ -51,15 +51,12 @@ const PizzaList = () => {
           <button className={styles.favoriteIcon} onClick={() => toggleFavorite(item._id)}>
             <Heart size={20} className={favorites[item._id] ? styles.heartActive : styles.heartInactive} />
           </button>
-
           <Image src={`/images/${item.variants[0].image}`} alt={item.name} width={230} height={200} />
           <Link href={`/product/${item.slug}`}>
             <h3 className={styles.ProductName}>{item.name}</h3>
           </Link>
-          
-          <p className={styles.ProductDesc}>{item.description}</p>
+          <p className={styles.ProductDesc} dangerouslySetInnerHTML={{__html: item.description,}}/>          
           <a href="#" className={styles.viewMore}>Xem thêm</a>
-
           <div className={styles.ProductFooter}>
             <div className={styles.ProductPrice}>
               <p>Giá chỉ từ:</p>

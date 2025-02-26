@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import styles from "@/styles/Login.module.css";
+import styles from "@/app/components/Login.module.css";
 
 interface LoginForm {
   email: string;

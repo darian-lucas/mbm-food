@@ -24,9 +24,7 @@ export default function PageProduct(): JSX.Element {
       try {
         const response = await fetch("http://localhost:3001/api/categories");
         const data = await response.json();
-
         // console.log("Dữ liệu từ API:", data);
-
         if (data && Array.isArray(data.data)) {
           setCategories(data.data.slice(0, 5));
         } else {

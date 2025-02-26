@@ -33,107 +33,25 @@ exports.getByCategory = async (req, res) => {
   }
 };
 
-// Thêm sản phẩm mới
-// exports.createProduct = async (req, res, next) => {
-//   try {
-//     let { name, idcate, description, variants, hot,view,slug } = req.body;
-//      let image = req.file ? `${req.file.filename}` : null;
-//     const result = await productServices.createProduct(name, idcate, description, variants, hot,view,slug);
-//     res.status(200).json({ data: result });
-//   } catch (error) {
-//     res.status(404).json({ error: error.message });
-//   }
-// };
-
-// exports.createProduct = async (req, res, next) => {
-//   try {
-//     let { name, idcate, description, hot, view, slug, price, sale_price } =
-//       req.body;
-//     let image = req.file ? `${req.file.filename}` : null;
-
-//     const variants = [
-//       {
-//         option: "",
-//         image: image || "",
-//         price: parseFloat(price) || 0,
-//         sale_price: parseFloat(sale_price) || 0,
-//       },
-//     ];
-
-//     const result = await productServices.createProduct({
-//       name,
-//       idcate,
-//       description,
-//       variants,
-//       hot: hot ? parseInt(hot) : 0,
-//       view: view ? parseInt(view) : 0,
-//       slug,
-//     });
-
-//     res.status(200).json({ success: true, data: result });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
-// exports.createProduct = async (req, res, next) => {
-//   try {
-//     let { name, idcate, description, hot, view, slug, price, sale_price } = req.body;
-//     let image = req.file ? `${req.file.filename}` : "";
-
-//     let variants = [];
-//     if (price && sale_price) {
-//       variants.push({
-//         option: "",
-//         image: image,
-//         price: parseFloat(price),
-//         sale_price: parseFloat(sale_price),
-//       });
-//     }
-
-//     const result = await productServices.createProduct({
-//       name,
-//       idcate,
-//       description,
-//       variants,
-//       hot: hot ? parseInt(hot) : 0,
-//       view: view ? parseInt(view) : 0,
-//       slug,
-//     });
-
-//     res.status(200).json({ success: true, data: result });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 
 exports.createProduct = async (req, res) => {
   try {
-    const { name, idcate, description, hot, slug } = req.body;
+    const { name, idcate, description, hot, slug, variants } = req.body;
 
-    // Extract variants data
-    const variants = [];
-    let i = 0;
-    while (req.body[`variants[${i}][option]`] !== undefined) {
-      const variant = {
-        option: req.body[`variants[${i}][option]`] || "",
-        price: parseFloat(req.body[`variants[${i}][price]`] || "0"),
-        sale_price: parseFloat(req.body[`variants[${i}][sale_price]`] || "0"),
-        image: req.files[`variants[${i}][image]`]
-          ? req.files[`variants[${i}][image]`][0].filename
-          : "", // Lưu tên file hình ảnh
-      };
-      variants.push(variant);
-      i++;
-    }
+    const parsedVariants = Array.isArray(variants) ? variants : JSON.parse(variants || "[]");
 
-    console.log("Variants:", variants);
+    const formattedVariants = parsedVariants.map((variant, index) => ({
+      option: variant.option || "",
+      price: parseFloat(variant.price || "0"),
+      sale_price: parseFloat(variant.sale_price || "0"),
+      image: req.files?.[`variants[${index}][image]`]?.[0]?.filename || "", // Kiểm tra ảnh upload
+    }));
 
     const result = await productServices.createProduct({
       name,
       idcate,
       description,
-      variants,
+      variants: formattedVariants,
       hot: parseInt(hot) || 0,
       slug,
     });
@@ -145,28 +63,61 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+
+
 // Cập nhật sản phẩm
-exports.updateProduct = async (req, res, next) => {
+// exports.updateProduct = async (req, res, next) => {
+//   try {
+//     let { id } = req.params;
+//     let { name, idcate, description, variants, hot, view, slug, status } =
+//       req.body;
+//     const result = await productServices.updateProduct(
+//       id,
+//       name,
+//       idcate,
+//       description,
+//       variants,
+//       hot,
+//       view,
+//       slug,
+//       status
+//     );
+//     res.status(200).json({ data: result });
+//   } catch (error) {
+//     res.status(404).json({ error: error.message });
+//   }
+// };
+
+exports.updateProduct = async (req, res) => {
   try {
-    let { id } = req.params;
-    let { name, idcate, description, variants, hot, view, slug, status } =
-      req.body;
-    const result = await productServices.updateProduct(
-      id,
+    const { id } = req.params;
+    const { name, idcate, description, hot, slug, variants } = req.body;
+
+    const parsedVariants = Array.isArray(variants) ? variants : JSON.parse(variants || "[]");
+
+    const formattedVariants = parsedVariants.map((variant, index) => ({
+      option: variant.option || "",
+      price: parseFloat(variant.price || "0"),
+      sale_price: parseFloat(variant.sale_price || "0"),
+      image: req.files?.[`variants[${index}][image]`]?.[0]?.filename || variant.image || "",
+    }));
+
+    const updatedProduct = await productServices.updateProduct(id, {
       name,
       idcate,
       description,
-      variants,
-      hot,
-      view,
+      variants: formattedVariants,
+      hot: parseInt(hot) || 0,
       slug,
-      status
-    );
-    res.status(200).json({ data: result });
+    });
+
+    res.status(200).json({ success: true, data: updatedProduct });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    console.error("Update product error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Xóa sản phẩm
 exports.deleteProduct = async (req, res, next) => {
