@@ -5,7 +5,7 @@ exports.getAllPosts = async (req, res) => {
         const page = parseInt(req.query.page) || null;
         const limit = parseInt(req.query.limit) || null;
 
-        console.log(`Fetching posts - Page: ${page}, Limit: ${limit}`);
+      
 
         const result = await postService.getAllPosts(page, limit);
         res.status(200).json(result);
@@ -27,7 +27,6 @@ exports.searchPostsByTitle = async (req, res) => {
     }
 };
 
-
 exports.getPostById = async (req, res) => {
     try {
         const post = await postService.getPostById(req.params.id);
@@ -35,6 +34,21 @@ exports.getPostById = async (req, res) => {
         res.json(post);
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getPostBySlug = async (req, res) => {
+    try {
+        const slug = req.params.slug; // Lấy giá trị slug
+        if (!slug) return res.status(400).json({ message: "Slug không hợp lệ" });
+
+        const post = await postService.getPostBySlug(slug); // Truyền slug trực tiếp, không truyền object
+        if (!post) return res.status(404).json({ message: "Không tìm thấy bài viết" });
+
+        res.json(post);
+    } catch (err) {
+        console.error("Lỗi API getPostBySlug:", err);
+        res.status(500).json({ message: "Lỗi server", error: err.message });
     }
 };
 

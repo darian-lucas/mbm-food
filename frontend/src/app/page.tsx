@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
+import { addFavorite, removeFavorite, checkFavorite, getFavorites } from "../services/Favorite";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -40,6 +41,8 @@ export default function Home(): JSX.Element {
   const [newsData, setNewsData] = useState<News[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
+  const token = localStorage.getItem("token");
   const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
     {}
   );
@@ -82,7 +85,19 @@ export default function Home(): JSX.Element {
         const data = await response.json();
 
         if (data && Array.isArray(data.data)) {
-          setProducts(data.data); // Chỉ lưu nếu đúng định dạng
+          setProducts(data.data); // Lưu danh sách sản phẩm
+
+          if (token) {
+            // Kiểm tra trạng thái yêu thích với user từ token
+            const favoriteStatus: { [key: string]: boolean } = {};
+            await Promise.all(
+              data.data.map(async (product) => {
+                const result = await checkFavorite(product._id, token);
+                favoriteStatus[product._id] = result?.isFavorite || false;
+              })
+            );
+            setFavorites(favoriteStatus);
+          }
         } else {
           console.error("Dữ liệu từ API không đúng định dạng mong đợi:", data);
         }
@@ -92,26 +107,52 @@ export default function Home(): JSX.Element {
     };
 
     fetchProducts();
-  }, []);
+  }, [token]); // Cập nhật lại nếu token thay đổi
+
+  // Toggle trạng thái yêu thích 
+  const toggleFavorite = async (food_id: string) => {
+    if (!token) {
+      alert("Bạn cần đăng nhập để yêu thích sản phẩm!");
+      return;
+    }
+
+    const newFavorites = { ...favorites };
+
+    if (favorites[food_id]) {
+      await removeFavorite(food_id, token);
+      newFavorites[food_id] = false;
+      alert("❌ Đã xóa sản phẩm khỏi danh sách yêu thích!");
+    } else {
+      await addFavorite(food_id, token);
+      newFavorites[food_id] = true;
+      alert("✅ Đã thêm sản phẩm vào danh sách yêu thích!");
+    }
+
+    setFavorites(newFavorites);
+  };
+
+
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/posts");
-        const data = await response.json();
-
-        if (data && Array.isArray(data.posts)) {
-          setNewsData(data.posts); // Lấy đúng mảng "posts"
+        const result = await response.json();
+  
+        if (result && Array.isArray(result.posts)) {
+          setNewsData(result.posts); // Lấy danh sách `posts` từ kết quả API
         } else {
-          console.error("Dữ liệu từ API không đúng định dạng:", data);
+          console.error("Dữ liệu từ API không đúng định dạng:", result);
         }
       } catch (error) {
         console.error("Lỗi khi tải tin tức:", error);
       }
     };
-
+  
     fetchNews();
   }, []);
+  
+  ///sản phẩm yêu thích
 
   const promoData = [
     { name: "Khuyến mãi 1", img: "/images/promo-1.png" },
@@ -205,36 +246,36 @@ export default function Home(): JSX.Element {
   const [bestSellingFavorites, setBestSellingFavorites] = useState(
     Array(bestSellingItems.length).fill(false)
   );
-  const toggleFoodFavorite = (index: number) => {
-    setFoodFavorites((prev) => {
-      const newFavorites = [...prev];
-      newFavorites[index] = !newFavorites[index];
-      return newFavorites;
-    });
-  };
+  // const toggleFoodFavorite = (index: number) => {
+  //   setFoodFavorites((prev) => {
+  //     const newFavorites = [...prev];
+  //     newFavorites[index] = !newFavorites[index];
+  //     return newFavorites;
+  //   });
+  // };
 
-  const toggleDiscountFavorite = (index: number) => {
-    setDiscountFavorites((prev) => {
-      const newFavorites = [...prev];
-      newFavorites[index] = !newFavorites[index];
-      return newFavorites;
-    });
-  };
+  // const toggleDiscountFavorite = (index: number) => {
+  //   setDiscountFavorites((prev) => {
+  //     const newFavorites = [...prev];
+  //     newFavorites[index] = !newFavorites[index];
+  //     return newFavorites;
+  //   });
+  // };
 
-  const toggleBestSellingFavorite = (index: number) => {
-    setBestSellingFavorites((prev) => {
-      const newFavorites = [...prev];
-      newFavorites[index] = !newFavorites[index];
-      return newFavorites;
-    });
-  };
+  // const toggleBestSellingFavorite = (index: number) => {
+  //   setBestSellingFavorites((prev) => {
+  //     const newFavorites = [...prev];
+  //     newFavorites[index] = !newFavorites[index];
+  //     return newFavorites;
+  //   });
+  // };
 
-  const handleToggleFavorite = (productId: string) => {
-    setMenuFavorites((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
-  };
+  // const handleToggleFavorite = (productId: string) => {
+  //   setMenuFavorites((prev) => ({
+  //     ...prev,
+  //     [productId]: !prev[productId],
+  //   }));
+  // };
 
   return (
     <main className={styles.home}>
@@ -345,45 +386,46 @@ export default function Home(): JSX.Element {
           }}
         >
           {products
-            .filter((product) => product.hot === 1)
+            .filter((product) => product.hot === 1) // Lọc sản phẩm có hot === 1
             .map((food, index) => (
               <SwiperSlide key={food._id} className={styles.slideItem}>
                 <div className={styles.foodItem}>
-                  <Image
-                    src={`/images/${food.variants[0]?.image || "default.png"}`}
-                    alt={food.name}
-                    width={150}
-                    height={150}
-                  />
-                  <div className={styles.foodContent}>
-                    <h3 className={styles.foodName}>{food.name}</h3>
-                    <p className={styles.foodDesc}>
-                      {food.description || "Không có mô tả"}
-                    </p>
-                    <p className={styles.viewMore}>Xem thêm</p>
-                    <p className={styles.foodPriceLabel}>Giá chỉ từ: </p>
-                    <span className={styles.foodPrice}>
-                      {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
-                    </span>
-                  </div>
+                  {/* Icon trái tim */}
                   <button
                     className={styles.heartIcon}
-                    onClick={() => toggleFoodFavorite(index)}
+                    onClick={async () => {
+                      await toggleFavorite(food._id);
+                    }}
                   >
                     <Heart
                       size={20}
-                      className={
-                        foodFavorites[index]
-                          ? styles.heartActive
-                          : styles.heartInactive
-                      }
+                      className={favorites[food._id] ? styles.heartActive : styles.heartInactive}
                     />
                   </button>
+
+                  <Image
+                    src={`/images/${food.variants[0]?.image || "default.png"}`}
+                    alt={food.name}
+                    width={250}
+                    height={200}
+                  />
+                  <h3 className={styles.foodName}>{food.name}</h3>
+                  <p className={styles.foodDesc}>
+                    {food.description || "Không có mô tả"}
+                  </p>
+                  <p className={styles.foodPrice}>
+                    Giá chỉ từ:{" "}
+                    <span>
+                      {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
+                    </span>
+                  </p>
                   <button className={styles.addButton}>Thêm</button>
                 </div>
               </SwiperSlide>
             ))}
         </Swiper>
+
+
       </section>
       {/* Chương trình khuyến mãi */}
       <section className={styles.section}>
@@ -443,16 +485,14 @@ export default function Home(): JSX.Element {
               return (
                 <div key={item._id} className={styles.discountItem}>
                   <button
-                    className={styles.favoriteIcon}
-                    onClick={() => toggleDiscountFavorite(index)}
+                    className={styles.heartIcon}
+                    onClick={async () => {
+                      await toggleFavorite(item._id);
+                    }}
                   >
                     <Heart
                       size={20}
-                      className={
-                        discountFavorites[index]
-                          ? styles.heartActive
-                          : styles.heartInactive
-                      }
+                      className={favorites[item._id] ? styles.heartActive : styles.heartInactive}
                     />
                   </button>
                   <Image
@@ -492,7 +532,7 @@ export default function Home(): JSX.Element {
           <span className={styles.bestSellingSubtitle}>
             Được bán nhiều nhất
           </span>
-
+           {/*cần thêm tính năng yêu thích khi bestSelling dc gọi bằng api*/}
           <div className={styles.bestSellingList}>
             {bestSellingItems.map((item, index) => (
               <div key={index} className={styles.bestSellingItem}>
@@ -556,9 +596,8 @@ export default function Home(): JSX.Element {
                 alt={`Effect ${index + 1}`}
                 width={350}
                 height={200}
-                className={`${styles.specialBannerOverlay} ${
-                  styles[`overlay${index}`]
-                }`}
+                className={`${styles.specialBannerOverlay} ${styles[`overlay${index}`]
+                  }`}
               />
             </div>
           ))}
@@ -593,9 +632,8 @@ export default function Home(): JSX.Element {
                 {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
                     <Image
-                      src={`/images/${
-                        item.variants[0]?.image || "default.png"
-                      }`}
+                      src={`/images/${item.variants[0]?.image || "default.png"
+                        }`}
                       alt={item.name}
                       width={100}
                       height={70}
@@ -622,18 +660,16 @@ export default function Home(): JSX.Element {
                       </div>
                     </div>
                     <button
-                      className={styles.menufoodFavorite}
-                      onClick={() => handleToggleFavorite(item._id)}
-                    >
-                      <Heart
-                        size={20}
-                        className={
-                          menuFavorites[item._id]
-                            ? styles.heartActive
-                            : styles.heartInactive
-                        }
-                      />
-                    </button>
+                    className={styles.heartIcon}
+                    onClick={async () => {
+                      await toggleFavorite(item._id);
+                    }}
+                  >
+                    <Heart
+                      size={20}
+                      className={favorites[item._id] ? styles.heartActive : styles.heartInactive}
+                    />
+                  </button>
                   </div>
                 ))}
               </div>
@@ -671,7 +707,7 @@ export default function Home(): JSX.Element {
                   </p>
                   <p
                     className={styles.newsDesc}
-                    dangerouslySetInnerHTML={{ __html: news.summary }}
+                    dangerouslySetInnerHTML={{ __html: news.content }}
                   />
                   <Link href={`/news/${news._id}`} className={styles.readMore}>
                     Đọc tiếp

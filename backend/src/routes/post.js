@@ -21,8 +21,12 @@ router.get('/posts/search', postController.searchPostsByTitle);
 // Lấy tất cả bài viết
 router.get('/posts', postController.getAllPosts);
 
+router.get("/posts/slug/:slug", postController.getPostBySlug);
+
+
 // Lấy bài viết theo id
 router.get('/posts/:id', postController.getPostById);
+
 
 // Lấy các bài viết mới nhất
 router.get('/posts/newest', postController.getNewestPosts);

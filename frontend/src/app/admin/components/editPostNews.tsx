@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import newsService from "../services/NewsService";
@@ -9,7 +8,6 @@ import slugify from "slugify";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-// 📝 Quill modules cho "Nội dung bài viết" (đầy đủ tính năng)
 const fullModules = {
   toolbar: {
     container: [
@@ -33,12 +31,10 @@ const fullModules = {
   },
 };
 
-// 📝 Quill modules cho "Tóm tắt bài viết" (chỉ hỗ trợ văn bản đơn giản)
 const textOnlyModules = {
   toolbar: [["bold", "italic", "underline"], ["blockquote"]],
 };
 
-// 🖼️ Quill modules cho "Hình ảnh tóm tắt" (chỉ có chức năng chèn ảnh)
 const imageOnlyModules = {
   toolbar: {
     container: [["image"]],
@@ -47,14 +43,14 @@ const imageOnlyModules = {
         const editor = this.quill;
         const imageUrl = prompt("Nhập URL của hình ảnh:");
         if (imageUrl) {
-          editor.setContents([{ insert: { image: imageUrl } }]); // Chỉ chèn hình ảnh
+          editor.setContents([{ insert: { image: imageUrl } }]);
         }
       },
     },
   },
 };
 
-export default function EditPost({ id, onClose, onSuccess }) {
+export default function PostEditor() {
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -63,64 +59,64 @@ export default function EditPost({ id, onClose, onSuccess }) {
   const [imageSummary, setImageSummary] = useState("");
   const [status, setStatus] = useState(false);
 
-  useEffect(() => {
-    async function fetchPost() {
-      if (!id) return;
-      try {
-        const post = await newsService.getNewsById(id);
-        setAuthor(post.author);
-        setTitle(post.title);
-        setSlug(post.slug);
-        setContent(post.content);
-        setSummary(post.summary);
-        setImageSummary(post.imageSummary);
-        setStatus(post.status === 1);
-      } catch (error) {
-        console.error("Lỗi tải bài viết", error);
-      }
-    }
-    fetchPost();
-  }, [id]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedData = { author, title, slug, content, summary, imageSummary, status: status ? 1 : 0 };
+    const postData = { author, title, slug, content, summary, imageSummary, status: status ? 1 : 0 };
     try {
-      await newsService.updateNews(id, updatedData);
-      alert("Bài viết đã được cập nhật!");
-      onSuccess(); // Load lại danh sách tin tức
-      onClose(); // Đóng modal sau khi cập nhật thành công
+      await newsService.addNews(postData);
+      alert("Bài viết đã được đăng!");
     } catch (error) {
-      alert("Cập nhật thất bại!");
+      alert("Có lỗi xảy ra khi đăng bài.");
     }
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-3xl bg-white shadow rounded">
-      <h1 className="text-center text-2xl font-bold mb-4">Chỉnh Sửa Bài Viết</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Tên người đăng bài" className="w-full p-2 border rounded mb-3" value={author} onChange={(e) => setAuthor(e.target.value)} required />
-        <input type="text" placeholder="Tiêu đề" className="w-full p-2 border rounded mb-3" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        <input type="text" placeholder="Slug URL" className="w-full p-2 border rounded mb-3" value={slug} onChange={(e) => setSlug(e.target.value)} required />
+    <div className="container mt-4">
+      <div className="card shadow-lg">
+        <div className="card-header">
+          <h3>Update</h3>
+        </div>
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Tên người đăng bài</label>
+              <input type="text" className="form-control" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+            </div>
 
-        <label className="block font-bold mb-2">Nội dung bài viết:</label>
-        <ReactQuill value={content} onChange={setContent} modules={fullModules} className="mb-4" />
-        
-        {/* 📝 Quill nhưng chỉ hỗ trợ văn bản đơn giản */}
-        <label className="block font-bold mb-2">Tóm tắt bài viết:</label>
-        <ReactQuill value={summary} onChange={setSummary} modules={textOnlyModules} className="mb-4" />
+            <div className="mb-3">
+              <label className="form-label">Tiêu đề</label>
+              <input type="text" className="form-control" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            </div>
 
-        {/* 🖼️ Quill nhưng chỉ có tính năng chèn ảnh */}
-        <label className="block font-bold mb-2">Hình ảnh tóm tắt:</label>
-        <ReactQuill value={imageSummary} onChange={setImageSummary} modules={imageOnlyModules} className="mb-4" />
-        
-        <label className="block font-bold mb-2 flex items-center">
-          <input type="checkbox" className="mr-2" checked={status} onChange={(e) => setStatus(e.target.checked)} />
-          Kích hoạt bài viết
-        </label>
-        
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Cập Nhật</button>
-      </form>
+            <div className="mb-3">
+              <label className="form-label">Slug URL</label>
+              <input type="text" className="form-control" value={slug} onChange={(e) => setSlug(slugify(e.target.value, { lower: true }))} required />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Nội dung bài viết</label>
+              <ReactQuill value={content} onChange={setContent} modules={fullModules} className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Tóm tắt bài viết</label>
+              <ReactQuill value={summary} onChange={setSummary} modules={textOnlyModules} className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Hình ảnh tóm tắt</label>
+              <ReactQuill value={imageSummary} onChange={setImageSummary} modules={imageOnlyModules} className="form-control" />
+            </div>
+
+            <div className="mb-3 form-check">
+              <input type="checkbox" className="form-check-input" checked={status} onChange={(e) => setStatus(e.target.checked)} />
+              <label className="form-check-label">Kích hoạt bài viết</label>
+            </div>
+
+            <button type="submit" className="btn btn-primary w-100">Đăng bài</button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

@@ -7,7 +7,6 @@ import newsService from "../services/NewsService";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-// 📝 Quill modules cho phần "Nội dung bài viết" (đầy đủ tính năng)
 const fullModules = {
   toolbar: {
     container: [
@@ -31,15 +30,10 @@ const fullModules = {
   },
 };
 
-// 📝 Quill modules cho phần "Tóm tắt bài viết" (chỉ hỗ trợ văn bản đơn giản)
 const textOnlyModules = {
-  toolbar: [
-    ["bold", "italic", "underline"], // Chỉ giữ các tính năng văn bản
-    ["blockquote"], // Giữ blockquote
-  ],
+  toolbar: [["bold", "italic", "underline"], ["blockquote"]],
 };
 
-// 🖼️ Quill modules cho phần "Hình ảnh tóm tắt" (chỉ có chèn ảnh)
 const imageOnlyModules = {
   toolbar: {
     container: [["image"]],
@@ -48,7 +42,7 @@ const imageOnlyModules = {
         const editor = this.quill;
         const imageUrl = prompt("Nhập URL của hình ảnh:");
         if (imageUrl) {
-          editor.setContents([{ insert: { image: imageUrl } }]); // Chỉ chèn hình ảnh, không có chữ
+          editor.setContents([{ insert: { image: imageUrl } }]);
         }
       },
     },
@@ -77,32 +71,55 @@ export default function PostEditor() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-3xl bg-white shadow rounded">
-      <h1 className="text-center text-2xl font-bold mb-4">Đăng Bài Viết</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Tên người đăng bài" className="w-full p-2 border rounded mb-3" value={author} onChange={(e) => setAuthor(e.target.value)} required />
-        <input type="text" placeholder="Tiêu đề" className="w-full p-2 border rounded mb-3" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        
-        <label className="block font-bold mb-2">Nội dung bài viết:</label>
-        <ReactQuill value={content} onChange={setContent} modules={fullModules} className="mb-4" />
-        
-        {/* 📝 Quill nhưng chỉ hỗ trợ văn bản đơn giản */}
-        <label className="block font-bold mb-2">Tóm tắt bài viết:</label>
-        <ReactQuill value={summary} onChange={setSummary} modules={textOnlyModules} className="mb-4" />
+    <div className="container mt-4">
+      <div className="card shadow-lg">
+        <div className="card-header">
+          <h3>Đăng Bài Viết</h3>
+        </div>
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Tên người đăng bài</label>
+              <input type="text" className="form-control" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+            </div>
 
-        {/* 🖼️ Quill nhưng chỉ có tính năng chèn ảnh */}
-        <label className="block font-bold mb-2">Hình ảnh tóm tắt:</label>
-        <ReactQuill value={imageSummary} onChange={setImageSummary} modules={imageOnlyModules} className="mb-4" />
-        
-        <input type="number" placeholder="Số lượt xem" className="w-full p-2 border rounded mb-3" value={view} onChange={(e) => setView(Number(e.target.value))} required />
-        
-        <select className="w-full p-2 border rounded mb-3" value={hot} onChange={(e) => setHot(Number(e.target.value))}>
-          <option value={0}>Không</option>
-          <option value={1}>Có</option>
-        </select>
-        
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Đăng bài</button>
-      </form>
+            <div className="mb-3">
+              <label className="form-label">Tiêu đề</label>
+              <input type="text" className="form-control" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Nội dung bài viết</label>
+              <ReactQuill value={content} onChange={setContent} modules={fullModules} className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Tóm tắt bài viết</label>
+              <ReactQuill value={summary} onChange={setSummary} modules={textOnlyModules} className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Hình ảnh tóm tắt</label>
+              <ReactQuill value={imageSummary} onChange={setImageSummary} modules={imageOnlyModules} className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Số lượt xem</label>
+              <input type="number" className="form-control" value={view} onChange={(e) => setView(Number(e.target.value))} required />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Nổi bật</label>
+              <select className="form-select" value={hot} onChange={(e) => setHot(Number(e.target.value))}>
+                <option value={0}>Không</option>
+                <option value={1}>Có</option>
+              </select>
+            </div>
+
+            <button type="submit" className="btn btn-primary w-100">Đăng bài</button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
