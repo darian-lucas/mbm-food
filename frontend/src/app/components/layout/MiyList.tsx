@@ -2,6 +2,8 @@ import Image from "next/image";
 import styles from "../../../styles/ProductList.module.css";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
 interface Variant {
   option: string;
   price: number;
@@ -53,8 +55,9 @@ const MiyList = () => {
 
           <Image src={`/images/${item.variants[0].image}`} alt={item.name} width={230} height={200} />
 
-          <h3 className={styles.ProductName}>{item.name}</h3>
-          <p className={styles.ProductDesc}>{item.description}</p>
+          <Link href={`/product/${item.slug}`}>
+            <h3 className={styles.ProductName}>{item.name}</h3>
+          </Link>          <p className={styles.ProductDesc}>{item.description}</p>
           <a href="#" className={styles.viewMore}>Xem thêm</a>
 
           <div className={styles.ProductFooter}>
