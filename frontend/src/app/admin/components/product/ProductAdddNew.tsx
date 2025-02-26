@@ -177,6 +177,9 @@ function ProductAddNew() {
       toast.error("Lỗi khi tạo sản phẩm");
     } finally {
       setIsSubmitting(false);
+      form.reset();
+      setFiles([null]);
+      setPreviewImages([null]);
     }
   }
   return (

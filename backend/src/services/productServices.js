@@ -66,14 +66,47 @@ exports.createProduct = async ({ name, idcate, description, variants, hot, slug 
 };
 
 // Cập nhật sản phẩm
-exports.updateProduct = async (id, name, idcate, description, variants, hot,view,slug, status) => {
-  const model = await productModel.findByIdAndUpdate(
-    id,
-    { name, idcate, description, variants, hot,view,slug, status },
-    { new: true }
-  );
-  return model;
+// exports.updateProduct = async (id, name, idcate, description, variants, hot,view,slug, status) => {
+//   const model = await productModel.findByIdAndUpdate(
+//     id,
+//     { name, idcate, description, variants, hot,view,slug, status },
+//     { new: true }
+//   );
+//   return model;
+// };
+
+exports.updateProduct = async (id, { name, idcate, description, variants, hot, slug }) => {
+  try {
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          name,
+          idcate,
+          description,
+          hot,
+          slug,
+          variants: variants.map(variant => ({
+            option: variant.option || "",
+            price: parseFloat(variant.price || "0"),
+            sale_price: parseFloat(variant.sale_price || "0"),
+            image: variant.image || "",
+          })),
+        },
+      },
+      { new: true } // Trả về bản ghi đã cập nhật
+    );
+
+    if (!updatedProduct) {
+      throw new Error("Sản phẩm không tồn tại");
+    }
+
+    return updatedProduct;
+  } catch (error) {
+    throw error;
+  }
 };
+
 
 // Xóa sản phẩm
 exports.deleteProduct = async (id) => {

@@ -32,6 +32,7 @@ interface Product {
 interface News {
   _id: string;
   title: string;
+  slug: string;
   content: string;
   summary: string;
   imageSummary?: string;
@@ -698,7 +699,7 @@ export default function Home(): JSX.Element {
         <div className={styles.newsList}>
           {newsData.map((news) => (
             <Link
-              href={`/news/${news._id}`}
+              href={`/news/${encodeURIComponent(news.slug)}`}
               key={news._id}
               className={styles.newsLink}
             >
@@ -720,7 +721,7 @@ export default function Home(): JSX.Element {
                     className={styles.newsDesc}
                     dangerouslySetInnerHTML={{ __html: news.content }}
                   />
-                  <Link href={`/news/${news._id}`} className={styles.readMore}>
+                  <Link href={`/news/${encodeURIComponent(news.slug)}`} className={styles.readMore}>
                     Đọc tiếp
                   </Link>
                 </div>

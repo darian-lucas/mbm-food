@@ -21,6 +21,7 @@
     "@uploadthing/react": "^7.3.0",
     "bootstrap": "^5.3.3",
     "class-variance-authority": "^0.7.1",
+    "html-entities": "^2.5.2",
     "lucide-react": "^0.475.0",
     "next": "14.2.21",
     "quill": "^2.0.3",
@@ -34,7 +35,9 @@
     "sweetalert2": "^11.6.13",
     "swiper": "^11.2.4",
     "tailwind": "^4.0.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -5,8 +5,6 @@ exports.getAllPosts = async (req, res) => {
         const page = parseInt(req.query.page) || null;
         const limit = parseInt(req.query.limit) || null;
 
-      
-
         const result = await postService.getAllPosts(page, limit);
         res.status(200).json(result);
     } catch (error) {
