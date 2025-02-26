@@ -114,9 +114,19 @@ export default function NewsTable() {
                                 <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(post._id)}>
                                     <FontAwesomeIcon icon={faPen} />
                                 </button>
-                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(post._id)}>
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => {
+                                        console.log("Xác nhận xóa bài viết:", post._id);
+                                        const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bài viết này?");
+                                        if (confirmDelete) {
+                                            handleDelete(post._id);
+                                        }
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
+
                             </td>
                         </tr>
                     ))}

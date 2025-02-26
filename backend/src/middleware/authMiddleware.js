@@ -1,15 +1,16 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) return res.status(401).json({ message: 'Không tìm thấy token!' });
-
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
+        const token = req.headers.authorization?.split(" ")[1]; // Lấy token từ header
+        if (!token) return res.status(401).json({ message: "Không có token, vui lòng đăng nhập" });
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "defaultSecret");
+        req.user = { userId: decoded.userId, role: decoded.role }; // Gán user vào request
+
+        next(); // Cho phép request tiếp tục
     } catch (error) {
-        return res.status(403).json({ message: 'Token không hợp lệ!' });
+        res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
     }
 };
 
