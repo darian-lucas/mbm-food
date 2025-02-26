@@ -101,7 +101,7 @@ export default function NewsDetail() {
                     <span>{post.author}</span>
                   </div>
                   <div className="goto-warpper ftoc-head">
-                    <a href="title-goto-wrapper">Nội dung chính</a>
+                    <a href="title-goto-wrapper" style={{fontWeight: "bold"}}>Nội dung chính</a>
                   <div className="dola-toc">
                     <ol className="toc-list" dangerouslySetInnerHTML={{ __html: post.summary }} />
                   </div>
