@@ -46,6 +46,11 @@ exports.getPostById = async (id) => {
   return await Post.findById(id);
 };
 
+exports.getPostBySlug = async (slug) => {
+  return await Post.findOne({ slug: slug }); // Chỉ truyền giá trị slug
+};
+
+
 // Lấy bài viết mới nhất (sắp xếp theo ngày tạo)
 exports.getNewestPosts = async () => {
   return await Post.find().sort({ create_at: -1 });
@@ -57,9 +62,9 @@ exports.getHotPosts = async () => {
 };
 
 // api theo slug (thân -> sửa để đức làm url trang web)
-exports.getBySlugPost = async (slug) => {
-  return await Post.findOne({ slug });
-};
+// exports.getBySlugPost = async (slug) => {
+//   return await Post.findOne({ slug });
+// };
 
 //api cho client
 // Lấy 4 bài viết mới nhất chỉ với 'imageSummary' và 'title'
@@ -72,10 +77,10 @@ exports.getNewestFourPostsFooter = async () => {
 
 // Lấy 4 bài viết mới nhất title content imageSummary create_at
 exports.getNewestFourPosts = async () => {
-  return await Post.find()
-    .sort({ create_at: -1 }) // Sắp xếp theo ngày tạo
-    .limit(4) // Giới hạn 4 bài viết
-    .select("title content imageSummary create_at"); // Chỉ lấy các trường cần thiết
+    return await Post.find()
+        .sort({ create_at: -1 })  // Sắp xếp theo ngày tạo
+        .limit(4)  // Giới hạn 4 bài viết
+        .select('title content imageSummary create_at slug');  // Chỉ lấy các trường cần thiết
 };
 // Lấy 4 bài viết hot (chỉ lấy 'title' và 'imageSummary')
 exports.getHotPosts4 = async () => {

@@ -25,22 +25,6 @@ exports.searchPostsByTitle = async (req, res) => {
     }
 };
 
-exports.getBySlugPost = async (req, res, next) => {
-  try {
-    let { slug } = req.params;
-    const result = await postService.getBySlugPost(slug);
-
-    if (!result) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-
-    res.status(200).json({ data: result });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-
 exports.getPostById = async (req, res) => {
     try {
         const post = await postService.getPostById(req.params.id);
@@ -48,6 +32,21 @@ exports.getPostById = async (req, res) => {
         res.json(post);
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getPostBySlug = async (req, res) => {
+    try {
+        const slug = req.params.slug; // Lấy giá trị slug
+        if (!slug) return res.status(400).json({ message: "Slug không hợp lệ" });
+
+        const post = await postService.getPostBySlug(slug); // Truyền slug trực tiếp, không truyền object
+        if (!post) return res.status(404).json({ message: "Không tìm thấy bài viết" });
+
+        res.json(post);
+    } catch (err) {
+        console.error("Lỗi API getPostBySlug:", err);
+        res.status(500).json({ message: "Lỗi server", error: err.message });
     }
 };
 

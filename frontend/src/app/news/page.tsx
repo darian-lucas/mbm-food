@@ -4,7 +4,17 @@ import Image from "next/image";
 import "../../styles/new.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { fetchNews, fetchFeaturedNews, Post } from "@/services/post";
+import { fetchNews, fetchFeaturedNews } from "../../services/post";
+
+export interface Post {
+  _id: string;
+  title: string;
+  slug: string;
+  create_at: string | number | Date;
+  content: string;
+  imageSummary?: string;
+  author: string;
+}
 
 export default function New() {
   const [laytintuc, setLaytintuc] = useState<Post[]>([]);
@@ -19,10 +29,12 @@ export default function New() {
           fetchNews(),
           fetchFeaturedNews(),
         ]);
-
+  
+        console.log("Dữ liệu từ API:", { news, featuredNews });
+  
         if (!news.length) throw new Error("Không có bài viết nào.");
         if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
-
+  
         setLaytintuc(news);
         setTintucNoibat(featuredNews);
         setError(null);
@@ -31,18 +43,17 @@ export default function New() {
         setError("Không thể tải dữ liệu. Vui lòng thử lại sau.");
       }
     };
-
+  
     getData();
   }, []);
+  
 
-  // Trích xuất URL hình ảnh từ HTML nếu có
   const extractImageUrl = (htmlString?: string) => {
     if (!htmlString) return "/images/default.png";
     const match = htmlString.match(/src=['"]([^'"]+)['"]/);
     return match ? match[1] : "/images/default.png";
   };
 
-  // Cắt bớt nội dung HTML mà vẫn giữ định dạng
   const truncateHTML = (html: string, maxLength: number) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
@@ -84,7 +95,7 @@ export default function New() {
                     <div className="col-fix" key={tintuc._id}>
                       <div className="item-blog">
                         <div className="block-thumb">
-                          <Link href={`/news/${encodeURIComponent(tintuc._id)}`}>
+                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                             <Image
                               src={extractImageUrl(tintuc.imageSummary)}
                               alt={tintuc.title}
@@ -96,7 +107,7 @@ export default function New() {
                         </div>
                         <div className="block-content">
                           <h3>
-                            <Link href={`/news/${encodeURIComponent(tintuc._id)}`}>
+                            <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                               {tintuc.title}
                             </Link>
                           </h3>
@@ -119,7 +130,6 @@ export default function New() {
                 <ul className="aside-list">
                   <li><Link href="/">Trang chủ</Link></li>
                   <li><Link href="/about">Giới thiệu</Link></li>
-                  {/* Mục sản phẩm có submenu */}
                   <li className="menu-item">
                     <Link href="/products">Sản phẩm</Link>
                     <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
@@ -145,24 +155,29 @@ export default function New() {
 
               <div className="aside-section">
                 <h2 className="aside-title">Tin tức nổi bật</h2>
-                <ul className="aside-list">
-                  {tintucNoibat.map((ttnoibat, i) => (
-                    <li className="aside-news-item" key={i}>
-                      <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
-                        <Image
-                          src={extractImageUrl(ttnoibat.imageSummary)}
-                          alt={ttnoibat.title}
-                          width={120}
-                          height={120}
-                          unoptimized
-                        />
-                      </Link>
-                      <Link href={`/news/${encodeURIComponent(ttnoibat._id)}`}>
-                        {ttnoibat.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <div className="item-blog-small">
+                  <ul className="aside-list">
+                    {tintucNoibat.map((tintuc) => (
+                      <li className="aside-news-item" key={tintuc.slug}>
+                        <div className="block-thumb">
+                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                            <img
+                              src={extractImageUrl(tintuc.imageSummary)}
+                              alt={tintuc.title}
+                              width={120}
+                              height={120}
+                            />
+                          </Link>
+                        </div>
+                        <div className="block-content">
+                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                            {tintuc.title}
+                          </Link>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div> {/* Kết thúc sidebar */}
           </div>
