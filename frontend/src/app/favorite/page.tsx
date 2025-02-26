@@ -83,7 +83,7 @@ const FavoritePage = () => {
             <div key={product._id} className="col-md-3 col-sm-6 mb-4">
               <div className={`card border-1 shadow-sm ${styles.productCard}`}>
                 {/* Icon trái tim */}
-                 <i
+                <i
                   className={`${styles.favoriteIcon} position-absolute top-0 end-0 p-2`}
                   onClick={() => toggleFavorite(product._id)}
                 >
@@ -110,9 +110,10 @@ const FavoritePage = () => {
                   <h5 className={`${styles.productTitle} mb-1`}>{product.name}</h5>
 
                   {/* Mô tả sản phẩm */}
-                  <p className={`${styles.productDescription}`}>
-                    {product.description} <span className={styles.readMore}>...Xem thêm</span>
-                  </p>
+                  <div
+                    className={`${styles.productDescription}`}
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  ></div>
 
                 </div>
 
