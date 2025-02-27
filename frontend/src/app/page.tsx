@@ -13,7 +13,7 @@ import {
   addFavorite,
   removeFavorite,
   checkFavorite,
-  getFavorites,
+  // getFavorites,
 } from "../services/Favorite";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
@@ -48,7 +48,8 @@ export default function Home(): JSX.Element {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
-  const token = localStorage.getItem("token");
+  const [token, setToken] = useState<string | null>(null);
+
   // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
   //   {}
   // );
@@ -114,7 +115,9 @@ export default function Home(): JSX.Element {
 
     fetchProducts();
   }, [token]); // Cập nhật lại nếu token thay đổi
-
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, []);
   // Toggle trạng thái yêu thích
   const toggleFavorite = async (food_id: string) => {
     if (!token) {
@@ -280,6 +283,8 @@ export default function Home(): JSX.Element {
   //     [productId]: !prev[productId],
   //   }));
   // };
+  
+  
 
   return (
     <main className={styles.home}>

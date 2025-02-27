@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "@/app/components/Login.module.css";
 
 interface LoginForm {
@@ -22,20 +24,40 @@ const Login = () => {
         body: JSON.stringify(data),
       });
 
-      const result: { token?: string; userId?: string; message?: string } = await res.json();
+      const result: {
+        token?: string;
+        userId?: string;
+        role?: string;
+        message?: string;
+      } = await res.json();
+
       if (!res.ok) throw new Error(result.message || "Đăng nhập thất bại");
 
       // Lưu token và userId vào localStorage
       localStorage.setItem("token", result.token || "");
       localStorage.setItem("userId", result.userId || "");
+      console.log("Dữ liệu từ API:", result);
+      console.log("Role từ API:", result.role);
+      // Hiển thị thông báo thành công
+      toast.success("Đăng nhập thành công!");
 
-      // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
-      router.push("/");
+      // Điều hướng dựa vào role
+      if (result.role?.trim().toLowerCase() === "admin") {
+        router.refresh();
+        router.push("/admin");
+      } else if (result.role?.trim().toLowerCase() === "user" || result.role?.trim().toLowerCase() === "staff") {
+        router.push("/");
+      } else {
+        toast.error(`Vai trò "${result.role}" không có quyền truy cập.`);
+      }
+      
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
+        toast.error(err.message);
       } else {
-        setError("Đã xảy ra lỗi không mong muốn");
+        setError("Đã xảy ra lỗi");
+        toast.error("Đã xảy ra lỗi");
       }
     }
   };
@@ -61,12 +83,19 @@ const Login = () => {
           <label>
             <input type="checkbox" /> Ghi nhớ đăng nhập
           </label>
-          <a href="#" className={styles.link}>Quên mật khẩu?</a>
+          <a href="#" className={styles.link}>
+            Quên mật khẩu?
+          </a>
         </div>
-        <button type="submit" className={styles.button}>Đăng nhập</button>
+        <button type="submit" className={styles.button}>
+          Đăng nhập
+        </button>
       </form>
       <p>
-        Bạn chưa có tài khoản? <a href="/register" className={styles.link}>Đăng ký</a>
+        Bạn chưa có tài khoản?{" "}
+        <a href="/register" className={styles.link}>
+          Đăng ký
+        </a>
       </p>
     </div>
   );
