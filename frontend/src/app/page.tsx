@@ -292,6 +292,7 @@ export default function Home(): JSX.Element {
           alt="Banner chính"
           width={1280}
           height={500}
+          priority
           className={styles.bannerImage}
         />
       </section>
