@@ -14,8 +14,13 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const { token, userId } = await authService.login(email, password); // Nhận thêm userId
-        res.status(200).json({ token, userId }); // Trả về cả token và userId
+        const { token, user } = await authService.login(email, password); // Nhận user thay vì userId
+
+        res.status(200).json({ 
+            token, 
+            userId: user._id, 
+            role: user.role // Trả về role
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

@@ -12,20 +12,14 @@ const register = async (userData) => {
 // Đăng nhập
 const login = async (email, password) => {
     const user = await User.findOne({ email });
-    if (!user) throw new Error('Tên đăng nhập không tồn tại');
-    if (!user.isActive) throw new Error('Tài khoản đã bị vô hiệu hóa');
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) throw new Error('Mật khẩu không chính xác');
-
-    const token = jwt.sign(
-        { userId: user._id, role: user.role },
-        process.env.JWT_SECRET || 'defaultSecret',
-        { expiresIn: '1h' }
-    );
-    
-    return { token };
+    // console.log("User từ DB:", user); // ✅ Kiểm tra user có tồn tại không
+    if (!user) throw new Error("Người dùng không tồn tại");
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Mật khẩu không đúng");
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    return { token, user }; // ✅ Trả về cả user
 };
+
 
 // Lấy tất cả người dùng và phân trang
 const getAllUsers = async (page = 1, limit = 5) => {

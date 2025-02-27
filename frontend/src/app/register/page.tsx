@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "@/app/components/Register.module.css";
 
 interface RegisterForm {
@@ -27,7 +29,10 @@ export default function RegisterPage() {
       const result: { message?: string } = await res.json();
       if (!res.ok) throw new Error(result.message || "Đăng kí thất bại!");
 
-      router.push("/login");
+      toast.success("Tạo tài khoản thành công!");
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000); // Chờ 2 giây trước khi chuyển trang để người dùng thấy thông báo
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
