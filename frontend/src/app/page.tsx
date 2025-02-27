@@ -2,6 +2,7 @@
 import styles from "@/styles/Home.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -48,6 +49,7 @@ export default function Home(): JSX.Element {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
+  const router = useRouter();
   const token = localStorage.getItem("token");
   // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
   //   {}
@@ -520,9 +522,9 @@ export default function Home(): JSX.Element {
                       __html: item.description || "Không có mô tả",
                     }}
                   ></p>
-                  <a href="#" className={styles.menufoodMore}>
+                  <Link href="#" className={styles.menufoodMore}>
                     Xem thêm
-                  </a>
+                  </Link>
                   <div className={styles.discountPriceContainer}>
                     <div className={styles.discountFoodPrice}>
                       <p>Giá chỉ từ:</p>
@@ -580,9 +582,9 @@ export default function Home(): JSX.Element {
 
                 <h3 className={styles.bestSellingItemName}>{item.name}</h3>
                 <p className={styles.bestSellingItemDesc}>{item.description}</p>
-                <a href="#" className={styles.menufoodMore}>
+                <Link href="#" className={styles.menufoodMore}>
                   Xem thêm
-                </a>
+                </Link>
                 <div className={styles.bestSellingContainer}>
                   <div className={styles.bestSellingFoodPrice}>
                     <p>Giá chỉ từ:</p>
@@ -665,8 +667,7 @@ export default function Home(): JSX.Element {
                         dangerouslySetInnerHTML={{
                           __html: item.description || "Không có mô tả",
                         }}
-                      >
-                      </p>
+                      ></p>
                       <p className={styles.menufoodPrice}>
                         Giá chỉ từ:{" "}
                         <span>
@@ -676,9 +677,9 @@ export default function Home(): JSX.Element {
                         </span>
                       </p>
                       <div className={styles.menufoodActions}>
-                        <a href="#" className={styles.menufoodMore}>
+                        <Link href="#" className={styles.menufoodMore}>
                           Xem thêm
-                        </a>
+                        </Link>
                         <button className={styles.menufoodAdd}>Thêm</button>
                       </div>
                     </div>
@@ -736,9 +737,14 @@ export default function Home(): JSX.Element {
                     className={styles.newsDesc}
                     dangerouslySetInnerHTML={{ __html: news.content }}
                   />
-                  <Link href={`/news/${encodeURIComponent(news.slug)}`} className={styles.readMore}>
+                  <button
+                    onClick={() =>
+                      router.push(`/news/${encodeURIComponent(news.slug)}`)
+                    }
+                    className={styles.readMore}
+                  >
                     Đọc tiếp
-                  </Link>
+                  </button>
                 </div>
               </div>
             </Link>
