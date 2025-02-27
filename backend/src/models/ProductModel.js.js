@@ -14,12 +14,13 @@ const productSchema = new Schema(
         option: { type: String },
         price: { type: Number, required: true },
         sale_price: { type: Number, default: 0 },
-        image: { type: String, required: true }
+        image: { type: String, required: true },
       },
     ],
     hot: { type: Number, default: 0 },
     view: { type: Number, default: 0 },
-    status: { type: String, enum: ["Active", "Unactive"], default: "Active" }
+    status: { type: String, enum: ["Active", "Unactive"], default: "Active" },
+    flag: { type: Boolean, default: true },
   },
 
   { timestamps: true }

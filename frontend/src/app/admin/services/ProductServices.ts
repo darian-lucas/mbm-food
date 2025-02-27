@@ -62,13 +62,37 @@ const deleteProduct = async (id: string) => {
   return response.json();
 };
 
+const updateStatusProduct = async (
+  id: string,
+  status: string,
+  flag: boolean
+) => {
+  const response = await fetch(`${API_URL}/${id}/status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      status,
+      flag,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Lỗi khi cập nhật trạng thái sản phẩm");
+  }
+
+  return await response.json();
+};
+
 const ProductServices = {
   getAllProducts,
   deleteProduct,
   createProduct,
   getProductById,
   updateProduct,
-  getProductBySlug
+  getProductBySlug,
+  updateStatusProduct,
 };
 
 export default ProductServices;
