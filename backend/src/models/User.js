@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     avatar: { type: String, default: '' },
     role: { type: String, default: 'user', enum: ['user', 'admin', 'staff'] }, // Thêm role 'staff'
-    address: { type: String, default: '' },
+    address: { type: [String], default: [] },
     isActive: { type: Boolean, default: true } // Trạng thái kích hoạt
 }, { timestamps: true });
 

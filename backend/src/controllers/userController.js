@@ -33,8 +33,13 @@ const logout = async (req, res) => {
 // Cập nhật mật khẩu
 const updatePassword = async (req, res) => {
     try {
-        const { userId } = req.user; // Lấy userId từ middleware xác thực
+        const { userId } = req.user; // Lấy userId từ token
         const { oldPassword, newPassword } = req.body;
+
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({ message: "Vui lòng nhập đầy đủ mật khẩu cũ và mới" });
+        }
+
         const result = await authService.updatePassword(userId, oldPassword, newPassword);
         res.status(200).json(result);
     } catch (error) {
@@ -46,13 +51,35 @@ const updatePassword = async (req, res) => {
 const addAddress = async (req, res) => {
     try {
         const { userId } = req.user;
-        const { address } = req.body;
-        const result = await authService.addAddress(userId, address);
-        res.status(200).json(result);
+        let { address } = req.body;
+
+        if (!address || typeof address !== "string") {
+            return res.status(400).json({ message: "Địa chỉ phải là chuỗi hợp lệ" });
+        }
+
+        const user = await authService.findUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+
+        // 🔥 Chuyển `address` thành mảng nếu chưa phải
+        if (!Array.isArray(user.address)) {
+            user.address = [];
+        }
+
+        user.address.push(address);
+        await user.save();
+
+        res.status(200).json({ message: "Thêm địa chỉ thành công", addresses: user.address });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("Lỗi server:", error);
+        res.status(500).json({ message: error.message });
     }
 };
+
+
+
+
 
 // Lấy tất cả người dùng (hỗ trợ phân trang)
 const getAllUsers = async (req, res) => {

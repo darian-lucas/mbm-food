@@ -4,14 +4,16 @@ const fetchAPI = async (url: string, options: RequestInit) => {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            throw new Error(`Lỗi: ${response.status} - ${response.statusText}`);
+            const errorData = await response.json().catch(() => ({})); // Xử lý lỗi JSON
+            throw new Error(`Lỗi: ${response.status} - ${errorData.message || response.statusText}`);
         }
-        return await response.json();
+        return await response.json().catch(() => ({})); // Trả về JSON hoặc object rỗng
     } catch (error) {
         console.error("Lỗi API:", error);
         return { error: true, message: error instanceof Error ? error.message : "Lỗi không xác định" };
     }
 };
+
 
 export const registerUser = async (userData: object) => {
     return fetchAPI(`${API_URL}/register`, {
@@ -94,30 +96,26 @@ export const deleteUser = async (userId: string, token: string) => {
     });
 };
 
-export const addAddress = async (userId: string, address: string) => {
+export const addAddress = async (userId: string, address: string, token: string) => {
     if (!userId || !address) {
-        throw new Error("Thiếu userId hoặc địa chỉ.");
+        throw new Error("User ID và địa chỉ không được để trống");
     }
 
-    try {
-        const response = await fetchAPI(`${API_URL}/add-address`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ userId, address }),
-        });
+    const response = await fetch("http://localhost:3001/api/user/add-address", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ address }) // ✅ Gửi lên chuỗi đơn
+    });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Lỗi ${response.status}: ${errorData.message || "Không xác định"}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error("Lỗi khi thêm địa chỉ:", error);
-        throw new Error(error.message || "Lỗi không xác định khi thêm địa chỉ.");
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Thêm địa chỉ thất bại");
     }
+
+    return await response.json();
 };
 
 

@@ -23,7 +23,7 @@ const login = async (email, password) => {
         process.env.JWT_SECRET || 'defaultSecret',
         { expiresIn: '1h' }
     );
-    
+
     return { token, userId: user._id };
 };
 
@@ -37,14 +37,18 @@ const updatePassword = async (userId, oldPassword, newPassword) => {
     const user = await User.findById(userId);
     if (!user) throw new Error('Người dùng không tồn tại');
 
+    // Kiểm tra mật khẩu cũ
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-  
     if (!isPasswordValid) throw new Error('Mật khẩu cũ không chính xác');
 
-    user.password = await bcrypt.hash(newPassword, 10);
+    user.password = newPassword;
+
     await user.save();
+
     return { message: 'Cập nhật mật khẩu thành công' };
 };
+
+
 
 // Lấy tất cả người dùng và phân trang
 const getAllUsers = async (page = 1, limit = 5) => {
@@ -78,14 +82,32 @@ const updateUser = async (userId, updateData) => {
 };
 
 // Thêm địa chỉ mới
-const addAddress = async (userId, address) => {
-    const user = await User.findById(userId);
-    if (!user) throw new Error('Người dùng không tồn tại');
-    
-    user.address.push(address);
-    await user.save();
-    return { message: 'Đã thêm địa chỉ mới', addresses: user.address };
+const addAddress = async (req, res) => {
+    try {
+        const { userId } = req.user;
+        const { address } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+
+        // Kiểm tra và chuyển đổi address thành mảng nếu cần
+        if (!Array.isArray(user.address)) {
+            user.address = [];
+        }
+
+        user.address.push(address); 
+        await user.save();
+
+        res.status(200).json({ message: "Đã thêm địa chỉ mới", addresses: user.address });
+    } catch (error) {
+        console.error("Lỗi server:", error);
+        res.status(500).json({ message: error.message });
+    }
 };
+
+
 
 // Tìm người dùng theo username
 const findUserByName = async (username) => {
@@ -100,16 +122,16 @@ const findUserById = async (userId) => {
     return user;
 };
 
-module.exports = { 
-    getAllUsers, 
-    deleteUser, 
-    updateUser, 
-    findUserByName, 
-    findUserById, 
-    register, 
-    login, 
-    logout, 
-    updatePassword, 
-    addAddress 
+module.exports = {
+    getAllUsers,
+    deleteUser,
+    updateUser,
+    findUserByName,
+    findUserById,
+    register,
+    login,
+    logout,
+    updatePassword,
+    addAddress
 };
 
