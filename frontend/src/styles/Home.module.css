@@ -1028,6 +1028,9 @@
   display: block;
 }
 
+.readMore{
+  color: #006A31;
+}
 
 .newsContent {
   padding: 15px;
