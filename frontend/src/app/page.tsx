@@ -2,6 +2,7 @@
 import styles from "@/styles/Home.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -13,7 +14,7 @@ import {
   addFavorite,
   removeFavorite,
   checkFavorite,
-  getFavorites,
+  // getFavorites,
 } from "../services/Favorite";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
@@ -48,7 +49,11 @@ export default function Home(): JSX.Element {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
-  const token = localStorage.getItem("token");
+  const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
+  
+  const [token, setToken] = useState<string | null>(null);
+
   // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
   //   {}
   // );
@@ -114,7 +119,9 @@ export default function Home(): JSX.Element {
 
     fetchProducts();
   }, [token]); // Cập nhật lại nếu token thay đổi
-
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, []);
   // Toggle trạng thái yêu thích
   const toggleFavorite = async (food_id: string) => {
     if (!token) {
@@ -280,6 +287,8 @@ export default function Home(): JSX.Element {
   //     [productId]: !prev[productId],
   //   }));
   // };
+  
+  
 
   return (
     <main className={styles.home}>
@@ -290,6 +299,7 @@ export default function Home(): JSX.Element {
           alt="Banner chính"
           width={1280}
           height={500}
+          priority
           className={styles.bannerImage}
         />
       </section>
@@ -303,7 +313,7 @@ export default function Home(): JSX.Element {
               <div className={styles.categoryItem}>
                 <p>{category.name}</p>
                 <Image
-                  src={`/images/${category.image}`}
+                  src={`${API_URL}/images/${category.image}`}
                   alt={category.name}
                   width={50}
                   height={50}
@@ -394,8 +404,23 @@ export default function Home(): JSX.Element {
             .map((food, index) => (
               <SwiperSlide key={food._id} className={styles.slideItem}>
                 <div className={styles.foodItem}>
+                <button
+                    className={styles.heartIcon}
+                    onClick={async () => {
+                      await toggleFavorite(food._id);
+                    }}
+                  >
+                    <Heart
+                      size={20}
+                      className={
+                        favorites[food._id]
+                          ? styles.heartActive
+                          : styles.heartInactive
+                      }
+                    />
+                  </button>
                   <Image
-                    src={`/images/${food.variants[0]?.image || "default.png"}`}
+                    src={`${API_URL}/images/${food.variants[0]?.image || "default.png"}`}
                     alt={food.name}
                     width={150}
                     height={140}
@@ -493,7 +518,7 @@ export default function Home(): JSX.Element {
                     />
                   </button>
                   <Image
-                    src={`/images/${variant.image}`}
+                    src={`${API_URL}/images/${variant.image}`}
                     alt={item.name}
                     width={250}
                     height={200}
@@ -505,9 +530,9 @@ export default function Home(): JSX.Element {
                       __html: item.description || "Không có mô tả",
                     }}
                   ></p>
-                  <a href="#" className={styles.menufoodMore}>
+                  <Link href="#" className={styles.menufoodMore}>
                     Xem thêm
-                  </a>
+                  </Link>
                   <div className={styles.discountPriceContainer}>
                     <div className={styles.discountFoodPrice}>
                       <p>Giá chỉ từ:</p>
@@ -565,9 +590,9 @@ export default function Home(): JSX.Element {
 
                 <h3 className={styles.bestSellingItemName}>{item.name}</h3>
                 <p className={styles.bestSellingItemDesc}>{item.description}</p>
-                <a href="#" className={styles.menufoodMore}>
+                <Link href="#" className={styles.menufoodMore}>
                   Xem thêm
-                </a>
+                </Link>
                 <div className={styles.bestSellingContainer}>
                   <div className={styles.bestSellingFoodPrice}>
                     <p>Giá chỉ từ:</p>
@@ -635,7 +660,7 @@ export default function Home(): JSX.Element {
                 {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
                     <Image
-                      src={`/images/${
+                      src={`${API_URL}/images/${
                         item.variants[0]?.image || "default.png"
                       }`}
                       alt={item.name}
@@ -650,8 +675,7 @@ export default function Home(): JSX.Element {
                         dangerouslySetInnerHTML={{
                           __html: item.description || "Không có mô tả",
                         }}
-                      >
-                      </p>
+                      ></p>
                       <p className={styles.menufoodPrice}>
                         Giá chỉ từ:{" "}
                         <span>
@@ -661,9 +685,9 @@ export default function Home(): JSX.Element {
                         </span>
                       </p>
                       <div className={styles.menufoodActions}>
-                        <a href="#" className={styles.menufoodMore}>
+                        <Link href="#" className={styles.menufoodMore}>
                           Xem thêm
-                        </a>
+                        </Link>
                         <button className={styles.menufoodAdd}>Thêm</button>
                       </div>
                     </div>
@@ -721,9 +745,14 @@ export default function Home(): JSX.Element {
                     className={styles.newsDesc}
                     dangerouslySetInnerHTML={{ __html: news.content }}
                   />
-                  <Link href={`/news/${encodeURIComponent(news.slug)}`} className={styles.readMore}>
+                  <button
+                    onClick={() =>
+                      router.push(`/news/${encodeURIComponent(news.slug)}`)
+                    }
+                    className={styles.readMore}
+                  >
                     Đọc tiếp
-                  </Link>
+                  </button>
                 </div>
               </div>
             </Link>

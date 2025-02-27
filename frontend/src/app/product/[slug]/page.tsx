@@ -27,6 +27,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [selectedCrust, setSelectedCrust] = useState<string>("Đế dày");
   const [quantity, setQuantity] = useState<number>(1);
+ 
   useEffect(() => {
     if (!slug) return;
 
@@ -115,11 +116,9 @@ const ProductDetail = () => {
                 <div className={styles.descTit}>
                   <p>MÔ TẢ MÓN ĂN</p>
                 </div>
-                <div className={styles.descContent}>
-                  <p
-                    dangerouslySetInnerHTML={{ __html: product.description }}
-                  />
-                </div>
+                <div className={styles.descContent} dangerouslySetInnerHTML={{ __html: product.description }}/>
+                  
+                
               </div>
             </div>
             <div className={styles.form}>

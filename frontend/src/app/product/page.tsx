@@ -58,32 +58,10 @@ export default function PageProduct(): JSX.Element {
           ))}
         </div>
       </section>
-      
-{/* PIZZA */}
-      <section>
-        <h2 className={styles.title}>PIZZA</h2>
         <PizzaList/>
-      </section>
-{/* KHAI VỊ */}
-      <br />
-      <section>
-        <h2 className={styles.title}>KHAI VỊ</h2>
         <KhaiviList/>
-      </section>
-
-{/* MÌ Ý */}
-      <br />
-      <section>
-        <h2 className={styles.title}>MÌ Ý</h2>
         <MiyList/>
-      </section>
-
-{/* SALAD */}
-      <br />
-      <section>
-        <h2 className={styles.title}>SALAD</h2>
         <SaladList/>
-      </section>
     </main>
   );
 }
