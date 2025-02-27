@@ -64,7 +64,7 @@ function CategoryUpdate() {
           setCategoryId(res.data._id);
         } else {
           toast.error("Không tìm thấy danh mục");
-          router.push("/admin/pages/category");
+          router.push("/admin/manage/category");
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
@@ -123,7 +123,7 @@ function CategoryUpdate() {
 
       if (res.data || res.success) {
         toast.success("Cập nhật danh mục thành công");
-        router.push("/admin/pages/category");
+        router.push("/admin/manage/category");
       } else {
         toast.error(res.message || "Có lỗi xảy ra khi cập nhật");
       }

@@ -1,34 +1,25 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const connectDB = require("../backend/src/config/db");
-const Post = require("../backend/src/models/Post");
-const slugify = require("slugify");
+const Product = require("../backend/src/models/ProductModel.js");
 
-const updatePostSlugs = async () => {
+const updateProductFlags = async () => {
   try {
     await connectDB();
 
-    // Lấy tất cả bài viết chưa có slug
-    const posts = await Post.find({ slug: { $exists: false } });
+    // Cập nhật tất cả sản phẩm chưa có trường 'flag' hoặc có giá trị khác true
+    const result = await Product.updateMany(
+      { flag: { $exists: false } }, // Chỉ cập nhật nếu trường flag chưa tồn tại
+      { $set: { flag: true } }
+    );
 
-    let updatedCount = 0;
-
-    for (const post of posts) {
-      const slug = slugify(post.title || post.name, { lower: true, strict: true });
-
-      if (slug) {
-        await Post.updateOne({ _id: post._id }, { $set: { slug } });
-        updatedCount++;
-      }
-    }
-
-    console.log(`✔ Đã cập nhật slug cho ${updatedCount} bài viết.`);
+    console.log(`✔ Đã cập nhật flag cho ${result.modifiedCount} sản phẩm.`);
   } catch (error) {
-    console.error("❌ Lỗi khi cập nhật slug:", error.message);
+    console.error("❌ Lỗi khi cập nhật flag:", error.message);
   } finally {
     mongoose.disconnect();
   }
 };
 
 // Chạy script
-updatePostSlugs();
+updateProductFlags();
