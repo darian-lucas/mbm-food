@@ -394,6 +394,21 @@ export default function Home(): JSX.Element {
             .map((food, index) => (
               <SwiperSlide key={food._id} className={styles.slideItem}>
                 <div className={styles.foodItem}>
+                <button
+                    className={styles.heartIcon}
+                    onClick={async () => {
+                      await toggleFavorite(food._id);
+                    }}
+                  >
+                    <Heart
+                      size={20}
+                      className={
+                        favorites[food._id]
+                          ? styles.heartActive
+                          : styles.heartInactive
+                      }
+                    />
+                  </button>
                   <Image
                     src={`/images/${food.variants[0]?.image || "default.png"}`}
                     alt={food.name}
