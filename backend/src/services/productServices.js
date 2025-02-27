@@ -2,7 +2,7 @@ const productModel = require("../models/ProductModel.js");
 
 // Lấy tất cả sản phẩm
 exports.getAllProducts = async () => {
-  const products = await productModel.find({});
+  const products = await productModel.find({status: "Active", flag: true });
   return products;
 };
 
@@ -20,42 +20,27 @@ exports.getByCategory = async (idcate, query) => {
   return products;
 };
 
-// Tạo sản phẩm mới
-// exports.createProduct = async (name, idcate, description, variants, hot,view, slug) => {
-//   const model = new productModel({ name, idcate, description, variants, hot, view, slug });
-//   await model.save();
-//   return model;
-// };
-
-// exports.createProduct = async ({ name, idcate, description, variants, hot, view, slug }) => {
-//   const product = new productModel({
-//     name,
-//     idcate,
-//     description, 
-//     variants: variants?.length ? variants : [],
-//     hot: hot || 0,
-//     view: view || 0,
-//     slug,
-//   });
-
-//   await product.save();
-//   return product;
-// };
-
-exports.createProduct = async ({ name, idcate, description, variants, hot, slug }) => {
+exports.createProduct = async ({
+  name,
+  idcate,
+  description,
+  variants,
+  hot,
+  slug,
+}) => {
   try {
     const product = new productModel({
       name,
       idcate,
       description,
-      variants: variants.map(variant => ({
+      variants: variants.map((variant) => ({
         option: variant.option,
         price: variant.price,
         sale_price: variant.sale_price,
         image: variant.image,
       })),
       hot: hot || 0,
-      slug
+      slug,
     });
 
     await product.save();
@@ -65,17 +50,10 @@ exports.createProduct = async ({ name, idcate, description, variants, hot, slug 
   }
 };
 
-// Cập nhật sản phẩm
-// exports.updateProduct = async (id, name, idcate, description, variants, hot,view,slug, status) => {
-//   const model = await productModel.findByIdAndUpdate(
-//     id,
-//     { name, idcate, description, variants, hot,view,slug, status },
-//     { new: true }
-//   );
-//   return model;
-// };
-
-exports.updateProduct = async (id, { name, idcate, description, variants, hot, slug }) => {
+exports.updateProduct = async (
+  id,
+  { name, idcate, description, variants, hot, slug }
+) => {
   try {
     const updatedProduct = await productModel.findByIdAndUpdate(
       id,
@@ -86,7 +64,7 @@ exports.updateProduct = async (id, { name, idcate, description, variants, hot, s
           description,
           hot,
           slug,
-          variants: variants.map(variant => ({
+          variants: variants.map((variant) => ({
             option: variant.option || "",
             price: parseFloat(variant.price || "0"),
             sale_price: parseFloat(variant.sale_price || "0"),
@@ -107,7 +85,6 @@ exports.updateProduct = async (id, { name, idcate, description, variants, hot, s
   }
 };
 
-
 // Xóa sản phẩm
 exports.deleteProduct = async (id) => {
   await productModel.deleteOne({ _id: id });
@@ -115,6 +92,25 @@ exports.deleteProduct = async (id) => {
 
 // lấy api của slug
 exports.getBySlugProduct = async (slug) => {
-  const product= await productModel.findOne({ slug }); 
+  const product = await productModel.findOne({ slug });
   return product;
+};
+
+// cập nhật trạng thái của sản phẩm
+exports.updateStatusProduct = async (id, status, flag) => {
+  try {
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      { status, flag },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      throw new Error("Sản phẩm không tồn tại");
+    }
+
+    return updatedProduct;
+  } catch (error) {
+    throw error;
+  }
 };
