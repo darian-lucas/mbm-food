@@ -38,6 +38,7 @@ const updatePassword = async (userId, oldPassword, newPassword) => {
     if (!user) throw new Error('Người dùng không tồn tại');
 
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+  
     if (!isPasswordValid) throw new Error('Mật khẩu cũ không chính xác');
 
     user.password = await bcrypt.hash(newPassword, 10);
@@ -83,7 +84,7 @@ const addAddress = async (userId, address) => {
     
     user.address.push(address);
     await user.save();
-    return { message: 'Đã thêm địa chỉ mới', addresses: user.addresses };
+    return { message: 'Đã thêm địa chỉ mới', addresses: user.address };
 };
 
 // Tìm người dùng theo username

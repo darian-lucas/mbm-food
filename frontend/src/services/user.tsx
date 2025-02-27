@@ -54,16 +54,38 @@ export const updateUser = async (userId: string, updateData: object, token: stri
     });
 };
 
-export const updatePassword = async (userId: string, newPassword: string, token: string) => {
-    return fetchAPI(`${API_URL}/update-password`, {
+export const updatePassword = async (userId: string, oldPassword: string, newPassword: string) => {
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
+    if (!token) {
+        throw new Error("Bạn chưa đăng nhập.");
+    }
+
+    const response = await fetch(`${API_URL}/update-password`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId, newPassword }),
+        body: JSON.stringify({ userId, oldPassword, newPassword }),
     });
+
+    if (!response.ok) {
+        let errorMessage = `Lỗi: ${response.status}`;
+        try {
+            const errorData = await response.json();
+            errorMessage += ` - ${errorData.message}`;
+        } catch {
+            errorMessage += " - Lỗi không xác định.";
+        }
+        throw new Error(errorMessage);
+    }
+
+    return response.json();
 };
+
+
+
+
 
 export const deleteUser = async (userId: string, token: string) => {
     return fetchAPI(`${API_URL}/${userId}`, {
@@ -72,16 +94,33 @@ export const deleteUser = async (userId: string, token: string) => {
     });
 };
 
-export const addAddress = async (userId: string, address: string, token: string) => {
-    return fetchAPI(`${API_URL}/add-address`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ userId, address }),
-    });
+export const addAddress = async (userId: string, address: string) => {
+    if (!userId || !address) {
+        throw new Error("Thiếu userId hoặc địa chỉ.");
+    }
+
+    try {
+        const response = await fetchAPI(`${API_URL}/add-address`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, address }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Lỗi ${response.status}: ${errorData.message || "Không xác định"}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Lỗi khi thêm địa chỉ:", error);
+        throw new Error(error.message || "Lỗi không xác định khi thêm địa chỉ.");
+    }
 };
+
+
 export const getUserById = async (userId: string) => {
     return fetchAPI(`${API_URL}/${userId}`, {});
 };

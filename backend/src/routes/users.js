@@ -1,4 +1,5 @@
 const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware');
 const { 
     register, 
     login, 
@@ -23,11 +24,9 @@ router.post('/login', login);
 // Đăng xuất
 router.post('/logout', logout);
 
-// Cập nhật mật khẩu (yêu cầu xác thực)
-router.put('/update-password', updatePassword);
-
-// Thêm địa chỉ mới
-router.post('/add-address', addAddress);
+// Các API yêu cầu xác thực người dùng
+router.put('/update-password', authMiddleware, updatePassword);
+router.post('/add-address', authMiddleware, addAddress);
 
 // Lấy tất cả người dùng (có phân trang)
 router.get('/', getAllUsers);
