@@ -50,6 +50,7 @@ export default function Home(): JSX.Element {
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   const token = localStorage.getItem("token");
   // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
   //   {}
@@ -306,7 +307,7 @@ export default function Home(): JSX.Element {
               <div className={styles.categoryItem}>
                 <p>{category.name}</p>
                 <Image
-                  src={`/images/${category.image}`}
+                  src={`${API_URL}/images/${category.image}`}
                   alt={category.name}
                   width={50}
                   height={50}
@@ -413,7 +414,7 @@ export default function Home(): JSX.Element {
                     />
                   </button>
                   <Image
-                    src={`/images/${food.variants[0]?.image || "default.png"}`}
+                    src={`${API_URL}/images/${food.variants[0]?.image || "default.png"}`}
                     alt={food.name}
                     width={150}
                     height={140}
@@ -511,7 +512,7 @@ export default function Home(): JSX.Element {
                     />
                   </button>
                   <Image
-                    src={`/images/${variant.image}`}
+                    src={`${API_URL}/images/${variant.image}`}
                     alt={item.name}
                     width={250}
                     height={200}
@@ -653,7 +654,7 @@ export default function Home(): JSX.Element {
                 {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
                     <Image
-                      src={`/images/${
+                      src={`${API_URL}/images/${
                         item.variants[0]?.image || "default.png"
                       }`}
                       alt={item.name}
