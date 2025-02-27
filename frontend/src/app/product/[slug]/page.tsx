@@ -27,6 +27,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [selectedCrust, setSelectedCrust] = useState<string>("Đế dày");
   const [quantity, setQuantity] = useState<number>(1);
+ 
   useEffect(() => {
     if (!slug) return;
 
