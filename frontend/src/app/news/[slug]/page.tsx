@@ -169,6 +169,87 @@ export default function NewsDetail() {
             </div>
           </div>
         </div>
+
+        {/*Comment*/}
+          <div className="col-12 order-lg-3">
+            <div className="thump-comment">
+              <form action="" method="post" id="article_comments">
+                <input name="" type="hidden" value="article_comment" />
+                <input name="utf8" type="hidden" value="true" />
+                <div className="form-comment">
+                  <div className="margin-top-0 margin-bottom-30 w-100">
+                    <div className="title-page">
+                      <span>Viết bình luận của bạn</span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <fieldset className="form-group padding 0">
+                        <input type="text" placeholder="Họ tên" className="form-control form-control-lg" 
+                        id="full-name" />
+                      </fieldset>
+                    </div>
+                    <div className="col-md-6">
+                      <fieldset className="form-group padding 0">
+                        <input type="email" placeholder="Email" className="form-control form-control-lg" 
+                         name="Email" required/>
+                      </fieldset>
+                    </div>
+                    <fieldset className="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <textarea placeholder="Nội dung" name="Body" id="comment" rows={6} 
+                      className="form-control form-control-lg" required></textarea>
+                    </fieldset>
+                    <div className="col-12">
+                      <button type="submit" className="btn btn-primary button_45">Gửi thông tin</button>
+                    </div>
+                  </div>
+                </div>
+                {/* Kết thúc form nhập dữ liệu */}
+              </form>
+              <div id="article-comments">
+                <h5 className="title-form-coment margin-bottom-25">Bình luận (3)</h5>
+                <div className="article-comment clearfix">
+                  <figure className="article-comment-user-image">
+                    <img src="" alt="binh-luan" className="block" />
+                  </figure>
+                  <div className="article-comment-user-comment">
+                    <p className="user-name-comment">
+                      <strong>Hoàng Tèo</strong>
+                      <a href="" className="btn-link pull-xs-right d-none">Trả lời</a>
+                    </p>
+                    <span className="article-comment-date-bull">14/01/2025</span>
+                    <p className="cm">dada</p>
+                  </div>         
+                </div>
+                <div className="article-comment clearfix">
+                  <figure className="article-comment-user-image">
+                    <img src="" alt="binh-luan" className="block" />
+                  </figure>
+                  <div className="article-comment-user-comment">
+                    <p className="user-name-comment">
+                      <strong>Hoàng Tèo</strong>
+                      <a href="" className="btn-link pull-xs-right d-none">Trả lời</a>
+                    </p>
+                    <span className="article-comment-date-bull">14/01/2025</span>
+                    <p className="cm">dada</p>
+                  </div>         
+                </div>
+                <div className="article-comment clearfix">
+                  <figure className="article-comment-user-image">
+                    <img src="" alt="binh-luan" className="block" />
+                  </figure>
+                  <div className="article-comment-user-comment">
+                    <p className="user-name-comment">
+                      <strong>Hoàng Tèo</strong>
+                      <a href="" className="btn-link pull-xs-right d-none">Trả lời</a>
+                    </p>
+                    <span className="article-comment-date-bull">14/01/2025</span>
+                    <p className="cm">dada</p>
+                  </div>         
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
   );
