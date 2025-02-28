@@ -1,54 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import newsService from "../services/NewsService";
 import slugify from "slugify";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-const fullModules = {
-  toolbar: {
-    container: [
-      ["bold", "italic", "underline"],
-      ["link", "image"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["blockquote"],
-      [{ align: [] }],
-      [{ header: "1" }, { header: "2" }, { font: [] }],
-    ],
-    handlers: {
-      image: function () {
-        const editor = this.quill;
-        const imageUrl = prompt("Nhập URL của hình ảnh:");
-        if (imageUrl) {
-          const range = editor.getSelection();
-          editor.insertEmbed(range.index, "image", imageUrl);
-        }
-      },
-    },
-  },
-};
-
-const textOnlyModules = {
-  toolbar: [["bold", "italic", "underline"], ["blockquote"]],
-};
-
-const imageOnlyModules = {
-  toolbar: {
-    container: [["image"]],
-    handlers: {
-      image: function () {
-        const editor = this.quill;
-        const imageUrl = prompt("Nhập URL của hình ảnh:");
-        if (imageUrl) {
-          editor.setContents([{ insert: { image: imageUrl } }]);
-        }
-      },
-    },
-  },
-};
 
 export default function PostEditor() {
   const [author, setAuthor] = useState("");
@@ -59,9 +17,61 @@ export default function PostEditor() {
   const [imageSummary, setImageSummary] = useState("");
   const [status, setStatus] = useState(false);
 
+  const quillRef = useRef(null);
+  const summaryQuillRef = useRef(null);
+  const imageQuillRef = useRef(null);
+
+  const handleImageUpload = (editorRef) => {
+    const editor = editorRef.current?.getEditor();
+    if (!editor) return;
+    
+    const imageUrl = prompt("Nhập URL của hình ảnh:");
+    if (imageUrl) {
+      const range = editor.getSelection();
+      editor.insertEmbed(range?.index || 0, "image", imageUrl);
+    }
+  };
+
+  const fullModules = {
+    toolbar: {
+      container: [
+        ["bold", "italic", "underline"],
+        ["link", "image"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["blockquote"],
+        [{ align: [] }],
+        [{ header: "1" }, { header: "2" }, { font: [] }],
+      ],
+      handlers: {
+        image: () => handleImageUpload(quillRef),
+      },
+    },
+  };
+
+  const textOnlyModules = {
+    toolbar: [["bold", "italic", "underline"], ["blockquote"]],
+  };
+
+  const imageOnlyModules = {
+    toolbar: {
+      container: [["image"]],
+      handlers: {
+        image: () => handleImageUpload(imageQuillRef),
+      },
+    },
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const postData = { author, title, slug, content, summary, imageSummary, status: status ? 1 : 0 };
+    const postData = {
+      author,
+      title,
+      slug,
+      content,
+      summary,
+      imageSummary,
+      status: status ? 1 : 0,
+    };
     try {
       await newsService.addNews(postData);
       alert("Bài viết đã được đăng!");
@@ -95,17 +105,17 @@ export default function PostEditor() {
 
             <div className="mb-3">
               <label className="form-label">Nội dung bài viết</label>
-              <ReactQuill value={content} onChange={setContent} modules={fullModules} className="form-control" />
+              <ReactQuill ref={quillRef} value={content} onChange={setContent} modules={fullModules} className="form-control" />
             </div>
 
             <div className="mb-3">
               <label className="form-label">Tóm tắt bài viết</label>
-              <ReactQuill value={summary} onChange={setSummary} modules={textOnlyModules} className="form-control" />
+              <ReactQuill ref={summaryQuillRef} value={summary} onChange={setSummary} modules={textOnlyModules} className="form-control" />
             </div>
 
             <div className="mb-3">
               <label className="form-label">Hình ảnh tóm tắt</label>
-              <ReactQuill value={imageSummary} onChange={setImageSummary} modules={imageOnlyModules} className="form-control" />
+              <ReactQuill ref={imageQuillRef} value={imageSummary} onChange={setImageSummary} modules={imageOnlyModules} className="form-control" />
             </div>
 
             <div className="mb-3 form-check">
