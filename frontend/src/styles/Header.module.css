@@ -10,8 +10,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 120px;
+  padding: 10px 20px;
   background-color: white;
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto; 
 }
 
 .logo {
@@ -25,8 +28,8 @@
 .logo img {
   margin-top: -20px;
   transform: scale(1.8);
-  width: 110px;
-  height: 110px;
+  width: 100px;
+  height: auto;
 }
 
 .searchBox {
@@ -42,6 +45,30 @@
   width: 400px;
   height: 36px;
   color: black;
+}
+
+/* Đảm bảo khi thu phóng vẫn giữ layout ổn định */
+@media (max-width: 1024px) {
+  .headerMain {
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+  .searchBox input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerMain {
+    flex-direction: column;
+    text-align: center;
+  }
+  .navbar {
+    flex-direction: column;
+  }
+  .icons {
+    flex-direction: column;
+  }
 }
 
 .searchIcon {
@@ -69,6 +96,12 @@
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.userCart, .delivery, .icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .userIcon,
@@ -116,6 +149,7 @@
   justify-content: center;
   background-color: #006A31;
   padding: 10px 0;
+  padding-right: 230px;
 }
 
 .navbar a {
