@@ -20,12 +20,24 @@
 }
 
 .sidebar ul {
-    padding-left: 0;
-}
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Điều chỉnh khoảng cách giữa các dòng */
+  }
+  
 
 .sidebar ul li {
     list-style: none;
     margin-bottom: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Điều chỉnh khoảng cách giữa các dòng */
 }
 
 .sidebar ul li a {
@@ -55,3 +67,11 @@
 .btnRed:hover {
     background-color: darkred;
 }
+.row {
+    gap: 30px; /* Tạo khoảng cách giữa sidebar và nội dung chính */
+  }
+  
+  .content {
+    padding-left: 20px; /* Đẩy nội dung chính ra xa sidebar */
+  }
+  
