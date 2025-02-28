@@ -61,17 +61,56 @@ const updateUser = async (userId, updateData) => {
     return { message: 'Cập nhật thành công', user };
 };
 
+const updatePassword = async (userId, oldPassword, newPassword) => {
+    const user = await User.findById(userId);
+    if (!user) throw new Error('Người dùng không tồn tại');
+
+    // Kiểm tra mật khẩu cũ
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) throw new Error('Mật khẩu cũ không chính xác');
+
+    user.password = newPassword;
+
+    await user.save();
+
+    return { message: 'Cập nhật mật khẩu thành công' };
+};
+
 // Tìm người dùng theo username
 const findUserByName = async (username) => {
     const user = await User.findOne({ username });
     if (!user) throw new Error('Không tìm thấy người dùng');
     return user;
 };
-// Kích hoạt hoặc vô hiệu hóa người dùng
-const activateUser = async (userId, isActive) => {
-    const user = await User.findByIdAndUpdate(userId, { isActive }, { new: true });
+const findUserById = async (userId) => {
+    const user = await User.findById(userId);
     if (!user) throw new Error('Người dùng không tồn tại');
-    return { message: isActive ? 'Tài khoản đã được kích hoạt' : 'Tài khoản đã bị vô hiệu hóa', user };
+    return user;
 };
-module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login, activateUser };
+// Thêm địa chỉ mới
+const addAddress = async (req, res) => {
+    try {
+        const { userId } = req.user;
+        const { address } = req.body;
 
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+
+        // Kiểm tra và chuyển đổi address thành mảng nếu cần
+        if (!Array.isArray(user.address)) {
+            user.address = [];
+        }
+
+        user.address.push(address); 
+        await user.save();
+
+        res.status(200).json({ message: "Đã thêm địa chỉ mới", addresses: user.address });
+    } catch (error) {
+        console.error("Lỗi server:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById };

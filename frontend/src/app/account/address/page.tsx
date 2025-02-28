@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { addAddress } from "@/services/user";
 import styles from "@/styles/Account.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Address() {
     const [address, setAddress] = useState("");
@@ -37,7 +38,7 @@ export default function Address() {
                     onChange={(e) => setAddress(e.target.value)}
                 />
             </div>
-            <button className="btn btn-red mb-3" onClick={handleAddAddress}>Thêm địa chỉ</button>
+            <button className="btn btn-danger mb-3" onClick={handleAddAddress}>Thêm địa chỉ</button>
             {message && <p>{message}</p>}
         </div>
     );
