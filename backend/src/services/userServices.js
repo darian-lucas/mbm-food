@@ -67,6 +67,11 @@ const findUserByName = async (username) => {
     if (!user) throw new Error('Không tìm thấy người dùng');
     return user;
 };
-
-module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };
+// Kích hoạt hoặc vô hiệu hóa người dùng
+const activateUser = async (userId, isActive) => {
+    const user = await User.findByIdAndUpdate(userId, { isActive }, { new: true });
+    if (!user) throw new Error('Người dùng không tồn tại');
+    return { message: isActive ? 'Tài khoản đã được kích hoạt' : 'Tài khoản đã bị vô hiệu hóa', user };
+};
+module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login, activateUser };
 

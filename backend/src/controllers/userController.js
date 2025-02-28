@@ -136,7 +136,17 @@ const findUserById = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-
+// Kích hoạt/Vô hiệu hóa người dùng
+const activateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { isActive } = req.body; // Nhận trạng thái từ request body
+        const result = await authService.activateUser(id, isActive);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 module.exports = { 
     getAllUsers, 
     deleteUser, 
@@ -147,6 +157,7 @@ module.exports = {
     login, 
     logout, 
     updatePassword, 
-    addAddress 
+    addAddress,
+    activateUser 
 };
 
