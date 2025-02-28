@@ -9,6 +9,9 @@ const favoriteRoutes = require('./src/routes/favorite');
 
 
 const cors = require("cors");
+const compression = require("compression");
+
+
 
 
 dotenv.config();
@@ -20,7 +23,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/images', express.static('public/images'));
 app.use(express.json({ type: "application/json", charset: "utf-8" }));
-
+app.use(compression());
 
 
 

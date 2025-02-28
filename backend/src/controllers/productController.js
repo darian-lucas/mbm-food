@@ -1,14 +1,31 @@
 const productServices = require("../services/productServices");
+const redis = require("redis");
 
-// Lấy tất cả sản phẩm
+const client = redis.createClient();
+client.connect();
+
 exports.getAllProducts = async (req, res, next) => {
+  const cacheKey = "all_products";
+
   try {
+    // Kiểm tra dữ liệu trong Redis cache
+    const cachedData = await client.get(cacheKey);
+    if (cachedData) {
+      return res.status(200).json({ data: JSON.parse(cachedData) });
+    }
+
+    // Nếu không có trong cache, lấy từ MongoDB
     const result = await productServices.getAllProducts();
+
+    // Lưu vào Redis với thời gian hết hạn 1 giờ
+    await client.setEx(cacheKey, 3600, JSON.stringify(result));
+
     res.status(200).json({ data: result });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
+
 
 // Lấy chi tiết một sản phẩm
 exports.getByIdProduct = async (req, res, next) => {

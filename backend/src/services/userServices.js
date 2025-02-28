@@ -52,12 +52,16 @@ const updatePassword = async (userId, oldPassword, newPassword) => {
 
 // Lấy tất cả người dùng và phân trang
 const getAllUsers = async (page = 1, limit = 5) => {
+    console.time("⏱️ Thời gian lấy dữ liệu");
+
     page = Math.max(1, page);
     limit = Math.max(1, limit);
     const skip = (page - 1) * limit;
 
     const users = await User.find().skip(skip).limit(limit);
     const totalUsers = await User.countDocuments();
+
+    console.timeEnd("⏱️ Thời gian lấy dữ liệu");
 
     return {
         users,
@@ -66,6 +70,7 @@ const getAllUsers = async (page = 1, limit = 5) => {
         currentPage: page
     };
 };
+
 
 // Xóa người dùng theo ID
 const deleteUser = async (userId) => {

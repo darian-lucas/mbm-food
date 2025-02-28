@@ -1,8 +1,18 @@
 const productModel = require("../models/ProductModel.js");
 
 // Lấy tất cả sản phẩm
+const { performance } = require("perf_hooks");
+
 exports.getAllProducts = async () => {
+  const startTime = performance.now();
+
   const products = await productModel.find({});
+
+  const endTime = performance.now();
+  const executionTime = (endTime - startTime) / 1000; // Chuyển sang giây
+
+  console.log(`⏱️ Thời gian lấy dữ liệu: ${executionTime.toFixed(3)} giây`);
+
   return products;
 };
 
