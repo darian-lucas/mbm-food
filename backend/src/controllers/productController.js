@@ -3,7 +3,7 @@ const productServices = require("../services/productServices");
 // Lấy tất cả sản phẩm
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const result = await productServices.getAllProducts();
+    const result = await productServices.getAllProducts({ status: "Active", flag: true });
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -143,5 +143,28 @@ exports.getBySlugProduct = async (req, res, next) => {
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.updateStatusProduct = async (req,res) => {
+  try {
+    const { id } = req.params;
+    const { status, flag } = req.body;
+    
+    // Cập nhật sản phẩm
+    const updatedProduct = await productServices.updateStatusProduct(id, status, flag);
+    
+    return res.status(200).json({
+      success: true,
+      message: `Đã cập nhật trạng thái sản phẩm thành ${status}`,
+      product: updatedProduct
+    });
+  } catch (error) {
+    console.error('Lỗi khi cập nhật trạng thái sản phẩm:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Đã xảy ra lỗi khi cập nhật trạng thái sản phẩm',
+      error: error.message
+    });
   }
 };

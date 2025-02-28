@@ -38,13 +38,16 @@ interface Product {
   slug: string;
   status: string;
   idcate: string;
+  flag: boolean;
 }
 
 const ProductManage = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
-  
+
   const ITEMS_PER_PAGE = 8; // Số sản phẩm trên mỗi trang
 
   useEffect(() => {
@@ -67,31 +70,30 @@ const ProductManage = () => {
   }, []);
 
   // Sử dụng hook tìm kiếm
-  const { 
-    searchTerm, 
-    filteredItems: filteredProducts, 
-    handleSearchChange 
+  const {
+    searchTerm,
+    filteredItems: filteredProducts,
+    handleSearchChange,
   } = useSearch<Product>({
     items: products,
-    searchProperty: "name"
+    searchProperty: "name",
   });
-  
+
   // Sử dụng hook phân trang
-  const { 
+  const {
     currentPage,
     totalPages,
     getCurrentPageData,
     handlePageChange,
-    handleItemRemoval
+    handleItemRemoval,
   } = usePagination<Product>({
     items: filteredProducts,
-    itemsPerPage: ITEMS_PER_PAGE
+    itemsPerPage: ITEMS_PER_PAGE,
   });
 
   const handleDeleteProduct = async (id: string) => {
     Swal.fire({
-      title: "Bạn có chắc chắn?",
-      text: "Hành động này không thể hoàn tác!",
+      title: "Bạn có chắc chắn xóa không?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -106,13 +108,54 @@ const ProductManage = () => {
             const updated = prev.filter((item) => item._id !== id);
             return updated;
           });
-          
+
           // Xử lý phân trang sau khi xóa sản phẩm
           handleItemRemoval(filteredProducts.length - 1);
 
           toast.success("Xóa sản phẩm thành công!");
         } catch (error) {
           toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+        }
+      }
+    });
+  };
+
+  const handleToggleStatus = async (product: Product) => {
+    Swal.fire({
+      title: "Bạn có chắc muốn đổi trạng thái?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Cập nhật",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const newStatus = product.status === "Active" ? "Unactive" : "Active";
+          const newFlag = newStatus === "Active";
+    
+          await ProductServices.updateStatusProduct(
+            product._id,
+            newStatus,
+            newFlag
+          );
+    
+          // Cập nhật state sau khi thay đổi trạng thái
+          setProducts((prev) => {
+            return prev.map((item) => {
+              if (item._id === product._id) {
+                return {
+                  ...item,
+                  status: newStatus,
+                  flag: newFlag,
+                };
+              }
+              return item;
+            });
+          });
+          toast.success(`Đã cập nhật trạng thái thành công`);
+        } catch (error) {
+          toast.error("Có lỗi xảy ra khi cập nhật trạng thái sản phẩm!");
         }
       }
     });
@@ -143,15 +186,15 @@ const ProductManage = () => {
         <Heading className="">Quản lý sản phẩm</Heading>
         <div className="flex gap-3">
           <div className="w-full lg:w-[300px]">
-            <Input 
-              placeholder="Tìm kiếm sản phẩm..." 
+            <Input
+              placeholder="Tìm kiếm sản phẩm..."
               value={searchTerm}
               onChange={handleSearchChange}
             />
           </div>
         </div>
       </div>
-      
+
       {loading ? (
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin h-8 w-8 border-4 border-t-primary border-l-primary border-b-primary rounded-full"></div>
@@ -200,15 +243,29 @@ const ProductManage = () => {
                       </TableCell>
                       <TableCell>
                         {product.variants?.[0]?.price
-                          ? `${product.variants[0].price.toLocaleString("vi")} VNĐ`
+                          ? `${product.variants[0].price.toLocaleString(
+                              "vi"
+                            )} VNĐ`
                           : "Chưa có giá"}
                       </TableCell>
                       <TableCell className="px-3">
                         {categories.find((cate) => cate._id === product.idcate)
                           ?.name || "Không xác định"}
                       </TableCell>
-                      <TableCell className="pl-4">
+                      {/* <TableCell className="pl-4">
                         <span className={commonClassNames.status}>
+                          {product.status}
+                        </span>
+                      </TableCell> */}
+                      <TableCell className="pl-4">
+                        <span
+                          className={`${commonClassNames.status} ${
+                            product.status === "Active"
+                              ? "text-green-500 border-green-500 bg-green-500"
+                              : "text-red-500 border-red-500 bg-red-500"
+                          } bg-opacity-10 cursor-pointer`}
+                          onClick={() => handleToggleStatus(product)}
+                        >
                           {product.status}
                         </span>
                       </TableCell>
@@ -240,11 +297,11 @@ const ProductManage = () => {
               )}
             </TableBody>
           </Table>
-          
-          <Pagination 
-            currentPage={currentPage} 
-            totalPages={totalPages} 
-            onPageChange={handlePageChange} 
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
           />
         </>
       )}
