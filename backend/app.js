@@ -7,12 +7,7 @@ const productRoutes = require('./src/routes/product');
 const postRoutes = require('./src/routes/post')
 const favoriteRoutes = require('./src/routes/favorite');
 
-
 const cors = require("cors");
-const compression = require("compression");
-
-
-
 
 dotenv.config();
 const app = express();
@@ -23,7 +18,6 @@ app.use(express.json());
 app.use(cors());
 app.use('/images', express.static('public/images'));
 app.use(express.json({ type: "application/json", charset: "utf-8" }));
-app.use(compression());
 
 
 

@@ -1,18 +1,9 @@
 const productModel = require("../models/ProductModel.js");
 
 // Lấy tất cả sản phẩm
-const { performance } = require("perf_hooks");
 
 exports.getAllProducts = async () => {
-  const startTime = performance.now();
-
   const products = await productModel.find({});
-
-  const endTime = performance.now();
-  const executionTime = (endTime - startTime) / 1000; // Chuyển sang giây
-
-  console.log(`⏱️ Thời gian lấy dữ liệu: ${executionTime.toFixed(3)} giây`);
-
   return products;
 };
 
@@ -29,28 +20,6 @@ exports.getByCategory = async (idcate, query) => {
   let products = await productModel.find({ idcate: idcate }).limit(limit);
   return products;
 };
-
-// Tạo sản phẩm mới
-// exports.createProduct = async (name, idcate, description, variants, hot,view, slug) => {
-//   const model = new productModel({ name, idcate, description, variants, hot, view, slug });
-//   await model.save();
-//   return model;
-// };
-
-// exports.createProduct = async ({ name, idcate, description, variants, hot, view, slug }) => {
-//   const product = new productModel({
-//     name,
-//     idcate,
-//     description, 
-//     variants: variants?.length ? variants : [],
-//     hot: hot || 0,
-//     view: view || 0,
-//     slug,
-//   });
-
-//   await product.save();
-//   return product;
-// };
 
 exports.createProduct = async ({ name, idcate, description, variants, hot, slug }) => {
   try {
@@ -74,16 +43,6 @@ exports.createProduct = async ({ name, idcate, description, variants, hot, slug 
     throw error;
   }
 };
-
-// Cập nhật sản phẩm
-// exports.updateProduct = async (id, name, idcate, description, variants, hot,view,slug, status) => {
-//   const model = await productModel.findByIdAndUpdate(
-//     id,
-//     { name, idcate, description, variants, hot,view,slug, status },
-//     { new: true }
-//   );
-//   return model;
-// };
 
 exports.updateProduct = async (id, { name, idcate, description, variants, hot, slug }) => {
   try {
