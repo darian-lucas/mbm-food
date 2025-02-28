@@ -12,64 +12,39 @@ const register = async (userData) => {
 // Đăng nhập
 const login = async (email, password) => {
     const user = await User.findOne({ email });
-    if (!user) throw new Error('Tên đăng nhập không tồn tại');
-    if (!user.isActive) throw new Error('Tài khoản đã bị vô hiệu hóa');
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) throw new Error('Mật khẩu không chính xác');
-
-    const token = jwt.sign(
-        { userId: user._id, role: user.role },
-        process.env.JWT_SECRET || 'defaultSecret',
-        { expiresIn: '1h' }
-    );
-
-    return { token, userId: user._id };
+    // console.log("User từ DB:", user); // ✅ Kiểm tra user có tồn tại không
+    if (!user) throw new Error("Người dùng không tồn tại");
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Mật khẩu không đúng");
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    return { token, user }; // ✅ Trả về cả user
 };
-
-// Đăng xuất (logout)
-const logout = () => {
-    return { message: 'Đăng xuất thành công' };
-};
-
-// Cập nhật mật khẩu
-const updatePassword = async (userId, oldPassword, newPassword) => {
-    const user = await User.findById(userId);
-    if (!user) throw new Error('Người dùng không tồn tại');
-
-    // Kiểm tra mật khẩu cũ
-    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-    if (!isPasswordValid) throw new Error('Mật khẩu cũ không chính xác');
-
-    user.password = newPassword;
-
-    await user.save();
-
-    return { message: 'Cập nhật mật khẩu thành công' };
-};
-
 
 
 // Lấy tất cả người dùng và phân trang
 const getAllUsers = async (page = 1, limit = 5) => {
-    console.time("⏱️ Thời gian lấy dữ liệu");
+    try {
+        page = Math.max(1, page);
+        limit = Math.max(1, limit);
 
-    page = Math.max(1, page);
-    limit = Math.max(1, limit);
-    const skip = (page - 1) * limit;
+        const skip = (page - 1) * limit;
+        console.log(`Querying users - Skip: ${skip}, Limit: ${limit}`);
 
-    const users = await User.find().skip(skip).limit(limit);
-    const totalUsers = await User.countDocuments();
+        const users = await User.find().skip(skip).limit(limit);
+        const totalUsers = await User.countDocuments();
 
-    console.timeEnd("⏱️ Thời gian lấy dữ liệu");
-
-    return {
-        users,
-        totalUsers,
-        totalPages: Math.ceil(totalUsers / limit),
-        currentPage: page
-    };
+        return {
+            users,
+            totalUsers,
+            totalPages: Math.ceil(totalUsers / limit),
+            currentPage: page
+        };
+    } catch (error) {
+        console.error("Database query error:", error);
+        throw new Error("Không thể truy vấn danh sách người dùng");
+    }
 };
+
 
 
 // Xóa người dùng theo ID
@@ -86,34 +61,6 @@ const updateUser = async (userId, updateData) => {
     return { message: 'Cập nhật thành công', user };
 };
 
-// Thêm địa chỉ mới
-const addAddress = async (req, res) => {
-    try {
-        const { userId } = req.user;
-        const { address } = req.body;
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "Người dùng không tồn tại" });
-        }
-
-        // Kiểm tra và chuyển đổi address thành mảng nếu cần
-        if (!Array.isArray(user.address)) {
-            user.address = [];
-        }
-
-        user.address.push(address); 
-        await user.save();
-
-        res.status(200).json({ message: "Đã thêm địa chỉ mới", addresses: user.address });
-    } catch (error) {
-        console.error("Lỗi server:", error);
-        res.status(500).json({ message: error.message });
-    }
-};
-
-
-
 // Tìm người dùng theo username
 const findUserByName = async (username) => {
     const user = await User.findOne({ username });
@@ -121,22 +68,5 @@ const findUserByName = async (username) => {
     return user;
 };
 
-const findUserById = async (userId) => {
-    const user = await User.findById(userId);
-    if (!user) throw new Error('Người dùng không tồn tại');
-    return user;
-};
-
-module.exports = {
-    getAllUsers,
-    deleteUser,
-    updateUser,
-    findUserByName,
-    findUserById,
-    register,
-    login,
-    logout,
-    updatePassword,
-    addAddress
-};
+module.exports = { getAllUsers, deleteUser, updateUser, findUserByName, register, login };
 

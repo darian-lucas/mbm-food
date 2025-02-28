@@ -1,31 +1,14 @@
 const productServices = require("../services/productServices");
-const redis = require("redis");
 
-const client = redis.createClient();
-client.connect();
-
+// Lấy tất cả sản phẩm
 exports.getAllProducts = async (req, res, next) => {
-  const cacheKey = "all_products";
-
   try {
-    // Kiểm tra dữ liệu trong Redis cache
-    const cachedData = await client.get(cacheKey);
-    if (cachedData) {
-      return res.status(200).json({ data: JSON.parse(cachedData) });
-    }
-
-    // Nếu không có trong cache, lấy từ MongoDB
-    const result = await productServices.getAllProducts();
-
-    // Lưu vào Redis với thời gian hết hạn 1 giờ
-    await client.setEx(cacheKey, 3600, JSON.stringify(result));
-
+    const result = await productServices.getAllProducts({ status: "Active", flag: true });
     res.status(200).json({ data: result });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 };
-
 
 // Lấy chi tiết một sản phẩm
 exports.getByIdProduct = async (req, res, next) => {
@@ -160,5 +143,28 @@ exports.getBySlugProduct = async (req, res, next) => {
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.updateStatusProduct = async (req,res) => {
+  try {
+    const { id } = req.params;
+    const { status, flag } = req.body;
+    
+    // Cập nhật sản phẩm
+    const updatedProduct = await productServices.updateStatusProduct(id, status, flag);
+    
+    return res.status(200).json({
+      success: true,
+      message: `Đã cập nhật trạng thái sản phẩm thành ${status}`,
+      product: updatedProduct
+    });
+  } catch (error) {
+    console.error('Lỗi khi cập nhật trạng thái sản phẩm:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Đã xảy ra lỗi khi cập nhật trạng thái sản phẩm',
+      error: error.message
+    });
   }
 };

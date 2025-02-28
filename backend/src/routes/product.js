@@ -7,6 +7,7 @@ const {
   deleteProduct,
   getByCategory,
   getBySlugProduct,
+  updateStatusProduct
 } = require("../controllers/productController");
 
 const upload = require("../middleware/uploadImage");
@@ -26,16 +27,6 @@ router.get('/:id', getByIdProduct);
 
 router.get('/categories/:idcate', getByCategory);
 
-// router.post(
-//   "/",
-//   upload.fields([
-//     { name: "variants[0][image]" },
-//     { name: "variants[1][image]" },
-//   ]),
-//   createProduct
-// );
-
-
 router.post('/', upload.fields(multerFields), createProduct);
 
 router.put('/:id', upload.fields(multerFields), updateProduct);
@@ -43,5 +34,7 @@ router.put('/:id', upload.fields(multerFields), updateProduct);
 router.delete('/:id', deleteProduct);
 
 router.get('/slug/:slug', getBySlugProduct);
+
+router.put('/:id/status', updateStatusProduct);
 
 module.exports = router;
