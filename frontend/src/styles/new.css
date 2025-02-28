@@ -128,6 +128,10 @@
   line-height: 1.4;
 }
 
+.block-content h2{
+  font-size: 20px;
+}
+
 .block-content p {
   font-size: 14px;
   color: #666;
@@ -155,11 +159,11 @@
 
 .block-content p {
   font-size: 14px;
-  flex-grow: 1; /* Đảm bảo đoạn mô tả chiếm phần còn lại */
+  flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Giới hạn số dòng */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
