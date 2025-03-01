@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { updatePassword } from "@/services/user";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function ChangePassword() {
     const [oldPassword, setOldPassword] = useState("");
@@ -85,7 +86,7 @@ export default function ChangePassword() {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-red" disabled={loading}>
+                <button type="submit" className="btn btn-success" disabled={loading}>
                     {loading ? "Đang xử lý..." : "Đổi mật khẩu"}
                 </button>
                 {message && <p className="mt-2">{message}</p>}

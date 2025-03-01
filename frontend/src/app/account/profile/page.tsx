@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { getUserById } from "@/services/user";
 import styles from "@/styles/Account.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function AccountInfo() {
     const [user, setUser] = useState<any>(null);

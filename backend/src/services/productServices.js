@@ -76,7 +76,6 @@ exports.updateProduct = async (id, { name, idcate, description, variants, hot, s
   }
 };
 
-
 // Xóa sản phẩm
 exports.deleteProduct = async (id) => {
   await productModel.deleteOne({ _id: id });
@@ -86,4 +85,22 @@ exports.deleteProduct = async (id) => {
 exports.getBySlugProduct = async (slug) => {
   const product= await productModel.findOne({ slug }); 
   return product;
+};
+
+exports.updateStatusProduct = async (id, status, flag) => {
+  try {
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      { status, flag },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      throw new Error("Sản phẩm không tồn tại");
+    }
+
+    return updatedProduct;
+  } catch (error) {
+    throw error;
+  }
 };

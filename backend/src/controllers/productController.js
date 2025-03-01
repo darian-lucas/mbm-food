@@ -1,7 +1,7 @@
 const productServices = require("../services/productServices");
 
+// Lấy tất cả sản phẩm
 exports.getAllProducts = async (req, res, next) => {
-
   try {
     const result = await productServices.getAllProducts();
     res.status(200).json({ data: result });
