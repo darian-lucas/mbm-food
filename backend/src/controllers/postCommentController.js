@@ -24,6 +24,16 @@ class PostCommentController {
         }
     }
 
+    async getCommentsByPost(req, res) {
+        try {
+            const { postId } = req.params;
+            const comments = await PostCommentService.getCommentsByPost(postId);
+            res.status(200).json(comments);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
     async getCommentsByUser(req, res) {
         try {
             const userId = req.params.userId;

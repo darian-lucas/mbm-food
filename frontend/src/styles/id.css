@@ -185,6 +185,15 @@ ftoc-head .title-goto-wrapper {
     margin-top: 0;
     margin-bottom: 1rem;
 }
+.content p img {
+  width: 100%; /* Hoặc một kích thước cụ thể như 300px */
+  height: auto; /* Để giữ tỷ lệ */
+  max-height: 500px; /* Giới hạn chiều cao để tránh hình quá lớn */
+  object-fit: cover; /* Cắt ảnh để giữ kích thước đều nhau */
+  border-radius: 8px; /* Tùy chỉnh bo góc nếu cần */
+}
+
+
 .content h2{
     font-size: 2rem;
     margin-bottom: 20px;
@@ -206,7 +215,7 @@ ftoc-head .title-goto-wrapper {
     text-align: center;
 }
   
-    .title-page span, .title-page a {
+  .title-page span, .title-page a {
     position: relative;
     padding-bottom: 10px;
     display: inline-block;
@@ -281,12 +290,16 @@ ftoc-head .title-goto-wrapper {
   }
   
   .article-comment-user-comment {
-    flex-grow: 1; /* Cho phép nội dung mở rộng ra hết phần còn lại */
-    /* background: #fff; */
+    flex-grow: 1;
     padding: 10px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    
   }
+  .article-comment:not(:last-child) {
+    border-bottom: 1px solid #ddd; 
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
   
   .user-name-comment strong {
     font-size: 16px;
@@ -302,6 +315,7 @@ ftoc-head .title-goto-wrapper {
     font-size: 15px;
     color: #444;
   }
+
   
   /* Responsive */
   @media (max-width: 768px) {

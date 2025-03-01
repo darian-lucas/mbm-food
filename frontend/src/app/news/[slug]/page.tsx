@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { fetchFeaturedNews, fetchNewsDetail, Post } from "../../../services/post";
 import "../../../styles/id.css";
+import "../../../styles/new.css";
+import CommentSection from "@/app/comments/CommentSection";
 
 export default function NewsDetail() {
   const { slug } = useParams();
@@ -74,11 +76,29 @@ export default function NewsDetail() {
             <li className="home">
               <Link href="/">Trang chủ</Link>
             </li>
-            <li className="mr_lr"> / </li>
+            <li className="mr_lr">
+              <svg
+                  width="10"
+                  height="10"
+                  viewBox="-96 0 512 512"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
+              </svg>
+            </li>
             <li>
               <Link href="/news">Tin tức</Link>
             </li>
-            <li className="mr_lr"> / </li>
+            <li className="mr_lr">
+              <svg
+                  width="10"
+                  height="10"
+                  viewBox="-96 0 512 512"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
+              </svg>
+            </li>
             <li>
               <strong>{post.title}</strong>
             </li>
@@ -121,7 +141,7 @@ export default function NewsDetail() {
               <li><Link href="/">Trang chủ</Link></li>
               <li><Link href="/about">Giới thiệu</Link></li>
               <li className="menu-item">
-                <Link href="/san-pham">Sản phẩm</Link>
+                <Link href="/product">Sản phẩm</Link>
                 <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
                   {isOpen ? "−" : "+"}
                 </button>
@@ -136,7 +156,7 @@ export default function NewsDetail() {
                 </ul>
               )}
               <li><Link className="font-bold" href="/news">Tin tức</Link></li>
-              <li><Link href="#">Liên hệ</Link></li>
+              <li><Link href="/contact">Liên hệ</Link></li>
               <li><Link href="#">Câu hỏi thường gặp</Link></li>
               <li><Link href="#">Đặt bàn</Link></li>
             </ul>
@@ -171,7 +191,8 @@ export default function NewsDetail() {
         </div>
 
         {/*Comment*/}
-          <div className="col-12 order-lg-3">
+        <CommentSection postId={post._id} />
+          {/* <div className="col-12 order-lg-3">
             <div className="thump-comment">
               <form action="" method="post" id="article_comments">
                 <input name="" type="hidden" value="article_comment" />
@@ -204,7 +225,6 @@ export default function NewsDetail() {
                     </div>
                   </div>
                 </div>
-                {/* Kết thúc form nhập dữ liệu */}
               </form>
               <div id="article-comments">
                 <h5 className="title-form-coment margin-bottom-25">Bình luận (3)</h5>
@@ -249,7 +269,7 @@ export default function NewsDetail() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
       </div>
     </div>
   );
