@@ -40,7 +40,7 @@ const Login = () => {
       // Lưu token và userId vào localStorage
       localStorage.setItem("token", result.token);
       localStorage.setItem("userId", result.userId);
-      
+
       toast.success("Đăng nhập thành công!");
 
       // Điều hướng dựa vào role
@@ -48,8 +48,10 @@ const Login = () => {
       if (role === "admin") {
         router.refresh();
         router.push("/admin");
-      } else if (role === "user" || role === "staff") {
+      } else if (role === "user") {
         router.push("/");
+      } else if (role === "staff") {
+        router.push("/employee");
       } else {
         toast.error(`Vai trò "${result.role}" không có quyền truy cập.`);
       }
