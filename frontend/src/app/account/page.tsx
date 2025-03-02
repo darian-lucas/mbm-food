@@ -27,7 +27,7 @@ export default function AccountPage() {
 
     return (
         <div className="container">
-            <h5 className=" fw-bold text-uppercase mb-3">Thông tin tài khoản</h5>
+            <h5 className="fw-bold text-uppercase mb-3">Thông tin tài khoản</h5>
             {user ? (
                 <>
                     <div className="card border-0 shadow-sm p-3 mb-4">
@@ -39,31 +39,32 @@ export default function AccountPage() {
                         </p>
                     </div>
 
-                    <h6 className="text-secondary fw-bold text-uppercase mt-3 mb-2">📍 Danh sách địa chỉ</h6>
+                    <h6 className="fw-bold text-uppercase mt-3 mb-2">📍 Danh sách địa chỉ</h6>
                     {Array.isArray(user.address) && user.address.length > 0 ? (
-                        <div className="row">
+                        <div className="row g-3"> {/* G-3 tạo khoảng cách giữa các cột */}
                             {user.address.map((addr: any, index: number) => (
-                                <div key={addr._id || index} className="col-md-6">
-                                    <div className="card border-light shadow-sm mb-3">
-                                        <div className="card-body">
+                                <div
+                                    key={addr._id || index}
+                                    className="col-md-6"
+                                    
+                                >
+                                    <div className="card border-light shadow-sm">
+                                        <div className="card-body" style={{
+                                        backgroundColor: "#e6f4ea",
+                                        border: "1px solid #a3d9a5",
+                                        borderRadius: "8px",
+                                        
+                                    }}>
                                             <h6 className="card-title fw-semibold text-dark">
                                                 {addr.name}
                                             </h6>
-                                            <p className="small text-muted mb-1">
-                                                📞 {addr.phone}
-                                            </p>
-                                            <p className="small text-muted mb-1">
-                                                🏢 {addr.company || "Không có"}
-                                            </p>
-                                            <p className="small text-muted mb-1">
+                                            <p className="small mb-1">📞 {addr.phone}</p>
+                                            <p className="small mb-1">🏢 {addr.company || "Không có"}</p>
+                                            <p className="small mb-1">
                                                 📍 {addr.address}, {addr.ward}, {addr.district}, {addr.city}
                                             </p>
-                                            <p className="small text-muted mb-1">
-                                                📮 ZIP: {addr.zip}
-                                            </p>
-                                            {addr.default && (
-                                                <span className="badge bg-danger">Mặc định</span>
-                                            )}
+                                            <p className="small mb-1">📮 ZIP: {addr.zip}</p>
+                                            {addr.default && <span className="badge bg-danger">Mặc định</span>}
                                         </div>
                                     </div>
                                 </div>

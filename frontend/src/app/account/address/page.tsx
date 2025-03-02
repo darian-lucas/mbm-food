@@ -112,7 +112,12 @@ export default function Address() {
                                         {user.address.map((addr) => (
                                             <div key={addr._id} className="col-md-6">
                                                 <div className="card shadow-sm mb-3">
-                                                    <div className="card-body">
+                                                    <div className="card-body" style={{
+                                        backgroundColor: "#e6f4ea",
+                                        border: "1px solid #a3d9a5",
+                                        borderRadius: "8px",
+                                        
+                                    }}>
                                                         <h6 className="card-title fw-bold">{addr.name}</h6>
                                                         <p className="card-text">
                                                             📞 <strong>{addr.phone}</strong> <br />
