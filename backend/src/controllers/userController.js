@@ -48,14 +48,15 @@ const updatePassword = async (req, res) => {
     }
 };
 
-// Thêm địa chỉ mới
 const addAddress = async (req, res) => {
     try {
-        const { userId } = req.user;
-        let { address } = req.body;
+        if (!req.user || !req.user.userId) {
+            return res.status(401).json({ message: "Bạn chưa đăng nhập" });
+        }
+        const userId = req.user.userId;
 
-        if (!address || typeof address !== "string") {
-            return res.status(400).json({ message: "Địa chỉ phải là chuỗi hợp lệ" });
+        if (!Array.isArray(req.body.address) || req.body.address.length === 0) {
+            return res.status(400).json({ message: "Danh sách địa chỉ không hợp lệ" });
         }
 
         const user = await authService.findUserById(userId);
@@ -63,20 +64,39 @@ const addAddress = async (req, res) => {
             return res.status(404).json({ message: "Người dùng không tồn tại" });
         }
 
-        // 🔥 Chuyển `address` thành mảng nếu chưa phải
+        // ✅ Fix lỗi: Nếu address không phải array, khởi tạo thành []
         if (!Array.isArray(user.address)) {
             user.address = [];
         }
 
-        user.address.push(address);
+        const newAddress = req.body.address.map(addr => ({
+            name: addr.name,
+            phone: addr.phone,
+            company: addr.company || "",
+            address: addr.address,
+            city: addr.city,
+            district: addr.district,
+            ward: addr.ward,
+            zip: addr.zip,
+            default: addr.default || false
+        }));
+
+        if (newAddress.some(addr => addr.default)) {
+            user.address.forEach(addr => (addr.default = false));
+        }
+
+        user.address.push(...newAddress);
         await user.save();
 
-        res.status(200).json({ message: "Thêm địa chỉ thành công", addresses: user.address });
+        res.status(200).json({ message: "Thêm địa chỉ thành công", address: user.address });
     } catch (error) {
         console.error("Lỗi server:", error);
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Lỗi server", error: error.message });
     }
 };
+
+
+
 
 
 

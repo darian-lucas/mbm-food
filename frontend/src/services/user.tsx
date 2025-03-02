@@ -96,9 +96,13 @@ export const deleteUser = async (userId: string, token: string) => {
     });
 };
 
-export const addAddress = async (userId: string, address: string, token: string) => {
-    if (!userId || !address) {
-        throw new Error("User ID và địa chỉ không được để trống");
+export const addAddress = async (userId: string, address: object[], token: string) => {
+    console.log("userId:", userId);
+    console.log("addresses:", address);
+    console.log("token:", token);
+
+    if (!userId || !Array.isArray(address) || address.length === 0) {
+        throw new Error("User ID và danh sách địa chỉ không được để trống");
     }
 
     const response = await fetch("http://localhost:3001/api/user/add-address", {
@@ -107,7 +111,7 @@ export const addAddress = async (userId: string, address: string, token: string)
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ address }) // ✅ Gửi lên chuỗi đơn
+        body: JSON.stringify({ address }) // ✅ Gửi dưới dạng mảng
     });
 
     if (!response.ok) {
@@ -117,6 +121,8 @@ export const addAddress = async (userId: string, address: string, token: string)
 
     return await response.json();
 };
+
+
 
 
 export const getUserById = async (userId: string) => {

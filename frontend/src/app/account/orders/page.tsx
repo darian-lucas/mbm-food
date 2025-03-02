@@ -4,10 +4,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 export default function AddressTable() {
   return (
     <div>
-      <h5>ĐỊA CHỈ CỦA BẠN</h5>
-      <button className="btn btn-red mb-3">Thêm địa chỉ</button>
+      <h5>ĐƠN HÀNG CỦA BẠN</h5>
+      
 
-      <table className="table table-bordered table-danger">
+      <table className="table table-bordered table-danger mt-3">
         <thead>
           <tr>
             <th>Họ tên</th>

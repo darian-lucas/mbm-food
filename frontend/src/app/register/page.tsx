@@ -20,25 +20,27 @@ export default function RegisterPage() {
 
   const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
     try {
+      // Chuyển address thành mảng object (nếu có)
+      const formattedData = {
+        ...data,
+        address: data.address ? [{ address: data.address }] : [],
+      };
+
       const res = await fetch("http://localhost:3001/api/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formattedData),
       });
 
-      const result: { message?: string } = await res.json();
+      const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Đăng kí thất bại!");
 
       toast.success("Tạo tài khoản thành công!");
       setTimeout(() => {
         router.push("/login");
-      }, 2000); // Chờ 2 giây trước khi chuyển trang để người dùng thấy thông báo
+      }, 2000);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Có lỗi xảy ra, vui lòng thử lại!");
-      }
+      setError(err instanceof Error ? err.message : "Có lỗi xảy ra, vui lòng thử lại!");
     }
   };
 
