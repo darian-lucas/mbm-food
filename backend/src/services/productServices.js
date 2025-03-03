@@ -1,8 +1,9 @@
 const productModel = require("../models/ProductModel.js");
 
 // Lấy tất cả sản phẩm
+
 exports.getAllProducts = async () => {
-  const products = await productModel.find({status: "Active", flag: true });
+  const products = await productModel.find({});
   return products;
 };
 
@@ -20,27 +21,20 @@ exports.getByCategory = async (idcate, query) => {
   return products;
 };
 
-exports.createProduct = async ({
-  name,
-  idcate,
-  description,
-  variants,
-  hot,
-  slug,
-}) => {
+exports.createProduct = async ({ name, idcate, description, variants, hot, slug }) => {
   try {
     const product = new productModel({
       name,
       idcate,
       description,
-      variants: variants.map((variant) => ({
+      variants: variants.map(variant => ({
         option: variant.option,
         price: variant.price,
         sale_price: variant.sale_price,
         image: variant.image,
       })),
       hot: hot || 0,
-      slug,
+      slug
     });
 
     await product.save();
@@ -50,10 +44,7 @@ exports.createProduct = async ({
   }
 };
 
-exports.updateProduct = async (
-  id,
-  { name, idcate, description, variants, hot, slug }
-) => {
+exports.updateProduct = async (id, { name, idcate, description, variants, hot, slug }) => {
   try {
     const updatedProduct = await productModel.findByIdAndUpdate(
       id,
@@ -64,7 +55,7 @@ exports.updateProduct = async (
           description,
           hot,
           slug,
-          variants: variants.map((variant) => ({
+          variants: variants.map(variant => ({
             option: variant.option || "",
             price: parseFloat(variant.price || "0"),
             sale_price: parseFloat(variant.sale_price || "0"),
@@ -92,11 +83,10 @@ exports.deleteProduct = async (id) => {
 
 // lấy api của slug
 exports.getBySlugProduct = async (slug) => {
-  const product = await productModel.findOne({ slug });
+  const product= await productModel.findOne({ slug }); 
   return product;
 };
 
-// cập nhật trạng thái của sản phẩm
 exports.updateStatusProduct = async (id, status, flag) => {
   try {
     const updatedProduct = await productModel.findByIdAndUpdate(

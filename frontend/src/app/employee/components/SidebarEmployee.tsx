@@ -1,41 +1,29 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link"; // Thêm Link
-import styles from "../styles/Sidebar.module.css";
+import Link from "next/link";
+import styles from "../styles/Employee.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
-  faLayerGroup,
-  faUserFriends,
-  faBox,
-  faHeart,
   faShoppingCart,
   faCog,
   faEnvelope,
   faLanguage,
   faSignOutAlt,
-  faNewspaper,
+  faTable
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
-export default function Sidebar() {
+export default function SidebarEmployee() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const menuItems = [
-    { name: "Dashboard", icon: faHome, path: "/admin" },
-    { name: "Category", icon: faLayerGroup, path: "/admin/manage/category" },
-    {
-      name: "Customers",
-      icon: faUserFriends,
-      path: "/admin/manage/custumerList",
-    },
-    { name: "Products", icon: faBox, path: "/admin/manage/products" },
-    { name: "Banner", icon: faHeart, path: "/admin/manage/banner" },
-    { name: "Orders", icon: faShoppingCart, path: "/admin/manage/orders" },
-    { name: "News", icon: faNewspaper, path: "/admin/manage/newsList" }, // Đường dẫn mới
-    { name: "Settings", icon: faCog, path: "/admin/manage/settings" },
-    { name: "Message", icon: faEnvelope, path: "/admin/manage/messages" },
-    { name: "Language", icon: faLanguage, path: "/admin/manage/language" },
+    { name: "Dashboard", icon: faHome, path: "/employee" },
+    { name: "Orders", icon: faShoppingCart, path: "/employee/manage/orders" },
+    { name: "Table", icon: faTable, path: "/employee/manage/table" },
+    { name: "Settings", icon: faCog, path: "/employee/manage/settings" },
+    { name: "Message", icon: faEnvelope, path: "/employee/manage/messages" },
+    { name: "Language", icon: faLanguage, path: "/employee/manage/language" },
     { name: "Login", icon: faSignOutAlt, path: "/login" },
   ];
 

@@ -24,41 +24,41 @@ const Login = () => {
         body: JSON.stringify(data),
       });
 
-      const result: {
-        token?: string;
-        userId?: string;
-        role?: string;
-        message?: string;
-      } = await res.json();
+      // Kiểm tra API có trả về JSON hợp lệ không
+      const result = await res.json();
+      console.log("Dữ liệu từ API:", result);
 
-      if (!res.ok) throw new Error(result.message || "Đăng nhập thất bại");
+      if (!res.ok) {
+        throw new Error(result.message || "Đăng nhập thất bại");
+      }
+
+      // Kiểm tra các giá trị quan trọng từ API
+      if (!result.token || !result.userId || !result.role) {
+        throw new Error("Dữ liệu từ server không hợp lệ.");
+      }
 
       // Lưu token và userId vào localStorage
-      localStorage.setItem("token", result.token || "");
-      localStorage.setItem("userId", result.userId || "");
-      console.log("Dữ liệu từ API:", result);
-      console.log("Role từ API:", result.role);
-      // Hiển thị thông báo thành công
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("userId", result.userId);
+
       toast.success("Đăng nhập thành công!");
 
       // Điều hướng dựa vào role
-      if (result.role?.trim().toLowerCase() === "admin") {
+      const role = result.role.trim().toLowerCase();
+      if (role === "admin") {
         router.refresh();
         router.push("/admin");
-      } else if (result.role?.trim().toLowerCase() === "user" || result.role?.trim().toLowerCase() === "staff") {
+      } else if (role === "user") {
         router.push("/");
+      } else if (role === "staff") {
+        router.push("/employee");
       } else {
         toast.error(`Vai trò "${result.role}" không có quyền truy cập.`);
       }
-      
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-        toast.error(err.message);
-      } else {
-        setError("Đã xảy ra lỗi");
-        toast.error("Đã xảy ra lỗi");
-      }
+      const errorMessage = err instanceof Error ? err.message : "Đã xảy ra lỗi";
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
@@ -70,13 +70,13 @@ const Login = () => {
         <input
           type="email"
           placeholder="Email"
-          {...register("email", { required: true })}
+          {...register("email", { required: "Vui lòng nhập email" })}
           className={styles.input}
         />
         <input
           type="password"
           placeholder="Mật khẩu"
-          {...register("password", { required: true })}
+          {...register("password", { required: "Vui lòng nhập mật khẩu" })}
           className={styles.input}
         />
         <div className={styles.rememberForgot}>

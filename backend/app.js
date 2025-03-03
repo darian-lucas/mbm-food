@@ -6,10 +6,9 @@ const categoryRoutes = require('./src/routes/category');
 const productRoutes = require('./src/routes/product');
 const postRoutes = require('./src/routes/post')
 const favoriteRoutes = require('./src/routes/favorite');
-
+const postCommentRoutes = require('./src/routes/postComment');
 
 const cors = require("cors");
-
 
 dotenv.config();
 const app = express();
@@ -24,7 +23,6 @@ app.use(express.json({ type: "application/json", charset: "utf-8" }));
 
 
 
-
 // Kết nối DB
 connectDB();
 
@@ -34,7 +32,7 @@ app.use('/api', postRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/favorite', favoriteRoutes);
-
+app.use('/api/cmt', postCommentRoutes);
 
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);

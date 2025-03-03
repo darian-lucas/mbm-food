@@ -83,7 +83,7 @@ const FavoritePage = () => {
             <div key={product._id} className="col-md-3 col-sm-6 mb-4">
               <div className={`card border-1 shadow-sm ${styles.productCard}`}>
                 {/* Icon trái tim */}
-                 <i
+                <i
                   className={`${styles.favoriteIcon} position-absolute top-0 end-0 p-2`}
                   onClick={() => toggleFavorite(product._id)}
                 >
