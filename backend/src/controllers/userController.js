@@ -95,6 +95,19 @@ const addAddress = async (req, res) => {
     }
 };
 
+const updateAddress = async (req, res) => {
+    try {
+        const { userId, addressId } = req.params;
+        const updatedAddress = req.body;
+
+        const addresses = await authService.updateAddress(userId, addressId, updatedAddress);
+
+        res.status(200).json({ message: "Cập nhật địa chỉ thành công", address: addresses });
+    } catch (error) {
+        console.error("Lỗi server:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
 
 
 
@@ -168,6 +181,7 @@ module.exports = {
     login, 
     logout, 
     updatePassword, 
-    addAddress 
+    addAddress,
+    updateAddress 
 };
 

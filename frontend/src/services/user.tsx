@@ -122,6 +122,20 @@ export const addAddress = async (userId: string, address: object[], token: strin
     return await response.json();
 };
 
+// Cập nhật địa chỉ (đúng chuẩn của addAddress)
+export const updateAddress = async (userId: string, addressId: string, updatedAddress: object, token: string) => {
+    return fetchAPI(`http://localhost:3001/api/user/${userId}/address/${addressId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedAddress) // ✅ Gửi object, không phải array
+    });
+};
+
+
+
 
 
 

@@ -112,5 +112,32 @@ const addAddress = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+// Update địa chỉ
+const updateAddress = async (userId, addressId, updatedAddress) => {
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new Error("Người dùng không tồn tại");
+    }
 
-module.exports = { addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById };
+    // Tìm địa chỉ theo `addressId`
+    const addressIndex = user.address.findIndex(addr => addr._id.toString() === addressId);
+    if (addressIndex === -1) {
+        throw new Error("Địa chỉ không tồn tại");
+    }
+
+    // Cập nhật thông tin địa chỉ
+    user.address[addressIndex] = { ...user.address[addressIndex], ...updatedAddress };
+
+    // Nếu có địa chỉ mặc định, đặt lại tất cả trước khi cập nhật
+    if (updatedAddress.default) {
+        user.address.forEach(addr => (addr.default = false));
+        user.address[addressIndex].default = true;
+    }
+
+    await user.save();
+    return user.address;
+};
+
+
+
+module.exports = { addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById,updateAddress  };

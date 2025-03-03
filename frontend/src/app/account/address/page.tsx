@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { addAddress, getUserById } from "@/services/user";
+import { addAddress, getUserById, updateAddress } from "@/services/user";
 import styles from "@/styles/Address.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -12,6 +12,9 @@ export default function Address() {
     const [wards, setWards] = useState([]);
     const [message, setMessage] = useState("");
     const [user, setUser] = useState(null);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
@@ -48,24 +51,39 @@ export default function Address() {
     }, []);
 
     const handleCityChange = (e) => {
-        const cityCode = e.target.value;
-        const selectedCity = cities.find(city => city.code.toString() === cityCode);
+        const cityName = e.target.value;
+        const selectedCity = cities.find(city => city.name === cityName);
         setDistricts(selectedCity?.districts || []);
         setWards([]);
-        setFormData(prev => ({ ...prev, city: selectedCity?.name || "", district: "", ward: "", zip: "" }));
+        setFormData(prev => ({
+            ...prev,
+            city: cityName,
+            district: "",
+            ward: "",
+            zip: ""
+        }));
     };
 
     const handleDistrictChange = (e) => {
-        const districtCode = e.target.value;
-        const selectedDistrict = districts.find(d => d.code.toString() === districtCode);
+        const districtName = e.target.value;
+        const selectedDistrict = districts.find(d => d.name === districtName);
         setWards(selectedDistrict?.wards || []);
-        setFormData(prev => ({ ...prev, district: selectedDistrict?.name || "", ward: "", zip: "" }));
+        setFormData(prev => ({
+            ...prev,
+            district: districtName,
+            ward: "",
+            zip: ""
+        }));
     };
 
     const handleWardChange = (e) => {
-        const wardCode = e.target.value;
-        const selectedWard = wards.find(w => w.code.toString() === wardCode);
-        setFormData(prev => ({ ...prev, ward: selectedWard?.name || "", zip: selectedWard?.code.toString() || "" }));
+        const wardName = e.target.value;
+        const selectedWard = wards.find(w => w.name === wardName);
+        setFormData(prev => ({
+            ...prev,
+            ward: wardName,
+            zip: selectedWard?.code.toString() || ""
+        }));
     };
 
     const handleChange = (e) => {
@@ -93,6 +111,27 @@ export default function Address() {
             console.log([formData])
         }
     };
+    const handleEditAddress = (address) => {
+        setSelectedAddress(address);
+        setFormData(address);
+        setShowUpdateModal(true);
+    };
+    const handleUpdateAddress = async () => {
+        const token = localStorage.getItem("token");
+        if (!selectedAddress || !user?._id || !token) {
+            setMessage("Lỗi: Thiếu thông tin user hoặc token.");
+            return;
+        }
+    
+        try {
+            await updateAddress(user._id, selectedAddress._id, formData, token);
+            setMessage("Cập nhật địa chỉ thành công!");
+            setShowUpdateModal(false);
+        } catch (error) {
+            setMessage("Lỗi: " + error.message);
+        }
+    };
+    
 
     return (
         <div className={styles.container}>
@@ -113,11 +152,15 @@ export default function Address() {
                                             <div key={addr._id} className="col-md-6">
                                                 <div className="card shadow-sm mb-3">
                                                     <div className="card-body" style={{
-                                        backgroundColor: "#e6f4ea",
-                                        border: "1px solid #a3d9a5",
-                                        borderRadius: "8px",
-                                        
-                                    }}>
+                                                        backgroundColor: "#e6f4ea",
+                                                        border: "1px solid #a3d9a5",
+                                                        borderRadius: "8px",
+
+                                                    }}>
+                                                        <button className="btn btn-primary btn-sm" onClick={() => handleEditAddress(addr)}>
+                                                            ✏ Cập nhật
+                                                        </button>
+
                                                         <h6 className="card-title fw-bold">{addr.name}</h6>
                                                         <p className="card-text">
                                                             📞 <strong>{addr.phone}</strong> <br />
@@ -142,22 +185,41 @@ export default function Address() {
 
                 </div>
             )}
+            {showUpdateModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <div className={styles.modalHeader}>
+                            <h5>CẬP NHẬT ĐỊA CHỈ</h5>
+                            <button className={styles.closeButton} onClick={() => setShowUpdateModal(false)}>×</button>
+                        </div>
+                        <div className={styles.modalBody}>
+                            <input type="text" name="name" placeholder="Họ tên" className="form-control" onChange={handleChange} value={formData.name} />
+                            <input type="text" name="phone" placeholder="Số điện thoại" className="form-control" onChange={handleChange} value={formData.phone} />
+                            <input type="text" name="company" placeholder="Công ty (tùy chọn)" className="form-control" onChange={handleChange} value={formData.company} />
+                            <input type="text" name="address" placeholder="Địa chỉ" className="form-control" onChange={handleChange} value={formData.address} />
+                            <div className={styles.selectGroup}>
+                                <select name="city" className="form-control" onChange={handleCityChange} value={formData.city}>
+                                    <option value="">Chọn tỉnh/thành</option>
+                                    {cities.map(city => <option key={city.code} value={city.name}>{city.name}</option>)}
+                                </select>
 
+                                <select name="district" className="form-control" onChange={handleDistrictChange} value={formData.district} disabled={!formData.city}>
+                                    <option value="">Chọn quận/huyện</option>
+                                    {districts.map(district => <option key={district.code} value={district.name}>{district.name}</option>)}
+                                </select>
 
+                                <select name="ward" className="form-control" onChange={handleWardChange} value={formData.ward} disabled={!formData.district}>
+                                    <option value="">Chọn phường/xã</option>
+                                    {wards.map(ward => <option key={ward.code} value={ward.name}>{ward.name}</option>)}
+                                </select>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+                            </div>
+                            <input type="text" name="zip" placeholder="Mã Zip" className="form-control" value={formData.zip} readOnly />
+                            <button className={styles.confirmButton} onClick={handleUpdateAddress}>Cập nhật địa chỉ</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showModal && (
                 <div className={styles.modalOverlay}>
@@ -174,16 +236,19 @@ export default function Address() {
                             <div className={styles.selectGroup}>
                                 <select name="city" className="form-control" onChange={handleCityChange} value={formData.city}>
                                     <option value="">Chọn tỉnh/thành</option>
-                                    {cities.map(city => <option key={city.code} value={city.code}>{city.name}</option>)}
+                                    {cities.map(city => <option key={city.code} value={city.name}>{city.name}</option>)}
                                 </select>
+
                                 <select name="district" className="form-control" onChange={handleDistrictChange} value={formData.district} disabled={!formData.city}>
                                     <option value="">Chọn quận/huyện</option>
-                                    {districts.map(district => <option key={district.code} value={district.code}>{district.name}</option>)}
+                                    {districts.map(district => <option key={district.code} value={district.name}>{district.name}</option>)}
                                 </select>
+
                                 <select name="ward" className="form-control" onChange={handleWardChange} value={formData.ward} disabled={!formData.district}>
                                     <option value="">Chọn phường/xã</option>
-                                    {wards.map(ward => <option key={ward.code} value={ward.code}>{ward.name}</option>)}
+                                    {wards.map(ward => <option key={ward.code} value={ward.name}>{ward.name}</option>)}
                                 </select>
+
                             </div>
                             <input type="text" name="zip" placeholder="Mã Zip" className="form-control" value={formData.zip} readOnly />
                             <div className={styles.checkboxContainer}>

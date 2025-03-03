@@ -10,7 +10,8 @@ const {
     deleteUser, 
     updateUser, 
     findUserByName, 
-    findUserById
+    findUserById,
+    updateAddress
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -27,6 +28,8 @@ router.post('/logout', logout);
 // Các API yêu cầu xác thực người dùng
 router.put('/update-password', authMiddleware, updatePassword);
 router.post('/add-address', authMiddleware, addAddress);
+// Cập nhật địa chỉ
+router.put("/:userId/address/:addressId", authMiddleware, updateAddress);
 
 // Lấy tất cả người dùng (có phân trang)
 router.get('/', getAllUsers);
