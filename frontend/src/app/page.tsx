@@ -2,7 +2,7 @@
 import styles from "@/styles/Home.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -10,6 +10,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
+import { usePathname } from "next/navigation";
 import {
   addFavorite,
   removeFavorite,
@@ -29,6 +30,7 @@ interface Product {
   description: string;
   variants: { price: number; image: string; sale_price?: number }[];
   hot?: number;
+  slug: string;
 }
 interface News {
   _id: string;
@@ -51,7 +53,7 @@ export default function Home(): JSX.Element {
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
-  
+  const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
 
   // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
@@ -162,9 +164,11 @@ export default function Home(): JSX.Element {
 
     fetchNews();
   }, []);
-
   ///sản phẩm yêu thích
 
+  useEffect(() => {
+    window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi route thay đổi
+  }, [pathname]);
   const promoData = [
     { name: "Khuyến mãi 1", img: "/images/promo-1.png" },
     { name: "Khuyến mãi 2", img: "/images/promo-2.png" },
@@ -287,8 +291,6 @@ export default function Home(): JSX.Element {
   //     [productId]: !prev[productId],
   //   }));
   // };
-  
-  
 
   return (
     <main className={styles.home}>
@@ -400,11 +402,11 @@ export default function Home(): JSX.Element {
           }}
         >
           {products
-            .filter((product) => product.hot === 1) // Lọc sản phẩm có hot === 1
-            .map((food, index) => (
+            .filter((product) => product.hot === 1)
+            .map((food) => (
               <SwiperSlide key={food._id} className={styles.slideItem}>
                 <div className={styles.foodItem}>
-                <button
+                  <button
                     className={styles.heartIcon}
                     onClick={async () => {
                       await toggleFavorite(food._id);
@@ -419,12 +421,16 @@ export default function Home(): JSX.Element {
                       }
                     />
                   </button>
-                  <Image
-                    src={`${API_URL}/images/${food.variants[0]?.image || "default.png"}`}
-                    alt={food.name}
-                    width={150}
-                    height={140}
-                  />
+                  <Link href={`/product/${food.slug}`}>
+                    <Image
+                      src={`${API_URL}/images/${
+                        food.variants[0]?.image || "default.png"
+                      }`}
+                      alt={food.name}
+                      width={150}
+                      height={140}
+                    />
+                  </Link>
                   <div className={styles.foodContent}>
                     <h3 className={styles.foodName}>{food.name}</h3>
                     <p
@@ -433,7 +439,9 @@ export default function Home(): JSX.Element {
                         __html: food.description || "Không có mô tả",
                       }}
                     />
+                    <Link href={`/product/${food.slug}`}>
                     <p className={styles.viewMore}>Xem thêm</p>
+                    </Link>
                     <p className={styles.foodPriceLabel}>Giá chỉ từ: </p>
                     <span className={styles.foodPrice}>
                       {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
@@ -498,7 +506,7 @@ export default function Home(): JSX.Element {
       <section className={styles.discountproductSection}>
         <div className={styles.discountWrapper}>
           <div className={styles.discountList}>
-            {discountItems.map((item, index) => {
+            {discountItems.map((item) => {
               const variant = item.variants[0]; // Lấy biến thể đầu tiên
               return (
                 <div key={item._id} className={styles.discountItem}>
@@ -517,12 +525,14 @@ export default function Home(): JSX.Element {
                       }
                     />
                   </button>
+                  <Link href={`/product/${item.slug}`}>
                   <Image
                     src={`${API_URL}/images/${variant.image}`}
                     alt={item.name}
-                    width={250}
+                    width={240}
                     height={200}
                   />
+                  </Link>
                   <h3 className={styles.discountItemName}>{item.name}</h3>
                   <p
                     className={styles.discountItemDesc}
@@ -530,7 +540,7 @@ export default function Home(): JSX.Element {
                       __html: item.description || "Không có mô tả",
                     }}
                   ></p>
-                  <Link href="#" className={styles.menufoodMore}>
+                  <Link href={`/product/${item.slug}`} className={styles.menufoodMore}>
                     Xem thêm
                   </Link>
                   <div className={styles.discountPriceContainer}>
@@ -659,6 +669,7 @@ export default function Home(): JSX.Element {
               <div className={styles.menufoodGrid}>
                 {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
+                    <Link href={`/product/${item.slug}`}>
                     <Image
                       src={`${API_URL}/images/${
                         item.variants[0]?.image || "default.png"
@@ -668,6 +679,7 @@ export default function Home(): JSX.Element {
                       height={70}
                       className={styles.menufoodImage}
                     />
+                    </Link>
                     <div className={styles.menufoodContent}>
                       <h4 className={styles.menufoodItemName}>{item.name}</h4>
                       <p
@@ -685,7 +697,7 @@ export default function Home(): JSX.Element {
                         </span>
                       </p>
                       <div className={styles.menufoodActions}>
-                        <Link href="#" className={styles.menufoodMore}>
+                        <Link href={`/product/${item.slug}`} className={styles.menufoodMore}>
                           Xem thêm
                         </Link>
                         <button className={styles.menufoodAdd}>Thêm</button>
