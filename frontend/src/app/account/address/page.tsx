@@ -4,7 +4,7 @@ import axios from "axios";
 import { addAddress, getUserById, updateAddress } from "@/services/user";
 import styles from "@/styles/Address.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { Edit3 } from "lucide-react";
 export default function Address() {
     const [showModal, setShowModal] = useState(false);
     const [cities, setCities] = useState([]);
@@ -122,7 +122,7 @@ export default function Address() {
             setMessage("Lỗi: Thiếu thông tin user hoặc token.");
             return;
         }
-    
+
         try {
             await updateAddress(user._id, selectedAddress._id, formData, token);
             setMessage("Cập nhật địa chỉ thành công!");
@@ -131,7 +131,7 @@ export default function Address() {
             setMessage("Lỗi: " + error.message);
         }
     };
-    
+
 
     return (
         <div className={styles.container}>
@@ -157,8 +157,8 @@ export default function Address() {
                                                         borderRadius: "8px",
 
                                                     }}>
-                                                        <button className="btn btn-primary btn-sm" onClick={() => handleEditAddress(addr)}>
-                                                            ✏ Cập nhật
+                                                        <button className="btn btn-sm float-right" onClick={() => handleEditAddress(addr)}>
+                                                            <Edit3 size={14} />
                                                         </button>
 
                                                         <h6 className="card-title fw-bold">{addr.name}</h6>
