@@ -18,7 +18,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     {/* Sidebar */}
                     <div className={`col-md-3 ${styles.sidebar}`}>
                         <h5>TRANG TÀI KHOẢN</h5>
-                        <p><strong>Xin chào, <span className="text-danger">son son</span>!</strong></p>
+                        <p><strong>Xin chào, <span className="text-danger">Khách lồn</span>!</strong></p>
                         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
                             <li><Link href="/account">Thông tin tài khoản</Link></li>
                             <li><Link href="/account/orders">Đơn hàng của bạn</Link></li>
