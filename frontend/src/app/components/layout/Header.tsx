@@ -17,7 +17,7 @@ export default function Header(): JSX.Element {
     { href: "/news", label: "Tin tức" },
     { href: "/contact", label: "Liên hệ" },
     { href: "/faq", label: "Câu hỏi thường gặp" },
-    { href: "/he-thong-cua-hang", label: "Hệ thống cửa hàng" },
+    { href: "/storesystem", label: "Hệ thống cửa hàng" },
     { href: "/dat-ban", label: "Đặt bàn" },
   ];
 
@@ -64,6 +64,8 @@ export default function Header(): JSX.Element {
   // Xử lí dăng xuất !
   const handleLogout = () => {
     localStorage.removeItem("token");
+    //Bổ sung khi đăng xuất thì xóa luôn userId để khi đăng nhập mới được bình luận
+    localStorage.removeItem("userId"); // Xóa userId
     setIsLoggedIn(false);
     window.location.reload();
   };

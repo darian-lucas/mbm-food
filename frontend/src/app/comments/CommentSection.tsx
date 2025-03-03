@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 interface Comment {
   _id: string;
-  id_user: { username: string; email: string };
+  id_user: { username: string };
   id_post: string;
   comment: string;
   create_at: string;
@@ -13,8 +14,6 @@ interface Comment {
 export default function CommentSection({ postId }: { postId: string }) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,26 +26,22 @@ export default function CommentSection({ postId }: { postId: string }) {
     }
   }, [postId]);
 
-  // Lấy danh sách bình luận theo từng bài viết
   const fetchComments = async (postId: string) => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/cmt/post/${postId}`
-      );
+      const response = await fetch(`http://localhost:3001/api/cmt/post/${postId}`);
       if (!response.ok) throw new Error("Lỗi tải bình luận");
       const data = await response.json();
       setComments(data);
     } catch (error) {
       console.error("Lỗi lấy bình luận:", error);
-      setComments([]); // Tránh lỗi nếu API không trả về dữ liệu
+      setComments([]);
     }
   };
 
-  // Gửi bình luận mới
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName.trim() || !email.trim()) {
-      alert("Vui lòng nhập đầy đủ họ tên và email.");
+    if (!userId) {
+      alert("Bạn cần đăng nhập để bình luận!");
       return;
     }
     if (!newComment.trim()) {
@@ -64,16 +59,12 @@ export default function CommentSection({ postId }: { postId: string }) {
         body: JSON.stringify({
           postId,
           comment: newComment,
-          username: fullName,
-          email: email,
         }),
       });
 
       if (response.ok) {
         setNewComment("");
-        setFullName("");
-        setEmail("");
-        fetchComments(postId); // Load lại bình luận sau khi gửi thành công
+        fetchComments(postId);
       } else {
         console.error("Lỗi khi gửi bình luận.");
       }
@@ -85,35 +76,17 @@ export default function CommentSection({ postId }: { postId: string }) {
   return (
     <div className="col-12 order-lg-3">
       <div className="thump-comment">
-        <form onSubmit={handleCommentSubmit}>
-          <div className="form-comment">
-            <div className="title-page">
-              <span>Viết bình luận của bạn</span>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <fieldset className="form-group">
-                  <input
-                    type="text"
-                    placeholder="Họ tên"
-                    className="form-control form-control-lg"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                </fieldset>
-              </div>
-              <div className="col-md-6">
-                <fieldset className="form-group">
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="form-control form-control-lg"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </fieldset>
+        {!userId ? (
+          <div className="alert alert-warning">
+            <p>
+              Bạn cần <Link href="/login" className="text-primary">đăng nhập</Link> để bình luận.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleCommentSubmit}>
+            <div className="form-comment">
+              <div className="title-page">
+                <span>Viết bình luận của bạn</span>
               </div>
               <fieldset className="form-group col-lg-12">
                 <textarea
@@ -131,12 +104,11 @@ export default function CommentSection({ postId }: { postId: string }) {
                 </button>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        )}
 
-        {/* Danh sách bình luận */}
         <div id="article-comments">
-          <h5 style={{ paddingTop: "10px" }} className="title-form-comment margin-bottom-25">
+          <h5 className="title-form-comment margin-bottom-25" style={{ paddingTop: "10px" }}>
             Bình luận ({comments.length})
           </h5>
           {comments.length === 0 ? (
@@ -152,9 +124,7 @@ export default function CommentSection({ postId }: { postId: string }) {
                     <strong>{comment.id_user?.username || "Ẩn danh"}</strong>{" "}
                   </p>
                   <span className="article-comment-date-bull">
-                    {comment.create_at
-                      ? new Date(comment.create_at).toLocaleDateString()
-                      : "Không xác định"}
+                    {comment.create_at ? new Date(comment.create_at).toLocaleDateString() : "Không xác định"}
                   </span>
                   <p className="cm">{comment.comment}</p>
                 </div>
