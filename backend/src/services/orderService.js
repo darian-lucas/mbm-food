@@ -27,12 +27,21 @@ class OrderService {
     }
 
     async getOrderById(orderId) {
-        const order = await Order.findById(orderId).populate('id_user', 'name email').populate('id_payment_method', 'name').lean();
+        const order = await Order.findById(orderId)
+            .populate("id_user", "name email")
+            .populate("id_payment_method", "name")
+            .lean();
         if (!order) return null;
-
-        order.details = await OrderDetail.find({ id_order: order._id }).populate('id_product', 'name price');
+    
+        order.details = await OrderDetail.find({ id_order: order._id })
+            .populate({ 
+                path: "id_product",
+                select: "name variants.price",
+                model: "product" // Đảm bảo model đúng
+            });
         return order;
     }
+    
 
     async updateOrderStatus(orderId, status) {
         return await Order.findByIdAndUpdate(orderId, { status }, { new: true });
