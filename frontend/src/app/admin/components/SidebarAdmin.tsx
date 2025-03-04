@@ -15,6 +15,7 @@ import {
   faLanguage,
   faSignOutAlt,
   faNewspaper,
+  faTicket
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
@@ -33,6 +34,7 @@ export default function SidebarAdmin() {
     { name: "Banner", icon: faHeart, path: "/admin/manage/banner" },
     { name: "Orders", icon: faShoppingCart, path: "/admin/manage/orders" },
     { name: "News", icon: faNewspaper, path: "/admin/manage/newsList" }, // Đường dẫn mới
+    { name: "Coupons", icon: faTicket, path: "/admin/manage/coupon" },
     { name: "Settings", icon: faCog, path: "/admin/manage/settings" },
     { name: "Message", icon: faEnvelope, path: "/admin/manage/messages" },
     { name: "Language", icon: faLanguage, path: "/admin/manage/language" },
