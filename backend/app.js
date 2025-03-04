@@ -43,7 +43,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/favorite', favoriteRoutes);
 app.use('/api/cmt', postCommentRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/payment-methods', paymentMethodRoutes);
+app.use('/api/payments', paymentMethodRoutes);
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
 

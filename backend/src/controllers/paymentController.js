@@ -4,9 +4,9 @@ const paymentMethodService = require('../services/paymentService');
 const getAll = async (req, res) => {
     try {
         const payments = await paymentMethodService.getAllPaymentMethods();
-        res.json({ success: true, data: payments });
+        res.json(payments);
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -15,9 +15,9 @@ const create = async (req, res) => {
     try {
         const { payment_name } = req.body;
         const newPayment = await paymentMethodService.createPaymentMethod(payment_name);
-        res.json({ success: true, message: 'Thêm thành công', data: newPayment });
+        res.status(201).json(newPayment);
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        res.status(400).json({ message: error.message });
     }
 };
 
@@ -25,9 +25,9 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const updatedPayment = await paymentMethodService.updatePaymentMethod(req.params.id, req.body);
-        res.json({ success: true, message: 'Cập nhật thành công', data: updatedPayment });
+        res.json(updatedPayment);
     } catch (error) {
-        res.status(404).json({ success: false, message: error.message });
+        res.status(404).json({ message: error.message });
     }
 };
 
@@ -35,9 +35,9 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
     try {
         await paymentMethodService.deletePaymentMethod(req.params.id);
-        res.json({ success: true, message: 'Xóa thành công' });
+        res.status(204).send(); // 204 No Content
     } catch (error) {
-        res.status(404).json({ success: false, message: error.message });
+        res.status(404).json({ message: error.message });
     }
 };
 

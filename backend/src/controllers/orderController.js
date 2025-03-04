@@ -3,8 +3,8 @@ const OrderService = require('../services/orderService');
 class OrderController {
     async createOrder(req, res) {
         try {
-            const { id_user, id_coupon, id_employee, id_payment_method, amount, address, phone, name, receive_address, products } = req.body;
-            const order = await OrderService.createOrder({ id_user, id_coupon, id_employee, id_payment_method, amount, address, phone, name, receive_address }, products);
+            const { id_user, id_coupon, id_employee, id_payment_method, amount, address, note, phone, name, receive_address, products } = req.body;
+            const order = await OrderService.createOrder({ id_user, id_coupon, id_employee, id_payment_method, amount, address, note, phone, name, receive_address }, products);
             res.status(201).json({ message: 'Order created successfully', order });
         } catch (error) {
             res.status(500).json({ error: error.message });

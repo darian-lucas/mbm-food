@@ -8,8 +8,9 @@ const orderSchema = new mongoose.Schema({
     address: { type: String, required: true },
     phone: { type: String, required: true },
     name: { type: String, required: true },
+    note: { type: String, default: "" },
     receive_address: { type: String, required: true },
-    id_payment_method: { type: mongoose.Schema.Types.ObjectId, ref: "Payment_Method" }, // Kiểm tra dòng này!
+    id_payment_method: { type: mongoose.Schema.Types.ObjectId, ref: "Payment_Method" }, 
     status: { type: String, enum: ["pending", "processing", "shipped", "delivered", "canceled"], default: "pending" },
     createdAt: { type: Date, default: Date.now }
 });
