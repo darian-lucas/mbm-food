@@ -9,6 +9,17 @@
     }
   }
   
+  @keyframes slideDown {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+  
   .notificationContainer {
     display: flex;
     align-items: center;
@@ -22,7 +33,12 @@
     left: 20px;
     z-index: 1000;
     width: 300px;
-    animation: slideUp 0.5s ease-out; /* Thêm hiệu ứng trượt lên */
+    animation: slideUp 0.5s ease-out;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  }
+  
+  .notificationContainer.hide {
+    animation: slideDown 0.5s ease-out forwards; /* Thêm lớp ẩn */
   }
   
   .productImage {
@@ -48,11 +64,11 @@
     max-width: 180px;
     transition: color 0.3s ease;
   }
-
+  
   .notificationContent h4:hover {
     color: #e51735;
   }
-
+  
   .notificationContent p {
     color: #e51735;
     margin: 8px 0 0 0;

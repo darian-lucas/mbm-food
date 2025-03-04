@@ -29,6 +29,7 @@ const ProductNotification: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [randomProduct, setRandomProduct] = useState<Product | null>(null);
   const [visible, setVisible] = useState(false);
+  const [hidden, setHidden] = useState(false); // Thêm trạng thái để kiểm soát việc ẩn hẳn
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -53,50 +54,59 @@ const ProductNotification: React.FC = () => {
         const randomIndex = Math.floor(Math.random() * products.length);
         const product = products[randomIndex];
         setRandomProduct(product);
+        setHidden(false); // Hiện lên
         setVisible(true);
 
         setTimeout(() => {
-          setVisible(false); // Ẩn sau 5 giây
+          setVisible(false); // Trượt xuống
+          setTimeout(() => setHidden(true), 500); // Ẩn hẳn sau 0.5s (khớp thời gian trượt xuống)
         }, 5000);
       };
 
-      // Chỉ gọi lần đầu tiên sau 5 giây, rồi sau đó mới bắt đầu interval
       const firstTimeout = setTimeout(() => {
         showRandomProduct();
-        const interval = setInterval(showRandomProduct, 10000); // Mỗi 10 giây
-        return () => clearInterval(interval); // Dọn dẹp interval
+        const interval = setInterval(showRandomProduct, 15000); // Lặp lại sau 15s
+        return () => clearInterval(interval);
       }, 5000);
 
-      return () => clearTimeout(firstTimeout); // Dọn dẹp timeout lần đầu
+      return () => clearTimeout(firstTimeout);
     }
   }, [products]);
 
-  if (!randomProduct || !visible) return null;
+  const handleClose = () => {
+    setVisible(false); // Trượt xuống
+    setTimeout(() => setHidden(true), 500); // Ẩn hẳn
+  };
 
-  // Chọn hình ảnh của variant đầu tiên (có thể tùy chỉnh logic chọn hình)
-  const productImage = randomProduct.variants[0]?.image
+  if (hidden) return null; // Chỉ ẩn khi hiệu ứng đã hoàn tất
+
+  const productImage = randomProduct?.variants[0]?.image
     ? `http://localhost:3001/images/${randomProduct.variants[0].image}`
     : "/placeholder.png";
 
   return (
-    <div className={styles.notificationContainer}>
-      <Link href={`/product/${randomProduct.slug}`}>
+    <div
+      className={`${styles.notificationContainer} ${
+        !visible ? styles.hide : ""
+      }`}
+    >
+      <Link href={`/product/${randomProduct?.slug}`}>
         <Image
           src={productImage}
-          alt={randomProduct.name}
+          alt={randomProduct?.name ?? "Sản phẩm"}
           width={60}
           height={60}
           className={styles.productImage}
         />
       </Link>
       <div className={styles.notificationContent}>
-        <Link href={`/product/${randomProduct.slug}`}>
-          <h4>{randomProduct.name}</h4>
+        <Link href={`/product/${randomProduct?.slug}`}>
+          <h4>{randomProduct?.name}</h4>
         </Link>
-        <p>Giá: {randomProduct.variants[0]?.price?.toLocaleString()} VND</p>
+        <p>Giá: {randomProduct?.variants[0]?.price?.toLocaleString()} VND</p>
         <span>Đã được mua cách đây 45 phút</span>
       </div>
-      <button className={styles.closeBtn} onClick={() => setVisible(false)}>
+      <button className={styles.closeBtn} onClick={handleClose}>
         ×
       </button>
     </div>
