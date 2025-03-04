@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const paymentMethodController = require('../controllers/paymentMethodController');
+const paymentMethodController = require('../controllers/paymentController');
 
 router.get('/', paymentMethodController.getAll);
 router.post('/', paymentMethodController.create);

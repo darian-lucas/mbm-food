@@ -1,4 +1,4 @@
-const paymentMethodService = require('../services/paymentMethodService');
+const paymentMethodService = require('../services/paymentService');
 
 // Lấy danh sách phương thức thanh toán
 const getAll = async (req, res) => {
