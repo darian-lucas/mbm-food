@@ -7,7 +7,8 @@ const {
   deleteProduct,
   getByCategory,
   getBySlugProduct,
-  updateStatusProduct
+  updateStatusProduct,
+  updateViewProduct
 } = require("../controllers/productController");
 
 const upload = require("../middleware/uploadImage");
@@ -36,5 +37,7 @@ router.delete('/:id', deleteProduct);
 router.get('/slug/:slug', getBySlugProduct);
 
 router.put('/:id/status', updateStatusProduct);
+
+router.put('/:id/view', updateViewProduct)
 
 module.exports = router;
