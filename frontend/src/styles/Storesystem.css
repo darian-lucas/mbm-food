@@ -199,11 +199,23 @@
     position: sticky;
     top: 10px;
     border-radius: 5px;
+    width: 106%;
 }
 .page-he-thong .wrapcontact iframe {
     width: 100% !important;
     height: 100vh !important;
     border: none !important;
+}
+.page-he-thong .pagebody {
+    height: calc(100vh - 15px);
+    overflow: hidden;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 10px;
+    border-radius: 5px;
+}
+.d-none {
+    display: none !important;
 }
 @media (min-width: 992px) {
     .col-lg-4 {
@@ -212,7 +224,7 @@
         max-width: 33.333%;
     }
 
-    .col-lg-8 {
+    .col-lg-10 {
         flex: 0 0 60.666%;
         max-width: 60.666%;
     }
