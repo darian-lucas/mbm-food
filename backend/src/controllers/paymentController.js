@@ -13,7 +13,7 @@ const getAll = async (req, res) => {
 // Thêm phương thức thanh toán
 const create = async (req, res) => {
     try {
-        const { userId, name, orderId, amount, currency, method } = req.body;
+        const { userId, name, orderId, amount, currency, method,paymentType } = req.body;
 
         // Tạo phương thức thanh toán mới
         const newPayment = await paymentMethodService.createPaymentMethod({
@@ -22,7 +22,8 @@ const create = async (req, res) => {
             orderId,
             amount,
             currency,
-            method
+            method,
+            paymentType
         });
 
         res.status(201).json(newPayment);
