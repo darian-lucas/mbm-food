@@ -8,5 +8,5 @@ router.get('/', OrderController.getAllOrders);
 router.get('/:id', OrderController.getOrderById);
 router.patch('/:id', OrderController.updateOrderStatus);
 router.delete('/:id', OrderController.deleteOrder);
-
+router.put('/:orderId', OrderController.updateOrder);
 module.exports = router;

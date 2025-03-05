@@ -6,9 +6,9 @@ const getAllPaymentMethods = async () => {
 };
 
 // Thêm phương thức thanh toán mới
-const createPaymentMethod = async (payment_name) => {
-    if (!payment_name) throw new Error('Tên phương thức thanh toán là bắt buộc');
-    const newPayment = new PaymentMethod({ payment_name });
+const createPaymentMethod = async (paymentData) => {
+    if (!paymentData) throw new Error('phương thức thanh toán là bắt buộc');
+    const newPayment = new PaymentMethod(paymentData);
     return await newPayment.save();
 };
 

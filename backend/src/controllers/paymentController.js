@@ -13,13 +13,24 @@ const getAll = async (req, res) => {
 // Thêm phương thức thanh toán
 const create = async (req, res) => {
     try {
-        const { payment_name } = req.body;
-        const newPayment = await paymentMethodService.createPaymentMethod(payment_name);
+        const { userId, name, orderId, amount, currency, method } = req.body;
+
+        // Tạo phương thức thanh toán mới
+        const newPayment = await paymentMethodService.createPaymentMethod({
+            userId,
+            name,
+            orderId,
+            amount,
+            currency,
+            method
+        });
+
         res.status(201).json(newPayment);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // Cập nhật phương thức thanh toán
 const update = async (req, res) => {

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+    order_code: { type: String, unique: true, required: true }, 
     id_user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     id_coupon: { type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' },
     id_employee: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
