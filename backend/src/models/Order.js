@@ -11,7 +11,7 @@ const orderSchema = new mongoose.Schema({
     name: { type: String, required: true },
     note: { type: String, default: "" },
     receive_address: { type: String, required: true },
-    id_payment_method: { type: mongoose.Schema.Types.ObjectId, ref: "Payment_Method" }, 
+    id_payment_method: { type: mongoose.Schema.Types.ObjectId, ref: "PaymentMethod" },
     status: { type: String, enum: ["pending", "processing", "shipped", "delivered", "canceled"], default: "pending" },
     createdAt: { type: Date, default: Date.now }
 });

@@ -21,14 +21,14 @@ class OrderService {
         try {
             // Cập nhật thông tin Order
             const updatedOrder = await Order.findByIdAndUpdate(orderId, updateData, { new: true });
-    
+
             if (!updatedOrder) {
                 throw new Error("Không tìm thấy đơn hàng");
             }
-    
+
             // Xóa OrderDetail cũ trước khi thêm dữ liệu mới
             await OrderDetail.deleteMany({ id_order: orderId });
-    
+
             // Thêm OrderDetail mới từ updateData.details
             if (updateData.details && updateData.details.length > 0) {
                 const orderDetails = updateData.details.map(product => ({
@@ -38,16 +38,16 @@ class OrderService {
                     quantity: product.quantity,
                     name: product.name
                 }));
-    
+
                 await OrderDetail.insertMany(orderDetails);
             }
-    
+
             return updatedOrder;
         } catch (error) {
             throw new Error("Lỗi khi cập nhật đơn hàng: " + error.message);
         }
     }
-    
+
     async createOrder(orderData, products) {
         const orderCode = await this.generateOrderCode();
         const order = new Order({ ...orderData, order_code: orderCode });
@@ -79,16 +79,16 @@ class OrderService {
             .populate("id_payment_method", "name")
             .lean();
         if (!order) return null;
-    
+
         order.details = await OrderDetail.find({ id_order: order._id })
-            .populate({ 
+            .populate({
                 path: "id_product",
                 select: "name variants.price",
                 model: "product" // Đảm bảo model đúng
             });
         return order;
     }
-    
+
 
     async updateOrderStatus(orderId, status) {
         return await Order.findByIdAndUpdate(orderId, { status }, { new: true });
@@ -101,6 +101,24 @@ class OrderService {
         }
         return order;
     }
+    async getOrdersByUserId(userId) {
+        try {
+            const orders = await Order.find({ id_user: userId })
+                .populate("id_user", "username email")
+                
+                .populate("id_payment_method", "method")
+                .sort({ createdAt: -1 });
+    
+            const orderIds = orders.map(order => order._id);
+            const orderDetails = await OrderDetail.find({ id_order: { $in: orderIds } })
+                .populate("id_product", "name price");
+    
+            return { orders, orderDetails };
+        } catch (error) {
+            throw new Error("Lỗi khi lấy đơn hàng của user: " + error.message);
+        }
+    }
+    
 }
 
 module.exports = new OrderService();
