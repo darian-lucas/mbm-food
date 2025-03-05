@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "@/styles/ProductNotification.module.css";
 import Link from "next/link";
+import { incrementView } from "@/utils/incrementView";
 interface Variant {
   option: string;
   price: number;
@@ -87,10 +88,15 @@ const ProductNotification: React.FC = () => {
   return (
     <div
       className={`${styles.notificationContainer} ${
-        !visible ? styles.hide : ""
+        !visible || !randomProduct ? styles.hide : ""
       }`}
     >
-      <Link href={`/product/${randomProduct?.slug}`}>
+      <Link
+        href={`/product/${randomProduct?.slug ?? "#"}`}
+        onClick={() =>
+          randomProduct && incrementView(randomProduct._id, randomProduct.view)
+        }
+      >
         <Image
           src={productImage}
           alt={randomProduct?.name ?? "Sản phẩm"}
@@ -100,10 +106,19 @@ const ProductNotification: React.FC = () => {
         />
       </Link>
       <div className={styles.notificationContent}>
-        <Link href={`/product/${randomProduct?.slug}`}>
-          <h4>{randomProduct?.name}</h4>
+        <Link
+          href={`/product/${randomProduct?.slug ?? "#"}`}
+          onClick={() =>
+            randomProduct &&
+            incrementView(randomProduct._id, randomProduct.view)
+          }
+        >
+          <h4>{randomProduct?.name ?? "Sản phẩm"}</h4>
         </Link>
-        <p>Giá: {randomProduct?.variants[0]?.price?.toLocaleString()} VND</p>
+        <p>
+          Giá: {randomProduct?.variants[0]?.price?.toLocaleString() ?? "N/A"}{" "}
+          VND
+        </p>
         <span>Đã được mua cách đây 45 phút</span>
       </div>
       <button className={styles.closeBtn} onClick={handleClose}>

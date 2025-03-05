@@ -260,6 +260,10 @@
   margin-bottom: 5px;
 }
 
+.foodName:hover{
+  color: #E51735;
+}
+
 .foodContent {
   max-width: 300px;
   display: flex;
@@ -663,7 +667,7 @@
   border-radius: 10px;
   width: 100%;
   max-width: 250px;
-  height: auto;
+  height: 170px;
   object-fit: cover;
 }
 
@@ -906,6 +910,10 @@
   font-weight: bold;
 }
 
+.menufoodItemName:hover{
+  color: #E51735;
+}
+
 .menufoodItemDesc {
   font-size: 16px;
   display: -webkit-box;
@@ -942,6 +950,10 @@
   text-decoration: none;
   font-size: 14px;
   float: left;
+}
+
+.menufoodMore:hover{
+  color: #006A31;
 }
 
 .menufoodAdd {
