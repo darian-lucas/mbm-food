@@ -25,7 +25,7 @@ const PaymentMethodSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Payment_Method", PaymentMethodSchema);
-// Xử lý logic
+// Xử lý logic ddeos on ti nao
 // Khách chọn prepaid → Yêu cầu họ chọn "stripe", "paypal", "momo", "vnpay", "mobile_banking" và hoàn thành thanh toán trước.
 // Khách chọn postpaid → Cho phép chọn "stripe", "paypal", "momo", "vnpay", "mobile_banking", "cash" khi nhận hàng.
 // Khách chọn in_store → Yêu cầu chọn "cash", "mobile_banking", hoặc thanh toán qua máy POS tại cửa hàng.
