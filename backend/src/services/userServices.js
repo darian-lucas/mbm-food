@@ -138,6 +138,31 @@ const updateAddress = async (userId, addressId, updatedAddress) => {
     return user.address;
 };
 
+const toggleUserStatus = async (userId) => {
+    try {
+        console.log("🔍 Checking user ID:", userId);
+
+        const user = await User.findById(userId);
+        if (!user) {
+            console.log("⚠️ User not found!");
+            return null;
+        }
+
+        // Chỉ cập nhật trường `isActive`, không ảnh hưởng đến `address`
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { isActive: !user.isActive } }, 
+            { new: true } // Trả về dữ liệu sau khi cập nhật
+        );
+
+        console.log("✅ User updated successfully:", updatedUser);
+        return updatedUser;
+    } catch (error) {
+        console.error("🔥 Error in toggleUserStatus:", error);
+        throw new Error(error.message);
+    }
+};
 
 
-module.exports = { addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById,updateAddress  };
+
+module.exports = { toggleUserStatus,addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById,updateAddress  };

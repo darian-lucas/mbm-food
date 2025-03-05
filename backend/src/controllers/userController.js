@@ -170,8 +170,28 @@ const findUserById = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+const toggleActiveStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("🔄 Toggling user ID:", id);
+
+        const updatedUser = await authService.toggleUserStatus(id);
+
+        if (!updatedUser) {
+            console.log("⚠️ User not found!");
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        console.log("✅ User updated:", updatedUser);
+        res.json({ message: `User ${updatedUser.isActive ? "activated" : "deactivated"}`, user: updatedUser });
+    } catch (error) {
+        console.error("🔥 Server error in toggleActiveStatus:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
 
 module.exports = { 
+    toggleActiveStatus,
     getAllUsers, 
     deleteUser, 
     updateUser, 

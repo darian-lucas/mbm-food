@@ -11,7 +11,8 @@ const {
     updateUser, 
     findUserByName, 
     findUserById,
-    updateAddress
+    updateAddress,
+    toggleActiveStatus
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -30,7 +31,8 @@ router.put('/update-password', authMiddleware, updatePassword);
 router.post('/add-address', authMiddleware, addAddress);
 // Cập nhật địa chỉ
 router.put("/:userId/address/:addressId", authMiddleware, updateAddress);
-
+// kich hoat!
+router.patch("/toggle-active/:id", toggleActiveStatus);
 // Lấy tất cả người dùng (có phân trang)
 router.get('/', getAllUsers);
 
