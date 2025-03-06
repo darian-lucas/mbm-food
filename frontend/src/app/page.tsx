@@ -294,14 +294,16 @@ export default function Home(): JSX.Element {
     <main className={styles.home}>
       {/* Banner */}
       <section className={styles.banner}>
-        <Image
-          src="/images/banner-1.png"
-          alt="Banner chính"
-          width={1280}
-          height={500}
-          priority
-          className={styles.bannerImage}
-        />
+        <Link href="/product">
+          <Image
+            src="/images/banner-1.png"
+            alt="Banner chính"
+            width={1280}
+            height={500}
+            priority
+            className={styles.bannerImage}
+          />
+        </Link>
       </section>
       {/* Danh mục nổi bật */}
       <section className={styles.section}>
