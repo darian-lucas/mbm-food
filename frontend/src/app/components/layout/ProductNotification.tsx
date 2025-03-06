@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "@/styles/ProductNotification.module.css";
 import Link from "next/link";
-import { incrementView } from "@/utils/incrementView";
+import { incrementView } from "@/services/incrementView";
 interface Variant {
   option: string;
   price: number;

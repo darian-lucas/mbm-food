@@ -17,7 +17,7 @@ import {
   checkFavorite,
   // getFavorites,
 } from "../services/Favorite";
-import { incrementView } from "@/utils/incrementView";
+import { incrementView } from "@/services/incrementView";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
