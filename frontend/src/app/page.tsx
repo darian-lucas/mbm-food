@@ -257,7 +257,8 @@ export default function Home(): JSX.Element {
     <main className={styles.home}>
       {/* Banner */}
       <section className={styles.banner}>
-        <Link href="/product">
+      {products.length > 0 && (
+        <Link href={`/product/${products[2].slug}`} passHref>
           <Image
             src="/images/banner-1.png"
             alt="Banner chính"
@@ -267,7 +268,8 @@ export default function Home(): JSX.Element {
             className={styles.bannerImage}
           />
         </Link>
-      </section>
+      )}
+    </section>
       {/* Danh mục nổi bật */}
       <section className={styles.section}>
         <h2 className={styles.titlelitter}>Nổi Bật</h2>
