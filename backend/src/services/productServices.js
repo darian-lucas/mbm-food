@@ -1,8 +1,9 @@
 const productModel = require("../models/ProductModel.js");
 
 // Lấy tất cả sản phẩm
+
 exports.getAllProducts = async () => {
-  const products = await productModel.find({status: "Active", flag: true });
+  const products = await productModel.find({});
   return products;
 };
 
@@ -96,7 +97,6 @@ exports.getBySlugProduct = async (slug) => {
   return product;
 };
 
-// cập nhật trạng thái của sản phẩm
 exports.updateStatusProduct = async (id, status, flag) => {
   try {
     const updatedProduct = await productModel.findByIdAndUpdate(
@@ -110,6 +110,19 @@ exports.updateStatusProduct = async (id, status, flag) => {
     }
 
     return updatedProduct;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.updateViewProduct = async (id, view) => {
+  try {
+    const updateView = await productModel.findByIdAndUpdate(
+      id,
+      { view },
+      { new: true }
+    );
+    return updateView;
   } catch (error) {
     throw error;
   }

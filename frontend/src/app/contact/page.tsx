@@ -89,10 +89,10 @@ export default function Contact() {
             </button>
           </form>
         </div>
-        {/* https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=70+Lữ+Gia,+Phường+15,+Quận+11,+TP.HCM */}
+        {/* https://www.google.com/maps/embed/v1/place?key=AIzaSyAHsh-yRblukJEyvT4SiB1PbLmXEJJ6v54&q=70+Lữ+Gia,+Phường+15,+Quận+11,+TP.HCM */}
         <div className={styles.rightBox}>
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.8589026032153!2d105.81945491513886!3d21.002020486011874!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab912173c8b1%3A0x2b69b2f3a98f9f7f!2sSapo!5e0!3m2!1sen!2s!4v1637062006123!5m2!1sen!2s"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAHsh-yRblukJEyvT4SiB1PbLmXEJJ6v54&q=70+Lữ+Gia,+Phường+15,+Quận+11,+TP.HCM"
             width="100%"
             height="100%"
             style={{ border: 0 }}

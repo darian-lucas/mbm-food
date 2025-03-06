@@ -2,7 +2,7 @@
 import styles from "@/styles/Home.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -10,12 +10,14 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
+import { usePathname } from "next/navigation";
 import {
   addFavorite,
   removeFavorite,
   checkFavorite,
   // getFavorites,
 } from "../services/Favorite";
+import { incrementView } from "@/services/incrementView";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -29,6 +31,8 @@ interface Product {
   description: string;
   variants: { price: number; image: string; sale_price?: number }[];
   hot?: number;
+  view: number;
+  slug: string;
 }
 interface News {
   _id: string;
@@ -51,7 +55,7 @@ export default function Home(): JSX.Element {
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
-  
+  const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
 
   // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
@@ -162,55 +166,16 @@ export default function Home(): JSX.Element {
 
     fetchNews();
   }, []);
-
   ///sản phẩm yêu thích
 
+  useEffect(() => {
+    window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi route thay đổi
+  }, [pathname]);
   const promoData = [
     { name: "Khuyến mãi 1", img: "/images/promo-1.png" },
     { name: "Khuyến mãi 2", img: "/images/promo-2.png" },
     { name: "Khuyến mãi 3", img: "/images/promo-3.png" },
     { name: "Khuyến mãi 4", img: "/images/promo-4.png" },
-  ];
-  const bestSellingItems = [
-    {
-      img: "/images/hot2.png",
-      name: "Gà Giòn Xốt Tương Tỏi Hàn Quốc",
-      description:
-        "Những miếng gà tươi ngon tẩm bột chiên giòn phủ xốt tương tỏi...",
-      price: "85.000đ",
-      isNew: false,
-    },
-    {
-      img: "/images/hot2.png",
-      name: "Gà Giòn Xốt Hàn - Truyền Thống",
-      description:
-        "Gà tẩm bột chiên giòn rụm phủ lớp xốt (có chút vị cay rất nhẹ)...",
-      price: "85.000đ",
-      isNew: false,
-    },
-    {
-      img: "/images/hot2.png",
-      name: "Gà Giòn Xốt Hàn - Truyền Thống",
-      description:
-        "Gà tẩm bột chiên giòn rụm phủ lớp xốt (có chút vị cay rất nhẹ)...",
-      price: "85.000đ",
-      isNew: false,
-    },
-    {
-      img: "/images/hot2.png",
-      name: "Gà Nướng BBQ (2 miếng)",
-      description:
-        "Thịt gà mềm ngọt, thấm đẫm gia vị, da gà giòn rụm, màu vàng...",
-      price: "85.000đ",
-      isNew: false,
-    },
-    {
-      img: "/images/hot2.png",
-      name: "Pizza Puff_Gà BBQ Nướng",
-      description: "Gà nướng dứa cùng phô mai thơm béo và sốt Thousand...",
-      price: "85.000đ",
-      isNew: false,
-    },
   ];
   const specialBannerImages = [
     { base: "/images/bannereff1.png", overlay: "/images/bannereff4.png" },
@@ -287,8 +252,6 @@ export default function Home(): JSX.Element {
   //     [productId]: !prev[productId],
   //   }));
   // };
-  
-  
 
   return (
     <main className={styles.home}>
@@ -400,11 +363,11 @@ export default function Home(): JSX.Element {
           }}
         >
           {products
-            .filter((product) => product.hot === 1) // Lọc sản phẩm có hot === 1
-            .map((food, index) => (
+            .filter((product) => product.hot === 1)
+            .map((food) => (
               <SwiperSlide key={food._id} className={styles.slideItem}>
                 <div className={styles.foodItem}>
-                <button
+                  <button
                     className={styles.heartIcon}
                     onClick={async () => {
                       await toggleFavorite(food._id);
@@ -419,21 +382,38 @@ export default function Home(): JSX.Element {
                       }
                     />
                   </button>
-                  <Image
-                    src={`${API_URL}/images/${food.variants[0]?.image || "default.png"}`}
-                    alt={food.name}
-                    width={150}
-                    height={140}
-                  />
+                  <Link
+                    href={`/product/${food.slug}`}
+                    onClick={() => incrementView(food._id, food.view)}
+                  >
+                    <Image
+                      src={`${API_URL}/images/${
+                        food.variants[0]?.image || "default.png"
+                      }`}
+                      alt={food.name}
+                      width={150}
+                      height={140}
+                    />
+                  </Link>
                   <div className={styles.foodContent}>
-                    <h3 className={styles.foodName}>{food.name}</h3>
+                    <Link
+                      href={`/product/${food.slug}`}
+                      onClick={() => incrementView(food._id, food.view)}
+                    >
+                      <h3 className={styles.foodName}>{food.name}</h3>
+                    </Link>
                     <p
                       className={styles.foodDesc}
                       dangerouslySetInnerHTML={{
                         __html: food.description || "Không có mô tả",
                       }}
                     />
-                    <p className={styles.viewMore}>Xem thêm</p>
+                    <Link
+                      href={`/product/${food.slug}`}
+                      onClick={() => incrementView(food._id, food.view)}
+                    >
+                      <p className={styles.viewMore}>Xem thêm</p>
+                    </Link>
                     <p className={styles.foodPriceLabel}>Giá chỉ từ: </p>
                     <span className={styles.foodPrice}>
                       {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
@@ -498,7 +478,7 @@ export default function Home(): JSX.Element {
       <section className={styles.discountproductSection}>
         <div className={styles.discountWrapper}>
           <div className={styles.discountList}>
-            {discountItems.map((item, index) => {
+            {discountItems.map((item) => {
               const variant = item.variants[0]; // Lấy biến thể đầu tiên
               return (
                 <div key={item._id} className={styles.discountItem}>
@@ -517,20 +497,34 @@ export default function Home(): JSX.Element {
                       }
                     />
                   </button>
-                  <Image
-                    src={`${API_URL}/images/${variant.image}`}
-                    alt={item.name}
-                    width={250}
-                    height={200}
-                  />
-                  <h3 className={styles.discountItemName}>{item.name}</h3>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    onClick={() => incrementView(item._id, item.view)}
+                  >
+                    <Image
+                      src={`${API_URL}/images/${variant.image}`}
+                      alt={item.name}
+                      width={240}
+                      height={200}
+                    />
+                  </Link>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    onClick={() => incrementView(item._id, item.view)}
+                  >
+                    <h3 className={styles.discountItemName}>{item.name}</h3>
+                  </Link>
                   <p
                     className={styles.discountItemDesc}
                     dangerouslySetInnerHTML={{
                       __html: item.description || "Không có mô tả",
                     }}
                   ></p>
-                  <Link href="#" className={styles.menufoodMore}>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    className={styles.menufoodMore}
+                    onClick={() => incrementView(item._id, item.view)}
+                  >
                     Xem thêm
                   </Link>
                   <div className={styles.discountPriceContainer}>
@@ -559,49 +553,75 @@ export default function Home(): JSX.Element {
           </span>
           {/*cần thêm tính năng yêu thích khi bestSelling dc gọi bằng api*/}
           <div className={styles.bestSellingList}>
-            {bestSellingItems.map((item, index) => (
-              <div key={index} className={styles.bestSellingItem}>
-                {item.isNew && (
-                  <span className={styles.bestSellingNewTag}>Mới</span>
-                )}
+            {products
+              .sort((a, b) => b.view - a.view)
+              .slice(0, 5)
+              .map((item) => (
+                <div key={item._id} className={styles.bestSellingItem}>
+                  {item.hot === 1 && (
+                    <span className={styles.bestSellingNewTag}>Hot</span>
+                  )}
 
-                <button
-                  className={styles.heartIcon}
-                  onClick={async () => {
-                    await toggleFavorite(item._id);
-                  }}
-                >
-                  <Heart
-                    size={20}
-                    className={
-                      favorites[item._id]
-                        ? styles.heartActive
-                        : styles.heartInactive
-                    }
+                  <button
+                    className={styles.heartIcon}
+                    onClick={async () => {
+                      await toggleFavorite(item._id);
+                    }}
+                  >
+                    <Heart
+                      size={20}
+                      className={
+                        favorites[item._id]
+                          ? styles.heartActive
+                          : styles.heartInactive
+                      }
+                    />
+                  </button>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    onClick={() => incrementView(item._id, item.view)}
+                  >
+                    <Image
+                      src={`${API_URL}/images/${
+                        item.variants[0]?.image || "default.png"
+                      }`}
+                      alt={item.name}
+                      width={230}
+                      height={200}
+                    />
+                  </Link>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    onClick={() => incrementView(item._id, item.view)}
+                  >
+                    <h3 className={styles.bestSellingItemName}>{item.name}</h3>
+                  </Link>
+                  <p
+                    className={styles.bestSellingItemDesc}
+                    dangerouslySetInnerHTML={{
+                      __html: item.description || "Không có mô tả",
+                    }}
                   />
-                </button>
-
-                <Image
-                  src={item.img}
-                  alt={item.name}
-                  width={230}
-                  height={200}
-                />
-
-                <h3 className={styles.bestSellingItemName}>{item.name}</h3>
-                <p className={styles.bestSellingItemDesc}>{item.description}</p>
-                <Link href="#" className={styles.menufoodMore}>
-                  Xem thêm
-                </Link>
-                <div className={styles.bestSellingContainer}>
-                  <div className={styles.bestSellingFoodPrice}>
-                    <p>Giá chỉ từ:</p>
-                    <span>{item.price}</span>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    className={styles.menufoodMore}
+                    onClick={() => incrementView(item._id, item.view)}
+                  >
+                    Xem thêm
+                  </Link>
+                  <div className={styles.bestSellingContainer}>
+                    <div className={styles.bestSellingFoodPrice}>
+                      <p>Giá chỉ từ:</p>
+                      <span>
+                        {item.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
+                      </span>
+                    </div>
+                    <button className={styles.bestSellingAddButton}>
+                      Thêm
+                    </button>
                   </div>
-                  <button className={styles.bestSellingAddButton}>Thêm</button>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </section>
@@ -659,17 +679,27 @@ export default function Home(): JSX.Element {
               <div className={styles.menufoodGrid}>
                 {filteredProducts.map((item) => (
                   <div key={item._id} className={styles.menufoodCard}>
-                    <Image
-                      src={`${API_URL}/images/${
-                        item.variants[0]?.image || "default.png"
-                      }`}
-                      alt={item.name}
-                      width={100}
-                      height={70}
-                      className={styles.menufoodImage}
-                    />
+                    <Link
+                      href={`/product/${item.slug}`}
+                      onClick={() => incrementView(item._id, item.view)}
+                    >
+                      <Image
+                        src={`${API_URL}/images/${
+                          item.variants[0]?.image || "default.png"
+                        }`}
+                        alt={item.name}
+                        width={100}
+                        height={70}
+                        className={styles.menufoodImage}
+                      />
+                    </Link>
                     <div className={styles.menufoodContent}>
-                      <h4 className={styles.menufoodItemName}>{item.name}</h4>
+                      <Link
+                        href={`/product/${item.slug}`}
+                        onClick={() => incrementView(item._id, item.view)}
+                      >
+                        <h4 className={styles.menufoodItemName}>{item.name}</h4>
+                      </Link>
                       <p
                         className={styles.menufoodItemDesc}
                         dangerouslySetInnerHTML={{
@@ -685,7 +715,11 @@ export default function Home(): JSX.Element {
                         </span>
                       </p>
                       <div className={styles.menufoodActions}>
-                        <Link href="#" className={styles.menufoodMore}>
+                        <Link
+                          href={`/product/${item.slug}`}
+                          className={styles.menufoodMore}
+                          onClick={() => incrementView(item._id, item.view)}
+                        >
                           Xem thêm
                         </Link>
                         <button className={styles.menufoodAdd}>Thêm</button>
