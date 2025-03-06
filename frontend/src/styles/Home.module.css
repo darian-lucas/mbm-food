@@ -120,6 +120,7 @@
   overflow: hidden;
   display: inline-block;
   border-radius: 10px;
+  margin-left: 15px;
 }
 
 .aboutImage img {
@@ -259,6 +260,10 @@
   margin-bottom: 5px;
 }
 
+.foodName:hover{
+  color: #E51735;
+}
+
 .foodContent {
   max-width: 300px;
   display: flex;
@@ -331,9 +336,16 @@
   color: #e51735;
 }
 
-.swiper-button-prev,
-.swiper-button-next {
-  color: #136734;
+.customSwiper :global(.swiper-button-prev),
+.customSwiper :global(.swiper-button-next) {
+  width: 30px;
+  height: 30px;
+  font-size: 30px;
+}
+
+.customSwiper :global(.swiper-button-prev::after),
+.customSwiper :global(.swiper-button-next::after) {
+  font-size: 30px;
 }
 
 .swiper-pagination-bullet-active {
@@ -519,7 +531,6 @@
   max-width: 1200px;
   margin: -270px auto 0;
   z-index: 3;
-
 }
 
 .discountItem {
@@ -534,10 +545,11 @@
 }
 
 .discountItem img {
+  padding-top: 12px;
   border-radius: 10px;
   width: 100%;
   max-width: 250px;
-  height: auto;
+  height: 240px;
   /* object-fit: cover; */
 }
 
@@ -655,7 +667,7 @@
   border-radius: 10px;
   width: 100%;
   max-width: 250px;
-  height: auto;
+  height: 170px;
   object-fit: cover;
 }
 
@@ -898,6 +910,10 @@
   font-weight: bold;
 }
 
+.menufoodItemName:hover{
+  color: #E51735;
+}
+
 .menufoodItemDesc {
   font-size: 16px;
   display: -webkit-box;
@@ -934,6 +950,10 @@
   text-decoration: none;
   font-size: 14px;
   float: left;
+}
+
+.menufoodMore:hover{
+  color: #006A31;
 }
 
 .menufoodAdd {

@@ -10,7 +10,6 @@ exports.getAllProducts = async (req, res, next) => {
   }
 };
 
-
 // Lấy chi tiết một sản phẩm
 exports.getByIdProduct = async (req, res, next) => {
   try {
@@ -34,12 +33,13 @@ exports.getByCategory = async (req, res) => {
   }
 };
 
-
 exports.createProduct = async (req, res) => {
   try {
     const { name, idcate, description, hot, slug, variants } = req.body;
 
-    const parsedVariants = Array.isArray(variants) ? variants : JSON.parse(variants || "[]");
+    const parsedVariants = Array.isArray(variants)
+      ? variants
+      : JSON.parse(variants || "[]");
 
     const formattedVariants = parsedVariants.map((variant, index) => ({
       option: variant.option || "",
@@ -70,13 +70,18 @@ exports.updateProduct = async (req, res) => {
     const { id } = req.params;
     const { name, idcate, description, hot, slug, variants } = req.body;
 
-    const parsedVariants = Array.isArray(variants) ? variants : JSON.parse(variants || "[]");
+    const parsedVariants = Array.isArray(variants)
+      ? variants
+      : JSON.parse(variants || "[]");
 
     const formattedVariants = parsedVariants.map((variant, index) => ({
       option: variant.option || "",
       price: parseFloat(variant.price || "0"),
       sale_price: parseFloat(variant.sale_price || "0"),
-      image: req.files?.[`variants[${index}][image]`]?.[0]?.filename || variant.image || "",
+      image:
+        req.files?.[`variants[${index}][image]`]?.[0]?.filename ||
+        variant.image ||
+        "",
     }));
 
     const updatedProduct = await productServices.updateProduct(id, {
@@ -94,7 +99,6 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 // Xóa sản phẩm
 exports.deleteProduct = async (req, res, next) => {
@@ -123,25 +127,41 @@ exports.getBySlugProduct = async (req, res, next) => {
   }
 };
 
-exports.updateStatusProduct = async (req,res) => {
+exports.updateStatusProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, flag } = req.body;
-    
+
     // Cập nhật sản phẩm
-    const updatedProduct = await productServices.updateStatusProduct(id, status, flag);
-    
+    const updatedProduct = await productServices.updateStatusProduct(
+      id,
+      status,
+      flag
+    );
+
     return res.status(200).json({
       success: true,
       message: `Đã cập nhật trạng thái sản phẩm thành ${status}`,
-      product: updatedProduct
+      product: updatedProduct,
     });
   } catch (error) {
-    console.error('Lỗi khi cập nhật trạng thái sản phẩm:', error);
+    console.error("Lỗi khi cập nhật trạng thái sản phẩm:", error);
     return res.status(500).json({
       success: false,
-      message: 'Đã xảy ra lỗi khi cập nhật trạng thái sản phẩm',
-      error: error.message
+      message: "Đã xảy ra lỗi khi cập nhật trạng thái sản phẩm",
+      error: error.message,
     });
+  }
+};
+
+exports.updateViewProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { view } = req.body;
+
+    const updateView = await productServices.updateViewProduct(id, view);
+    res.status(200).json({ success: true, data: updateView });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

@@ -1,31 +1,30 @@
-
-.container{
+.container {
   max-width: 1300px;
   margin: auto;
 }
-.row{
+.row {
   display: flex;
   flex-wrap: wrap;
   margin-right: -15px;
   margin-left: -15px;
 }
-.detailProduct{
+.detailProduct {
   display: block;
   unicode-bidi: isolate;
 }
-.productLeft{
+.productLeft {
   flex: 0 0 58.333333%;
   max-width: 58.333333%;
   padding: 0 20px;
 }
-.productImage{
-  position: relative; 
+.productImage {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.voucherContainer{
+.voucherContainer {
   border: 1px dashed #006a31;
   padding-bottom: 5px !important;
   padding: 45px 15px 15px 15px;
@@ -34,7 +33,7 @@
   margin-bottom: 40px;
   position: relative;
 }
-.tittleVoucher{
+.tittleVoucher {
   width: auto;
   color: #006a31;
   font-weight: 600;
@@ -49,20 +48,20 @@
   position: absolute;
   top: -24px;
 }
-.rowFix{
+.rowFix {
   margin-left: -10px;
   margin-right: -10px;
   display: flex;
   flex-wrap: wrap;
 }
-.colFix{
+.colFix {
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 20px;
   flex: 0 0 33.333333%;
   max-width: 33.333333%;
 }
-.voucherBtn{
+.voucherBtn {
   display: inline-block;
   color: #fff;
   background: #006a31;
@@ -75,19 +74,19 @@
   cursor: pointer;
   margin-top: 10px;
 }
-.colNote{
+.colNote {
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 20px;
 }
-.descContainer{
+.descContainer {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #006a31;
   margin-top: 40px;
   margin-bottom: 40px;
 }
-.descTit{
+.descTit {
   color: #006a31;
   margin: 0;
   font-size: 24px;
@@ -95,7 +94,7 @@
   border-bottom: 1px solid #006a31;
   font-weight: bold;
 }
-.descContent{
+.descContent {
   display: block;
   margin-block-start: 1em;
   margin-block-end: 1em;
@@ -103,30 +102,25 @@
   margin-inline-end: 0px;
   unicode-bidi: isolate;
 }
-.descContent h2{
+.descContent h3 {
   display: block;
   unicode-bidi: isolate;
-  font-size: 2rem;
-  margin-block-start: 0.83em;
-  margin-block-end: 0.83em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 8px 0;
 }
-.descContent p{
+.descContent p {
   margin-top: 0;
   margin-bottom: 1rem;
+  margin: 0px;
   display: block;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
   unicode-bidi: isolate;
 }
-.form{
+.form {
   flex: 0 0 41.666667%;
   max-width: 100%;
 }
-.detailProduct2{
+.detailProduct2 {
   background: #e7fff2;
   border-radius: 15px;
   padding: 10px;
@@ -135,83 +129,83 @@
   top: 10px;
   margin-top: 20px;
 }
-.titleProduct{
+.titleProduct {
   font-size: 24px;
   font-weight: 700;
   margin: 0px 0px 15px;
   color: #006a31;
   word-break: break-word;
 }
-.form{
+.form {
   display: block;
   margin-top: 0em;
   unicode-bidi: isolate;
 }
-.price{
+.price {
   margin-bottom: 20px;
   font-size: 30px;
   font-weight: bold;
   color: #e31837;
   display: inline-block;
 }
-.formProduct{
+.formProduct {
   display: block;
   unicode-bidi: isolate;
 }
-.select{
+.select {
   margin-bottom: 20px;
 }
-.swatch{
+.swatch {
   font-size: 14px;
   margin-bottom: 5px;
   display: block;
   unicode-bidi: isolate;
 }
-.selectHeader{
+.selectHeader {
   margin-bottom: 5px;
   font-weight: 600;
   box-sizing: border-box;
 }
-.selectOption{
+.selectOption {
   display: flex;
   flex-wrap: wrap;
 }
-.selectOptionElement{
+.selectOptionElement {
   display: inline-block;
   margin: 0px 5px 5px 0;
 }
-.valueRoperties{
+.valueRoperties {
   color: #006a31;
 }
-.note{
+.note {
   margin-bottom: 15px;
 }
-.labelNote{
+.labelNote {
   display: block;
   font-size: 20px;
   font-weight: 700;
   color: #006a31;
 }
-.inputNote{
+.inputNote {
   width: 100%;
   padding: 10px;
   border: 1px solid #006a31;
   border-radius: 5px;
 }
-.clearForm{
+.clearForm {
   display: block;
   unicode-bidi: isolate;
 }
-.quantity{
+.quantity {
   width: 100%;
   font-size: 14px;
 }
-.numberShow{
+.numberShow {
   display: flex;
   align-items: center;
   margin-right: 10px;
 }
-.numberControl{
+.numberControl {
   display: flex;
   min-height: 30px;
   font-size: 1em;
@@ -230,7 +224,7 @@
   border-radius: 5px;
   padding: 2px;
 }
-.btnNum{
+.btnNum {
   font-size: 20px;
   line-height: 0px;
   border: 0;
@@ -238,13 +232,13 @@
   width: 35px;
   height: 35px;
   background: #006a31;
-  
+
   color: #fff;
   text-align: center;
   padding: 0px;
   border-radius: 5px;
 }
-.quantityShow{
+.quantityShow {
   padding-top: 7px;
   text-align: center;
   margin: 0px;
@@ -258,28 +252,28 @@
   border-radius: 8px;
   font-size: 15px;
 }
-.addCart{
+.addCart {
   margin-top: 10px;
   display: flex;
 }
-.add{
+.add {
   border: 0;
-    height: 50px;
-    padding: 0 0px;
-    color: #fff;
-    text-transform: uppercase;
-    width: 100%;
-    font-weight: 500;
-    border-radius: 5px;
-    overflow: hidden;
-    background: #e31837;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    transition: all .3s ease;
+  height: 50px;
+  padding: 0 0px;
+  color: #fff;
+  text-transform: uppercase;
+  width: 100%;
+  font-weight: 500;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #e31837;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: all 0.3s ease;
 }
-.heart{
+.heart {
   min-width: 50px;
   height: 50px;
   margin-left: 10px;
@@ -291,13 +285,13 @@
   overflow: hidden;
   color: white;
 }
-.groupBtn{
+.groupBtn {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
   gap: 10px;
 }
-.buyNow{
+.buyNow {
   display: flex;
   background: #e31837;
   border-radius: 5px;
@@ -313,9 +307,9 @@
   text-transform: uppercase;
   width: calc(50% - 5px);
   height: 50px;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
-.booking{
+.booking {
   display: flex;
   background: #006a31;
   border-radius: 5px;
@@ -331,9 +325,9 @@
   text-transform: uppercase;
   width: calc(50% - 5px);
   height: 50px;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
-.hotline{
+.hotline {
   text-align: center;
   font-weight: bold;
   margin-top: 10px;
