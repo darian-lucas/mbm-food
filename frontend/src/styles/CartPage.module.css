@@ -1,6 +1,7 @@
 .container{
     max-width: 1300px;
-    margin: auto;
+    
+    margin: 0 auto;
 }
 .mainCartPage{
     display: block;
@@ -193,7 +194,7 @@
 .offSet{
     margin-left: 66.666667%;
     position: relative;
-    width: 100%;
+    width: 34%;
     padding-right: 15px;
     padding-left: 15px;
     
@@ -233,4 +234,13 @@
     line-height: 40px;
     border: 1px solid #006a31;
     border-radius: 5px;
+}
+.Empty{
+    margin-top: 150px;
+    text-align: center;
+}
+.EmptyIcon{
+    overflow: hidden;
+    vertical-align: middle;
+    margin: 0 auto; 
 }
