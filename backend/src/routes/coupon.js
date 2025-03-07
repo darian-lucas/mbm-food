@@ -6,6 +6,9 @@ const {
   updateCoupon,
   getCouponById,
   deleteCoupon,
+  updateStatusCoupon,
+  updateAllCouponStatus,
+  applyCoupon
 } = require('../controllers/couponController');
 
 const router = express.Router();
@@ -19,5 +22,11 @@ router.get('/:id', getCouponById);
 router.put('/:id', updateCoupon);
 
 router.delete('/:id', deleteCoupon);
+
+router.put('/:id/status', updateStatusCoupon);
+
+router.put('/update-statuses', updateAllCouponStatus);
+
+router.post('/apply-coupon',applyCoupon);
 
 module.exports = router;

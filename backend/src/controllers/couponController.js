@@ -57,3 +57,57 @@ exports.deleteCoupon = async (req, res) => {
     res.status(500).json({ message: "Lỗi khi xóa mã giảm giá", error });
   }
 };
+
+exports.updateStatusCoupon = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const updatedStatusCoupon = await couponServices.updateStatusCoupon(
+      id,
+      status
+    );
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật mã giảm giá thành công",
+      data: updatedStatusCoupon,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi cập nhật trạng thái mã giảm giá", error });
+  }
+};
+
+exports.updateAllCouponStatus = async (req, res) => {
+  try {
+    const result = await couponServices.updateAllCouponStatus();
+    
+    res.status(200).json({
+      success: true,
+      message: "Đã cập nhật trạng thái tất cả mã giảm giá",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Lỗi khi cập nhật trạng thái mã giảm giá", 
+      error: error.message 
+    });
+  }
+};
+
+exports.applyCoupon = async (req, res) => {
+  try {
+    const { code } = req.body;
+
+    const result = await couponServices.applyCoupon(code);
+
+    if (!result.success) {
+      return res.status(result.statusCode).json({ success: false, message: result.message });
+    }
+
+    res.status(200).json({ success: true, message: "Áp dụng mã giảm giá thành công", data: result.data });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Lỗi khi áp dụng mã giảm giá", error: error.message });
+  }
+};

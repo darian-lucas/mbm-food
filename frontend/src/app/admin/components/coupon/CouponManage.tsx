@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -30,6 +31,19 @@ interface Coupon {
   status: "Active" | "Expired" | "Used_up";
   quantity: number;
 }
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "Active":
+      return "text-green-500 border-green-500 bg-green-500";
+    case "Expired":
+      return "text-red-500 border-red-500 bg-red-500";
+    case "Used_up":
+      return "text-orange-500 border-orange-500 bg-orange-500";
+    default:
+      return "";
+  }
+};
 
 const CouponManage = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -77,7 +91,7 @@ const CouponManage = () => {
 
   const handleDeleteCoupon = async (id: string) => {
     Swal.fire({
-      title: "Bạn có chắc chắn xóa mã giảm giá này không?",
+      title: "Bạn có chắc xóa mã này không?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -86,7 +100,7 @@ const CouponManage = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // await CouponServices.deleteCoupon(id);
+          await CouponServices.deleteCoupon(id);
 
           setCoupons((prev) => {
             const updated = prev.filter((item) => item._id !== id);
@@ -113,9 +127,19 @@ const CouponManage = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          // Chỉ cho phép chuyển đổi giữa Active và Expired
+          // Không cho phép thay đổi nếu đã Used_up (hết số lượng)
+          if (coupon.status === "Used_up") {
+            toast.error(
+              "Không thể thay đổi trạng thái mã đã hết lượt sử dụng!"
+            );
+            return;
+          }
+
           const newStatus = coupon.status === "Active" ? "Expired" : "Active";
 
-          // await CouponServices.updateCouponStatus(coupon._id, newStatus);
+          // Gọi API để cập nhật trạng thái
+          await CouponServices.updatedStatusCoupon(coupon._id, newStatus);
 
           setCoupons((prev) => {
             return prev.map((item) => {
@@ -200,8 +224,12 @@ const CouponManage = () => {
               {getCurrentPageData().length > 0 ? (
                 getCurrentPageData().map((coupon) => (
                   <TableRow className="h-10" key={coupon._id}>
-                    <TableCell className="font-medium px-2">{coupon.code}</TableCell>
-                    <TableCell className="font-medium px-2 ">{formatCurrency(coupon.discount)}</TableCell>
+                    <TableCell className="font-medium px-2">
+                      {coupon.code}
+                    </TableCell>
+                    <TableCell className="font-medium px-2 ">
+                      {formatCurrency(coupon.discount)}
+                    </TableCell>
                     <TableCell className="font-medium px-2">
                       {coupon.type === "Amount"
                         ? "Giảm theo số tiền"
@@ -213,7 +241,7 @@ const CouponManage = () => {
                     <TableCell className="font-medium px-2">
                       {new Date(coupon.end_date).toLocaleDateString("vi-VN")}
                     </TableCell>
-                    <TableCell className="font-medium px-2">
+                    {/* <TableCell className="font-medium px-2">
                       <span
                         className={`${commonClassNames.status} ${
                           coupon.status === "Active"
@@ -223,6 +251,20 @@ const CouponManage = () => {
                         onClick={() => handleToggleStatus(coupon)}
                       >
                         {coupon.status}
+                      </span>
+                    </TableCell> */}
+                    <TableCell className="font-medium px-2">
+                      <span
+                        className={`${commonClassNames.status} ${getStatusColor(
+                          coupon.status
+                        )} bg-opacity-10 cursor-pointer`}
+                        onClick={() => handleToggleStatus(coupon)}
+                      >
+                        {coupon.status === "Active"
+                          ? "Active"
+                          : coupon.status === "Expired"
+                          ? "Expired"
+                          : "Used_up"}
                       </span>
                     </TableCell>
                     <TableCell className="font-medium px-2">

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { updatedStatus, typeUpdate } = require("../middleware/couponMiddleware");
 
 const couponSchema = new mongoose.Schema(
   {
@@ -16,5 +17,8 @@ const couponSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+couponSchema.pre('save', updatedStatus);
+couponSchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], typeUpdate);
 
 module.exports = mongoose.model("coupon", couponSchema);

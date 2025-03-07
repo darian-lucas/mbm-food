@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import CouponServices from "../../services/CouponServices";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -38,9 +38,9 @@ const formSchema = z.object({
 
 function CouponUpdate() {
   const router = useRouter();
-  const params = useParams();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [couponId, setCouponId] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,22 +57,18 @@ function CouponUpdate() {
 
   useEffect(() => {
     async function fetchCouponDetails() {
-      const id = Array.isArray(params._id) ? params._id[0] : params._id;
       if (!id) return;
 
       try {
         const res = await CouponServices.getCouponById(id);
 
-        if (!res?.success || !res.data) {
+        if (!res?.data) {
           toast.error(res?.message || "Không thể tải thông tin mã giảm giá");
-          router.push("/admin/manage/coupon");
           return;
         }
 
-        // Use _id from the response
         setCouponId(res.data._id);
 
-        // Update form values with existing coupon data
         form.reset({
           code: res.data.code,
           discount: res.data.discount.toString(),
@@ -82,7 +78,6 @@ function CouponUpdate() {
           quantity: res.data.quantity.toString(),
         });
 
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
         toast.error("Lỗi khi tải thông tin mã giảm giá");
@@ -91,7 +86,7 @@ function CouponUpdate() {
     }
 
     fetchCouponDetails();
-  }, [params._id, router, form]);
+  }, [id, router, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -124,11 +119,6 @@ function CouponUpdate() {
       setIsSubmitting(false);
     }
   }
-
-  // Loading state while fetching coupon details
-  // if (isLoading) {
-  //   return <div>Đang tải...</div>;
-  // }
 
   return (
     <Form {...form}>

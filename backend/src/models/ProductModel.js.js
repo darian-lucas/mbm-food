@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const generateSlug = require("../middleware/slug");
+const generateSlug = require("../middleware/slugMiddleware");
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.ObjectId;
 

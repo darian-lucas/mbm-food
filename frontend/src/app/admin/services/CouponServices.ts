@@ -64,10 +64,39 @@ const updateCoupon = async (id: string, couponData: TCreateCouponParams) => {
   }
 };
 
+const deleteCoupon = async (id: string) => {
+  const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  if (!response.ok) throw new Error("Xóa mã giảm giá thất bại");
+  return response.json();
+};
+
+const updatedStatusCoupon = async (
+  id: string,
+  status: string,
+) => {
+  const response = await fetch(`${API_URL}/${id}/status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      status,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Lỗi khi cập nhật trạng thái sản phẩm");
+  }
+
+  return await response.json();
+};
+
 const CouponServices = {
   createCoupon,
   getAllCoupons,
   getCouponById,
   updateCoupon,
+  deleteCoupon,
+  updatedStatusCoupon
 };
 export default CouponServices;
