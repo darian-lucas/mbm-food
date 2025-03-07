@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "../../../styles/ProductDetail.module.css";
-import { Heart } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface Variant {
   option: string;
@@ -27,7 +27,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [selectedCrust, setSelectedCrust] = useState<string>("Đế dày");
   const [quantity, setQuantity] = useState<number>(1);
- 
+
   useEffect(() => {
     if (!slug) return;
 
@@ -55,6 +55,49 @@ const ProductDetail = () => {
       prevQuantity > 1 ? prevQuantity - 1 : prevQuantity
     );
   };
+  const addToCart = () => {
+    if (!product || !selectedVariant) return;
+  
+    const cartItem = {
+      id: product.slug,
+      name: product.name,
+      option: selectedVariant.option,
+      price:
+        selectedVariant.sale_price > 0
+          ? selectedVariant.sale_price
+          : selectedVariant.price,
+      image: selectedVariant.image,
+      quantity,
+      crust: product.idcate === "67b0a4fbb5a39baf9de368ff" ? selectedCrust : null,
+    };
+  
+    // Lấy danh sách giỏ hàng cũ từ localStorage
+    let cart: any[] = JSON.parse(localStorage.getItem("cart") || "[]");
+  
+    // Tìm sản phẩm trong giỏ hàng
+    const existingItemIndex = cart.findIndex(
+      (item) =>
+        item.id === cartItem.id &&
+        item.option === cartItem.option &&
+        item.crust === cartItem.crust
+    );
+  
+    if (existingItemIndex !== -1) {
+      // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng
+      cart[existingItemIndex].quantity += quantity;
+    } else {
+      // Nếu sản phẩm chưa có, thêm mới vào danh sách giỏ hàng
+      cart.push(cartItem);
+    }
+  
+    // Ghi đè giỏ hàng cũ bằng danh sách mới
+    localStorage.setItem("cart", JSON.stringify(cart));
+  
+    // Hiển thị thông báo thành công
+    toast.success("Đã thêm vào giỏ hàng!");
+  
+    console.log("Cart after adding:", cart);
+  };
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
 
@@ -66,11 +109,11 @@ const ProductDetail = () => {
           <div className={styles.row}>
             <div className={styles.productLeft}>
               <div className={styles.productImage}>
-                <Image 
+                <Image
                   src={`http://localhost:3001/images/${selectedVariant.image}`}
                   alt={product.name}
                   width={400}
-                  height={400}                 
+                  height={400}
                 />
               </div>
               <div className={styles.voucherContainer}>
@@ -116,9 +159,10 @@ const ProductDetail = () => {
                 <div className={styles.descTit}>
                   <p>MÔ TẢ MÓN ĂN</p>
                 </div>
-                <div className={styles.descContent} dangerouslySetInnerHTML={{ __html: product.description }}/>
-                  
-                
+                <div
+                  className={styles.descContent}
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
               </div>
             </div>
             <div className={styles.form}>
@@ -131,7 +175,7 @@ const ProductDetail = () => {
                     <p>
                       {selectedVariant.sale_price > 0
                         ? selectedVariant.sale_price
-                        : selectedVariant.price}{" "}
+                        : selectedVariant.price.toLocaleString()}{" "}
                       đ
                     </p>
                   </div>
@@ -179,25 +223,24 @@ const ProductDetail = () => {
                                 {selectedCrust}
                               </span>
                             </p>
-                           
                           </div>
                           <div className={styles.selectOption}>
                             <label>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedCrust === "Đế dày"}
-                                  onChange={() => setSelectedCrust("Đế dày")}
-                                />
-                                Đế dày
-                              </label>
-                              <label>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedCrust === "Đế mỏng"}
-                                  onChange={() => setSelectedCrust("Đế mỏng")}
-                                />
-                                Đế mỏng
-                              </label>
+                              <input
+                                type="checkbox"
+                                checked={selectedCrust === "Đế dày"}
+                                onChange={() => setSelectedCrust("Đế dày")}
+                              />
+                              Đế dày
+                            </label>
+                            <label>
+                              <input
+                                type="checkbox"
+                                checked={selectedCrust === "Đế mỏng"}
+                                onChange={() => setSelectedCrust("Đế mỏng")}
+                              />
+                              Đế mỏng
+                            </label>
                           </div>
                         </div>
                       )}
@@ -238,10 +281,15 @@ const ProductDetail = () => {
                         </div>
 
                         <div className={styles.addCart}>
-                          <button className={styles.add}>
+                          <button
+                            className={styles.add}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              addToCart();
+                            }}
+                          >
                             Thêm vào giỏ hàng
                           </button>
-                          <Heart className={styles.heart} />
                         </div>
                       </div>
                       <div className={styles.groupBtn}>

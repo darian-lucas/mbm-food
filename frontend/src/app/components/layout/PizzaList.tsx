@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Heart } from "lucide-react";
-import { toast, ToastContainer } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../../../styles/ProductList.module.css";
 import { addFavorite, removeFavorite, checkFavorite } from "@/services/Favorite";
@@ -86,7 +86,29 @@ const PizzaList = () => {
       toast.error("⚠ Có lỗi xảy ra, vui lòng thử lại!");
     }
   };
-
+  // const addToCart = (product: Product) => {
+  //   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  
+  //   // Kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa
+  //   const existingIndex = cart.findIndex((item: any) => item._id === product._id);
+  
+  //   if (existingIndex !== -1) {
+  //     cart[existingIndex].quantity += 1;
+  //   } else {
+  //     cart.push({
+  //       _id: product._id,
+  //       name: product.name,
+  //       slug: product.slug,
+  //       image: product.variants[0].image,
+  //       price: product.variants[0].price,
+  //       quantity: 1,
+  //     });
+  //   }
+  
+  //   // Lưu lại vào localStorage
+  //   localStorage.setItem("cart", JSON.stringify(cart));
+  //   toast.success("Đã thêm vào giỏ hàng!");
+  // };
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
   return (
@@ -138,7 +160,7 @@ const PizzaList = () => {
                     <div className={styles.priceBox}>
                       <span>Giá chỉ từ: </span> {item.variants[0].price.toLocaleString()}₫
                     </div>
-                    <button className={styles.add}>Thêm</button>
+                    <button className={styles.add} >Thêm</button>
                   </div>
                 </div>
               </div>
@@ -146,7 +168,6 @@ const PizzaList = () => {
           ))}
         </div>
       </section>
-      <ToastContainer position="top-right" autoClose={2000} />
     </div>
   );
 };
