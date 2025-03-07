@@ -149,7 +149,7 @@
   justify-content: center;
   background-color: #006A31;
   padding: 10px 0;
-  padding-right: 230px;
+  /* padding-right: 230px; */
 }
 
 .navbar a {
