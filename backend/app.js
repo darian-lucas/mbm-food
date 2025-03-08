@@ -11,8 +11,10 @@ const orderRoutes = require('./src/routes/order');
 const paymentMethodRoutes = require('./src/routes/paymentMethods');
 
 
+const couponRoutes = require('./src/routes/coupon');
 
 const cors = require("cors");
+// const { applyTimestamps } = require('./src/models/CouponModel');
 
 dotenv.config();
 const app = express();
@@ -39,6 +41,8 @@ app.use('/api/favorite', favoriteRoutes);
 app.use('/api/cmt', postCommentRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentMethodRoutes);
+app.use('/api/coupons', couponRoutes);
+
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
 
