@@ -3,8 +3,12 @@
     background: #ffffff;
     font-size: 14px;
     border-radius: 10px;
-    
+       
 }
+.tableContainer h4{
+    font-size: 23px;
+}
+
 .tableContainer table thead th {
     background-color: #9dfca5; /* Màu nâu nhạt */
     color: rgb(0, 0, 0); /* Màu chữ trắng để dễ đọc */
@@ -15,6 +19,7 @@
 }
 
 .titleTable{
+
     display: flex;
     .titles{
         color:#3b82f6;

@@ -18,6 +18,7 @@ import {
   // getFavorites,
 } from "../services/Favorite";
 import { incrementView } from "@/services/incrementView";
+import { toast } from "react-toastify";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -138,11 +139,17 @@ export default function Home(): JSX.Element {
     if (favorites[food_id]) {
       await removeFavorite(food_id, token);
       newFavorites[food_id] = false;
-      alert("❌ Đã xóa sản phẩm khỏi danh sách yêu thích!");
+      toast.error("Đã xóa sản phẩm khỏi danh sách yêu thích!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } else {
       await addFavorite(food_id, token);
       newFavorites[food_id] = true;
-      alert("✅ Đã thêm sản phẩm vào danh sách yêu thích!");
+      toast.success("Đã thêm sản phẩm vào danh sách yêu thích!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
 
     setFavorites(newFavorites);

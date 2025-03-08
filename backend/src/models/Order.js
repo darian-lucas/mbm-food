@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     id_user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     id_coupon: { type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' },
     id_employee: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
-    amount: { type: Number, required: true },
+    total_amount: { type: Number, required: true },
     address: { type: String, required: true },
     phone: { type: String, required: true },
     name: { type: String, required: true },

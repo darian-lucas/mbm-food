@@ -34,7 +34,7 @@ class OrderService {
                 const orderDetails = updateData.details.map(product => ({
                     id_order: orderId,
                     id_product: product.id_product,
-                    total: product.total || product.price * product.quantity, // Tránh lỗi thiếu total
+                    total_amount: product.price || product.price * product.quantity, // Tránh lỗi thiếu total
                     quantity: product.quantity,
                     name: product.name
                 }));
@@ -56,7 +56,7 @@ class OrderService {
         const orderDetails = products.map(product => ({
             id_order: savedOrder._id,
             id_product: product.id_product,
-            total: product.total,
+            price: product.price,
             quantity: product.quantity,
             name: product.name
         }));
@@ -66,12 +66,23 @@ class OrderService {
     }
 
     async getAllOrders() {
-        const orders = await Order.find().populate('id_user', 'name').populate('id_payment_method', 'name').lean();
-        for (let order of orders) {
-            order.details = await OrderDetail.find({ id_order: order._id }).populate('id_product', 'name price');
-        }
-        return orders;
+        const orders = await Order.find()
+            .populate('id_user', 'name')
+            .populate('id_payment_method', 'name')
+            .lean();
+    
+        const ordersWithDetails = await Promise.all(
+            orders.map(async (order) => {
+                const details = await OrderDetail.find({ id_order: order._id })
+                    .populate('id_product', 'name price')
+                    .lean();
+                return { ...order, details }; // Gán `details` vào mỗi order
+            })
+        );
+    
+        return ordersWithDetails;
     }
+    
 
     async getOrderById(orderId) {
         const order = await Order.findById(orderId)

@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import userService from "../../../services/UserService";
-import orderService from "../../../services/OrderServices"; // Import service mới
+import orderService from "../../../services/OrderServices"; // Import order service
 import styles from "../../../styles/DetailUser.module.css";
 
 const UserDetailPage = () => {
     const { id: paramId } = useParams();
     const searchParams = useSearchParams();
-
+    const [showAllOrders, setShowAllOrders] = useState(false);
     const [user, setUser] = useState(null);
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [orderDetails, setOrderDetails] = useState<any[]>([]);
 
     useEffect(() => {
         const id = searchParams.get("id") || paramId;
@@ -22,7 +23,10 @@ const UserDetailPage = () => {
                 .catch(err => console.error("Lỗi khi lấy user:", err));
 
             orderService.getOrdersByUserId(id)
-                .then(data => setOrders(data.orders))
+                .then(data => {
+                    setOrders(data.orders || []);
+                    setOrderDetails(data.orderDetails || []); // ✅ Lưu orderDetails vào state
+                })
                 .catch(err => console.error("Lỗi khi lấy đơn hàng:", err))
                 .finally(() => setLoading(false));
         }
@@ -31,8 +35,13 @@ const UserDetailPage = () => {
     if (loading) return <p>Loading...</p>;
     if (!user) return <p>Không tìm thấy người dùng!</p>;
 
-    const totalSpent = orders.reduce((sum, order) => sum + order.amount, 0);
-    const totalOrders = orders.length;
+    const totalSpent = orders.reduce((sum, order) => sum + order.total_amount, 0);
+    const userPhone = orders.length > 0 ? orders[0].phone : user.phone;
+    
+    const mergedOrders = orders.map(order => ({
+        ...order,
+        details: orderDetails.filter(detail => detail.id_order === order._id)
+    }));
 
     return (
         <div className="container mt-4">
@@ -42,14 +51,23 @@ const UserDetailPage = () => {
                 <p className={styles.titles}>User Profiles</p>
             </div>
 
-            <div className="row">
+            <div className="row pt-1">
                 <div className="col-md-3">
-                    <div className={`card text-center p-3 ${styles.card}`}>
-                        <img src={user.avatar || "https://via.placeholder.com/100"} className="rounded-circle mx-auto d-block" alt="Profile" />
-                        <h5 className="mt-3">{user.username}</h5>
-                        <p className={`text-muted ${styles.textMuted}`}>{user.phone}</p>
-                        <a href={`mailto:${user.email}`} className={styles.link}>{user.email}</a>
-                        <button className="btn btn-success w-100 mt-3">${user.balance} Balance</button>
+                    <div className="card text-center p-4 shadow-sm" style={{ backgroundColor: "#e9f7ef", borderRadius: "10px" }}>
+                        <img
+                            src={user.avatar || "https://via.placeholder.com/100"}
+                            className="rounded-circle mx-auto d-block border border-success"
+                            alt="Profile"
+                            style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                        />
+                        <h5 className="mt-3 text-success fw-bold">Name: {user.username}</h5>
+                        <p className="text-muted">Number: {userPhone}</p>
+                        <a href={`mailto:${user.email}`} className="text-success fw-bold text-decoration-none">
+                            Email: {user.email}
+                        </a>
+                        <button className="btn btn-success w-100 mt-3 fw-bold">
+                            Total: {totalSpent.toLocaleString("vi-VN")} VND
+                        </button>
                     </div>
                 </div>
 
@@ -59,7 +77,10 @@ const UserDetailPage = () => {
                     </div>
 
                     <div className="card p-3">
-                        <p>Total spent: <strong>${totalSpent}</strong> on <strong>{totalOrders} orders</strong></p>
+                        <p>
+                            Total spent: <strong>{totalSpent.toLocaleString("vi-VN")} VND</strong>
+                            on <strong>{orders.length} orders</strong>
+                        </p>
                         <table className="table">
                             <thead>
                                 <tr>
@@ -71,26 +92,39 @@ const UserDetailPage = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {orders.length > 0 ? orders.map((order) => (
+                                {mergedOrders.slice(0, showAllOrders ? mergedOrders.length : 1).map(order => (
                                     <tr key={order._id}>
-                                        <td><a href="#">#{order._id}</a></td>
+                                        <td><a href="#">#{order.order_code}</a></td>
                                         <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                                         <td>
                                             <span className={`badge bg-${order.status === "pending" ? "warning" : "success"}`}>
                                                 {order.status}
                                             </span>
                                         </td>
-                                        <td>{order.itemsCount || "N/A"} items</td>
-                                        <td>${order.amount}</td>
+                                        <td>
+                                            {order.details.length > 0 ? (
+                                                order.details.map((item, index) => (
+                                                    <div key={item._id || index}>
+                                                        {item.id_product.name} - {item.quantity} x {item.price.toLocaleString("vi-VN")} VND
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                "N/A"
+                                            )}
+                                        </td>
+                                        <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
                                     </tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan={5}>No orders found</td>
-                                    </tr>
-                                )}
+                                ))}
                             </tbody>
                         </table>
-                        <button className="btn btn-success w-100">View All Orders</button>
+
+                        {!showAllOrders && mergedOrders.length > 1 && (
+                            <button className="btn btn-secondary w-100" onClick={() => setShowAllOrders(true)}>...</button>
+                        )}
+
+                        {showAllOrders && (
+                            <button className="btn btn-danger w-100" onClick={() => setShowAllOrders(false)}>Đóng</button>
+                        )}
                     </div>
                 </div>
             </div>
