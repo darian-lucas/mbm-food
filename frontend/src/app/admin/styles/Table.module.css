@@ -1,9 +1,9 @@
 .tableContainer {
     max-width: 100%;
     background: #ffffff;
-   
+    font-size: 14px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
 }
 .tableContainer table thead th {
     background-color: #9dfca5; /* Màu nâu nhạt */
@@ -185,3 +185,10 @@
     font-size: 16px;
     font-weight: bold;
 }
+.address {
+    max-width: 150px; /* Điều chỉnh theo bố cục */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  

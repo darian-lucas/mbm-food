@@ -46,14 +46,30 @@ const findUserByName = async (username) => {
     return response.json();
 };
 
-const activateUser = async (id, isActive) => {
-    const response = await fetch(`${API_URL}/${id}/activate`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isActive }),
-    });
-    return response.json();
+const toggleUserStatus = async (id) => {
+    console.log(`🔄 Toggling status for ID: ${id}, URL: ${API_URL}/toggle-active/${id}`);
+
+    try {
+        const response = await fetch(`${API_URL}/toggle-active/${id}`, { 
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to toggle status: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log("✅ API response:", data);
+        return data.user;
+    } catch (error) {
+        console.error("🔥 Error in toggleUserStatus:", error.message);
+        return null;
+    }
 };
+
+
+
 
 export default { 
     getAllUsers, 
@@ -63,5 +79,5 @@ export default {
     login, 
     updateUser, 
     findUserByName, 
-    activateUser 
+    toggleUserStatus 
 };
