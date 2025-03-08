@@ -39,8 +39,6 @@ router.get('/', getAllUsers);
 // Tìm kiếm người dùng theo tên
 router.get('/search', findUserByName);
 
-// Kích hoạt/Vô hiệu hóa người dùng
-router.patch('/:id/activate', activateUser);
 
 // Cập nhật người dùng theo ID
 router.put('/:id', updateUser);
