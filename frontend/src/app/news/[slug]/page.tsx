@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { fetchFeaturedNews, fetchNewsDetail, Post } from "../../../services/post";
 import "../../../styles/id.css";
+import "../../../styles/new.css";
+import CommentSection from "@/app/comments/CommentSection";
 
 export default function NewsDetail() {
   const { slug } = useParams();
@@ -74,11 +76,29 @@ export default function NewsDetail() {
             <li className="home">
               <Link href="/">Trang chủ</Link>
             </li>
-            <li className="mr_lr"> / </li>
+            <li className="mr_lr">
+              <svg
+                  width="10"
+                  height="10"
+                  viewBox="-96 0 512 512"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
+              </svg>
+            </li>
             <li>
               <Link href="/news">Tin tức</Link>
             </li>
-            <li className="mr_lr"> / </li>
+            <li className="mr_lr">
+              <svg
+                  width="10"
+                  height="10"
+                  viewBox="-96 0 512 512"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
+              </svg>
+            </li>
             <li>
               <strong>{post.title}</strong>
             </li>
@@ -121,7 +141,7 @@ export default function NewsDetail() {
               <li><Link href="/">Trang chủ</Link></li>
               <li><Link href="/about">Giới thiệu</Link></li>
               <li className="menu-item">
-                <Link href="/san-pham">Sản phẩm</Link>
+                <Link href="/product">Sản phẩm</Link>
                 <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
                   {isOpen ? "−" : "+"}
                 </button>
@@ -136,7 +156,7 @@ export default function NewsDetail() {
                 </ul>
               )}
               <li><Link className="font-bold" href="/news">Tin tức</Link></li>
-              <li><Link href="#">Liên hệ</Link></li>
+              <li><Link href="/contact">Liên hệ</Link></li>
               <li><Link href="#">Câu hỏi thường gặp</Link></li>
               <li><Link href="#">Đặt bàn</Link></li>
             </ul>
@@ -169,6 +189,87 @@ export default function NewsDetail() {
             </div>
           </div>
         </div>
+
+        {/*Comment*/}
+        <CommentSection postId={post._id} />
+          {/* <div className="col-12 order-lg-3">
+            <div className="thump-comment">
+              <form action="" method="post" id="article_comments">
+                <input name="" type="hidden" value="article_comment" />
+                <input name="utf8" type="hidden" value="true" />
+                <div className="form-comment">
+                  <div className="margin-top-0 margin-bottom-30 w-100">
+                    <div className="title-page">
+                      <span>Viết bình luận của bạn</span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <fieldset className="form-group padding 0">
+                        <input type="text" placeholder="Họ tên" className="form-control form-control-lg" 
+                        id="full-name" />
+                      </fieldset>
+                    </div>
+                    <div className="col-md-6">
+                      <fieldset className="form-group padding 0">
+                        <input type="email" placeholder="Email" className="form-control form-control-lg" 
+                         name="Email" required/>
+                      </fieldset>
+                    </div>
+                    <fieldset className="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <textarea placeholder="Nội dung" name="Body" id="comment" rows={6} 
+                      className="form-control form-control-lg" required></textarea>
+                    </fieldset>
+                    <div className="col-12">
+                      <button type="submit" className="btn btn-primary button_45">Gửi thông tin</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div id="article-comments">
+                <h5 className="title-form-coment margin-bottom-25">Bình luận (3)</h5>
+                <div className="article-comment clearfix">
+                  <figure className="article-comment-user-image">
+                    <img src="" alt="binh-luan" className="block" />
+                  </figure>
+                  <div className="article-comment-user-comment">
+                    <p className="user-name-comment">
+                      <strong>Hoàng Tèo</strong>
+                      <a href="" className="btn-link pull-xs-right d-none">Trả lời</a>
+                    </p>
+                    <span className="article-comment-date-bull">14/01/2025</span>
+                    <p className="cm">dada</p>
+                  </div>         
+                </div>
+                <div className="article-comment clearfix">
+                  <figure className="article-comment-user-image">
+                    <img src="" alt="binh-luan" className="block" />
+                  </figure>
+                  <div className="article-comment-user-comment">
+                    <p className="user-name-comment">
+                      <strong>Hoàng Tèo</strong>
+                      <a href="" className="btn-link pull-xs-right d-none">Trả lời</a>
+                    </p>
+                    <span className="article-comment-date-bull">14/01/2025</span>
+                    <p className="cm">dada</p>
+                  </div>         
+                </div>
+                <div className="article-comment clearfix">
+                  <figure className="article-comment-user-image">
+                    <img src="" alt="binh-luan" className="block" />
+                  </figure>
+                  <div className="article-comment-user-comment">
+                    <p className="user-name-comment">
+                      <strong>Hoàng Tèo</strong>
+                      <a href="" className="btn-link pull-xs-right d-none">Trả lời</a>
+                    </p>
+                    <span className="article-comment-date-bull">14/01/2025</span>
+                    <p className="cm">dada</p>
+                  </div>         
+                </div>
+              </div>
+            </div>
+          </div> */}
       </div>
     </div>
   );

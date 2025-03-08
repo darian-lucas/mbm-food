@@ -9,6 +9,10 @@ class PostCommentService {
         return await PostComment.find().populate('id_user', 'username').populate('id_post', 'title');
     }
 
+    async getCommentsByPost(postId) {
+        return await PostComment.find({ id_post: postId }).populate('id_user', 'username');
+    }
+
     async getCommentsByUser(userId) {
         return await PostComment.find({ id_user: userId }).populate('id_post', 'title');
     }

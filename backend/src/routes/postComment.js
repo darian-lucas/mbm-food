@@ -9,6 +9,9 @@ router.post('/', authMiddleware, PostCommentController.createComment);
 // Lấy tất cả bình luận
 router.get('/', PostCommentController.getAllComments);
 
+//Lấy bình luận theo từng bài viết
+router.get('/post/:postId', PostCommentController.getCommentsByPost);
+
 // Lấy bình luận theo userId
 router.get('/user/:userId', PostCommentController.getCommentsByUser);
 
