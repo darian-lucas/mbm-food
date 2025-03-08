@@ -1,4 +1,4 @@
-const PaymentMethod = require('../models/Payment_Method');
+const PaymentMethod = require('../models/PaymentMethod');
 
 // Lấy danh sách phương thức thanh toán
 const getAllPaymentMethods = async () => {
