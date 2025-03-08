@@ -6,6 +6,9 @@ import { addFavorite, getFavorites, removeFavorite } from "../../services/Favori
 import styles from "../../styles/Favorite.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Heart } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 interface Product {
   _id: string;
@@ -67,7 +70,18 @@ const FavoritePage = () => {
           ? prev.filter((p) => p._id !== productId)
           : [...prev, result.newFavorite]
       );
-      alert(isFavorite ? "Đã xóa khỏi danh sách yêu thích" : "Đã thêm vào danh sách yêu thích");
+      toast.success(
+        isFavorite ? "Đã xóa khỏi danh sách yêu thích" : "Đã thêm vào danh sách yêu thích",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        }
+      );
     }
   };
 

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const generateSlug = require("../middleware/slug");
+const generateSlug = require("../middleware/slugMiddleware");
 
 const postSchema = new mongoose.Schema(
   {

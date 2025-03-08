@@ -23,7 +23,6 @@ export default function Table() {
   const [editData, setEditData] = useState({
     username: "",
     email: "",
-    address: "",
     role: "",
   });
 
@@ -42,18 +41,28 @@ export default function Table() {
     setTotalPages(data.totalPages);
   };
 
-  // Xử lý toggle trạng thái active/inactive
-  const handleToggleActive = async (id, currentStatus) => {
-    await userService.activateUser(id, !currentStatus);
-    // Reload lại danh sách người dùng ở trang hiện tại
-    if (search.trim() === "") {
-      loadUsers(page);
+  const handleToggleActive = async (id) => {
+    const updatedUser = await userService.toggleUserStatus(id);
+
+    if (updatedUser) {
+        setUsers((prevUsers) => 
+            prevUsers.map((user) => 
+                user._id === id ? { ...user, isActive: updatedUser.isActive } : user
+            )
+        );
+
+        // Nếu không có tìm kiếm, tải lại danh sách
+        if (search.trim() === "") {
+            loadUsers(page);
+        } else {
+            const user = await userService.findUserByName(search);
+            setUsers(user ? [user] : []);
+        }
     } else {
-      // Nếu đang tìm kiếm, load lại tìm kiếm
-      const user = await userService.findUserByName(search);
-      setUsers(user ? [user] : []);
+        console.error("Failed to update user status.");
     }
-  };
+};
+
 
   // Xử lý tìm kiếm có debounce
   useEffect(() => {
@@ -77,7 +86,6 @@ export default function Table() {
     setEditData({
       username: user.username,
       email: user.email,
-      address: user.address,
       role: user.role,
     });
   };
@@ -120,7 +128,6 @@ export default function Table() {
             <th></th>
             <th>Username</th>
             <th>Email</th>
-            <th>Address</th>
             <th>Role</th>
             <th>Status</th>
             <th>Join On</th>
@@ -150,8 +157,8 @@ export default function Table() {
                   </div>
                 </td>
                 <td>{user.email}</td>
-                <td>{user.address}</td>
-                <td>
+                
+               <td>
                   <span className={styles.role}>{user.role}</span>
                 </td>
                 <td>
@@ -170,9 +177,8 @@ export default function Table() {
                     <FontAwesomeIcon icon={faPen} />
                   </button>
                   <button
-                    className={`btn btn-sm ${
-                      user.isActive ? "btn-warning" : "btn-primary"
-                    }`}
+                    className={`btn btn-sm ${user.isActive ? "btn-warning" : "btn-primary"
+                      }`}
                     onClick={() => handleToggleActive(user._id, user.isActive)}
                   >
                     <FontAwesomeIcon
