@@ -50,7 +50,7 @@ export default function SidebarAdmin() {
             alt="Dola Food"
             width={200}
             height={110}
-            className="w-[200px] h-[100px] object-fill"
+            className="w-[200px] h-[100px] object-fill color-[#fffff]"
             priority
           />
         </Link>
