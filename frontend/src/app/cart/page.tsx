@@ -82,6 +82,16 @@ const CartPage = () => {
     );
   };
 
+  const handleCheckout = () => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    console.log(localStorage.getItem("user"));
+    if (user && user.isLoggedIn) {
+      router.push("../checkout");
+    } else {
+      router.push("../login");
+    }
+  };
+
   return (
     <div className={styles.container}>
       <section className={styles.mainCartPage}>
@@ -184,7 +194,7 @@ const CartPage = () => {
                       <div className={styles.checkOut}>
                         <button 
                         className={styles.cartBtnCheckOut}
-                        onClick={()=> router.push("../checkout")}
+                        onClick={handleCheckout}
                         >Thanh toán
                         </button>
                       </div>

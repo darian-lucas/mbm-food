@@ -63,7 +63,8 @@ export default function Header(): JSX.Element {
   }, []); 
   // Xử lí dăng xuất !
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("user"); // Xóa thông tin đăng nhập
+    localStorage.removeItem("token"); // Xóa token nếu có
     setIsLoggedIn(false);
     window.location.reload();
   };

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import styles from "../../styles/CheckoutPage.module.css";
 
 interface User {
@@ -17,7 +16,6 @@ interface Coupon {
 }
 
 const CheckoutPage = () => {
-  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [coupon, setCoupon] = useState<Coupon | null>(null);
@@ -28,22 +26,15 @@ const CheckoutPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/user", {
-          credentials: "include", // Gửi cookies nếu có
-        });
+        const res = await fetch("http://localhost:3001/api/user");
         const data = await res.json();
-        if (!data || !data.email) {
-          router.push("/login"); // Chuyển hướng nếu chưa đăng nhập
-        } else {
-          setUser(data);
-        }
+        setUser(data);
       } catch (error) {
         console.error("Lỗi khi lấy thông tin người dùng:", error);
-        router.push("/login");
       }
     };
     fetchUser();
-  }, [router]);
+  }, []);
 
   const applyCoupon = async () => {
     try {
@@ -62,27 +53,25 @@ const CheckoutPage = () => {
     }
   };
 
-  if (!user) return <p>Đang kiểm tra đăng nhập...</p>; // Hiển thị loading nếu chưa có user
-
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Thanh toán</h1>
       <div className={styles.checkoutForm}>
         <div className={styles.formGroup}>
           <label>Email:</label>
-          <input type="email" value={user.email} readOnly />
+          <input type="email" value={user?.email || ""} readOnly />
         </div>
         <div className={styles.formGroup}>
           <label>Họ tên:</label>
-          <input type="text" value={user.username} readOnly />
+          <input type="text" value={user?.username || ""} readOnly />
         </div>
         <div className={styles.formGroup}>
           <label>Số điện thoại:</label>
-          <input type="text" value={user.phone} readOnly />
+          <input type="text" value={user?.phone || ""} readOnly />
         </div>
         <div className={styles.formGroup}>
           <label>Địa chỉ:</label>
-          <input type="text" value={user.address} readOnly />
+          <input type="text" value={user?.address || ""} readOnly />
         </div>
       </div>
 
@@ -118,7 +107,7 @@ const CheckoutPage = () => {
         />
         <button onClick={applyCoupon}>Áp dụng</button>
       </div>
-
+      
       <div className={styles.totalPrice}>
         <h2>Tổng tiền: {totalPrice - discount} đ</h2>
       </div>
