@@ -1,18 +1,24 @@
 .sidebar {
-    width: 200px;
-    height: 110vh;
-    background-color: #ffffff;
+    width: 210px;
+    height: 100vh;
+    background-color: #b3ffb3;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.24);
     position: fixed;
     top: 0;
     left: 0;
     padding-top: 20px;
     font-size: 13px;
+    overflow-y: auto; 
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+}
+.sidebar::-webkit-scrollbar {
+    display: none;
 }
 .link {
-    text-decoration: none; /* Xóa gạch chân */
-    color: inherit; /* Giữ nguyên màu chữ */
-    display: flex; /* Giữ bố cục như cũ */
+    text-decoration: none; 
+    color: inherit; 
+    display: flex; 
     align-items: center;
     gap: 10px;
 }
@@ -20,30 +26,38 @@
 .sidebar ul {
     list-style: none;
     padding: 0;
-    
 }
 
 .sidebar ul li {
     display: flex;
     align-items: center;
-    gap: 10px; /* Khoảng cách giữa icon và chữ */
+    gap: 10px; 
     padding: 15px 20px;
     border-left: 4px solid transparent;
     cursor: pointer;
     color: #4b5563;
-    font-size: 14px; /* Tăng kích thước chữ một chút */
+    font-size: 14px; 
+    transition: background-color 0.3s, color 0.3s, border-left 0.3s; 
 }
 
 .sidebar ul li .icon {
-    font-size: 18px; /* Tăng kích thước icon */
-    width: 24px; /* Đảm bảo icon có độ rộng cố định */
+    font-size: 18px; 
+    width: 24px; 
     text-align: center;
 }
 
-
+/* Hover và trạng thái active */
 .sidebar ul li.active,
 .sidebar ul li:hover {
-    background-color: #e0f2fe;
-    border-left: 4px solid #3b82f6;
-    color: #1e40af;
+    background-color: #d1fadf; /* Màu xanh lá cây nhạt */
+    border-left: 4px solid #1816a3; /* Xanh lá cây đậm */
+    color: #1b1665; /* Xanh lá cây tối hơn */
+}
+
+
+/* Khi trang đang active */
+.sidebar ul li.sidebarItemActive {
+    background-color: #d1fadf; /* Xanh lá cây nhạt */
+    border-left: 4px solid #161fa3;
+    color: #162f65;
 }

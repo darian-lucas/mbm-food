@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link"; // Thêm Link
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation"; // Lấy đường dẫn hiện tại
 import styles from "../styles/Sidebar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,26 +16,24 @@ import {
   faLanguage,
   faSignOutAlt,
   faNewspaper,
-  faTicket
+  faTicket,
+  faComments, // Thêm icon bình luận
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
 export default function SidebarAdmin() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const pathname = usePathname(); // Lấy đường dẫn trang hiện tại
 
   const menuItems = [
     { name: "Dashboard", icon: faHome, path: "/admin" },
     { name: "Category", icon: faLayerGroup, path: "/admin/manage/category" },
-    {
-      name: "Customers",
-      icon: faUserFriends,
-      path: "/admin/manage/custumerList",
-    },
+    { name: "Customers", icon: faUserFriends, path: "/admin/manage/custumerList" },
     { name: "Products", icon: faBox, path: "/admin/manage/products" },
     { name: "Banner", icon: faHeart, path: "/admin/manage/banner" },
     { name: "Orders", icon: faShoppingCart, path: "/admin/manage/orders" },
-    { name: "News", icon: faNewspaper, path: "/admin/manage/newsList" }, // Đường dẫn mới
+    { name: "News", icon: faNewspaper, path: "/admin/manage/newsList" },
     { name: "Coupons", icon: faTicket, path: "/admin/manage/coupon" },
+    { name: "Comments", icon: faComments, path: "/admin/manage/comment" }, // Thêm mục bình luận
     { name: "Settings", icon: faCog, path: "/admin/manage/settings" },
     { name: "Message", icon: faEnvelope, path: "/admin/manage/messages" },
     { name: "Language", icon: faLanguage, path: "/admin/manage/language" },
@@ -48,28 +47,30 @@ export default function SidebarAdmin() {
           <Image
             src="/images/logo.png"
             alt="Dola Food"
-            width={200}
-            height={110}
-            className="w-[200px] h-[100px] object-fill"
+            width={250}
+            height={210}
+            className="w-[200px] h-[200px] object-fill bg-transparent"
             priority
           />
+
         </Link>
       </div>
       <ul className={styles.sidebarMenu}>
-        {menuItems.map((item, i) => (
-          <li
-            key={i}
-            className={`${styles.sidebarItem} ${
-              activeIndex === i ? styles.sidebarItemActive : ""
-            }`}
-            onClick={() => setActiveIndex(i)}
-          >
-            <Link href={item.path} className={styles.link}>
-              <FontAwesomeIcon icon={item.icon} className={styles.icon} />
-              {item.name}
-            </Link>
-          </li>
-        ))}
+        {menuItems.map((item, i) => {
+          const isActive = item.path === "/admin" ? pathname === "/admin" : pathname.startsWith(item.path);
+
+          return (
+            <li
+              key={i}
+              className={`${styles.sidebarItem} ${isActive ? styles.sidebarItemActive : ""}`} // Áp dụng class active
+            >
+              <Link href={item.path} className={styles.link}>
+                <FontAwesomeIcon icon={item.icon} className={styles.icon} />
+                {item.name}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
