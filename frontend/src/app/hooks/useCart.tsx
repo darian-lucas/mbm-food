@@ -44,25 +44,31 @@ const useCart = () => {
   }, [cart]);
 
   // Hàm thêm sản phẩm vào giỏ hàng
-  const addToCart = (item: CartItem) => {
-    setCart((prevCart) => {
-      const existingItemIndex = prevCart.findIndex(
-        (cartItem) => cartItem.id === item.id && cartItem.option === item.option
-      );
+const addToCart = (item: CartItem) => {
+  setCart((prevCart) => {
+    const existingItemIndex = prevCart.findIndex(
+      (cartItem) => cartItem.id === item.id && cartItem.option === item.option
+    );
 
-      let updatedCart;
-      if (existingItemIndex !== -1) {
-        updatedCart = [...prevCart];
-        updatedCart[existingItemIndex].quantity += item.quantity;
-      } else {
-        updatedCart = [...prevCart, item];
-      }
+    let updatedCart;
+    if (existingItemIndex !== -1) {
+      updatedCart = [...prevCart];
+      updatedCart[existingItemIndex].quantity += item.quantity;
+    } else {
+      updatedCart = [...prevCart, item];
+    }
 
-      return updatedCart;
-    });
+    // 🔥 Lưu giỏ hàng vào localStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
 
-    toast.success("Đã thêm vào giỏ hàng!");
-  };
+    // 🔥 Phát sự kiện cập nhật giỏ hàng
+    window.dispatchEvent(new Event("cartUpdated"));
+
+    return updatedCart;
+  });
+
+  toast.success("Đã thêm vào giỏ hàng!");
+};
 
   // Hàm xử lý khi ấn nút "Thêm vào giỏ hàng"
   const handleAddToCart = (product: Product, selectedVariant: Variant, quantity: number) => {
