@@ -38,7 +38,7 @@
     padding: 1px 5px;
     border-left: 4px solid transparent;
     cursor: pointer;
-    color:rgba(255, 255, 255, 0.726);
+    color:rgba(255, 255, 255, 0.877);
     font-size: 14px; 
     transition: background-color 0.3s, color 0.3s, border-left 0.3s; 
 }
