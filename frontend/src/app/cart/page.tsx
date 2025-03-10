@@ -22,29 +22,32 @@ const CartPage = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const router = useRouter();
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]").map(
-      (item: any) => {
-        let variants = "";
-        if (item.option && item.crust) {
-          variants = `${item.option} - ${item.crust}`;
-        } else if (item.option) {
-          variants = item.option;
-        } else if (item.crust) {
-          variants = item.crust;
-        }
-        return {
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          sale_price: item.sale_price || 0,
-          quantity: item.quantity,
-          image: item.image,
-          variants: variants || undefined,
-        };
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]").filter(
+      (item: any) => item && typeof item === "object" && "id" in item // Lọc các item hợp lệ
+    ).map((item: any) => {
+      let variants = "";
+      if (item.option && item.crust) {
+        variants = `${item.option} - ${item.crust}`;
+      } else if (item.option) {
+        variants = item.option;
+      } else if (item.crust) {
+        variants = item.crust;
       }
-    );
+  
+      return {
+        id: item.id || "", // Đảm bảo luôn có id, tránh lỗi undefined
+        name: item.name || "Sản phẩm không tên", // Đề phòng trường hợp thiếu name
+        price: item.price || 0, // Giá mặc định là 0 nếu thiếu
+        sale_price: item.sale_price || 0,
+        quantity: item.quantity || 1, // Mặc định 1 nếu thiếu số lượng
+        image: item.image || "default.jpg", // Hình mặc định nếu thiếu
+        variants: variants || undefined,
+      };
+    });
+  
     setCart(storedCart);
   }, []);
+  
 
   const updateCart = (newCart: CartItem[]) => {
     setCart(newCart);
@@ -167,9 +170,7 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {(item.sale_price > 0
-                                    ? item.sale_price
-                                    : item.price) * item.quantity} đ
+                                  {((item.sale_price > 0 ? item.sale_price : item.price) * item.quantity).toLocaleString()} đ
                                 </span>
                               </div>
                             </div>
