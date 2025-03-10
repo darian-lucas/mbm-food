@@ -4,7 +4,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "../../../styles/ProductDetail.module.css";
-import { toast } from "react-toastify";
+import useCart from "../../hooks/useCart";
+
 
 interface Variant {
   option: string;
@@ -14,6 +15,7 @@ interface Variant {
 }
 
 interface Product {
+  id:string
   name: string;
   description: string;
   slug: string;
@@ -55,49 +57,14 @@ const ProductDetail = () => {
       prevQuantity > 1 ? prevQuantity - 1 : prevQuantity
     );
   };
-  const addToCart = () => {
-    if (!product || !selectedVariant) return;
-  
-    const cartItem = {
-      id: product.slug,
-      name: product.name,
-      option: selectedVariant.option,
-      price:
-        selectedVariant.sale_price > 0
-          ? selectedVariant.sale_price
-          : selectedVariant.price,
-      image: selectedVariant.image,
-      quantity,
-      crust: product.idcate === "67b0a4fbb5a39baf9de368ff" ? selectedCrust : null,
-    };
-  
-    // Lấy danh sách giỏ hàng cũ từ localStorage
-    let cart: any[] = JSON.parse(localStorage.getItem("cart") || "[]");
-  
-    // Tìm sản phẩm trong giỏ hàng
-    const existingItemIndex = cart.findIndex(
-      (item) =>
-        item.id === cartItem.id &&
-        item.option === cartItem.option &&
-        item.crust === cartItem.crust
-    );
-  
-    if (existingItemIndex !== -1) {
-      // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng
-      cart[existingItemIndex].quantity += quantity;
-    } else {
-      // Nếu sản phẩm chưa có, thêm mới vào danh sách giỏ hàng
-      cart.push(cartItem);
-    }
-  
-    // Ghi đè giỏ hàng cũ bằng danh sách mới
-    localStorage.setItem("cart", JSON.stringify(cart));
-  
-    // Hiển thị thông báo thành công
-    toast.success("Đã thêm vào giỏ hàng!");
-  
-    console.log("Cart after adding:", cart);
+  const { handleAddToCart } = useCart();
+
+  const handleClickAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!product || !selectedVariant) return; // Kiểm tra nếu product hoặc selectedVariant bị null
+    handleAddToCart(product, selectedVariant, quantity);
   };
+  
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
 
@@ -283,10 +250,7 @@ const ProductDetail = () => {
                         <div className={styles.addCart}>
                           <button
                             className={styles.add}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              addToCart();
-                            }}
+                            onClick={handleClickAddToCart}
                           >
                             Thêm vào giỏ hàng
                           </button>

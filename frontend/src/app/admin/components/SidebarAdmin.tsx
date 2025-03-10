@@ -25,7 +25,7 @@ export default function SidebarAdmin() {
   const pathname = usePathname(); // Lấy đường dẫn trang hiện tại
 
   const menuItems = [
-    { name: "Dashboard", icon: faHome, path: "/admin" },
+    { name: "Dashboard", icon: faHome, path: "/admin/manage/Dashboard" },
     { name: "Category", icon: faLayerGroup, path: "/admin/manage/category" },
     { name: "Customers", icon: faUserFriends, path: "/admin/manage/custumerList" },
     { name: "Products", icon: faBox, path: "/admin/manage/products" },
