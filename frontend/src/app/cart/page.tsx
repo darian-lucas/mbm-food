@@ -86,12 +86,19 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    console.log(localStorage.getItem("user"));
-    if (user && user.isLoggedIn) {
-      router.push("../checkout");
-    } else {
-      router.push("../login");
+    try {
+      const userString = localStorage.getItem("user");
+      const user = userString ? JSON.parse(userString) : null;
+  
+      console.log(user);
+      if (user && user.isLoggedIn) {
+        router.push("../checkout");
+      } else {
+        router.push("../login");
+      }
+    } catch (error) {
+      console.error("Lỗi khi parse JSON:", error);
+      router.push("../login"); // Nếu có lỗi, chuyển hướng đến trang đăng nhập
     }
   };
 
