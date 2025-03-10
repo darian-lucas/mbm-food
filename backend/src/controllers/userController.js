@@ -48,14 +48,15 @@ const updatePassword = async (req, res) => {
     }
 };
 
-// Thêm địa chỉ mới
 const addAddress = async (req, res) => {
     try {
-        const { userId } = req.user;
-        let { address } = req.body;
+        if (!req.user || !req.user.userId) {
+            return res.status(401).json({ message: "Bạn chưa đăng nhập" });
+        }
+        const userId = req.user.userId;
 
-        if (!address || typeof address !== "string") {
-            return res.status(400).json({ message: "Địa chỉ phải là chuỗi hợp lệ" });
+        if (!Array.isArray(req.body.address) || req.body.address.length === 0) {
+            return res.status(400).json({ message: "Danh sách địa chỉ không hợp lệ" });
         }
 
         const user = await authService.findUserById(userId);
@@ -63,20 +64,52 @@ const addAddress = async (req, res) => {
             return res.status(404).json({ message: "Người dùng không tồn tại" });
         }
 
-        // 🔥 Chuyển `address` thành mảng nếu chưa phải
+        // ✅ Fix lỗi: Nếu address không phải array, khởi tạo thành []
         if (!Array.isArray(user.address)) {
             user.address = [];
         }
 
-        user.address.push(address);
+        const newAddress = req.body.address.map(addr => ({
+            name: addr.name,
+            phone: addr.phone,
+            company: addr.company || "",
+            address: addr.address,
+            city: addr.city,
+            district: addr.district,
+            ward: addr.ward,
+            zip: addr.zip,
+            default: addr.default || false
+        }));
+
+        if (newAddress.some(addr => addr.default)) {
+            user.address.forEach(addr => (addr.default = false));
+        }
+
+        user.address.push(...newAddress);
         await user.save();
 
-        res.status(200).json({ message: "Thêm địa chỉ thành công", addresses: user.address });
+        res.status(200).json({ message: "Thêm địa chỉ thành công", address: user.address });
+    } catch (error) {
+        console.error("Lỗi server:", error);
+        res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
+};
+
+const updateAddress = async (req, res) => {
+    try {
+        const { userId, addressId } = req.params;
+        const updatedAddress = req.body;
+
+        const addresses = await authService.updateAddress(userId, addressId, updatedAddress);
+
+        res.status(200).json({ message: "Cập nhật địa chỉ thành công", address: addresses });
     } catch (error) {
         console.error("Lỗi server:", error);
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 
 
@@ -137,18 +170,28 @@ const findUserById = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-// Kích hoạt/Vô hiệu hóa người dùng
-const activateUser = async (req, res) => {
+const toggleActiveStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { isActive } = req.body; // Nhận trạng thái từ request body
-        const result = await authService.activateUser(id, isActive);
-        res.status(200).json(result);
+        console.log("🔄 Toggling user ID:", id);
+
+        const updatedUser = await authService.toggleUserStatus(id);
+
+        if (!updatedUser) {
+            console.log("⚠️ User not found!");
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        console.log("✅ User updated:", updatedUser);
+        res.json({ message: `User ${updatedUser.isActive ? "activated" : "deactivated"}`, user: updatedUser });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("🔥 Server error in toggleActiveStatus:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
 module.exports = { 
+    toggleActiveStatus,
     getAllUsers, 
     deleteUser, 
     updateUser, 
@@ -159,6 +202,6 @@ module.exports = {
     logout, 
     updatePassword, 
     addAddress,
-    activateUser 
+    updateAddress 
 };
 

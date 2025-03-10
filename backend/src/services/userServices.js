@@ -28,7 +28,7 @@ const getAllUsers = async (page = 1, limit = 5) => {
         limit = Math.max(1, limit);
 
         const skip = (page - 1) * limit;
-        console.log(`Querying users - Skip: ${skip}, Limit: ${limit}`);
+
 
         const users = await User.find().skip(skip).limit(limit);
         const totalUsers = await User.countDocuments();
@@ -112,5 +112,57 @@ const addAddress = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+// Update địa chỉ
+const updateAddress = async (userId, addressId, updatedAddress) => {
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new Error("Người dùng không tồn tại");
+    }
 
-module.exports = { addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById };
+    // Tìm địa chỉ theo `addressId`
+    const addressIndex = user.address.findIndex(addr => addr._id.toString() === addressId);
+    if (addressIndex === -1) {
+        throw new Error("Địa chỉ không tồn tại");
+    }
+
+    // Cập nhật thông tin địa chỉ
+    user.address[addressIndex] = { ...user.address[addressIndex], ...updatedAddress };
+
+    // Nếu có địa chỉ mặc định, đặt lại tất cả trước khi cập nhật
+    if (updatedAddress.default) {
+        user.address.forEach(addr => (addr.default = false));
+        user.address[addressIndex].default = true;
+    }
+
+    await user.save();
+    return user.address;
+};
+
+const toggleUserStatus = async (userId) => {
+    try {
+        console.log("🔍 Checking user ID:", userId);
+
+        const user = await User.findById(userId);
+        if (!user) {
+            console.log("⚠️ User not found!");
+            return null;
+        }
+
+        // Chỉ cập nhật trường `isActive`, không ảnh hưởng đến `address`
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { isActive: !user.isActive } }, 
+            { new: true } // Trả về dữ liệu sau khi cập nhật
+        );
+
+        console.log("✅ User updated successfully:", updatedUser);
+        return updatedUser;
+    } catch (error) {
+        console.error("🔥 Error in toggleUserStatus:", error);
+        throw new Error(error.message);
+    }
+};
+
+
+
+module.exports = { toggleUserStatus,addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById,updateAddress  };

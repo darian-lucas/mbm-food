@@ -7,8 +7,13 @@ const productRoutes = require('./src/routes/product');
 const postRoutes = require('./src/routes/post')
 const favoriteRoutes = require('./src/routes/favorite');
 const postCommentRoutes = require('./src/routes/postComment');
+const orderRoutes = require('./src/routes/order');
+const paymentMethodRoutes = require('./src/routes/paymentMethods');
+const bannerRoutes = require('./src/routes/banner');
+const couponRoutes = require('./src/routes/coupon');
 
 const cors = require("cors");
+// const { applyTimestamps } = require('./src/models/CouponModel');
 
 dotenv.config();
 const app = express();
@@ -33,6 +38,10 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/favorite', favoriteRoutes);
 app.use('/api/cmt', postCommentRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/payments', paymentMethodRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/banners', bannerRoutes);
 
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);

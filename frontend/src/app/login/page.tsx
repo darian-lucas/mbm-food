@@ -40,7 +40,15 @@ const Login = () => {
       // Lưu token và userId vào localStorage
       localStorage.setItem("token", result.token);
       localStorage.setItem("userId", result.userId);
-
+      // Lưu thông tin user vào localStorage sau khi đăng nhập thành công
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          isLoggedIn: true,
+          userId: result.userId,
+          role: result.role.trim().toLowerCase(),
+        })
+      );
       toast.success("Đăng nhập thành công!");
 
       // Điều hướng dựa vào role

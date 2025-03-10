@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={manrope.className}>
-        <ToastContainer position="top-right" autoClose={2000} />
+        <ToastContainer position="top-right" autoClose={1500} />
         {isAdmin ? (
           <AdminLayout>{children}</AdminLayout>
         ) : isEmployee ? (

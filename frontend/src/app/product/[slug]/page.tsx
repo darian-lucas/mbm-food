@@ -4,7 +4,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "../../../styles/ProductDetail.module.css";
-import { Heart } from "lucide-react";
+import useCart from "../../hooks/useCart";
+
 
 interface Variant {
   option: string;
@@ -14,6 +15,7 @@ interface Variant {
 }
 
 interface Product {
+  id:string
   name: string;
   description: string;
   slug: string;
@@ -27,7 +29,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [selectedCrust, setSelectedCrust] = useState<string>("Đế dày");
   const [quantity, setQuantity] = useState<number>(1);
- 
+
   useEffect(() => {
     if (!slug) return;
 
@@ -55,6 +57,14 @@ const ProductDetail = () => {
       prevQuantity > 1 ? prevQuantity - 1 : prevQuantity
     );
   };
+  const { handleAddToCart } = useCart();
+
+  const handleClickAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!product || !selectedVariant) return; // Kiểm tra nếu product hoặc selectedVariant bị null
+    handleAddToCart(product, selectedVariant, quantity);
+  };
+  
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
 
@@ -66,11 +76,11 @@ const ProductDetail = () => {
           <div className={styles.row}>
             <div className={styles.productLeft}>
               <div className={styles.productImage}>
-                <Image 
+                <Image
                   src={`http://localhost:3001/images/${selectedVariant.image}`}
                   alt={product.name}
                   width={400}
-                  height={400}                 
+                  height={400}
                 />
               </div>
               <div className={styles.voucherContainer}>
@@ -116,9 +126,10 @@ const ProductDetail = () => {
                 <div className={styles.descTit}>
                   <p>MÔ TẢ MÓN ĂN</p>
                 </div>
-                <div className={styles.descContent} dangerouslySetInnerHTML={{ __html: product.description }}/>
-                  
-                
+                <div
+                  className={styles.descContent}
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
               </div>
             </div>
             <div className={styles.form}>
@@ -131,7 +142,7 @@ const ProductDetail = () => {
                     <p>
                       {selectedVariant.sale_price > 0
                         ? selectedVariant.sale_price
-                        : selectedVariant.price}{" "}
+                        : selectedVariant.price.toLocaleString()}{" "}
                       đ
                     </p>
                   </div>
@@ -179,25 +190,24 @@ const ProductDetail = () => {
                                 {selectedCrust}
                               </span>
                             </p>
-                           
                           </div>
                           <div className={styles.selectOption}>
                             <label>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedCrust === "Đế dày"}
-                                  onChange={() => setSelectedCrust("Đế dày")}
-                                />
-                                Đế dày
-                              </label>
-                              <label>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedCrust === "Đế mỏng"}
-                                  onChange={() => setSelectedCrust("Đế mỏng")}
-                                />
-                                Đế mỏng
-                              </label>
+                              <input
+                                type="checkbox"
+                                checked={selectedCrust === "Đế dày"}
+                                onChange={() => setSelectedCrust("Đế dày")}
+                              />
+                              Đế dày
+                            </label>
+                            <label>
+                              <input
+                                type="checkbox"
+                                checked={selectedCrust === "Đế mỏng"}
+                                onChange={() => setSelectedCrust("Đế mỏng")}
+                              />
+                              Đế mỏng
+                            </label>
                           </div>
                         </div>
                       )}
@@ -238,10 +248,12 @@ const ProductDetail = () => {
                         </div>
 
                         <div className={styles.addCart}>
-                          <button className={styles.add}>
+                          <button
+                            className={styles.add}
+                            onClick={handleClickAddToCart}
+                          >
                             Thêm vào giỏ hàng
                           </button>
-                          <Heart className={styles.heart} />
                         </div>
                       </div>
                       <div className={styles.groupBtn}>

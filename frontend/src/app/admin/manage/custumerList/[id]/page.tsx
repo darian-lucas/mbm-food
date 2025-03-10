@@ -1,69 +1,83 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
-import userService from "../../../services/UserService"; // Đảm bảo đúng đường dẫn
-import styles from "../../../styles/DetailUser.module.css"; // Import CSS module
+import { useParams, useSearchParams } from "next/navigation";
+import userService from "../../../services/UserService";
+import orderService from "../../../services/OrderServices"; // Import order service
+import styles from "../../../styles/DetailUser.module.css";
 
 const UserDetailPage = () => {
-    const { id: paramId } = useParams(); // Lấy id từ params
+    const { id: paramId } = useParams();
     const searchParams = useSearchParams();
-    const router = useRouter();
-
+    const [showAllOrders, setShowAllOrders] = useState(false);
     const [user, setUser] = useState(null);
+    const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [orderDetails, setOrderDetails] = useState<any[]>([]);
 
     useEffect(() => {
         const id = searchParams.get("id") || paramId;
         if (id) {
             userService.getUserById(id)
+                .then(data => setUser(data))
+                .catch(err => console.error("Lỗi khi lấy user:", err));
+
+            orderService.getOrdersByUserId(id)
                 .then(data => {
-                    setUser(data);
-                    setLoading(false);
+                    setOrders(data.orders || []);
+                    setOrderDetails(data.orderDetails || []); // ✅ Lưu orderDetails vào state
                 })
-                .catch(err => {
-                    console.error("Lỗi khi lấy dữ liệu:", err);
-                    setLoading(false);
-                });
+                .catch(err => console.error("Lỗi khi lấy đơn hàng:", err))
+                .finally(() => setLoading(false));
         }
     }, [paramId, searchParams]);
 
     if (loading) return <p>Loading...</p>;
     if (!user) return <p>Không tìm thấy người dùng!</p>;
 
-    const orders = user.orders || [];
-    const totalSpent = user.totalSpent || 0;
-    const totalOrders = user.totalOrders || 0;
+    const totalSpent = orders.reduce((sum, order) => sum + order.total_amount, 0);
+    const userPhone = orders.length > 0 ? orders[0].phone : user.phone;
+    
+    const mergedOrders = orders.map(order => ({
+        ...order,
+        details: orderDetails.filter(detail => detail.id_order === order._id)
+    }));
 
     return (
         <div className="container mt-4">
-            <h4>Users Management</h4>
-            <div className={styles.titleTable}>
-                <p>Admin /</p>
-                <p className={styles.titles}>User Profiles</p>
-            </div>
+            <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
+            
 
-            <div className="row">
-                {/* Sidebar */}
+            <div className="row pt-1">
                 <div className="col-md-3">
-                    <div className={`card text-center p-3 ${styles.card}`}>
-                        <img src={user.avatar || "https://via.placeholder.com/100"} className="rounded-circle mx-auto d-block" alt="Profile" />
-                        <h5 className="mt-3">{user.username}</h5>
-                        <p className={`text-muted ${styles.textMuted}`}>{user.phone}</p>
-                        <a href={`mailto:${user.email}`} className={styles.link}>{user.email}</a>
-                        <button className="btn btn-success w-100 mt-3">${user.balance} Balance</button>
+                    <div className="card text-center p-4 shadow-sm" style={{ backgroundColor: "#e9f7ef", borderRadius: "10px" }}>
+                        <img
+                            src={user.avatar || "https://via.placeholder.com/100"}
+                            className="rounded-circle mx-auto d-block border border-success"
+                            alt="Profile"
+                            style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                        />
+                        <h5 className="mt-3 text-success fw-bold">Name: {user.username}</h5>
+                        <p className="text-muted">Number: {userPhone}</p>
+                        <a href={`mailto:${user.email}`} className="text-success fw-bold text-decoration-none">
+                            Email: {user.email}
+                        </a>
+                        <button className="btn btn-success w-100 mt-3 fw-bold">
+                            Total: {totalSpent.toLocaleString("vi-VN")} VND
+                        </button>
                     </div>
                 </div>
 
-                {/* Main Content */}
                 <div className="col-md-9">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h4>Orders</h4>
-                        
+                        <h2 className="fw-bold fs-5">Orders</h2>
                     </div>
 
                     <div className="card p-3">
-                        <p>Total spent: <strong>${totalSpent}</strong> on <strong>{totalOrders} orders</strong></p>
+                        <p>
+                            Total spent: <strong>{totalSpent.toLocaleString("vi-VN")} VND</strong>
+                            on <strong>{orders.length} orders</strong>
+                        </p>
                         <table className="table">
                             <thead>
                                 <tr>
@@ -75,45 +89,40 @@ const UserDetailPage = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {orders.length > 0 ? orders.map((order, index) => (
-                                    <tr key={index}>
-                                        <td><a href="#">#{order.id}</a></td>
-                                        <td>{order.date}</td>
-                                        <td><span className={`badge bg-${order.status === "Pending" ? "warning" : "success"}`}>{order.status}</span></td>
-                                        <td>{order.itemsCount} items</td>
-                                        <td>${order.amount}</td>
+                                {mergedOrders.slice(0, showAllOrders ? mergedOrders.length : 1).map(order => (
+                                    <tr key={order._id}>
+                                        <td><a href="#">#{order.order_code}</a></td>
+                                        <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                                        <td>
+                                            <span className={`badge bg-${order.status === "pending" ? "warning" : "success"}`}>
+                                                {order.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {order.details.length > 0 ? (
+                                                order.details.map((item, index) => (
+                                                    <div key={item._id || index}>
+                                                        {item.id_product.name} - {item.quantity} x {item.price.toLocaleString("vi-VN")} VND
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                "N/A"
+                                            )}
+                                        </td>
+                                        <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
                                     </tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan={5}>No orders found</td>
-                                    </tr>
-                                )}
+                                ))}
                             </tbody>
                         </table>
-                        <button className="btn btn-success w-100">View All Orders</button>
-                    </div>
 
-                    {/* Account Details */}
-                    <div className="row mt-4">
-                        <div className="col-md-6">
-                            <div className="card p-3 bg-light">
-                                <h5>Account Details <a href="#" className="float-end"><i className="bi bi-pencil-square"></i></a></h5>
-                                <p><strong>First Name:</strong> {user.firstName}</p>
-                                <p><strong>Last Name:</strong> {user.lastName}</p>
-                                <p><strong>Date of Birth:</strong> {user.dob}</p>
-                                <p><strong>Gender:</strong> {user.gender}</p>
-                            </div>
-                        </div>
-                        <div className="col-md-6">
-                            <div className="card p-3 bg-light">
-                                <h5>Credit Card <a href="#" className="float-end"><i className="bi bi-pencil-square"></i></a></h5>
-                                <p><strong>Card Holder:</strong> {user.cardHolder}</p>
-                                <p><strong>Card Number:</strong> **** **** **** {user.cardLastDigits}</p>
-                                <p><strong>Expiry Date:</strong> {user.cardExpiry}</p>
-                            </div>
-                        </div>
-                    </div>
+                        {!showAllOrders && mergedOrders.length > 1 && (
+                            <button className="btn btn-secondary w-100" onClick={() => setShowAllOrders(true)}>...</button>
+                        )}
 
+                        {showAllOrders && (
+                            <button className="btn btn-danger w-100" onClick={() => setShowAllOrders(false)}>Đóng</button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

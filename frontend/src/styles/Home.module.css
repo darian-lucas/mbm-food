@@ -36,6 +36,7 @@
   width: 1280px;
   height: 500px;
   border-radius: 10px;
+  object-fit: cover;
   display: block;
   margin: 0 auto;
 }

@@ -18,6 +18,7 @@ import {
   // getFavorites,
 } from "../services/Favorite";
 import { incrementView } from "@/services/incrementView";
+import { toast } from "react-toastify";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -138,11 +139,17 @@ export default function Home(): JSX.Element {
     if (favorites[food_id]) {
       await removeFavorite(food_id, token);
       newFavorites[food_id] = false;
-      alert("❌ Đã xóa sản phẩm khỏi danh sách yêu thích!");
+      toast.error("Đã xóa sản phẩm khỏi danh sách yêu thích!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } else {
       await addFavorite(food_id, token);
       newFavorites[food_id] = true;
-      alert("✅ Đã thêm sản phẩm vào danh sách yêu thích!");
+      toast.success("Đã thêm sản phẩm vào danh sách yêu thích!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
 
     setFavorites(newFavorites);
@@ -257,15 +264,19 @@ export default function Home(): JSX.Element {
     <main className={styles.home}>
       {/* Banner */}
       <section className={styles.banner}>
-        <Image
-          src="/images/banner-1.png"
-          alt="Banner chính"
-          width={1280}
-          height={500}
-          priority
-          className={styles.bannerImage}
-        />
-      </section>
+      {products.length > 0 && (
+        <Link href={`/product/${products[2].slug}`} passHref>
+          <Image
+            src="/images/banner-1.png"
+            alt="Banner chính"
+            width={1280}
+            height={500}
+            priority
+            className={styles.bannerImage}
+          />
+        </Link>
+      )}
+    </section>
       {/* Danh mục nổi bật */}
       <section className={styles.section}>
         <h2 className={styles.titlelitter}>Nổi Bật</h2>

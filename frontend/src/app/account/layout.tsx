@@ -14,11 +14,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
             {/* Container căn giữa */}
             <div className="container d-flex mt-2 ">
-                <div className="row bg-white p-3 rounded shadow-sm w-100" style={{ maxWidth: "900px" }}>
+                <div className="row bg-white p-3 rounded shadow-sm w-100" style={{ maxWidth: "1100px" }}>
                     {/* Sidebar */}
                     <div className={`col-md-3 ${styles.sidebar}`}>
                         <h5>TRANG TÀI KHOẢN</h5>
-                        <p><strong>Xin chào, <span className="text-danger">son son</span>!</strong></p>
+                        <p><strong>Xin chào, <span className="text-danger">Quý Khách</span>!</strong></p>
                         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
                             <li><Link href="/account">Thông tin tài khoản</Link></li>
                             <li><Link href="/account/orders">Đơn hàng của bạn</Link></li>
@@ -28,7 +28,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     </div>
 
                     {/* Nội dung chính */}
-                    <div className="col-md-9 content" style={{ paddingLeft: "80px" }}>{children}</div>
+                    <div className="col-md-9 content" style={{ paddingLeft: "10px" }}>{children}</div>
                 </div>
             </div>
         </div>

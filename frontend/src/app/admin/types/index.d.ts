@@ -16,5 +16,15 @@ export type TCreateProductParams = {
   }[];
   slug: string;
   idcate: string;
-  hot:number;
+  hot: number;
+};
+
+export type TCreateCouponParams = {
+  code: string;
+  discount: number;
+  type: "Amount" | "Shipping";
+  start_date: Date;
+  end_date: Date;
+  status?: "Active" | "Expired" | "Used_up";
+  quantity: number;
 };
