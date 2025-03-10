@@ -116,7 +116,7 @@ const ProductDetail = () => {
                       <div key={coupon._id} className={styles.colFix}>
                         <span>
                           {" "}
-                          Nhập mã <b>{coupon.code}</b> Giảm{" "}
+                          Nhập mã <b className={styles.code}>{coupon.code}</b> Giảm{" "}
                           {coupon.discount.toLocaleString()}đ.
                           <span>
                             {couponConditions[coupon.code]}

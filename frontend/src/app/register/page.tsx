@@ -1,29 +1,67 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "@/app/components/Register.module.css";
 
+interface Address {
+  name: string;
+  phone: string;
+  city: string;
+  district: string;
+  ward: string;
+  zip: string;
+  address: string;
+}
+
 interface RegisterForm {
   username: string;
   email: string;
   password: string;
-  address?: string;
+  address: Address;
 }
 
 export default function RegisterPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<RegisterForm>();
   const [error, setError] = useState<string>("");
   const router = useRouter();
+  
+  const [cities, setCities] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+  const [wards, setWards] = useState<any[]>([]);
+  
+  const selectedCity = watch("address.city");
+  const selectedDistrict = watch("address.district");
+
+  useEffect(() => {
+    fetch("https://provinces.open-api.vn/api/?depth=1")
+      .then(res => res.json())
+      .then(data => setCities(data));
+  }, []);
+  
+  useEffect(() => {
+    if (selectedCity) {
+      fetch(`https://provinces.open-api.vn/api/p/${selectedCity}?depth=2`)
+        .then(res => res.json())
+        .then(data => setDistricts(data.districts || []));
+    }
+  }, [selectedCity]);
+
+  useEffect(() => {
+    if (selectedDistrict) {
+      fetch(`https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`)
+        .then(res => res.json())
+        .then(data => setWards(data.wards || []));
+    }
+  }, [selectedDistrict]);
 
   const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
     try {
-      // Chuyển address thành mảng object (nếu có)
       const formattedData = {
         ...data,
-        address: data.address ? [{ address: data.address }] : [],
+        address: [{ ...data.address }],
       };
 
       const res = await fetch("http://localhost:3001/api/user/register", {
@@ -58,11 +96,36 @@ export default function RegisterPage() {
         <input type="password" placeholder="Mật khẩu" {...register("password", { required: "Mật khẩu là bắt buộc" })} className={styles.input} />
         {errors.password && <p className={styles.error}>{errors.password.message}</p>}
 
-        <input type="text" placeholder="Địa chỉ (Không bắt buộc)" {...register("address")} className={styles.input} />
+        <input type="text" placeholder="Họ và tên" {...register("address.name", { required: "Tên là bắt buộc" })} className={styles.input} />
+        {errors.address?.name && <p className={styles.error}>{errors.address.name.message}</p>}
 
-        <p className={styles.terms}>
-          Bằng cách đăng ký, bạn đồng ý với <a href="#" className={styles.link}>Điều khoản dịch vụ</a>.
-        </p>
+        <input type="text" placeholder="Số điện thoại" {...register("address.phone", { required: "Số điện thoại là bắt buộc" })} className={styles.input} />
+        {errors.address?.phone && <p className={styles.error}>{errors.address.phone.message}</p>}
+
+        <input type="text" placeholder="Địa chỉ cụ thể" {...register("address.address", { required: "Địa chỉ là bắt buộc" })} className={styles.input} />
+        {errors.address?.address && <p className={styles.error}>{errors.address.address.message}</p>}
+
+        <select {...register("address.city", { required: "Thành phố là bắt buộc" })} className={styles.input}>
+          <option value="">Chọn Thành phố</option>
+          {cities.map(city => <option key={city.code} value={city.code}>{city.name}</option>)}
+        </select>
+        {errors.address?.city && <p className={styles.error}>{errors.address.city.message}</p>}
+
+        <select {...register("address.district", { required: "Quận/Huyện là bắt buộc" })} className={styles.input}>
+          <option value="">Chọn Quận/Huyện</option>
+          {districts.map(district => <option key={district.code} value={district.code}>{district.name}</option>)}
+        </select>
+        {errors.address?.district && <p className={styles.error}>{errors.address.district.message}</p>}
+
+        <select {...register("address.ward", { required: "Phường/Xã là bắt buộc" })} className={styles.input}>
+          <option value="">Chọn Phường/Xã</option>
+          {wards.map(ward => <option key={ward.code} value={ward.code}>{ward.name}</option>)}
+        </select>
+        {errors.address?.ward && <p className={styles.error}>{errors.address.ward.message}</p>}
+
+        <input type="text" placeholder="Mã bưu điện" {...register("address.zip", { required: "Mã bưu điện là bắt buộc" })} className={styles.input} />
+        {errors.address?.zip && <p className={styles.error}>{errors.address.zip.message}</p>}
+
         <button type="submit" className={styles.button}>Đăng ký</button>
       </form>
       <p>

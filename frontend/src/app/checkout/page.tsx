@@ -2,117 +2,216 @@
 
 import { useState, useEffect } from "react";
 import styles from "../../styles/CheckoutPage.module.css";
+import Image from "next/image";
 
-interface User {
-  email: string;
-  username: string;
+interface Address {
+  name: string;
   phone: string;
   address: string;
+  city: string;
+  district: string;
+  ward: string;
 }
 
-interface Coupon {
-  code: string;
-  discount: number;
+interface User {
+  _id: string;
+  email: string;
+  address: Address[];
 }
 
 const CheckoutPage = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [couponCode, setCouponCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
-
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
+  const [cart, setCart] = useState<
+    {
+      name: string;
+      size: string;
+      price: number;
+      quantity: number;
+      image: string;
+    }[]
+  >([]);
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/user");
-        const data = await res.json();
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+
+        const response = await fetch(
+          `http://localhost:3001/api/user/${userId}`
+        );
+        const data: User = await response.json();
         setUser(data);
       } catch (error) {
-        console.error("Lỗi khi lấy thông tin người dùng:", error);
+        console.error("Error fetching user data:", error);
       }
     };
     fetchUser();
   }, []);
 
-  const applyCoupon = async () => {
-    try {
-      const res = await fetch(`http://localhost:3001/api/coupon?code=${couponCode}`);
-      const data = await res.json();
-      if (data) {
-        setCoupon(data);
-        setDiscount(data.discount);
-      } else {
-        setCoupon(null);
-        setDiscount(0);
-        alert("Mã giảm giá không hợp lệ");
+  useEffect(() => {
+    const fetchCart = () => {
+      const cartData = localStorage.getItem("cart");
+      if (cartData) {
+        setCart(JSON.parse(cartData));
       }
-    } catch (error) {
-      console.error("Lỗi khi áp dụng mã giảm giá:", error);
-    }
-  };
+    };
+    fetchCart();
+  }, []);
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Thanh toán</h1>
       <div className={styles.checkoutForm}>
-        <div className={styles.formGroup}>
-          <label>Email:</label>
-          <input type="email" value={user?.email || ""} readOnly />
-        </div>
-        <div className={styles.formGroup}>
-          <label>Họ tên:</label>
-          <input type="text" value={user?.username || ""} readOnly />
-        </div>
-        <div className={styles.formGroup}>
-          <label>Số điện thoại:</label>
-          <input type="text" value={user?.phone || ""} readOnly />
-        </div>
-        <div className={styles.formGroup}>
-          <label>Địa chỉ:</label>
-          <input type="text" value={user?.address || ""} readOnly />
-        </div>
+        <h2>Thông tin nhận hàng</h2>
+        <form>
+          <label htmlFor="address" className={styles.formLabel}>
+            Số địa chỉ
+          </label>
+          <input
+            type="text"
+            id="address"
+            className={styles.formInput}
+            defaultValue={user?.address[0]?.address || ""}
+          />
+
+          <label htmlFor="email" className={styles.formLabel}>
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            className={styles.formInput}
+            defaultValue={user?.email || ""}
+          />
+
+          <label htmlFor="name" className={styles.formLabel}>
+            Họ và tên
+          </label>
+          <input
+            type="text"
+            id="name"
+            className={styles.formInput}
+            defaultValue={user?.address[0]?.name || ""}
+          />
+
+          <label htmlFor="phone" className={styles.formLabel}>
+            Số điện thoại
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            className={styles.formInput}
+            defaultValue={user?.address[0]?.phone || ""}
+          />
+
+          <label htmlFor="city" className={styles.formLabel}>
+            Tỉnh thành
+          </label>
+          <select id="city" className={styles.formSelect}>
+            <option>{user?.address[0]?.city || ""}</option>
+          </select>
+
+          <label htmlFor="district" className={styles.formLabel}>
+            Quận huyện
+          </label>
+          <select id="district" className={styles.formSelect}>
+            <option>{user?.address[0]?.district || ""}</option>
+          </select>
+
+          <label htmlFor="ward" className={styles.formLabel}>
+            Phường xã
+          </label>
+          <select id="ward" className={styles.formSelect}>
+            <option>{user?.address[0]?.ward || ""}</option>
+          </select>
+
+          <div className={styles.paymentOptions}>
+            <p className={styles.paymentTitle}>Phương thức thanh toán:</p>
+            <label className={styles.paymentOption}>
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="cash"
+                checked={paymentMethod === "cash"}
+                onChange={() => setPaymentMethod("cash")}
+              />
+              Thanh toán khi nhận hàng (Tiền mặt)
+            </label>
+            <label className={styles.paymentOption}>
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="momo"
+                checked={paymentMethod === "momo"}
+                onChange={() => setPaymentMethod("momo")}
+              />
+              Thanh toán qua Momo
+            </label>
+            <label className={styles.paymentOption}>
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="vnpay"
+                checked={paymentMethod === "vnpay"}
+                onChange={() => setPaymentMethod("vnpay")}
+              />
+              Thanh toán qua VNPay
+            </label>
+          </div>
+        </form>
       </div>
 
-      <div className={styles.paymentMethod}>
-        <h2>Chọn phương thức thanh toán</h2>
-        <label>
-          <input
-            type="radio"
-            value="cash"
-            checked={paymentMethod === "cash"}
-            onChange={() => setPaymentMethod("cash")}
-          />
-          Thanh toán bằng tiền mặt
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="momo"
-            checked={paymentMethod === "momo"}
-            onChange={() => setPaymentMethod("momo")}
-          />
-          Thanh toán bằng Momo
-        </label>
-      </div>
+      <div className={styles.orderSummary}>
+        <h2>Đơn hàng ({cart.length} sản phẩm)</h2>
 
-      <div className={styles.couponSection}>
-        <h2>Áp dụng mã giảm giá</h2>
+        {cart.map((item, index) => (
+          <div key={index} className={styles.orderItem}>
+             <Image
+                      className={styles.img}
+                      src={`${API_URL}/images/${item.image}`}
+                      alt={item.name}
+                      width={50}
+                      height={50}
+                    />
+            <div>
+              <p>{item.name}</p>
+              <p>{item.size}</p>
+              <p className={styles.price}>{item.price.toLocaleString()}đ</p>
+              <p>Số lượng: {item.quantity}</p>
+            </div>
+          </div>
+        ))}
+
         <input
           type="text"
           placeholder="Nhập mã giảm giá"
           value={couponCode}
+          className={styles.formInput}
           onChange={(e) => setCouponCode(e.target.value)}
         />
-        <button onClick={applyCoupon}>Áp dụng</button>
-      </div>
-      
-      <div className={styles.totalPrice}>
-        <h2>Tổng tiền: {totalPrice - discount} đ</h2>
-      </div>
+        <button className={styles.applyBtn}>Áp dụng</button>
 
-      <button className={styles.checkoutButton}>Xác nhận thanh toán</button>
+        <p>
+          Tạm tính:{" "}
+          {cart
+            .reduce((total, item) => total + item.price * item.quantity, 0)
+            .toLocaleString()}
+          đ
+        </p>
+        <p>
+          <strong>
+            Tổng cộng:{" "}
+            {cart
+              .reduce((total, item) => total + item.price * item.quantity, 0)
+              .toLocaleString()}
+            đ
+          </strong>
+        </p>
+
+        <button className={styles.orderBtn}>ĐẶT HÀNG</button>
+      </div>
     </div>
   );
 };
