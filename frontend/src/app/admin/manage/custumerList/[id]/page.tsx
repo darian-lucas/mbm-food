@@ -45,11 +45,8 @@ const UserDetailPage = () => {
 
     return (
         <div className="container mt-4">
-            <h4>Users Management</h4>
-            <div className={styles.titleTable}>
-                <p>Admin /</p>
-                <p className={styles.titles}>User Profiles</p>
-            </div>
+            <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
+            
 
             <div className="row pt-1">
                 <div className="col-md-3">
@@ -73,7 +70,7 @@ const UserDetailPage = () => {
 
                 <div className="col-md-9">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h4>Orders</h4>
+                        <h2 className="fw-bold fs-5">Orders</h2>
                     </div>
 
                     <div className="card p-3">

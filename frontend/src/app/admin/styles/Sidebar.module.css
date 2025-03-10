@@ -1,7 +1,8 @@
 .sidebar {
     width: 210px;
     height: 100vh;
-    background-color: #b3ffb3;
+    background-color: #006A31;
+    
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.24);
     position: fixed;
     top: 0;
@@ -37,7 +38,7 @@
     padding: 1px 5px;
     border-left: 4px solid transparent;
     cursor: pointer;
-    color: #4b5563;
+    color:rgba(255, 255, 255, 0.726);
     font-size: 14px; 
     transition: background-color 0.3s, color 0.3s, border-left 0.3s; 
 }

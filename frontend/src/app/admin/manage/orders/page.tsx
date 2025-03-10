@@ -24,11 +24,8 @@ const OrderManagementPage = () => {
 
   return (
     <div className={styles.tableContainer}>
-      <h4>Orders Management</h4>
-      <div className={styles.titleTable}>
-        <p>Admin /</p>
-        <p className={styles.titles}>Orders</p>
-      </div>
+      <h4 className="fw-bold fs-3 mb-3">Danh sách đơn hàng</h4>
+      
       <table className="table mt-4">
         <thead>
           <tr>
@@ -43,14 +40,15 @@ const OrderManagementPage = () => {
           {orders.slice(0, showAllOrders ? orders.length : 5).map((order) => (
             <tr key={order._id}>
               <td>
-                <a href="#">#{order.order_code}</a>
+                <a href={`http://localhost:3002/admin/manage/custumerList/${order.id_user._id}`}>
+                  #{order.order_code}
+                </a>
               </td>
               <td>{new Date(order.createdAt).toLocaleDateString()}</td>
               <td>
                 <span
-                  className={`badge bg-${
-                    order.status === "pending" ? "warning" : "success"
-                  }`}
+                  className={`badge bg-${order.status === "pending" ? "warning" : "success"
+                    }`}
                 >
                   {order.status}
                 </span>
@@ -58,11 +56,11 @@ const OrderManagementPage = () => {
               <td>
                 {order.details.length > 0
                   ? order.details.map((item, index) => (
-                      <div key={item._id || index}>
-                        {item.id_product.name} - {item.quantity} x{" "}
-                        {item.price.toLocaleString("vi-VN")} VND
-                      </div>
-                    ))
+                    <div key={item._id || index}>
+                      {item.id_product.name} - {item.quantity} x{" "}
+                      {item.price.toLocaleString("vi-VN")} VND
+                    </div>
+                  ))
                   : "N/A"}
               </td>
               <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
