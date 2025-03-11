@@ -22,7 +22,7 @@ const login = async (email, password) => {
 
 
 // Lấy tất cả người dùng và phân trang
-const getAllUsers = async (page = 1, limit = 5) => {
+const getAllUsers = async (page = 1, limit = 10) => {
     try {
         page = Math.max(1, page);
         limit = Math.max(1, limit);
