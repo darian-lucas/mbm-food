@@ -819,7 +819,10 @@
 .menufoodContainer {
   text-align: center;
   padding: 20px;
+  max-width: 1260px;
+  margin: 0 auto;
 }
+
 
 .menufoodTitle {
   font-size: 26px;
@@ -1002,6 +1005,8 @@
 .newsSection {
   text-align: center;
   padding: 40px 0;
+  max-width: 1260px;
+  margin: 0 auto;
 }
 
 .subTitle {
@@ -1019,8 +1024,10 @@
 .newsList {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 31px;
   flex-wrap: wrap;
+  max-width: 1260px;
+  margin: 0 auto;
 }
 
 .newsLink {
@@ -1122,7 +1129,7 @@
   align-items: center;
   padding: 10px;
   background: white;
-  width: 1200px;
+  width: 1240px;
   margin: 0 auto;
 }
 
