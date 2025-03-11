@@ -148,3 +148,13 @@
     font-weight: 700;
     color: #fff;
 }
+
+/* Thêm css title search */
+.titlepagesearch span {
+  font-size: 30px !important;
+  font-weight: 700;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+  width: 100;
+}
