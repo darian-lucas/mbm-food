@@ -120,6 +120,8 @@ export default function Header(): JSX.Element {
     localStorage.removeItem("token");
     //Bổ sung khi đăng xuất thì xóa luôn userId để khi đăng nhập mới được bình luận
     localStorage.removeItem("userId"); // Xóa userId
+    localStorage.removeItem("user"); // Xóa thông tin đăng nhập
+    localStorage.removeItem("token"); // Xóa token nếu có
     setIsLoggedIn(false);
     window.location.reload();
   };

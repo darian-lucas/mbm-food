@@ -31,7 +31,7 @@ const FavoritePage = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       if (!token) {
-        alert("Chưa có token, vui lòng đăng nhập");
+        alert("vui lòng đăng nhập");
         return;
       }
 

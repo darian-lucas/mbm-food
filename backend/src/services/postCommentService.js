@@ -24,6 +24,17 @@ class PostCommentService {
 
         return await PostComment.findByIdAndDelete(commentId);
     }
+    
+        async hideComment(commentId) {
+            const comment = await PostComment.findById(commentId);
+            if (!comment) throw new Error("Comment not found");
+    
+            comment.hidden = !comment.hidden; // Đảo trạng thái ẩn/hiện
+            await comment.save();
+            return comment;
+        
+    }
+    
 }
 
 module.exports = new PostCommentService();

@@ -28,7 +28,7 @@ const getAllUsers = async (page = 1, limit = 5) => {
         limit = Math.max(1, limit);
 
         const skip = (page - 1) * limit;
-        console.log(`Querying users - Skip: ${skip}, Limit: ${limit}`);
+
 
         const users = await User.find().skip(skip).limit(limit);
         const totalUsers = await User.countDocuments();

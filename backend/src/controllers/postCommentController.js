@@ -57,6 +57,15 @@ class PostCommentController {
             res.status(500).json({ error: error.message });
         }
     }
+    async hideComment(req, res) {
+        try {
+            const { commentId } = req.params;
+            const updatedComment = await PostCommentService.hideComment(commentId);
+            res.status(200).json(updatedComment);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new PostCommentController();

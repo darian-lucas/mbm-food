@@ -17,5 +17,7 @@ router.get('/user/:userId', PostCommentController.getCommentsByUser);
 
 // Xóa bình luận (chỉ cho phép xóa nếu là chủ sở hữu)
 router.delete('/:commentId', authMiddleware, PostCommentController.deleteComment);
+// ẩn hiện
+router.put("/:commentId/hide", PostCommentController.hideComment);
 
 module.exports = router;

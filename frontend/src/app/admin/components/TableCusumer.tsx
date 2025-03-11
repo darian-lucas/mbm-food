@@ -104,11 +104,8 @@ export default function Table() {
 
   return (
     <div className={styles.tableContainer}>
-      <h4>Users Management</h4>
-      <div className={styles.titleTable}>
-        <p>Admin/</p>
-        <p className={styles.titles}>User List</p>
-      </div>
+      <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
+      
 
       <div className={styles.headerActions}>
         <div className={styles.searchContainer}>

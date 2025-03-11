@@ -12,4 +12,9 @@
     overflow-x: hidden;
     background-color: white;
   }
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+  
   
