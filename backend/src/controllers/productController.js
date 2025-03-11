@@ -1,27 +1,12 @@
 const productServices = require("../services/productServices");
 
 // Lấy tất cả sản phẩm
-// exports.getAllProducts = async (req, res, next) => {
-//   try {
-//     const result = await productServices.getAllProducts();
-//     res.status(200).json({ data: result });
-//   } catch (error) {
-//     res.status(404).json({ error: error.message });
-//   }
-// };
-
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const filters = {
-      minPrice: req.query.minPrice,
-      maxPrice: req.query.maxPrice,
-      size: req.query.size,
-      sortBy: req.query.sortBy, // Sắp xếp sản phẩm
-    };
-    const result = await productServices.getAllProducts(filters);
+    const result = await productServices.getAllProducts();
     res.status(200).json({ data: result });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 };
 
@@ -51,6 +36,7 @@ exports.getByIdProduct = async (req, res, next) => {
 exports.getByCategory = async (req, res) => {
   try {
     const { idcate } = req.params;
+  
     const query = {
       limit: req.query.limit,
       minPrice: req.query.minPrice,
@@ -60,9 +46,18 @@ exports.getByCategory = async (req, res) => {
     };
     
     const result = await productServices.getByCategory(idcate, query);
-    res.status(200).json({ data: result });
+    
+    res.status(200).json({ 
+      success: true,
+      count: result.length,
+      data: result 
+    });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    console.error("Error in getByCategory:", error.message);
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 };
 

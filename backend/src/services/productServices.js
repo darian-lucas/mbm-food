@@ -3,7 +3,7 @@ const productModel = require("../models/ProductModel.js");
 // Lấy tất cả sản phẩm
 
 exports.getAllProducts = async () => {
-  const products = await productModel.find({});
+  const products = await productModel.find();
   return products;
 };
 
@@ -22,57 +22,73 @@ exports.getByIdProduct = async (id) => {
 // };
 
 exports.getByCategory = async (idcate, query) => {
-  let limit = query.limit ? query.limit : 100;
-  delete query.limit;
-  
-  // Tạo đối tượng filter
+  let limit = query.limit ? parseInt(query.limit) : 100;
   let filter = { idcate: idcate };
-  
-  // Lọc theo khoảng giá
   if (query.minPrice || query.maxPrice) {
     let priceFilter = {};
-    if (query.minPrice) {
-      priceFilter['variants.price'] = { ...priceFilter['variants.price'], $gte: Number(query.minPrice) };
+    
+    if (query.minPrice && query.maxPrice) {
+      filter['variants'] = {
+        $elemMatch: {
+          price: {
+            $gte: parseInt(query.minPrice),
+            $lte: parseInt(query.maxPrice)
+          }
+        }
+      };
+    } else if (query.minPrice) {
+      filter['variants'] = {
+        $elemMatch: {
+          price: { $gte: parseInt(query.minPrice) }
+        }
+      };
+    } else if (query.maxPrice) {
+      filter['variants'] = {
+        $elemMatch: {
+          price: { $lte: parseInt(query.maxPrice) }
+        }
+      };
     }
-    if (query.maxPrice) {
-      priceFilter['variants.price'] = { ...priceFilter['variants.price'], $lte: Number(query.maxPrice) };
-    }
-    Object.assign(filter, priceFilter);
   }
   
-  // Lọc theo kích thước
   if (query.size) {
-    filter['variants.option'] = { $regex: query.size, $options: 'i' };
+    const decodedSize = decodeURIComponent(query.size);
+    if (filter['variants']) {
+      filter['variants'].$elemMatch.option = { $regex: decodedSize, $options: 'i' };
+    } else {
+      filter['variants'] = {
+        $elemMatch: {
+          option: { $regex: query.size, $options: 'i' }
+        }
+      };
+    }
   }
   
-  // Sắp xếp
-  let sort = {};
+  let sortOption = {};
   if (query.sort) {
     switch(query.sort) {
       case 'price-asc':
-        sort = { 'variants.price': 1 };
+        sortOption = { 'variants.0.price': 1 };
         break;
       case 'price-desc':
-        sort = { 'variants.price': -1 };
+        sortOption = { 'variants.0.price': -1 };
         break;
       case 'name-az':
-        sort = { name: 1 };
+        sortOption = { name: 1 };
         break;
       case 'name-za':
-        sort = { name: -1 };
+        sortOption = { name: -1 };
         break;
       case 'newest':
-        sort = { createdAt: -1 };
+        sortOption = { createdAt: -1 };
         break;
+      default:
+        sortOption = { createdAt: -1 }; 
     }
-  }
-  
-  let products;
-  if (Object.keys(sort).length > 0) {
-    products = await productModel.find(filter).sort(sort).limit(limit);
   } else {
-    products = await productModel.find(filter).limit(limit);
+    sortOption = { createdAt: -1 }; 
   }
+  const products = await productModel.find(filter).sort(sortOption).limit(limit);
   
   return products;
 };
@@ -129,7 +145,7 @@ exports.updateProduct = async (
           })),
         },
       },
-      { new: true } // Trả về bản ghi đã cập nhật
+      { new: true } 
     );
 
     if (!updatedProduct) {
