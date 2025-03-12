@@ -32,19 +32,21 @@ export default function Header(): JSX.Element {
   ];
   
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-
     const checkAuth = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
-
+  
+    // Kiểm tra ngay khi component render
+    checkAuth();
+  
+    // Theo dõi sự thay đổi của localStorage
     window.addEventListener("storage", checkAuth);
-
+  
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
   }, []);
+  
 
   useEffect(() => {
     const fetchFavorites = async () => {

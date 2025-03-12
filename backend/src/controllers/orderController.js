@@ -1,5 +1,6 @@
 const OrderService = require('../services/orderService');
 
+
 class OrderController {
     
     async createOrder(req, res) {
@@ -22,7 +23,18 @@ class OrderController {
     
             // Gọi service để tạo Order kèm theo PaymentMethod
             const result = await OrderService.createOrder(
-                { order_code, id_user, id_coupon, id_payment_method, total_amount, total_payment, address, note, phone, name, receive_address },
+                { order_code, 
+                    id_user, 
+                    id_coupon, 
+                    id_payment_method, 
+                    total_amount, 
+                    total_payment, 
+                    address, 
+                    note, 
+                    phone, 
+                    name, 
+                    receive_address 
+                },
                 products,
                 paymentData // Truyền dữ liệu thanh toán
             );

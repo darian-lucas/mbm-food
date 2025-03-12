@@ -14,6 +14,7 @@ interface Variant {
 }
 
 interface Product {
+  _id: string;
   id: string;
   name: string;
   description: string;
@@ -31,7 +32,6 @@ const ProductDetail = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
-  const [selectedCrust, setSelectedCrust] = useState<string>("Đế dày");
   const [quantity, setQuantity] = useState<number>(1);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const couponConditions: Record<string, string> = {
@@ -116,11 +116,11 @@ const ProductDetail = () => {
                       <div key={coupon._id} className={styles.colFix}>
                         <span>
                           {" "}
-                          Nhập mã <b className={styles.code}>{coupon.code}</b> Giảm{" "}
-                          {coupon.discount.toLocaleString()}đ.
-                          <span>
-                            {couponConditions[coupon.code]}
-                          </span>
+                          Nhập mã <b className={styles.code}>
+                            {coupon.code}
+                          </b>{" "}
+                          Giảm {coupon.discount.toLocaleString()}đ.
+                          <span>{couponConditions[coupon.code]}</span>
                         </span>
                         <button
                           className={styles.voucherBtn}
@@ -172,7 +172,10 @@ const ProductDetail = () => {
                         <div className={styles.swatch}>
                           <div className={styles.selectHeader}>
                             <p>
-                              Kích thước:{" "}
+                              {product.idcate === "67b0a54db5a39baf9de36902"
+                                ? "Loại"
+                                : "Kích thước"}
+                              :{" "}
                               <span>
                                 {selectedVariant?.option || "Chưa chọn"}
                               </span>
@@ -196,36 +199,6 @@ const ProductDetail = () => {
                                   {variant.option}
                                 </label>
                               ))}
-                          </div>
-                        </div>
-                      )}
-                      {product.idcate === "67b0a4fbb5a39baf9de368ff" && (
-                        <div className={styles.swatch}>
-                          <div className={styles.selectHeader}>
-                            <p>
-                              Đế:{" "}
-                              <span className={styles.valueRoperties}>
-                                {selectedCrust}
-                              </span>
-                            </p>
-                          </div>
-                          <div className={styles.selectOption}>
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={selectedCrust === "Đế dày"}
-                                onChange={() => setSelectedCrust("Đế dày")}
-                              />
-                              Đế dày
-                            </label>
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={selectedCrust === "Đế mỏng"}
-                                onChange={() => setSelectedCrust("Đế mỏng")}
-                              />
-                              Đế mỏng
-                            </label>
                           </div>
                         </div>
                       )}

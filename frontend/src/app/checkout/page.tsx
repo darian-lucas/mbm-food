@@ -21,21 +21,22 @@ interface User {
   address: Address[];
 }
 
+interface CartItem {
+  id_product: string;
+  name: string;
+  size: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 const CheckoutPage = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [couponCode, setCouponCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [discountCode, setDiscountCode] = useState("");
+  const [discount, setDiscount] = useState(0); // Lưu giá trị giảm giá
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
-  const [cart, setCart] = useState<
-    {
-      id_product: string;
-      name: string;
-      size: string;
-      price: number;
-      quantity: number;
-      image: string;
-    }[]
-  >([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -59,8 +60,8 @@ const CheckoutPage = () => {
     const fetchCart = () => {
       const cartData = localStorage.getItem("cart");
       if (cartData) {
-        const parsedCart = JSON.parse(cartData).map((item: any) => ({
-          id_product: item._id || item.id_product || "",
+        const parsedCart = JSON.parse(cartData).map((item: CartItem) => ({
+          id_product: item.id_product || "",
           name: item.name || "Sản phẩm không có tên",
           size: item.size || "Mặc định",
           price: item.price || 0,
@@ -72,13 +73,80 @@ const CheckoutPage = () => {
     };
     fetchCart();
   }, []);
+  
+  // Tính tổng tiền
+  const totalAmount = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  const finalAmount = totalAmount - discount; // Tổng tiền sau giảm giá
+  // Xử lý áp dụng mã giảm giá
+  const handleApplyDiscount = async () => {
+    if (!discountCode) {
+      toast.error("Vui lòng nhập mã giảm giá!");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:3001/api/coupons`);
+      if (!response.ok) throw new Error("Không thể lấy dữ liệu mã giảm giá!");
+  
+      const data = await response.json();
+      const coupons = data.data; // Mảng chứa danh sách mã giảm giá
+  
+      const now = new Date(); // Ngày hiện tại
+      const coupon = coupons.find((item: any) => item.code === discountCode);
+  
+      if (!coupon) {
+        toast.error("Mã giảm giá không tồn tại!");
+        return;
+      }
+  
+      const startDate = new Date(coupon.start_date);
+      const endDate = new Date(coupon.end_date);
+  
+      if (coupon.status !== "Active") {
+        toast.error("Mã giảm giá không hợp lệ!");
+        return;
+      }
+  
+      if (coupon.quantity <= 0) {
+        toast.error("Mã giảm giá đã hết số lượng!");
+        return;
+      }
+  
+      if (now < startDate || now > endDate) {
+        toast.error("Mã giảm giá đã hết hạn sử dụng!");
+        return;
+      }
+  
+      // Kiểm tra điều kiện áp dụng mã giảm giá
+      if (coupon.type === "Amount" && totalAmount < 200000) {
+        toast.error("Mã giảm giá chỉ áp dụng cho đơn hàng từ 200.000đ trở lên!");
+        return;
+      }
+      if (coupon.type === "Shipping" && totalAmount < 300000) {
+        toast.error("Mã miễn phí vận chuyển chỉ áp dụng cho đơn hàng từ 300.000đ trở lên!");
+        return;
+      }
+  
+      setDiscount(coupon.discount);
+      toast.success(`Áp dụng mã ${coupon.code}! Giảm ${coupon.discount.toLocaleString()}đ`);
+  
+    } catch (error) {
+      console.error("Lỗi khi kiểm tra mã giảm giá:", error);
+      toast.error("Không thể áp dụng mã giảm giá!");
+    }
+  };
+  
+  
 
   const handleOrder = async () => {
     if (!user) {
       toast.error("Vui lòng đăng nhập để đặt hàng!");
       return;
     }
-  
+
     const orderData = {
       id_user: user._id,
       email: user.email,
@@ -92,44 +160,41 @@ const CheckoutPage = () => {
         price: item.price,
       })),
       order_code: `ORD${Date.now()}`,
-      total_amount: cart.reduce((total, item) => total + item.price * item.quantity, 0),
+      total_amount: finalAmount, // Áp dụng giá trị đã giảm giá
+      discount_code: discountCode, // Lưu mã giảm giá
+      discount_value: discount, // Lưu giá trị giảm giá
       note: "Không có ghi chú",
       name: user.address[0]?.name || "",
       receive_address: user.address[0]?.address || "",
     };
-  
+
     try {
       const response = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
-  
+
       const responseData = await response.json();
       if (!response.ok) {
         throw new Error(responseData.error || "Đặt hàng thất bại!");
       }
-  
-      // 📨 **Gửi email thông báo đặt hàng thành công**
+
       await fetch("http://localhost:3001/api/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: user.email,
-          
-          orderData,
-        }),
+        body: JSON.stringify({ email: user.email, orderData }),
       });
-  
+
       toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
       localStorage.removeItem("cart");
       setCart([]);
     } catch (error) {
-      console.error("⚠️ Lỗi khi đặt hàng:", error);
-      toast.error(`Lỗi đặt hàng: ${error.message}`);
+      const errMessage = (error as Error).message || "Đặt hàng thất bại!";
+      console.error("⚠️ Lỗi khi đặt hàng:", errMessage);
+      toast.error(`Lỗi đặt hàng: ${errMessage}`);
     }
   };
-  
 
   return (
     <div className={styles.container}>
@@ -257,27 +322,35 @@ const CheckoutPage = () => {
         <input
           type="text"
           placeholder="Nhập mã giảm giá"
-          value={couponCode}
+          value={discountCode}
+          onChange={(e) => setDiscountCode(e.target.value)}
           className={styles.formInput}
-          onChange={(e) => setCouponCode(e.target.value)}
         />
-        <button className={styles.applyBtn}>Áp dụng</button>
+        <button className={styles.applyBtn} onClick={handleApplyDiscount}>
+          Áp dụng
+        </button>
+        <br />
+        <br />
 
         <p>
-          Tạm tính:{" "}
-          {cart
-            .reduce((total, item) => total + item.price * item.quantity, 0)
-            .toLocaleString()}
-          đ
+          Phí vận chuyển: <strong>30,000đ</strong>
         </p>
+        <br />
         <p>
-          <strong>
-            Tổng cộng:{" "}
-            {cart
-              .reduce((total, item) => total + item.price * item.quantity, 0)
-              .toLocaleString()}
-            đ
-          </strong>
+          Tạm tính: <strong>{totalAmount.toLocaleString()}đ</strong>
+        </p>
+        {discount > 0 && (
+          <>
+            <p>
+              Giảm giá: <strong>-{discount.toLocaleString()}đ</strong>
+            </p>
+          </>
+        )}
+        <br />
+        <hr />
+        <br />
+        <p>
+          <strong>Tổng cộng: {finalAmount.toLocaleString()}đ</strong>
         </p>
 
         <button className={styles.orderBtn} onClick={handleOrder}>

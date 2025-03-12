@@ -7,7 +7,7 @@ import CartIcon from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
 
 interface CartItem {
-  _id: string; // ✅ Thay id bằng _id
+  _id: string; 
   name: string;
   price: number;
   sale_price?: number;
@@ -22,10 +22,10 @@ const CartPage = () => {
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart") || "[]").map((item: any) => {
-      let variants = item.option ? item.option : "";
+      const variants = item.option ? item.option : "";
       
       return {
-        _id: item._id || "", // ✅ Đảm bảo có _id
+        _id: item._id || "", 
         name: item.name || "Sản phẩm không tên",
         price: item.price || 0,
         sale_price: item.sale_price || 0,
