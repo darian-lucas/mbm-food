@@ -10,6 +10,7 @@ export default function Header(): JSX.Element {
   const [showProductMenu, setShowProductMenu] = useState<boolean>(false);
   const [favoriteCount, setFavoriteCount] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  
   const menuItems = [
     { href: "/", label: "Trang chủ" },
     { href: "/product", label: "Sản phẩm", isDropdown: true },
@@ -60,6 +61,7 @@ export default function Header(): JSX.Element {
     };
 
     fetchFavorites();
+    
   }, []);
   // Xử lí dăng xuất !
   const handleLogout = () => {

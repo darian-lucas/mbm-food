@@ -3,13 +3,35 @@ const OrderService = require('../services/orderService');
 class OrderController {
     async createOrder(req, res) {
         try {
-            const {order_code, id_user, id_coupon, id_payment_method, total_amount,total_payment, address, note, phone, name, receive_address, products } = req.body;
-            const order = await OrderService.createOrder({order_code, id_user, id_coupon, id_payment_method, total_amount,total_payment, address, note, phone, name, receive_address }, products);
-            res.status(201).json({ message: 'Order created successfully', order });
+            const {
+                order_code,
+                id_user,
+                id_coupon,
+                id_payment_method,
+                total_amount,
+                total_payment,
+                address,
+                note,
+                phone,
+                name,
+                receive_address,
+                products,
+                paymentData // Nhận thêm dữ liệu thanh toán từ request
+            } = req.body;
+    
+            // Gọi service để tạo Order kèm theo PaymentMethod
+            const result = await OrderService.createOrder(
+                { order_code, id_user, id_coupon, id_payment_method, total_amount, total_payment, address, note, phone, name, receive_address },
+                products,
+                paymentData // Truyền dữ liệu thanh toán
+            );
+    
+            res.status(201).json({ message: "Order created successfully", result });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
+    
     async updateOrder(req, res) {
         try {
             console.log("Dữ liệu nhận từ client:", req.body);
