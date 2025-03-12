@@ -32,18 +32,18 @@ export default function Header(): JSX.Element {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
-  
+
     const checkAuth = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
-  
+
     window.addEventListener("storage", checkAuth);
-  
+
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
   }, []);
-  
+
   useEffect(() => {
     const fetchFavorites = async () => {
       const token = localStorage.getItem("token");
@@ -58,9 +58,9 @@ export default function Header(): JSX.Element {
         }
       }
     };
-  
+
     fetchFavorites();
-  }, []); 
+  }, []);
   // Xử lí dăng xuất !
   const handleLogout = () => {
     localStorage.removeItem("token");
