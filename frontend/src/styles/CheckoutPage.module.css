@@ -1,7 +1,7 @@
 .container {
   display: flex;
   justify-content: space-between;
-  max-width: 900px;
+  max-width: 1300px;
   margin: auto;
   padding: 20px;
   gap: 20px;
@@ -19,7 +19,7 @@
 }
 
 .orderSummary {
-  width: 350px;
+  width: 400px;
 }
 
 .formLabel {

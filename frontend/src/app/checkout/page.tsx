@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import styles from "../../styles/CheckoutPage.module.css";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Address {
   name: string;
@@ -26,6 +28,7 @@ const CheckoutPage = () => {
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   const [cart, setCart] = useState<
     {
+      id_product: string;
       name: string;
       size: string;
       price: number;
@@ -33,6 +36,7 @@ const CheckoutPage = () => {
       image: string;
     }[]
   >([]);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -55,11 +59,88 @@ const CheckoutPage = () => {
     const fetchCart = () => {
       const cartData = localStorage.getItem("cart");
       if (cartData) {
-        setCart(JSON.parse(cartData));
+        const parsedCart = JSON.parse(cartData).map((item: any) => ({
+          id_product: item._id || item.id_product || "",
+          name: item.name || "Sản phẩm không có tên",
+          size: item.size || "Mặc định",
+          price: item.price || 0,
+          quantity: item.quantity || 1,
+          image: item.image || "",
+        }));
+        setCart(parsedCart);
       }
     };
     fetchCart();
   }, []);
+
+  const handleOrder = async () => {
+    if (!user) {
+      toast.error("Vui lòng đăng nhập để đặt hàng!");
+      return;
+    }
+
+    const orderData = {
+      userId: user._id,
+      email: user.email,
+      address: user.address[0]?.address || "",
+      phone: user.address[0]?.phone || "",
+      paymentMethod,
+      products: cart.map((item) => ({
+        id_product: item.id_product || "", 
+        name: item.name || "Sản phẩm chưa có tên", 
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      order_code: `ORD${Date.now()}`,
+      total_amount: cart.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      ),
+      note: "Không có ghi chú",
+      name: user.address[0]?.name || "",
+      receive_address: user.address[0]?.address || "",
+    };
+
+    console.log("🛒 Dữ liệu gửi lên API:", JSON.stringify(orderData, null, 2)); 
+    console.log("📧 Email người dùng:", user?.email);
+    console.log("🏠 Địa chỉ nhận hàng:", user?.address[0]?.address);
+    console.log("📦 Dữ liệu orderData trước khi gửi:", orderData);
+
+
+    if (
+      !orderData.userId ||
+      !orderData.address ||
+      !orderData.phone ||
+      orderData.products.length === 0
+    ) {
+      console.error("⚠️ Thiếu thông tin trước khi gửi API:", orderData);
+      toast.error("Vui lòng kiểm tra lại thông tin đặt hàng!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      const responseData = await response.json();
+      console.log("📩 Phản hồi từ API:", responseData);
+      console.log("📦 Dữ liệu đơn hàng gửi đi:", orderData);
+
+      if (!response.ok) {
+        throw new Error(responseData.error || "Đặt hàng thất bại!");
+      }
+
+      toast.success("Đặt hàng thành công!");
+      localStorage.removeItem("cart");
+      setCart([]);
+    } catch (error) {
+      console.error("⚠️ Lỗi khi đặt hàng:", error);
+      toast.error(`Lỗi đặt hàng: ${error.message}`);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -168,13 +249,13 @@ const CheckoutPage = () => {
 
         {cart.map((item, index) => (
           <div key={index} className={styles.orderItem}>
-             <Image
-                      className={styles.img}
-                      src={`${API_URL}/images/${item.image}`}
-                      alt={item.name}
-                      width={50}
-                      height={50}
-                    />
+            <Image
+              className={styles.img}
+              src={`${API_URL}/images/${item.image}`}
+              alt={item.name}
+              width={50}
+              height={50}
+            />
             <div>
               <p>{item.name}</p>
               <p>{item.size}</p>
@@ -210,7 +291,9 @@ const CheckoutPage = () => {
           </strong>
         </p>
 
-        <button className={styles.orderBtn}>ĐẶT HÀNG</button>
+        <button className={styles.orderBtn} onClick={handleOrder}>
+          ĐẶT HÀNG
+        </button>
       </div>
     </div>
   );

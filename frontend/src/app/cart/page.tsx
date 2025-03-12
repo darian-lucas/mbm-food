@@ -6,10 +6,8 @@ import styles from "../../styles/CartPage.module.css";
 import CartIcon from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
 
-
-
 interface CartItem {
-  id: string;
+  _id: string; // ✅ Thay id bằng _id
   name: string;
   price: number;
   sale_price?: number;
@@ -21,66 +19,57 @@ interface CartItem {
 const CartPage = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const router = useRouter();
+
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]").filter(
-      (item: any) => item && typeof item === "object" && "id" in item // Lọc các item hợp lệ
-    ).map((item: any) => {
-      let variants = "";
-      if (item.option && item.crust) {
-        variants = `${item.option} - ${item.crust}`;
-      } else if (item.option) {
-        variants = item.option;
-      } else if (item.crust) {
-        variants = item.crust;
-      }
-  
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]").map((item: any) => {
+      let variants = item.option ? item.option : "";
+      
       return {
-        id: item.id || "", // Đảm bảo luôn có id, tránh lỗi undefined
-        name: item.name || "Sản phẩm không tên", // Đề phòng trường hợp thiếu name
-        price: item.price || 0, // Giá mặc định là 0 nếu thiếu
+        _id: item._id || "", // ✅ Đảm bảo có _id
+        name: item.name || "Sản phẩm không tên",
+        price: item.price || 0,
         sale_price: item.sale_price || 0,
-        quantity: item.quantity || 1, // Mặc định 1 nếu thiếu số lượng
-        image: item.image || "default.jpg", // Hình mặc định nếu thiếu
+        quantity: item.quantity || 1,
+        image: item.image || "default.jpg",
         variants: variants || undefined,
       };
     });
-  
+
     setCart(storedCart);
   }, []);
-  
 
   const updateCart = (newCart: CartItem[]) => {
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
   };
 
-  const increaseQuantity = (id: string, event: React.MouseEvent) => {
+  const increaseQuantity = (_id: string, event: React.MouseEvent) => {
     event.preventDefault();
     const newCart = cart.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      item._id === _id ? { ...item, quantity: item.quantity + 1 } : item
     );
     updateCart(newCart);
   };
 
-  const decreaseQuantity = (id: string, event: React.MouseEvent) => {
+  const decreaseQuantity = (_id: string, event: React.MouseEvent) => {
     event.preventDefault();
     const newCart = cart.map((item) =>
-      item.id === id && item.quantity > 1
+      item._id === _id && item.quantity > 1
         ? { ...item, quantity: item.quantity - 1 }
         : item
     );
     updateCart(newCart);
   };
 
-  const removeItem = (id: string) => {
-    const newCart = cart.filter((item) => item.id !== id);
+  const removeItem = (_id: string) => {
+    const newCart = cart.filter((item) => item._id !== _id);
     updateCart(newCart);
   };
 
   const getTotalPrice = () => {
     return cart.reduce(
       (total, item) =>
-        total + (item.sale_price > 0 ? item.sale_price : item.price) * item.quantity,
+        total + (item.sale_price && item.sale_price > 0 ? item.sale_price : item.price) * item.quantity,
       0
     );
   };
@@ -89,8 +78,7 @@ const CartPage = () => {
     try {
       const userString = localStorage.getItem("user");
       const user = userString ? JSON.parse(userString) : null;
-  
-      console.log(user);
+
       if (user && user.isLoggedIn) {
         router.push("../checkout");
       } else {
@@ -98,7 +86,7 @@ const CartPage = () => {
       }
     } catch (error) {
       console.error("Lỗi khi parse JSON:", error);
-      router.push("../login"); // Nếu có lỗi, chuyển hướng đến trang đăng nhập
+      router.push("../login");
     }
   };
 
@@ -123,7 +111,7 @@ const CartPage = () => {
                     <div>Thành tiền</div>
                   </div>
                   {cart.map((item) => (
-                    <div key={item.id} className={styles.cartBody}>
+                    <div key={item._id} className={styles.cartBody}>
                       <div className={styles.ajaxCartRow}>
                         <div className={styles.ajaxCartProduct}>
                           <Image
@@ -141,7 +129,7 @@ const CartPage = () => {
                               )}
                               <button
                                 className={styles.removebtn}
-                                onClick={() => removeItem(item.id)}
+                                onClick={() => removeItem(item._id)}
                               >
                                 Xóa
                               </button>
@@ -149,7 +137,7 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {item.sale_price > 0
+                                  {item.sale_price && item.sale_price > 0
                                     ? item.sale_price
                                     : item.price.toLocaleString()} đ
                                 </span>
@@ -160,14 +148,14 @@ const CartPage = () => {
                                 <div className={styles.qtyBtnCart}>
                                   <button
                                     className={styles.qtybtn}
-                                    onClick={(e) => decreaseQuantity(item.id, e)}
+                                    onClick={(e) => decreaseQuantity(item._id, e)}
                                   >
                                     -
                                   </button>
                                   <span className={styles.textQty}>{item.quantity}</span>
                                   <button
                                     className={styles.qtybtn}
-                                    onClick={(e) => increaseQuantity(item.id, e)}
+                                    onClick={(e) => increaseQuantity(item._id, e)}
                                   >
                                     +
                                   </button>
@@ -177,7 +165,7 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {((item.sale_price > 0 ? item.sale_price : item.price) * item.quantity).toLocaleString()} đ
+                                  {((item.sale_price && item.sale_price > 0 ? item.sale_price : item.price) * item.quantity).toLocaleString()} đ
                                 </span>
                               </div>
                             </div>
@@ -201,9 +189,10 @@ const CartPage = () => {
                       </div>
                       <div className={styles.checkOut}>
                         <button 
-                        className={styles.cartBtnCheckOut}
-                        onClick={handleCheckout}
-                        >Thanh toán
+                          className={styles.cartBtnCheckOut}
+                          onClick={handleCheckout}
+                        >
+                          Thanh toán
                         </button>
                       </div>
                     </div>

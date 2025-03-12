@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 interface CartItem {
-  id: string;
+  _id: string;
   name: string;
   price: number;
   sale_price: number;
@@ -12,7 +12,7 @@ interface CartItem {
 }
 
 interface Product {
-  id: string;
+  _id: string;
   slug: string;
   name: string;
   variants: Variant[];
@@ -44,38 +44,38 @@ const useCart = () => {
   }, [cart]);
 
   // Hàm thêm sản phẩm vào giỏ hàng
-const addToCart = (item: CartItem) => {
-  setCart((prevCart) => {
-    const existingItemIndex = prevCart.findIndex(
-      (cartItem) => cartItem.id === item.id && cartItem.option === item.option
-    );
+  const addToCart = (item: CartItem) => {
+    setCart((prevCart) => {
+      const existingItemIndex = prevCart.findIndex(
+        (cartItem) => cartItem._id === item._id && cartItem.option === item.option
+      );
 
-    let updatedCart;
-    if (existingItemIndex !== -1) {
-      updatedCart = [...prevCart];
-      updatedCart[existingItemIndex].quantity += item.quantity;
-    } else {
-      updatedCart = [...prevCart, item];
-    }
+      let updatedCart;
+      if (existingItemIndex !== -1) {
+        updatedCart = [...prevCart];
+        updatedCart[existingItemIndex].quantity += item.quantity;
+      } else {
+        updatedCart = [...prevCart, item];
+      }
 
-    // 🔥 Lưu giỏ hàng vào localStorage
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+      // 🔥 Lưu giỏ hàng vào localStorage
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
 
-    // 🔥 Phát sự kiện cập nhật giỏ hàng
-    window.dispatchEvent(new Event("cartUpdated"));
+      // 🔥 Phát sự kiện cập nhật giỏ hàng
+      window.dispatchEvent(new Event("cartUpdated"));
 
-    return updatedCart;
-  });
+      return updatedCart;
+    });
 
-  toast.success("Đã thêm vào giỏ hàng!");
-};
+    toast.success("Đã thêm vào giỏ hàng!");
+  };
 
   // Hàm xử lý khi ấn nút "Thêm vào giỏ hàng"
   const handleAddToCart = (product: Product, selectedVariant: Variant, quantity: number) => {
     if (!product || !selectedVariant) return;
 
     const newItem: CartItem = {
-      id: product.slug, 
+      _id: product._id, // ✅ Sử dụng _id từ API thay vì slug
       name: product.name,
       price: selectedVariant.price,
       sale_price: selectedVariant.sale_price,

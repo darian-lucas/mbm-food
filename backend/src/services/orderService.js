@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 
+
 class OrderService {
     async generateOrderCode() {
         let orderCode;
@@ -64,7 +65,7 @@ class OrderService {
         await OrderDetail.insertMany(orderDetails);
         return savedOrder;
     }
-
+     
     async getAllOrders() {
         const orders = await Order.find()
             .populate('id_user', 'name')
@@ -129,6 +130,7 @@ class OrderService {
             throw new Error("Lỗi khi lấy đơn hàng của user: " + error.message);
         }
     }
+    
     
 }
 
