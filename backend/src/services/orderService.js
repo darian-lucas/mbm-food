@@ -1,7 +1,6 @@
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
-
-
+const PaymentMethod = require("../models/PaymentMethod");
 class OrderService {
     async generateOrderCode() {
         let orderCode;
@@ -49,23 +48,48 @@ class OrderService {
         }
     }
 
-    async createOrder(orderData, products) {
-        const orderCode = await this.generateOrderCode();
-        const order = new Order({ ...orderData, order_code: orderCode });
-        const savedOrder = await order.save();
+    async createOrder(orderData, products, paymentData) {
+        const session = await mongoose.startSession();
+        session.startTransaction();
 
-        const orderDetails = products.map(product => ({
-            id_order: savedOrder._id,
-            id_product: product.id_product,
-            price: product.price,
-            quantity: product.quantity,
-            name: product.name
-        }));
+        try {
+            const orderCode = await this.generateOrderCode();
+            
+            // Tạo đơn hàng
+            const order = new Order({ ...orderData, order_code: orderCode });
+            const savedOrder = await order.save({ session });
 
-        await OrderDetail.insertMany(orderDetails);
-        return savedOrder;
+            // Tạo chi tiết đơn hàng
+            const orderDetails = products.map(product => ({
+                id_order: savedOrder._id,
+                id_product: product.id_product,
+                price: product.price,
+                quantity: product.quantity,
+                name: product.name
+            }));
+            await OrderDetail.insertMany(orderDetails, { session });
+
+            // Thêm ID đơn hàng vào dữ liệu thanh toán
+            paymentData.orderId = savedOrder._id;
+
+            // Tạo phương thức thanh toán
+            const payment = new PaymentMethod(paymentData);
+            const savedPayment = await payment.save({ session });
+
+            // Cập nhật đơn hàng với ID payment
+            savedOrder.id_payment_method = savedPayment._id;
+            await savedOrder.save({ session });
+
+            await session.commitTransaction();
+            session.endSession();
+
+            return { order: savedOrder, payment: savedPayment };
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            throw new Error("Lỗi khi tạo đơn hàng và thanh toán: " + error.message);
+        }
     }
-     
     async getAllOrders() {
         const orders = await Order.find()
             .populate('id_user', 'name')
