@@ -78,62 +78,50 @@ const CheckoutPage = () => {
       toast.error("Vui lòng đăng nhập để đặt hàng!");
       return;
     }
-
+  
     const orderData = {
-      userId: user._id,
+      id_user: user._id,
       email: user.email,
       address: user.address[0]?.address || "",
       phone: user.address[0]?.phone || "",
-      paymentMethod,
+      id_payment_method: paymentMethod,
       products: cart.map((item) => ({
-        id_product: item.id_product || "", 
-        name: item.name || "Sản phẩm chưa có tên", 
+        id_product: item.id_product || "",
+        name: item.name || "Sản phẩm chưa có tên",
         quantity: item.quantity,
         price: item.price,
       })),
       order_code: `ORD${Date.now()}`,
-      total_amount: cart.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      ),
+      total_amount: cart.reduce((total, item) => total + item.price * item.quantity, 0),
       note: "Không có ghi chú",
       name: user.address[0]?.name || "",
       receive_address: user.address[0]?.address || "",
     };
-
-    console.log("🛒 Dữ liệu gửi lên API:", JSON.stringify(orderData, null, 2)); 
-    console.log("📧 Email người dùng:", user?.email);
-    console.log("🏠 Địa chỉ nhận hàng:", user?.address[0]?.address);
-    console.log("📦 Dữ liệu orderData trước khi gửi:", orderData);
-
-
-    if (
-      !orderData.userId ||
-      !orderData.address ||
-      !orderData.phone ||
-      orderData.products.length === 0
-    ) {
-      console.error("⚠️ Thiếu thông tin trước khi gửi API:", orderData);
-      toast.error("Vui lòng kiểm tra lại thông tin đặt hàng!");
-      return;
-    }
-
+  
     try {
       const response = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
-
+  
       const responseData = await response.json();
-      console.log("📩 Phản hồi từ API:", responseData);
-      console.log("📦 Dữ liệu đơn hàng gửi đi:", orderData);
-
       if (!response.ok) {
         throw new Error(responseData.error || "Đặt hàng thất bại!");
       }
-
-      toast.success("Đặt hàng thành công!");
+  
+      // 📨 **Gửi email thông báo đặt hàng thành công**
+      await fetch("http://localhost:3001/api/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          
+          orderData,
+        }),
+      });
+  
+      toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
       localStorage.removeItem("cart");
       setCart([]);
     } catch (error) {
@@ -141,6 +129,7 @@ const CheckoutPage = () => {
       toast.error(`Lỗi đặt hàng: ${error.message}`);
     }
   };
+  
 
   return (
     <div className={styles.container}>

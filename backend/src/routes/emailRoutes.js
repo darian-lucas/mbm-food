@@ -6,3 +6,4 @@ const router = express.Router();
 router.post("/send", sendMailController);
 
 module.exports = router;
+
