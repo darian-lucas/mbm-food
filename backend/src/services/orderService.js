@@ -1,6 +1,8 @@
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const PaymentMethod = require("../models/PaymentMethod");
+const mongoose = require("mongoose");
+
 class OrderService {
     async generateOrderCode() {
         let orderCode;
@@ -50,16 +52,45 @@ class OrderService {
 
     async createOrder(orderData, products, paymentData) {
         const session = await mongoose.startSession();
+        console.log("🟢 Bắt đầu session:", session.id);
+    
         session.startTransaction();
-
+        console.log("🔄 Transaction bắt đầu");
+    
         try {
             const orderCode = await this.generateOrderCode();
-            
-            // Tạo đơn hàng
-            const order = new Order({ ...orderData, order_code: orderCode });
+            console.log("📌 Mã đơn hàng:", orderCode);
+    
+            // **Tạo đơn hàng trước**
+            const order = new Order({
+                ...orderData,
+                order_code: orderCode,
+            });
             const savedOrder = await order.save({ session });
-
-            // Tạo chi tiết đơn hàng
+            console.log("✅ Đơn hàng được tạo:", savedOrder._id);
+    
+            // **Xử lý phương thức thanh toán**
+            const paymentMethod = orderData.payment_method || "cash"; // Mặc định là 'cash' nếu không có giá trị
+            
+            const fullPaymentData = {
+                name: orderData.name, // Tên người nhận
+                userId: orderData.id_user, // ID người dùng
+                orderId: savedOrder._id, // ID đơn hàng vừa tạo
+                amount: orderData.total_payment, // Tổng số tiền thanh toán
+                currency: "VND", // Đơn vị tiền tệ (giá trị mặc định)
+                method: paymentMethod, // Phương thức thanh toán (có thể là cash, momo, vnpay)
+                status: "pending" // Trạng thái mặc định
+            };
+    
+            // Ghi log để kiểm tra
+            console.log("📌 Dữ liệu thanh toán trước khi lưu:", fullPaymentData);
+    
+            // **Tạo phương thức thanh toán**
+            const payment = new PaymentMethod(fullPaymentData);
+            const savedPayment = await payment.save({ session });
+            console.log("✅ Phương thức thanh toán được tạo:", savedPayment._id);
+    
+            // **Tạo chi tiết đơn hàng**
             const orderDetails = products.map(product => ({
                 id_order: savedOrder._id,
                 id_product: product.id_product,
@@ -67,29 +98,37 @@ class OrderService {
                 quantity: product.quantity,
                 name: product.name
             }));
+    
             await OrderDetail.insertMany(orderDetails, { session });
-
-            // Thêm ID đơn hàng vào dữ liệu thanh toán
-            paymentData.orderId = savedOrder._id;
-
-            // Tạo phương thức thanh toán
-            const payment = new PaymentMethod(paymentData);
-            const savedPayment = await payment.save({ session });
-
-            // Cập nhật đơn hàng với ID payment
-            savedOrder.id_payment_method = savedPayment._id;
-            await savedOrder.save({ session });
-
+            console.log("✅ Chi tiết đơn hàng được tạo:", orderDetails.length, "mục");
+    
+            // **Cập nhật ID phương thức thanh toán vào đơn hàng**
+            await Order.updateOne(
+                { _id: savedOrder._id },
+                { id_payment_method: savedPayment._id },
+                { session }
+            );
+            console.log("✅ Đã cập nhật phương thức thanh toán vào đơn hàng");
+    
+            // **Commit transaction**
             await session.commitTransaction();
+            console.log("🎉 Transaction commit thành công!");
+    
             session.endSession();
-
             return { order: savedOrder, payment: savedPayment };
         } catch (error) {
+            console.error("❌ Lỗi! Rollback transaction:", error);
             await session.abortTransaction();
             session.endSession();
             throw new Error("Lỗi khi tạo đơn hàng và thanh toán: " + error.message);
         }
     }
+    
+    
+    
+    
+    
+    
     async getAllOrders() {
         const orders = await Order.find()
             .populate('id_user', 'name')

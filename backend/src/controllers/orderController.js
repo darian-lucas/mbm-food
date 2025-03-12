@@ -16,21 +16,25 @@ class OrderController {
                 name,
                 receive_address,
                 products,
-                paymentData // Nhận thêm dữ liệu thanh toán từ request
+                paymentData 
             } = req.body;
     
-            // Gọi service để tạo Order kèm theo PaymentMethod
+            console.log("📌 Dữ liệu nhận từ client:", req.body); // Kiểm tra dữ liệu đầu vào
+    
+            // Gọi service để tạo Order
             const result = await OrderService.createOrder(
                 { order_code, id_user, id_coupon, id_payment_method, total_amount, total_payment, address, note, phone, name, receive_address },
                 products,
-                paymentData // Truyền dữ liệu thanh toán
+                paymentData
             );
     
             res.status(201).json({ message: "Order created successfully", result });
         } catch (error) {
+            console.error("❌ Lỗi khi tạo đơn hàng:", error); // In lỗi chi tiết
             res.status(500).json({ error: error.message });
         }
     }
+    
     
     async updateOrder(req, res) {
         try {
