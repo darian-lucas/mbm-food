@@ -95,7 +95,7 @@ export default function RegisterPage() {
       <h2 className={styles.title}>ĐĂNG KÝ</h2>
       {error && <p className={styles.error}>{error}</p>}
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        <input type="text" placeholder="Tên đăng nhập" {...register("username", { required: "Tên đăng nhập là bắt buộc" })} className={styles.input} />
+        <input type="text" placeholder="Họ và tên" {...register("username", { required: "Tên đăng nhập là bắt buộc" })} className={styles.input} />
         {errors.username && <p className={styles.error}>{errors.username.message}</p>}
 
         <input type="email" placeholder="Email" {...register("email", { required: "Email là bắt buộc" })} className={styles.input} />
@@ -114,7 +114,7 @@ export default function RegisterPage() {
 
         <input type="text" placeholder="Công ty (nếu có)" {...register("address.0.company")} className={styles.input} />
 
-        <input type="text" placeholder="Địa chỉ chi tiết" {...register("address.0.address", { required: "Địa chỉ chi tiết là bắt buộc" })} className={styles.input} />
+        <input type="text" placeholder="Địa chỉ chi tiết. Ví dụ : Số nhà / Hẻm / Đường" {...register("address.0.address", { required: "Địa chỉ chi tiết là bắt buộc" })} className={styles.input} />
         {errors.address?.[0]?.address && <p className={styles.error}>{errors.address[0].address.message}</p>}
 
         <input type="text" value="Thành phố Hồ Chí Minh" disabled className={styles.input} />
@@ -142,9 +142,6 @@ export default function RegisterPage() {
           Đặt làm địa chỉ mặc định
         </label>
 
-        <p className={styles.terms}>
-          Bằng cách đăng ký, bạn đồng ý với <a href="#" className={styles.link}>Điều khoản dịch vụ</a>.
-        </p>
         <button type="submit" className={styles.button}>Đăng ký</button>
       </form>
       <p>

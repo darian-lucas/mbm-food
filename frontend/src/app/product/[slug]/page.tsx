@@ -6,7 +6,6 @@ import Image from "next/image";
 import styles from "../../../styles/ProductDetail.module.css";
 import useCart from "../../hooks/useCart";
 
-
 interface Variant {
   option: string;
   price: number;
@@ -15,20 +14,34 @@ interface Variant {
 }
 
 interface Product {
-  id:string
+  _id: string;
+  id: string;
   name: string;
   description: string;
   slug: string;
   variants: Variant[];
   idcate: string;
 }
+interface Coupon {
+  _id: string;
+  code: string;
+  discount: number;
+}
 
 const ProductDetail = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
-  const [selectedCrust, setSelectedCrust] = useState<string>("Đế dày");
   const [quantity, setQuantity] = useState<number>(1);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const couponConditions: Record<string, string> = {
+    MBM20:
+      "Áp dụng cho đơn hàng từ 200k trở lên. Không đi kèm với chương trình khác.",
+    FREESHIP:
+      "Áp dụng cho đơn hàng từ 300k trở lên. Không đi kèm với chương trình khác.",
+    MBM50:
+      "Áp dụng cho đơn hàng từ 500k trở lên. Không đi kèm với chương trình khác.",
+  };
 
   useEffect(() => {
     if (!slug) return;
@@ -49,6 +62,17 @@ const ProductDetail = () => {
 
     fetchProduct();
   }, [slug]);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/coupons")
+      .then((res) => res.json())
+      .then((data) => setCoupons(data.data))
+      .catch((error) => console.error("Lỗi khi lấy dữ liệu coupon:", error));
+  }, []);
+  const copyToClipboard = (code: string) => {
+    navigator.clipboard.writeText(code);
+    alert(`Đã sao chép mã: ${code}`);
+  };
   const increaseQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
   };
@@ -64,7 +88,6 @@ const ProductDetail = () => {
     if (!product || !selectedVariant) return; // Kiểm tra nếu product hoặc selectedVariant bị null
     handleAddToCart(product, selectedVariant, quantity);
   };
-  
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
 
@@ -89,30 +112,25 @@ const ProductDetail = () => {
                     <span>NHẬN VOUCHER NGAY !!!</span>
                   </div>
                   <div className={styles.rowFix}>
-                    <div className={styles.colFix}>
-                      <span>
-                        Nhập mã
-                        <b>MBM20</b> Áp dụng cho đơn hàng từ 200k trở lên. Không
-                        đi kèm với chương trình khác.
-                      </span>
-                      <button className={styles.voucherBtn}>Sao chép</button>
-                    </div>
-                    <div className={styles.colFix}>
-                      <span>
-                        Nhập mã
-                        <b>MBM20</b> Áp dụng cho đơn hàng từ 200k trở lên. Không
-                        đi kèm với chương trình khác.
-                      </span>
-                      <button className={styles.voucherBtn}>Sao chép</button>
-                    </div>
-                    <div className={styles.colFix}>
-                      <span>
-                        Nhập mã
-                        <b>MBM20</b> Áp dụng cho đơn hàng từ 200k trở lên. Không
-                        đi kèm với chương trình khác.
-                      </span>
-                      <button className={styles.voucherBtn}>Sao chép</button>
-                    </div>
+                    {coupons.map((coupon) => (
+                      <div key={coupon._id} className={styles.colFix}>
+                        <span>
+                          {" "}
+                          Nhập mã <b className={styles.code}>
+                            {coupon.code}
+                          </b>{" "}
+                          Giảm {coupon.discount.toLocaleString()}đ.
+                          <span>{couponConditions[coupon.code]}</span>
+                        </span>
+                        <button
+                          className={styles.voucherBtn}
+                          onClick={() => copyToClipboard(coupon.code)}
+                        >
+                          Sao chép
+                        </button>
+                      </div>
+                    ))}
+
                     <div className={styles.colNote}>
                       <span>
                         Lưu Mã và nhập ở trang <b>THANH TOÁN</b> bạn nhé!
@@ -154,7 +172,10 @@ const ProductDetail = () => {
                         <div className={styles.swatch}>
                           <div className={styles.selectHeader}>
                             <p>
-                              Kích thước:{" "}
+                              {product.idcate === "67b0a54db5a39baf9de36902"
+                                ? "Loại"
+                                : "Kích thước"}
+                              :{" "}
                               <span>
                                 {selectedVariant?.option || "Chưa chọn"}
                               </span>
@@ -178,36 +199,6 @@ const ProductDetail = () => {
                                   {variant.option}
                                 </label>
                               ))}
-                          </div>
-                        </div>
-                      )}
-                      {product.idcate === "67b0a4fbb5a39baf9de368ff" && (
-                        <div className={styles.swatch}>
-                          <div className={styles.selectHeader}>
-                            <p>
-                              Đế:{" "}
-                              <span className={styles.valueRoperties}>
-                                {selectedCrust}
-                              </span>
-                            </p>
-                          </div>
-                          <div className={styles.selectOption}>
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={selectedCrust === "Đế dày"}
-                                onChange={() => setSelectedCrust("Đế dày")}
-                              />
-                              Đế dày
-                            </label>
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={selectedCrust === "Đế mỏng"}
-                                onChange={() => setSelectedCrust("Đế mỏng")}
-                              />
-                              Đế mỏng
-                            </label>
                           </div>
                         </div>
                       )}
