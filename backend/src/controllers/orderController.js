@@ -1,68 +1,12 @@
 const OrderService = require('../services/orderService');
 
 class OrderController {
-    // async createOrder(req, res) {
-    //     try {
-    //         const {
-    //             order_code, 
-    //             id_user, 
-    //             id_coupon, 
-    //             id_payment_method, 
-    //             total_amount, 
-    //             address, 
-    //             note, 
-    //             phone, 
-    //             name, 
-    //             receive_address, 
-    //             products } = req.body;
-    //         const order = await OrderService.createOrder(
-    //             {order_code, 
-    //                 id_user, 
-    //                 id_coupon, 
-    //                 id_payment_method, 
-    //                 total_amount, 
-    //                 address, note, 
-    //                 phone, name, 
-    //                 receive_address }, products);
-    //         res.status(201).json({ message: 'Order created successfully', order });
-    //     } catch (error) {
-    //         res.status(500).json({ error: error.message });
-    //     }
-    // }
+    
     async createOrder(req, res) {
         try {
-            const { 
-                order_code, 
-                userId, 
-                paymentMethod, 
-                total_amount, 
-                address, 
-                phone, 
-                name, 
-                receive_address, 
-                note = "Không có ghi chú", 
-                products 
-            } = req.body;
-    
-            // Kiểm tra dữ liệu đầu vào
-            if (!userId || !address || !phone || !products || products.length === 0) {
-                return res.status(400).json({ error: "Thiếu thông tin đặt hàng" });
-            }
-    
-            // Tạo đơn hàng
-            const order = await OrderService.createOrder({
-                order_code,
-                id_user: userId, 
-                id_payment_method: paymentMethod, 
-                total_amount, 
-                address, 
-                phone, 
-                name, 
-                receive_address,
-                note 
-            }, products);
-    
-            res.status(201).json({ message: "Đặt hàng thành công!", order });
+            const {order_code, id_user, id_coupon, id_payment_method, total_amount,total_payment, address, note, phone, name, receive_address, products } = req.body;
+            const order = await OrderService.createOrder({order_code, id_user, id_coupon, id_payment_method, total_amount,total_payment, address, note, phone, name, receive_address }, products);
+            res.status(201).json({ message: 'Order created successfully', order });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

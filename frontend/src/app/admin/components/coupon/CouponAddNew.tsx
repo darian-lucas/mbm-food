@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { TCreateCouponParams } from "../../types";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   code: z.string().min(3, "Mã giảm giá phải có ít nhất 3 ký tự"),
@@ -30,6 +31,7 @@ const formSchema = z.object({
   start_date: z.date(),
   end_date: z.date(),
   quantity: z.string().optional(),
+  description: z.string().optional(),
 });
 
 function CouponAddNew() {
@@ -45,6 +47,7 @@ function CouponAddNew() {
       start_date: new Date(),
       end_date: new Date(),
       quantity: "0",
+      description:"",
     },
   });
 
@@ -58,6 +61,7 @@ function CouponAddNew() {
         start_date: values.start_date,
         end_date: values.end_date,
         quantity: parseFloat(values.quantity || "0"),
+        description: values.description || "",
       };
   
       const res = await CouponServices.createCoupon(couponData);
@@ -172,6 +176,23 @@ function CouponAddNew() {
                 <FormLabel>Số lượng mã *</FormLabel>
                 <FormControl>
                   <Input placeholder="Nhập số lượng" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả mã giảm giá</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Nhập mô tả..."
+                    {...field}
+                    className="h-[250px]"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

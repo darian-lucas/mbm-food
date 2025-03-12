@@ -14,6 +14,7 @@ const couponSchema = new mongoose.Schema(
       default: "Active",
     },
     quantity: { type: Number, required: true, min: 0 },
+    description: { type: String },
   },
   { timestamps: true }
 );

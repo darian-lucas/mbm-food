@@ -27,4 +27,5 @@ export type TCreateCouponParams = {
   end_date: Date;
   status?: "Active" | "Expired" | "Used_up";
   quantity: number;
+  description:string;
 };

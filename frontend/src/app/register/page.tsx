@@ -3,80 +3,88 @@ import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "@/app/components/Register.module.css";
 
 interface Address {
   name: string;
   phone: string;
+  company?: string;
+  address: string;
   city: string;
   district: string;
   ward: string;
   zip: string;
-  address: string;
+  default?: boolean;
 }
 
 interface RegisterForm {
   username: string;
   email: string;
   password: string;
-  address: Address;
+  address: Address[];
+  defaultAddress?: string | null; // Lưu ID của địa chỉ mặc định
 }
 
 export default function RegisterPage() {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<RegisterForm>();
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<RegisterForm>();
   const [error, setError] = useState<string>("");
   const router = useRouter();
   
-  const [cities, setCities] = useState<any[]>([]);
   const [districts, setDistricts] = useState<any[]>([]);
   const [wards, setWards] = useState<any[]>([]);
-  
-  const selectedCity = watch("address.city");
-  const selectedDistrict = watch("address.district");
+  const [zipCode, setZipCode] = useState<string>("");
+  const [isDefault, setIsDefault] = useState<boolean>(false);
 
+  const selectedDistrict = watch("address.0.district");
+
+  // Lấy dữ liệu chỉ của Hồ Chí Minh
   useEffect(() => {
-    fetch("https://provinces.open-api.vn/api/?depth=1")
-      .then(res => res.json())
-      .then(data => setCities(data));
+    axios.get("https://provinces.open-api.vn/api/?depth=3")
+      .then(res => {
+        const hcm = res.data.find((city: any) => city.name === "Thành phố Hồ Chí Minh");
+        if (hcm) setDistricts(hcm.districts);
+      })
+      .catch(err => console.error("Lỗi tải dữ liệu:", err));
   }, []);
-  
-  useEffect(() => {
-    if (selectedCity) {
-      fetch(`https://provinces.open-api.vn/api/p/${selectedCity}?depth=2`)
-        .then(res => res.json())
-        .then(data => setDistricts(data.districts || []));
-    }
-  }, [selectedCity]);
 
+  // Cập nhật danh sách phường/xã và mã ZIP khi chọn quận/huyện
   useEffect(() => {
     if (selectedDistrict) {
-      fetch(`https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`)
-        .then(res => res.json())
-        .then(data => setWards(data.wards || []));
+      const district = districts.find(d => d.name === selectedDistrict);
+      setWards(district ? district.wards : []);
+      setZipCode(district?.code || ""); // Mã ZIP từ API
+      setValue("address.0.zip", district?.code || ""); // Cập nhật giá trị zip vào form
     }
-  }, [selectedDistrict]);
+  }, [selectedDistrict, districts, setValue]);
 
   const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
     try {
-      const formattedData = {
-        ...data,
-        address: [{ ...data.address }],
-      };
+      const addressId = new Date().getTime().toString(); // Giả lập ID tạm thời
 
+      const formattedData: RegisterForm = { 
+        ...data, 
+        address: [{
+          ...data.address[0],
+          city: "Thành phố Hồ Chí Minh",
+          default: isDefault
+        }],
+        defaultAddress: null // Không gửi ID giả lập
+      };
+      
+  
       const res = await fetch("http://localhost:3001/api/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),
       });
-
+  
       const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Đăng kí thất bại!");
-
+  
       toast.success("Tạo tài khoản thành công!");
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+      setTimeout(() => router.push("/login"), 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Có lỗi xảy ra, vui lòng thử lại!");
     }
@@ -96,35 +104,43 @@ export default function RegisterPage() {
         <input type="password" placeholder="Mật khẩu" {...register("password", { required: "Mật khẩu là bắt buộc" })} className={styles.input} />
         {errors.password && <p className={styles.error}>{errors.password.message}</p>}
 
-        <input type="text" placeholder="Họ và tên" {...register("address.name", { required: "Tên là bắt buộc" })} className={styles.input} />
-        {errors.address?.name && <p className={styles.error}>{errors.address.name.message}</p>}
+        <h3 className={styles.subtitle}>Địa chỉ giao hàng</h3>
 
-        <input type="text" placeholder="Số điện thoại" {...register("address.phone", { required: "Số điện thoại là bắt buộc" })} className={styles.input} />
-        {errors.address?.phone && <p className={styles.error}>{errors.address.phone.message}</p>}
+        <input type="text" placeholder="Họ tên người nhận" {...register("address.0.name", { required: "Họ tên là bắt buộc" })} className={styles.input} />
+        {errors.address?.[0]?.name && <p className={styles.error}>{errors.address[0].name.message}</p>}
 
-        <input type="text" placeholder="Địa chỉ cụ thể" {...register("address.address", { required: "Địa chỉ là bắt buộc" })} className={styles.input} />
-        {errors.address?.address && <p className={styles.error}>{errors.address.address.message}</p>}
+        <input type="text" placeholder="Số điện thoại" {...register("address.0.phone", { required: "Số điện thoại là bắt buộc" })} className={styles.input} />
+        {errors.address?.[0]?.phone && <p className={styles.error}>{errors.address[0].phone.message}</p>}
 
-        <select {...register("address.city", { required: "Thành phố là bắt buộc" })} className={styles.input}>
-          <option value="">Chọn Thành phố</option>
-          {cities.map(city => <option key={city.code} value={city.code}>{city.name}</option>)}
-        </select>
-        {errors.address?.city && <p className={styles.error}>{errors.address.city.message}</p>}
+        <input type="text" placeholder="Công ty (nếu có)" {...register("address.0.company")} className={styles.input} />
 
-        <select {...register("address.district", { required: "Quận/Huyện là bắt buộc" })} className={styles.input}>
+        <input type="text" placeholder="Địa chỉ chi tiết" {...register("address.0.address", { required: "Địa chỉ chi tiết là bắt buộc" })} className={styles.input} />
+        {errors.address?.[0]?.address && <p className={styles.error}>{errors.address[0].address.message}</p>}
+
+        <input type="text" value="Thành phố Hồ Chí Minh" disabled className={styles.input} />
+
+        <select {...register("address.0.district", { required: "Vui lòng chọn Quận/Huyện" })} className={styles.input}>
           <option value="">Chọn Quận/Huyện</option>
-          {districts.map(district => <option key={district.code} value={district.code}>{district.name}</option>)}
+          {districts.map(district => <option key={district.code} value={district.name}>{district.name}</option>)}
         </select>
-        {errors.address?.district && <p className={styles.error}>{errors.address.district.message}</p>}
+        {errors.address?.[0]?.district && <p className={styles.error}>{errors.address[0].district.message}</p>}
 
-        <select {...register("address.ward", { required: "Phường/Xã là bắt buộc" })} className={styles.input}>
+        <select {...register("address.0.ward", { required: "Vui lòng chọn Phường/Xã" })} className={styles.input} disabled={!selectedDistrict}>
           <option value="">Chọn Phường/Xã</option>
-          {wards.map(ward => <option key={ward.code} value={ward.code}>{ward.name}</option>)}
+          {wards.map(ward => <option key={ward.code} value={ward.name}>{ward.name}</option>)}
         </select>
-        {errors.address?.ward && <p className={styles.error}>{errors.address.ward.message}</p>}
+        {errors.address?.[0]?.ward && <p className={styles.error}>{errors.address[0].ward.message}</p>}
 
-        <input type="text" placeholder="Mã bưu điện" {...register("address.zip", { required: "Mã bưu điện là bắt buộc" })} className={styles.input} />
-        {errors.address?.zip && <p className={styles.error}>{errors.address.zip.message}</p>}
+        <input type="text" value={zipCode} readOnly {...register("address.0.zip")} className={styles.input} />
+
+        <label className={styles.checkbox}>
+          <input 
+            type="checkbox" 
+            {...register("address.0.default")}
+            onChange={(e) => setIsDefault(e.target.checked)} 
+          />
+          Đặt làm địa chỉ mặc định
+        </label>
 
         <button type="submit" className={styles.button}>Đăng ký</button>
       </form>

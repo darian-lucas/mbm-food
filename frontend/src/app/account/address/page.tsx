@@ -46,24 +46,52 @@ export default function Address() {
 
     useEffect(() => {
         axios.get("https://provinces.open-api.vn/api/?depth=3")
-            .then(res => setCities(res.data))
+            .then(res => {
+                const data = res.data;
+                const hcmCity = data.find(city => city.name === "Thành phố Hồ Chí Minh"); // Tìm TP.HCM
+    
+                if (hcmCity) {
+                    setCities([hcmCity]); // Chỉ lưu TP.HCM
+                    setDistricts(hcmCity.districts); // Cập nhật danh sách quận/huyện
+    
+                    // Chọn quận mặc định (ví dụ: Quận 1)
+                    const defaultDistrict = hcmCity.districts[0]; // Quận đầu tiên trong danh sách
+                    setWards(defaultDistrict?.wards || []);
+    
+                    setFormData(prev => ({
+                        ...prev,
+                        city: hcmCity.name,
+                        district: defaultDistrict?.name || "",
+                        ward: "",
+                        zip: ""
+                    }));
+                }
+            })
             .catch(err => console.error("Lỗi tải tỉnh/thành:", err));
     }, []);
+    
+    
+    useEffect(() => {
+        if (formData.city) {
+            const selectedCity = cities.find(city => city.name === formData.city);
+            setDistricts(selectedCity?.districts || []);
+            setWards([]); // Reset phường/xã
+        }
+    }, [formData.city, cities]); // Theo dõi formData.city
 
-    const handleCityChange = (e) => {
-        const cityName = e.target.value;
-        const selectedCity = cities.find(city => city.name === cityName);
-        setDistricts(selectedCity?.districts || []);
-        setWards([]);
-        setFormData(prev => ({
-            ...prev,
-            city: cityName,
-            district: "",
-            ward: "",
-            zip: ""
-        }));
-    };
+    // const handleCityChange = () => {
+    //     setCities(cities.find(city => city.name === "Thành phố Hồ Chí Minh")?.districts || []);
+    //     setWards([]);
+    //     setFormData(prev => ({
+    //         ...prev,
+    //         city: "Thành phố Hồ Chí Minh",
+    //         district: "",
+    //         ward: "",
+    //         zip: ""
+    //     }));
+    // };
 
+    
     const handleDistrictChange = (e) => {
         const districtName = e.target.value;
         const selectedDistrict = districts.find(d => d.name === districtName);
@@ -75,7 +103,6 @@ export default function Address() {
             zip: ""
         }));
     };
-
     const handleWardChange = (e) => {
         const wardName = e.target.value;
         const selectedWard = wards.find(w => w.name === wardName);
@@ -101,6 +128,7 @@ export default function Address() {
 
         try {
             await addAddress(userId, [formData], token);
+            
             setMessage("Thêm địa chỉ thành công!");
             setShowModal(false);
             setFormData({
@@ -198,10 +226,9 @@ export default function Address() {
                             <input type="text" name="company" placeholder="Công ty (tùy chọn)" className="form-control" onChange={handleChange} value={formData.company} />
                             <input type="text" name="address" placeholder="Địa chỉ" className="form-control" onChange={handleChange} value={formData.address} />
                             <div className={styles.selectGroup}>
-                                <select name="city" className="form-control" onChange={handleCityChange} value={formData.city}>
-                                    <option value="">Chọn tỉnh/thành</option>
-                                    {cities.map(city => <option key={city.code} value={city.name}>{city.name}</option>)}
-                                </select>
+                            <input type="text" name="city" value="Thành phố Hồ Chí Minh" disabled className={styles.input} />
+
+
 
                                 <select name="district" className="form-control" onChange={handleDistrictChange} value={formData.district} disabled={!formData.city}>
                                     <option value="">Chọn quận/huyện</option>
@@ -215,6 +242,10 @@ export default function Address() {
 
                             </div>
                             <input type="text" name="zip" placeholder="Mã Zip" className="form-control" value={formData.zip} readOnly />
+                            <div className={styles.checkboxContainer}>
+                                <input type="checkbox" name="default" onChange={handleChange} />
+                                <label>Đặt là địa chỉ mặc định?</label>
+                            </div>
                             <button className={styles.confirmButton} onClick={handleUpdateAddress}>Cập nhật địa chỉ</button>
                         </div>
                     </div>
@@ -234,10 +265,8 @@ export default function Address() {
                             <input type="text" name="company" placeholder="Công ty (tùy chọn)" className="form-control" onChange={handleChange} />
                             <input type="text" name="address" placeholder="Địa chỉ" className="form-control" onChange={handleChange} />
                             <div className={styles.selectGroup}>
-                                <select name="city" className="form-control" onChange={handleCityChange} value={formData.city}>
-                                    <option value="">Chọn tỉnh/thành</option>
-                                    {cities.map(city => <option key={city.code} value={city.name}>{city.name}</option>)}
-                                </select>
+                            <input type="text" name="city" value="Thành phố Hồ Chí Minh" disabled className={styles.input} />
+
 
                                 <select name="district" className="form-control" onChange={handleDistrictChange} value={formData.district} disabled={!formData.city}>
                                     <option value="">Chọn quận/huyện</option>
