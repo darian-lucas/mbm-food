@@ -18,7 +18,7 @@ export default function Header(): JSX.Element {
     { href: "/contact", label: "Liên hệ" },
     { href: "/faq", label: "Câu hỏi thường gặp" },
     { href: "/storesystem", label: "Hệ thống cửa hàng" },
-    { href: "/dat-ban", label: "Đặt bàn" },
+    { href: "/booking", label: "Đặt bàn" },
   ];
 
   const productCategories = [
