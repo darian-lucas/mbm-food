@@ -94,9 +94,6 @@ const KhaiViList = () => {
   return (
     <div className={styles.container}>
       <section className={styles.sectionProduct}>
-        <div className={styles.titleModule}>
-          <h3><a href="">Khai Vị</a></h3>
-        </div>
         <div className={styles.rowFix}>
           {products.map((item) => (
             <div className={styles.colFix} key={item._id}>

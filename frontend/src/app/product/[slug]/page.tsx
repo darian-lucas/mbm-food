@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "../../../styles/ProductDetail.module.css";
 import useCart from "../../hooks/useCart";
+import PizzaList from "@/app/components/layout/PizzaList";
+import KhaiViList from "@/app/components/layout/KhaiviList";
+import MiyList from "@/app/components/layout/MiyList";
+import SaladList from "@/app/components/layout/SaladList";
 
 interface Variant {
   option: string;
@@ -34,6 +38,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
+  
   const couponConditions: Record<string, string> = {
     MBM20:
       "Áp dụng cho đơn hàng từ 200k trở lên. Không đi kèm với chương trình khác.",
@@ -85,7 +90,7 @@ const ProductDetail = () => {
 
   const handleClickAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (!product || !selectedVariant) return; // Kiểm tra nếu product hoặc selectedVariant bị null
+    if (!product || !selectedVariant) return; 
     handleAddToCart(product, selectedVariant, quantity);
   };
 
@@ -258,6 +263,26 @@ const ProductDetail = () => {
                   </div>
                 </form>
               </div>
+            </div>
+            <div className={styles.order_3}>
+              <div className={styles.product_lq}>
+                <h3 className={styles.title}>
+                  <a href="" className={styles.titleName} title="Món ăn liên quan">Món ăn liên quan</a>
+                  <div className={styles.fix_swipper_border}>
+                    <div className={styles.swiper_wrapper}>
+                    {product.idcate === "67b0a4fbb5a39baf9de368ff" && <PizzaList />}
+                    {product.idcate === "67b0a54db5a39baf9de36902" && <KhaiViList />}
+                    {product.idcate === "67b0a582b5a39baf9de36904" && <MiyList/>}
+                    {product.idcate === "67b0a5d2b5a39baf9de36907" && <SaladList/>}
+                    
+                    </div>
+                  </div>
+                </h3>
+              </div>
+            </div>
+            <div className="order_4">
+              <div className="blog"></div>
+              <a href=""></a>
             </div>
           </div>
         </div>
