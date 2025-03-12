@@ -11,6 +11,7 @@ interface Variant {
 }
 
 interface Product {
+  _id: string;
   id: string;
   name: string;
   description: string;
@@ -26,7 +27,6 @@ interface QuickViewProps {
 
 const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
-  const [selectedCrust, setSelectedCrust] = useState<string>("Đế dày");
   const [quantity, setQuantity] = useState<number>(1);
 
   useEffect(() => {
@@ -73,7 +73,17 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
               {/* Chọn kích thước */}
               {product.variants.some((v) => v.option.trim() !== "") && (
                 <div className={styles.swatch}>
-                  <p>Kích thước: <span>{selectedVariant.option}</span></p>
+                  <div className={styles.selectHeader}>
+                            <p>
+                              {product.idcate === "67b0a54db5a39baf9de36902"
+                                ? "Loại"
+                                : "Kích thước"}
+                              :{" "}
+                              <span>
+                                {selectedVariant?.option || "Chưa chọn"}
+                              </span>
+                            </p>
+                          </div>
                   <div className={styles.selectOption}>
                     {product.variants.map((variant) => (
                       <label key={variant.option}>
@@ -89,34 +99,6 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
                   </div>
                 </div>
               )}
-
-              {/* Chọn đế nếu là pizza */}
-              {product.idcate === "67b0a4fbb5a39baf9de368ff" && (
-                <div className={styles.swatch}>
-                  <p>Đế: <span>{selectedCrust}</span></p>
-                  <div className={styles.selectOption}>
-                    <label>
-                      <input
-                        type="radio"
-                        name="crust"
-                        checked={selectedCrust === "Đế dày"}
-                        onChange={() => setSelectedCrust("Đế dày")}
-                      />
-                      Đế dày
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="crust"
-                        checked={selectedCrust === "Đế mỏng"}
-                        onChange={() => setSelectedCrust("Đế mỏng")}
-                      />
-                      Đế mỏng
-                    </label>
-                  </div>
-                </div>
-              )}
-
               <label className={styles.labelNote}>Ghi chú</label>
               <input type="text" placeholder="Ghi chú món ăn" className={styles.inputNote} />
 
