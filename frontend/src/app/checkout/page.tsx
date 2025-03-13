@@ -22,7 +22,8 @@ interface User {
 }
 
 interface CartItem {
-  id_product: string;
+  id_product:string;
+  _id: string;
   name: string;
   size: string;
   price: number;
@@ -61,7 +62,7 @@ const CheckoutPage = () => {
       const cartData = localStorage.getItem("cart");
       if (cartData) {
         const parsedCart = JSON.parse(cartData).map((item: CartItem) => ({
-          id_product: item.id_product || "",
+          id_product: item._id,
           name: item.name || "Sản phẩm không có tên",
           size: item.size || "Mặc định",
           price: item.price || 0,
@@ -74,19 +75,21 @@ const CheckoutPage = () => {
     fetchCart();
   }, []);
   
+  
   // Tính tổng tiền
   const totalAmount = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
   const finalAmount = totalAmount - discount; // Tổng tiền sau giảm giá
+  
   // Xử lý áp dụng mã giảm giá
   const handleApplyDiscount = async () => {
     if (!discountCode) {
       toast.error("Vui lòng nhập mã giảm giá!");
       return;
     }
-  
+    
     try {
       const response = await fetch(`http://localhost:3001/api/coupons`);
       if (!response.ok) throw new Error("Không thể lấy dữ liệu mã giảm giá!");
@@ -138,12 +141,23 @@ const CheckoutPage = () => {
       toast.error("Không thể áp dụng mã giảm giá!");
     }
   };
-  
-  
 
   const handleOrder = async () => {
     if (!user) {
       toast.error("Vui lòng đăng nhập để đặt hàng!");
+      return;
+    }
+
+    const paymentMethods = [
+      { name: 'Tiền mặt', value: 'cash' }, 
+      { name: 'Momo', value: 'momo' },
+      { name: 'VNPay', value: 'vnpay' },
+    ];
+  
+    const selectedPaymentMethod = paymentMethods.find(method => method.value === paymentMethod);
+  
+    if (!selectedPaymentMethod) {
+      toast.error("Phương thức thanh toán không hợp lệ!");
       return;
     }
 
@@ -152,40 +166,42 @@ const CheckoutPage = () => {
       email: user.email,
       address: user.address[0]?.address || "",
       phone: user.address[0]?.phone || "",
-      id_payment_method: paymentMethod,
+      paymentMethod: selectedPaymentMethod.value,
       products: cart.map((item) => ({
         id_product: item.id_product || "",
-        name: item.name || "Sản phẩm chưa có tên",
+        name: item.name,
         quantity: item.quantity,
         price: item.price,
       })),
       order_code: `ORD${Date.now()}`,
-      total_amount: finalAmount, // Áp dụng giá trị đã giảm giá
-      discount_code: discountCode, // Lưu mã giảm giá
-      discount_value: discount, // Lưu giá trị giảm giá
+      total_payment: finalAmount,
+      discount_code: discountCode,
+      discount_value: discount,
       note: "Không có ghi chú",
       name: user.address[0]?.name || "",
       receive_address: user.address[0]?.address || "",
+      total_amount: totalAmount,
     };
-
+    console.log('Dữ liệu trả về ',orderData);
+    console.log("Cart:", cart);
     try {
       const response = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
-
+  
       const responseData = await response.json();
       if (!response.ok) {
         throw new Error(responseData.error || "Đặt hàng thất bại!");
       }
-
+  
       await fetch("http://localhost:3001/api/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email, orderData }),
       });
-
+  
       toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
       localStorage.removeItem("cart");
       setCart([]);
@@ -195,7 +211,7 @@ const CheckoutPage = () => {
       toast.error(`Lỗi đặt hàng: ${errMessage}`);
     }
   };
-
+  
   return (
     <div className={styles.container}>
       <div className={styles.checkoutForm}>
