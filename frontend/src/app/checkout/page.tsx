@@ -5,6 +5,7 @@ import styles from "../../styles/CheckoutPage.module.css";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 interface Address {
   name: string;
@@ -38,6 +39,7 @@ const CheckoutPage = () => {
   const [discountCode, setDiscountCode] = useState("");
   const [discount, setDiscount] = useState(0); // Lưu giá trị giảm giá
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -192,7 +194,7 @@ const CheckoutPage = () => {
         quantity: item.quantity,
         price: item.price,
       })),
-      order_code: `ORD${Date.now()}`,
+      order_code: `MBM${Date.now()}`,
       total_payment: finalAmount,
       discount_code: discountCode,
       discount_value: discount,
@@ -201,8 +203,14 @@ const CheckoutPage = () => {
       receive_address: user.address[0]?.address || "",
       total_amount: totalAmount,
     };
-    // console.log('Dữ liệu trả về ',orderData);
-    // console.log("Cart:", cart);
+    console.log('Dữ liệu trả về ',orderData);
+    console.log("Cart:", cart);
+    // Lưu vào localStorage
+    localStorage.setItem("orderData", JSON.stringify(orderData));
+
+    // Điều hướng đến trang thành công
+    router.push("/success");
+    
     try {
       const response = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
@@ -224,6 +232,7 @@ const CheckoutPage = () => {
       toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
       localStorage.removeItem("cart");
       setCart([]);
+      
     } catch (error) {
       const errMessage = (error as Error).message || "Đặt hàng thất bại!";
       console.error("⚠️ Lỗi khi đặt hàng:", errMessage);
