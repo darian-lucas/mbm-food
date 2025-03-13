@@ -92,16 +92,18 @@ class OrderController {
         }
     }
 
-    async updateOrderStatus(req, res) {
+      async updateOrderStatus(req, res)  {
         try {
-            const { status } = req.body;
-            const updatedOrder = await OrderService.updateOrderStatus(req.params.id, status);
-            if (!updatedOrder) return res.status(404).json({ message: 'Order not found' });
-            res.status(200).json(updatedOrder);
+          const { id } = req.params;
+          const { status } = req.body;
+      
+          const updatedOrder = await OrderService.updateOrderStatus(id, status);
+      
+          res.status(200).json(updatedOrder);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+          res.status(400).json({ message: error.message });
         }
-    }
+      };
 
     async deleteOrder(req, res) {
         try {
