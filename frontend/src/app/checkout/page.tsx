@@ -147,6 +147,25 @@ const CheckoutPage = () => {
       toast.error("Vui lòng đăng nhập để đặt hàng!");
       return;
     }
+    if (discountCode) {
+      try {
+        const response = await fetch("http://localhost:3001/api/coupons/apply-coupon", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: discountCode }),
+        });
+    
+        const data = await response.json();
+        if (!response.ok) {
+          console.error("⚠️ Lỗi:", data.message);
+        } else {
+          console.log("✅ Mã giảm giá áp dụng thành công:", data);
+        }
+      } catch (error) {
+        console.error("⚠️ Lỗi khi áp dụng mã giảm giá:", error);
+      }
+    }
+    
 
     const paymentMethods = [
       { name: 'Tiền mặt', value: 'cash' }, 
@@ -182,8 +201,8 @@ const CheckoutPage = () => {
       receive_address: user.address[0]?.address || "",
       total_amount: totalAmount,
     };
-    console.log('Dữ liệu trả về ',orderData);
-    console.log("Cart:", cart);
+    // console.log('Dữ liệu trả về ',orderData);
+    // console.log("Cart:", cart);
     try {
       const response = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
