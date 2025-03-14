@@ -1,5 +1,5 @@
 "use client";
-import styles from "@/styles/Home.module.css";
+import styles from "../../styles/Product.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import "swiper/css";
@@ -41,7 +41,7 @@ export default function PageProduct(): JSX.Element {
       {/* Danh mục nổi bật */}
       <section className={styles.section}>
         <h2 className={styles.titlelitter}>Nổi Bật</h2>
-        <h2 className={styles.title}>Danh mục nổi bật</h2>
+        <h2 className={styles.title1}>Danh mục nổi bật</h2>
         <div className={styles.categoryList}>
           {categories.slice(0, 4).map((category) => (
             <Link key={category._id} href="#" className={styles.categoryLink}>
@@ -58,10 +58,45 @@ export default function PageProduct(): JSX.Element {
           ))}
         </div>
       </section>
-        <PizzaList/>
-        <KhaiviList/>
-        <MiyList/>
-        <SaladList/>
+        <div className={styles.container}>
+          <div className={styles.section_product}>
+            <div className={styles.titleModule}>
+              <h3>
+                <a href="">Pizza</a>
+              </h3>
+            </div>
+            <PizzaList/>
+          </div>
+
+          <div className={styles.section_product}>
+            <div className={styles.titleModule}>
+              <h3>
+                <a href="">Khai vị</a>
+              </h3>
+            </div>
+            <KhaiviList/>
+          </div>
+
+          <div className={styles.section_product}>
+            <div className={styles.titleModule}>
+              <h3>
+                <a href="">Mì ý</a>
+              </h3>
+            </div>
+            <MiyList/>
+          </div>
+
+          <div className={styles.section_product}>
+            <div className={styles.titleModule}>
+              <h3>
+                <a href="">Salad</a>
+              </h3>
+            </div>
+            <SaladList/>
+          </div>
+          
+        </div>
+      
     </main>
   );
 }

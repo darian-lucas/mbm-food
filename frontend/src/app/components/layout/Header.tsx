@@ -4,12 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getFavorites } from "@/services/Favorite";
+import countCart from "../../hooks/countCart";
 
 export default function Header(): JSX.Element {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
   const [showProductMenu, setShowProductMenu] = useState<boolean>(false);
   const [favoriteCount, setFavoriteCount] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const cartCount = countCart();
   const menuItems = [
     { href: "/", label: "Trang chủ" },
     { href: "/product", label: "Sản phẩm", isDropdown: true },
@@ -28,15 +30,16 @@ export default function Header(): JSX.Element {
     { href: "/product/salad", label: "Salad" },
     { href: "/product/nuoc-uong", label: "Nước Uống" },
   ];
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
   
+  useEffect(() => {
     const checkAuth = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
   
+    // Kiểm tra ngay khi component render
+    checkAuth();
+  
+    // Theo dõi sự thay đổi của localStorage
     window.addEventListener("storage", checkAuth);
   
     return () => {
@@ -44,6 +47,7 @@ export default function Header(): JSX.Element {
     };
   }, []);
   
+
   useEffect(() => {
     const fetchFavorites = async () => {
       const token = localStorage.getItem("token");
@@ -58,9 +62,10 @@ export default function Header(): JSX.Element {
         }
       }
     };
-  
+
     fetchFavorites();
-  }, []); 
+    
+  }, []);
   // Xử lí dăng xuất !
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -189,7 +194,7 @@ export default function Header(): JSX.Element {
               width={30}
               height={30}
             />
-            <span className={styles.cartBadge}>0</span>
+            <span className={styles.cartBadge}>{cartCount}</span>
           </Link>
         </div>
         <div className={styles.icons}>

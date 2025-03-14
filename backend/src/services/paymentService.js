@@ -25,10 +25,23 @@ const deletePaymentMethod = async (id) => {
     if (!deletedPayment) throw new Error('Không tìm thấy phương thức thanh toán');
     return deletedPayment;
 };
-
+const updatePaymentStatus = async (paymentId, status) => {
+    return await PaymentMethod.findByIdAndUpdate(
+        paymentId,
+        { status },
+        { new: true }
+    );
+};
+const getPaymentMethodById = async (id) => {
+    const payment = await PaymentMethod.findById(id);
+    if (!payment) throw new Error('Không tìm thấy phương thức thanh toán');
+    return payment;
+};
 module.exports = {
     getAllPaymentMethods,
     createPaymentMethod,
     updatePaymentMethod,
-    deletePaymentMethod
+    deletePaymentMethod,
+    updatePaymentStatus,
+    getPaymentMethodById
 };

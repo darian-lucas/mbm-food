@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Heart } from "lucide-react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import QuickView from "../layout/QuickView";
 import styles from "../../../styles/ProductList.module.css";
-import { addFavorite, removeFavorite, checkFavorite } from "@/services/Favorite";
+import {
+  addFavorite,
+  removeFavorite,
+  checkFavorite,
+} from "@/services/Favorite";
 
 interface Variant {
   option: string;
@@ -33,6 +38,7 @@ const PizzaList = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const [token, setToken] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -86,43 +92,21 @@ const PizzaList = () => {
       toast.error("⚠ Có lỗi xảy ra, vui lòng thử lại!");
     }
   };
-  // const addToCart = (product: Product) => {
-  //   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  
-  //   // Kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa
-  //   const existingIndex = cart.findIndex((item: any) => item._id === product._id);
-  
-  //   if (existingIndex !== -1) {
-  //     cart[existingIndex].quantity += 1;
-  //   } else {
-  //     cart.push({
-  //       _id: product._id,
-  //       name: product.name,
-  //       slug: product.slug,
-  //       image: product.variants[0].image,
-  //       price: product.variants[0].price,
-  //       quantity: 1,
-  //     });
-  //   }
-  
-  //   // Lưu lại vào localStorage
-  //   localStorage.setItem("cart", JSON.stringify(cart));
-  //   toast.success("Đã thêm vào giỏ hàng!");
-  // };
+
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
   return (
     <div className={styles.container}>
       <section className={styles.sectionProduct}>
-        <div className={styles.titleModule}>
-          <h3><a href="">Pizza</a></h3>
-        </div>
         <div className={styles.rowFix}>
           {products.map((item) => (
             <div className={styles.colFix} key={item._id}>
               <div className={styles.productAction}>
                 <div className={styles.productThumnail}>
-                  <Link href={`/product/${item.slug}`} className={styles.imageThum}>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    className={styles.imageThum}
+                  >
                     <Image
                       className={styles.img}
                       src={`${API_URL}/images/${item.variants[0].image}`}
@@ -145,7 +129,10 @@ const PizzaList = () => {
 
                 <div className={styles.productInfo}>
                   <h3 className={styles.productName}>
-                    <Link href={`/product/${item.slug}`} className={styles.productName}>
+                    <Link
+                      href={`/product/${item.slug}`}
+                      className={styles.productName}
+                    >
                       {item.name}
                     </Link>
                   </h3>
@@ -158,9 +145,15 @@ const PizzaList = () => {
                   </div>
                   <div className={styles.groupForm}>
                     <div className={styles.priceBox}>
-                      <span>Giá chỉ từ: </span> {item.variants[0].price.toLocaleString()}₫
+                      <span>Giá chỉ từ: </span>{" "}
+                      {item.variants[0].price.toLocaleString()}₫
                     </div>
-                    <button className={styles.add} >Thêm</button>
+                    <button
+                      className={styles.add}
+                      onClick={() => setSelectedProduct(item)}
+                    >
+                      Thêm
+                    </button>
                   </div>
                 </div>
               </div>
@@ -168,6 +161,13 @@ const PizzaList = () => {
           ))}
         </div>
       </section>
+
+      {selectedProduct && (
+        <QuickView
+          product={{ ...selectedProduct, id: selectedProduct._id }}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 };

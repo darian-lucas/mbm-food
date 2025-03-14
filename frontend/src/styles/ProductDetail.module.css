@@ -336,3 +336,46 @@
   color: #e31837;
   font-size: 16px;
 }
+.code{
+  color: #e31837;
+}
+.order_3{
+  flex: 0 0 75%;
+        max-width: 75%;
+        order: 3;
+        position: relative;
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+}
+.product_lq{
+  margin-top: 30px;
+    background: #fff;
+    border-radius: 15px;
+}
+.titleName{
+  font-size: 24px;
+  position: relative;
+  display: block;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #006a31;
+}
+.fix_swipper_border{
+  margin: -2px;
+  overflow: hidden;
+  padding: 2px;
+
+    position: relative;
+    list-style: none;
+    z-index: 1;
+}
+.swiper_wrapper{
+  position: relative; 
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  transition-property: transform;
+  box-sizing: content-box;
+}

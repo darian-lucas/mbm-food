@@ -40,6 +40,8 @@ const Login = () => {
       // Lưu token và userId vào localStorage
       localStorage.setItem("token", result.token);
       localStorage.setItem("userId", result.userId);
+      window.dispatchEvent(new Event("storage"));
+
       // Lưu thông tin user vào localStorage sau khi đăng nhập thành công
       localStorage.setItem(
         "user",

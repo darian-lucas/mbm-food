@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../../../styles/ProductList.module.css";
 import { addFavorite, removeFavorite, checkFavorite } from "@/services/Favorite";
+import QuickView from "../layout/QuickView";
 
 interface Variant {
   option: string;
@@ -33,6 +34,7 @@ const MiyList = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const [token, setToken] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -92,9 +94,6 @@ const MiyList = () => {
   return (
     <div className={styles.container}>
       <section className={styles.sectionProduct}>
-        <div className={styles.titleModule}>
-          <h3><a href="">Mì Ý</a></h3>
-        </div>
         <div className={styles.rowFix}>
           {products.map((item) => (
             <div className={styles.colFix} key={item._id}>
@@ -138,7 +137,12 @@ const MiyList = () => {
                     <div className={styles.priceBox}>
                       <span>Giá chỉ từ: </span> {item.variants[0].price.toLocaleString()}₫
                     </div>
-                    <button className={styles.add}>Thêm</button>
+                    <button
+                      className={styles.add}
+                      onClick={() => setSelectedProduct(item)}
+                    >
+                      Thêm
+                    </button>
                   </div>
                 </div>
               </div>
@@ -146,6 +150,12 @@ const MiyList = () => {
           ))}
         </div>
       </section>
+      {selectedProduct && (
+        <QuickView
+          product={{ ...selectedProduct, id: selectedProduct._id }}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
       <ToastContainer position="top-right" autoClose={2000} />
     </div>
   );

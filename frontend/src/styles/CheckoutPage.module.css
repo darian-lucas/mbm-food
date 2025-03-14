@@ -1,109 +1,89 @@
 .container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .checkoutForm {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .formGroup {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .formGroup label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .formGroup input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #f9f9f9;
-  }
-  
-  .paymentMethod {
-    margin-top: 20px;
-  }
-  
-  .paymentMethod h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .paymentMethod label {
-    display: block;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-  
-  .paymentMethod input {
-    margin-right: 10px;
-  }
-  
-  .couponSection {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-  }
-  
-  .couponSection input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .couponSection button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .couponSection button:hover {
-    background-color: #0056b3;
-  }
-  
-  .totalPrice {
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
-  
-  .checkoutButton {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #28a745;
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  .checkoutButton:hover {
-    background-color: #218838;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  max-width: 1300px;
+  margin: auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+.checkoutForm, .orderSummary {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkoutForm {
+  flex: 1;
+}
+
+.orderSummary {
+  width: 400px;
+}
+
+.formLabel {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+.formInput, .formSelect {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.orderItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.itemImage {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+
+.price {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.applyBtn, .orderBtn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.applyBtn {
+  background: #3498db;
+  color: white;
+}
+
+.orderBtn {
+  background: #27ae60;
+  color: white;
+}
+.paymentOptions {
+  margin-top: 20px;
+}
+
+.paymentTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.paymentOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
