@@ -1,15 +1,54 @@
 const OrderService = require('../services/orderService');
 
+
 class OrderController {
+    
     async createOrder(req, res) {
         try {
-            const {order_code, id_user, id_coupon, id_employee, id_payment_method, total_amount, address, note, phone, name, receive_address, products } = req.body;
-            const order = await OrderService.createOrder({order_code, id_user, id_coupon, id_employee, id_payment_method, total_amount, address, note, phone, name, receive_address }, products);
-            res.status(201).json({ message: 'Order created successfully', order });
+            const {
+                order_code,
+                id_user,
+                id_coupon,
+                id_payment_method,
+                total_amount,
+                total_payment,
+                address,
+                note,
+                phone,
+                name,
+                receive_address,
+                products,
+                paymentData 
+            } = req.body;
+    
+            console.log("📌 Dữ liệu nhận từ client:", req.body); // Kiểm tra dữ liệu đầu vào
+    
+            // Gọi service để tạo Order
+            const result = await OrderService.createOrder(
+                { order_code, 
+                    id_user, 
+                    id_coupon, 
+                    id_payment_method, 
+                    total_amount, 
+                    total_payment, 
+                    address, 
+                    note, 
+                    phone, 
+                    name, 
+                    receive_address 
+                },
+                products,
+                paymentData
+            );
+    
+            res.status(201).json({ message: "Order created successfully", result });
         } catch (error) {
+            console.error("❌ Lỗi khi tạo đơn hàng:", error); // In lỗi chi tiết
             res.status(500).json({ error: error.message });
         }
     }
+    
+    
     async updateOrder(req, res) {
         try {
             console.log("Dữ liệu nhận từ client:", req.body);
@@ -53,16 +92,18 @@ class OrderController {
         }
     }
 
-    async updateOrderStatus(req, res) {
+      async updateOrderStatus(req, res)  {
         try {
-            const { status } = req.body;
-            const updatedOrder = await OrderService.updateOrderStatus(req.params.id, status);
-            if (!updatedOrder) return res.status(404).json({ message: 'Order not found' });
-            res.status(200).json(updatedOrder);
+          const { id } = req.params;
+          const { status } = req.body;
+      
+          const updatedOrder = await OrderService.updateOrderStatus(id, status);
+      
+          res.status(200).json(updatedOrder);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+          res.status(400).json({ message: error.message });
         }
-    }
+      };
 
     async deleteOrder(req, res) {
         try {

@@ -20,6 +20,7 @@ import {
 import { incrementView } from "@/services/incrementView";
 import { toast } from "react-toastify";
 import Banner from "./banner/banner";
+import QuickView from "./components/layout/QuickView";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -59,7 +60,7 @@ export default function Home(): JSX.Element {
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
-
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
   //   {}
   // );
@@ -432,12 +433,17 @@ export default function Home(): JSX.Element {
                       {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
                     </span>
                   </div>
-                  <button className={styles.addButton}>Thêm</button>
+                  <button 
+                    className={styles.addButton}
+                    onClick={() => setSelectedProduct(food)}
+                  >Thêm</button>
                 </div>
               </SwiperSlide>
             ))}
         </Swiper>
+        
       </section>
+      
       {/* Chương trình khuyến mãi */}
       <section className={styles.section}>
         {/* Tiêu đề nhỏ "Chương trình" */}
@@ -549,7 +555,10 @@ export default function Home(): JSX.Element {
                           : `${variant.price.toLocaleString()}đ`}
                       </span>
                     </div>
-                    <button className={styles.discountAddButton}>Thêm</button>
+                    <button 
+                    className={styles.discountAddButton}
+                    onClick={() => setSelectedProduct(item)}
+                    >Thêm</button>
                   </div>
                 </div>
               );
@@ -629,8 +638,10 @@ export default function Home(): JSX.Element {
                         {item.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
                       </span>
                     </div>
-                    <button className={styles.bestSellingAddButton}>
-                      Thêm
+                    <button 
+                      className={styles.bestSellingAddButton}
+                      onClick={() => setSelectedProduct(item)}
+                      >Thêm
                     </button>
                   </div>
                 </div>
@@ -735,7 +746,10 @@ export default function Home(): JSX.Element {
                         >
                           Xem thêm
                         </Link>
-                        <button className={styles.menufoodAdd}>Thêm</button>
+                        <button 
+                          className={styles.menufoodAdd}
+                          onClick={() => setSelectedProduct(item)}
+                          >Thêm</button>
                       </div>
                     </div>
                     <button
@@ -901,6 +915,12 @@ export default function Home(): JSX.Element {
           />
         </div>
       </section>
+      {selectedProduct && (
+        <QuickView
+          product={{ ...selectedProduct, id: selectedProduct._id }}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </main>
   );
 }

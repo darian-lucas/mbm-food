@@ -27,6 +27,6 @@ router.put('/:id/status', updateStatusCoupon);
 
 router.put('/update-statuses', updateAllCouponStatus);
 
-router.post('/apply-coupon',applyCoupon);
+router.patch('/apply-coupon',applyCoupon);
 
 module.exports = router;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getFavorites } from "@/services/Favorite";
 import { useRouter } from "next/navigation";
+import countCart from "../../hooks/countCart";
 
 export default function Header(): JSX.Element {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
@@ -64,6 +65,7 @@ export default function Header(): JSX.Element {
     setShowResults(false); 
   };
 
+  const cartCount = countCart();
   const menuItems = [
     { href: "/", label: "Trang chủ" },
     { href: "/product", label: "Sản phẩm", isDropdown: true },
@@ -91,12 +93,22 @@ export default function Header(): JSX.Element {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
 
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
+  
+    // Kiểm tra ngay khi component render
+    checkAuth();
+  
+    // Theo dõi sự thay đổi của localStorage
     window.addEventListener("storage", checkAuth);
 
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
   }, []);
+  
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -114,6 +126,7 @@ export default function Header(): JSX.Element {
     };
 
     fetchFavorites();
+    
   }, []);
   // Xử lí dăng xuất !
   const handleLogout = () => {
@@ -331,7 +344,7 @@ export default function Header(): JSX.Element {
               width={30}
               height={30}
             />
-            <span className={styles.cartBadge}>0</span>
+            <span className={styles.cartBadge}>{cartCount}</span>
           </Link>
         </div>
         <div className={styles.icons}>

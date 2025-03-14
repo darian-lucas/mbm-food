@@ -26,5 +26,28 @@ const getAllOrders = async () => {
         return [];
     }
 };
+const updateOrderStatus = async (orderId: string, data: { status: string }) => {
+    try {
+        const response = await fetch(`http://localhost:3001/api/orders/${orderId}/status`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
 
-export default { getOrdersByUserId, getAllOrders };
+        if (!response.ok) {
+            throw new Error(`Lỗi cập nhật trạng thái: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
+        return null; // Tránh quăng lỗi không kiểm soát
+    }
+};
+
+  
+
+  
+export default { getOrdersByUserId, getAllOrders,updateOrderStatus };

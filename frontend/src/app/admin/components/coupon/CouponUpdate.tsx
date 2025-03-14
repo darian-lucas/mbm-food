@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { TCreateCouponParams } from "../../types";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   code: z.string().min(3, "Mã giảm giá phải có ít nhất 3 ký tự"),
@@ -34,6 +35,7 @@ const formSchema = z.object({
   start_date: z.date(),
   end_date: z.date(),
   quantity: z.string().optional(),
+  description: z.string().optional(),
 });
 
 function CouponUpdate() {
@@ -52,6 +54,7 @@ function CouponUpdate() {
       start_date: new Date(),
       end_date: new Date(),
       quantity: "0",
+      description: "",
     },
   });
 
@@ -76,8 +79,8 @@ function CouponUpdate() {
           start_date: new Date(res.data.start_date),
           end_date: new Date(res.data.end_date),
           quantity: res.data.quantity.toString(),
+          description: res.data.description,
         });
-
       } catch (error) {
         console.error(error);
         toast.error("Lỗi khi tải thông tin mã giảm giá");
@@ -98,6 +101,7 @@ function CouponUpdate() {
         start_date: values.start_date,
         end_date: values.end_date,
         quantity: parseFloat(values.quantity || "0"),
+        description: values.description || "",
       };
 
       if (!couponId) {
@@ -234,6 +238,23 @@ function CouponUpdate() {
                 <FormLabel>Số lượng mã *</FormLabel>
                 <FormControl>
                   <Input placeholder="Nhập số lượng" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả mã giảm giá</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Nhập mô tả..."
+                    {...field}
+                    className="h-[250px]"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
