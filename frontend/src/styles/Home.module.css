@@ -32,6 +32,8 @@
   width: 250px;
 }
 
+
+
 .bannerImage {
   width: 1280px;
   height: 500px;
@@ -563,7 +565,8 @@
   text-overflow: ellipsis;
   max-width: 100%;
   display: block;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .discountItem h3:hover {
