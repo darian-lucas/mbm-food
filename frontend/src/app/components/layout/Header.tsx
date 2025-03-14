@@ -88,11 +88,8 @@ export default function Header(): JSX.Element {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
-
-    const checkAuth = () => {
-      setIsLoggedIn(!!localStorage.getItem("token"));
-    };
-
+  }, []);
+  
   useEffect(() => {
     const checkAuth = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
@@ -103,11 +100,12 @@ export default function Header(): JSX.Element {
   
     // Theo dõi sự thay đổi của localStorage
     window.addEventListener("storage", checkAuth);
-
+  
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
   }, []);
+  
   
 
   useEffect(() => {
