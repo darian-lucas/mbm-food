@@ -17,10 +17,10 @@ export default function SearchPage() {
   const searchTerm = searchParams.get("query") || "";
   const [searchResults, setSearchResults] = useState<{
     products: any[];
-    news: any[];
+    // news: any[];
   }>({
     products: [],
-    news: [],
+    // news: [],
   });
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function SearchPage() {
         const data = await response.json();
         setSearchResults({
           products: data.products || [],
-          news: data.news || [],
+          // news: data.news || [],
         });
       } catch (error) {
         console.error("Lỗi tìm kiếm:", error);
@@ -185,7 +185,7 @@ export default function SearchPage() {
           </div>
         )}
 
-        {searchResults.news.length > 0 && (
+        {/* {searchResults.news.length > 0 && (
           <div className={styles.resultCategory}>
             <h3>📰 Tin tức</h3>
             <div className={styles.grid}>
@@ -208,9 +208,9 @@ export default function SearchPage() {
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
-        {searchResults.products.length === 0 && searchResults.news.length === 0}
+        {searchResults.products.length === 0}
       </div>
     </div>
   );

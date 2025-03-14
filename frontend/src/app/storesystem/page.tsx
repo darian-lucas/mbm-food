@@ -12,8 +12,8 @@ export default function Storesystem(){
     
     // Danh sách cửa hàng mẫu
     const storeList = [
-        { name: "MBM Sài Gòn", address: "Tầng 3, 70 Lữ Gia, Phường 15, Quận 11, Thành phố Hồ Chí Minh", city: "Hồ Chí Minh", phone: "19005236" },
-        { name: "MBM Nguyễn Văn Cừ", address: "25 Nguyễn Văn Cừ, Phường Cầu Kho, Quận 1, TP. Hồ Chí Minh", city: "Hồ Chí Minh", phone: "19005236" },
+        { name: "MBM Sài Gòn", address: "số 184, đường Lê Đại Hành, phường 15, Quận 11, TP. Hồ Chí Minh", city: "Hồ Chí Minh", phone: "19005236" },
+        { name: "MBM Lý Thường Kiệt", address: "153 Lý Thường Kiệt, phường 7, Quận 11, TP. Hồ Chí Minh", city: "Hồ Chí Minh", phone: "19005236" },
         { name: "MBM Hoàng Hoa Thám", address: "189 Hoàng Hoa Thám, Phường 6, Quận Bình Thạnh, TP. Hồ Chí Minh", city: "Hồ Chí Minh", phone: "19005236" },
         { name: "MBM Lê Văn Sỹ", address: "72 Lê Văn Sỹ, Phường 14, Quận 3, TP. Hồ Chí Minh", city: "Hồ Chí Minh", phone: "19005236" }
     ];
