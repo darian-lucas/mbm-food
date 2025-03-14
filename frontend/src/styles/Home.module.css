@@ -111,7 +111,7 @@
   align-items: center;
   justify-content: center;
   gap: 30px;
-  max-width: 1500px;
+  max-width: 1310px;
   width: 100%;
   margin: 0 auto;
 }
@@ -360,12 +360,11 @@
   transform: translateX(-50%);
 }
 
-.customSwiper .swiper-wrapper {
+.customSwiper :global .swiper-wrapper {
   width: auto !important;
-  max-width: 100% !important;
-  display: flex;
+  max-width: 1260px !important;
+  /* display: flex; */
   flex-wrap: nowrap;
-
 }
 
 .customSwiper .swiper-slide {
@@ -375,8 +374,7 @@
 }
 
 .customSwiper {
-  margin-left: 100px !important;
-  margin-right: 100px !important;
+  max-width: 1300px !important;
   height: 250px !important;
 }
 
