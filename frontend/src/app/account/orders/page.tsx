@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import orderService from "../../admin/services/OrderServices";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import Swal from "sweetalert2";
 export default function AddressTable() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -29,6 +29,19 @@ export default function AddressTable() {
     };
 
     const cancelOrder = async (orderId: string) => {
+        const result = await Swal.fire({
+            title: "Bạn có chắc chắn muốn hủy đơn hàng này?",
+            text: "Hành động này không thể hoàn tác!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Có, hủy đơn!",
+            cancelButtonText: "Không",
+        });
+    
+        if (!result.isConfirmed) return;
+    
         try {
             await orderService.updateOrderStatus(orderId, { status: "canceled" });
             setOrders((prevOrders) =>
@@ -36,11 +49,13 @@ export default function AddressTable() {
                     order._id === orderId ? { ...order, status: "canceled" } : order
                 )
             );
+            Swal.fire("Đã hủy!", "Đơn hàng của bạn đã được hủy.", "success");
         } catch (error) {
             console.error("Lỗi khi hủy đơn hàng:", error);
-            alert("Có lỗi xảy ra, vui lòng thử lại!");
+            Swal.fire("Lỗi!", "Có lỗi xảy ra, vui lòng thử lại.", "error");
         }
     };
+    
 
     if (loading) return <p>Loading...</p>;
     if (!orders.length) return <p>Không tìm thấy đơn hàng nào!</p>;
@@ -48,7 +63,7 @@ export default function AddressTable() {
     return (
         <div >
             <h5>ĐƠN HÀNG CỦA BẠN</h5>
-            <table className="table table-bordered table-danger mt-3">
+            <table className="table table-bordered table-danger mt-3 text-center justify-content-center">
                 <thead>
                     <tr>
                         <th>Mã đơn hàng</th>
