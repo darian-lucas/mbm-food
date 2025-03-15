@@ -52,13 +52,17 @@ const createRegister = async (data: TCreateRegisterParams) => {
       },
       body: JSON.stringify(data),
     });
+    
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
     }
+    
     const result = await response.json();
     return result;
   } catch (error) {
     console.error("Lỗi khi fetch dữ liệu:", error);
+    throw error; 
   }
 };
 
@@ -66,6 +70,6 @@ const BookingServices = {
   getAllTables,
   getTableById,
   createRegister,
-  getUserById
+  getUserById,
 };
 export default BookingServices;

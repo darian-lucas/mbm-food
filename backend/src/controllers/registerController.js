@@ -6,11 +6,6 @@ exports.createRegister = async (req, res) => {
   try {
     const registerData = req.body;
     
-    // Thêm id của người dùng hiện tại nếu không được cung cấp
-    if (!registerData.id_user && req.user) {
-      registerData.id_user = req.user.id;
-    }
-    
     const newRegister = await registerService.createRegister(registerData);
     
     return res.status(201).json({
@@ -91,77 +86,17 @@ exports.getRegistersByUser = async (req, res) => {
   }
 };
 
-// Cập nhật đơn đăng ký
-exports.updateRegister = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-    
-    const updatedRegister = await registerService.updateRegister(id, updateData);
-    
-    return res.status(200).json({
-      success: true,
-      message: 'Cập nhật đăng ký thành công',
-      data: updatedRegister
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-
 // Hủy đơn đăng ký
-exports.cancelRegister = async (req, res) => {
+exports.updateRegisterStatus = async (req, res) => {
   try {
     const { id } = req.params;
     
-    const cancelledRegister = await registerService.cancelRegister(id);
+    const cancelledRegister = await registerService.updateRegisterStatus(id);
     
     return res.status(200).json({
       success: true,
       message: 'Hủy đăng ký thành công',
       data: cancelledRegister
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-
-// Hoàn thành đơn đăng ký (khách hàng đã dùng xong)
-exports.completeRegister = async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    const completedRegister = await registerService.completeRegister(id);
-    
-    return res.status(200).json({
-      success: true,
-      message: 'Hoàn thành đăng ký thành công, bàn đã được giải phóng',
-      data: completedRegister
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-
-// Xóa đơn đăng ký
-exports.deleteRegister = async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    const result = await registerService.deleteRegister(id);
-    
-    return res.status(200).json({
-      success: true,
-      ...result
     });
   } catch (error) {
     return res.status(400).json({

@@ -186,10 +186,10 @@ const TableManage = () => {
                     </TableCell>
                     <TableCell className="font-medium px-2">
                       <div className="flex gap-3">
-                        <Link href={`/admin/manage/table/update?id=${table._id}`} className="text-blue-500">
+                        <Link href={`/admin/manage/table/update?id=${table._id}`}  className={commonClassNames.action}>
                           <IconEdit />
                         </Link>
-                        <button onClick={() => handleDeleteTable(table._id)} className="text-red-500">
+                        <button onClick={() => handleDeleteTable(table._id)}  className={commonClassNames.action}>
                           <IconDelete />
                         </button>
                       </div>

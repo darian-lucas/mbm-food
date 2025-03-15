@@ -5,9 +5,9 @@ const registerSchema = new Schema(
   {
     id_user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     id_table: { type: Schema.Types.ObjectId, ref: "Table", required: true },
-    start_time: { type: Date, required: true },
+    start_time: { type: String, required: true },
     create_at: { type: Date, required: true },
-    status: { type: String, required: true, enum: ["Pending", "Confirmed", "Cancelled"], default: "Pending" },
+    status: { type: String, required: true, enum: ["Confirmed","Completed", "Cancelled"], default: "Confirmed" },
   }
 );
 

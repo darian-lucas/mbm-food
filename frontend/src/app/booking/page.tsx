@@ -1,5 +1,5 @@
 "use client";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Breadcrum from "@/components/common/Breadcrum";
 import BookingServices from "@/services/Booking";
 import { TCreateRegisterParams } from "@/types/enum";
@@ -43,36 +43,36 @@ const Booking = () => {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const tables = await BookingServices.getAllTables();
-          setDataTable(tables);
-    
-          if (token) {
-            const decodedToken = jwtDecode(token); 
-            const userId = (decodedToken as { userId: string })?.userId; 
-    
-            if (userId) {
-              const user = await BookingServices.getUserById(userId);
-              console.log("🚀 ~ fetchData ~ user:", user);
-              setUserData(user);
-    
-              setFormData((prev) => ({
-                ...prev,
-                name: user.address[0].name || "",
-                email: user.email || "",
-                phone: user.address[0].phone || "",
-              }));
-            }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const tables = await BookingServices.getAllTables();
+        setDataTable(tables);
+
+        if (token) {
+          const decodedToken = jwtDecode(token);
+          const userId = (decodedToken as { userId: string })?.userId;
+
+          if (userId) {
+            const user = await BookingServices.getUserById(userId);
+            console.log("🚀 ~ fetchData ~ user:", user);
+            setUserData(user);
+
+            setFormData((prev) => ({
+              ...prev,
+              name: user.address[0].name || "",
+              email: user.email || "",
+              phone: user.address[0].phone || "",
+            }));
           }
-        } catch (error) {
-          console.error("Error fetching data:", error);
         }
-      };
-    
-      fetchData();
-    }, [token]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -85,7 +85,7 @@ const Booking = () => {
   const handleTableSelection = (tableId: string) => {
     const table = dataTable.find((table) => table._id === tableId);
     if (table?.status === "Reserved") {
-      return; // Không cho phép chọn bàn đã được đặt
+      return;
     }
     setSelectedTable(tableId);
   };
@@ -116,21 +116,17 @@ const Booking = () => {
     try {
       setLoading(true);
 
-      // Kết hợp ngày và giờ thành một chuỗi thời gian
-      // const startTime = `${formData.bookingDate}T${formData.bookingTime}:00`;
       const creatAt = formData.bookingDate;
       const startTime = formData.bookingTime;
 
-      // Chuẩn bị dữ liệu theo cấu trúc API
       const registerData: TCreateRegisterParams = {
         id_user: userData._id,
         id_table: selectedTable,
         start_time: startTime,
         create_at: creatAt,
-        status: "Pending", // Mặc định là Pending
+        status: "Confirmed",
       };
 
-      // Gửi yêu cầu đặt bàn
       await BookingServices.createRegister(registerData);
 
       // Cập nhật lại trạng thái bàn trong danh sách
@@ -215,7 +211,7 @@ const Booking = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       className="w-full p-2 rounded-md bg-white text-black outline-none"
-                      disabled={!!userData}
+                      
                     />
                   </div>
                   <div>
@@ -229,7 +225,7 @@ const Booking = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       className="w-full p-2 rounded-md bg-white text-black outline-none"
-                      disabled={!!userData}
+                     
                     />
                   </div>
                 </div>

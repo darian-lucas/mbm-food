@@ -12,8 +12,8 @@ exports.getAllTables = async (req, res, next) => {
 
 exports.createTable = async (req, res) => {
   try {
-    let { position,status,name } = req.body;
-    const result = await tableServices.createTable(position,status,name);
+    let { position, status, name } = req.body;
+    const result = await tableServices.createTable(position, status, name);
 
     res.status(200).json({ success: true, data: result });
   } catch (error) {
@@ -40,11 +40,23 @@ exports.updateTable = async (req, res, next) => {
     if (!existingTable) {
       return res.status(404).json({ error: "Table not found" });
     }
-    const result = await tableServices.updateTable(
-      id,
-      position, status, name
-    );
-    res.status(200).json({success:true, data: result });
+    const result = await tableServices.updateTable(id, position, status, name);
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
+exports.updateTableStatus = async (req, res, next) => {
+  try {
+    let { id } = req.params;
+    let { status } = req.body;
+    const existingTable = await tableServices.getByIdTable(id);
+    if (!existingTable) {
+      return res.status(404).json({ error: "Table not found" });
+    }
+    const result = await tableServices.updateTableStatus(id, status);
+    res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
