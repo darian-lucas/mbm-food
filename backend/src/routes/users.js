@@ -12,11 +12,14 @@ const {
     findUserByName, 
     findUserById,
     updateAddress,
-    toggleActiveStatus
+    toggleActiveStatus,
+    forgotPassword,
+    resetPassword
 } = require('../controllers/userController');
 
 const router = express.Router();
-
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 // Đăng ký
 router.post('/register', register);
 
