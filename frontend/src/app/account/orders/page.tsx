@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import orderService from "../../admin/services/OrderServices";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from "sweetalert2";
+
 export default function AddressTable() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -20,7 +21,14 @@ export default function AddressTable() {
     const fetchOrders = async (userId: string) => {
         try {
             const data = await orderService.getOrdersByUserId(userId);
-            setOrders(data.orders || []);
+
+            // ✅ Ghép orderDetails vào từng order
+            const ordersWithDetails = data.orders.map(order => ({
+                ...order,
+                details: data.orderDetails.filter(detail => detail.id_order === order._id) || []
+            }));
+
+            setOrders(ordersWithDetails);
         } catch (err) {
             console.error("Lỗi khi lấy đơn hàng:", err);
         } finally {
@@ -39,9 +47,9 @@ export default function AddressTable() {
             confirmButtonText: "Có, hủy đơn!",
             cancelButtonText: "Không",
         });
-    
+
         if (!result.isConfirmed) return;
-    
+
         try {
             await orderService.updateOrderStatus(orderId, { status: "canceled" });
             setOrders((prevOrders) =>
@@ -55,15 +63,14 @@ export default function AddressTable() {
             Swal.fire("Lỗi!", "Có lỗi xảy ra, vui lòng thử lại.", "error");
         }
     };
-    
 
     if (loading) return <p>Loading...</p>;
     if (!orders.length) return <p>Không tìm thấy đơn hàng nào!</p>;
 
     return (
-        <div >
+        <div>
             <h5>ĐƠN HÀNG CỦA BẠN</h5>
-            <table className="table table-bordered table-danger mt-3 text-center justify-content-center">
+            <table className="table table-bordered table-danger mt-3 text-center">
                 <thead>
                     <tr>
                         <th>Mã đơn hàng</th>
@@ -71,8 +78,7 @@ export default function AddressTable() {
                         <th>Email</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ nhận</th>
-                        <th>Ghi chú</th>
-                        <th>Ngày đặt</th>
+                        <th>Đơn hàng của người dùng</th>
                         <th>Trạng thái</th>
                         <th>Tổng tiền</th>
                         <th>Thao tác</th>
@@ -86,14 +92,31 @@ export default function AddressTable() {
                             <td>{order.id_user?.email || "N/A"}</td>
                             <td>{order.phone || "N/A"}</td>
                             <td>{order.receive_address || "N/A"}</td>
-                            <td>{order.note || "Không có ghi chú"}</td>
-                            <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                            <td>
+                                {order.details.length > 0 ? (
+                                    <ul className="text-left p-0">
+                                        {order.details.map((item, index) => {
+                                            const product = item.id_product;
+                                            const price = item.price || product?.variants?.[0]?.price || 0; // ✅ Ưu tiên item.price trước
+                                            return (
+                                                <li key={index}>
+                                                    <strong>{product?.name || "Sản phẩm không xác định"}</strong>
+                                                    <br />
+                                                    Số lượng: {item.quantity}
+                                                    <br />
+                                                    Giá: {price.toLocaleString("vi-VN")} VND
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                ) : "Không có sản phẩm"}
+                            </td>
                             <td>
                                 <span className={`badge ${order.status === "pending" ? "bg-warning" : order.status === "shipped" ? "bg-primary" : order.status === "delivered" ? "bg-success" : "bg-danger"}`}>
                                     {order.status}
                                 </span>
                             </td>
-                            <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
+                            <td>{order.total_amount?.toLocaleString("vi-VN") || "0"} VND</td>
                             <td>
                                 {["pending", "shipped"].includes(order.status) && (
                                     <button

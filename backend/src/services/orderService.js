@@ -73,13 +73,8 @@ class OrderService {
             const paymentMethod = orderData.payment_method || "cash"; // Mặc định là 'cash' nếu không có giá trị
 
             const fullPaymentData = {
-                name: orderData.name, // Tên người nhận
-                userId: orderData.id_user, // ID người dùng
-                orderId: savedOrder._id, // ID đơn hàng vừa tạo
-                amount: orderData.total_payment, // Tổng số tiền thanh toán
-                currency: "VND", // Đơn vị tiền tệ (giá trị mặc định)
-                method: paymentMethod, // Phương thức thanh toán (có thể là cash, momo, vnpay)
-                status: "pending" // Trạng thái mặc định
+                payment_name: paymentMethod, // cash, momo, vnpay
+                status: "pending", // Trạng thái mặc định
 
             };
 
