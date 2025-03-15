@@ -25,7 +25,8 @@ class OrderController {
     
             // Gọi service để tạo Order
             const result = await OrderService.createOrder(
-                { order_code, 
+                { 
+                    order_code, 
                     id_user, 
                     id_coupon, 
                     id_payment_method, 

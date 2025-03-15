@@ -4,21 +4,6 @@ const PaymentMethod = require("../models/PaymentMethod");
 const mongoose = require("mongoose");
 
 class OrderService {
-    // async generateOrderCode() {
-    //     let orderCode;
-    //     let isUnique = false;
-
-    //     while (!isUnique) {
-    //         const randomNum = Math.floor(100000 + Math.random() * 900000); // 6 chữ số
-    //         orderCode = `MBM-${randomNum}`;
-    //         const existingOrder = await Order.findOne({ order_code: orderCode });
-    //         if (!existingOrder) {
-    //             isUnique = true;
-    //         }
-    //     }
-
-    //     return orderCode;
-    // }
     async updateOrder(orderId, updateData) {
         try {
             // Cập nhật thông tin Order
@@ -50,7 +35,7 @@ class OrderService {
         }
     }
 
-    async createOrder(orderData, products, paymentData) {
+    async createOrder(orderData, products) {
         const session = await mongoose.startSession();
         console.log("🟢 Bắt đầu session:", session.id);
 
@@ -63,14 +48,14 @@ class OrderService {
                 throw new Error("Thiếu order_code từ frontend");
             }
             console.log("📌 Mã đơn hàng từ frontend:", orderData.order_code);
-    
+            console.log("📌 Kiểm tra paymentMethod trong orderData:", orderData.paymentMethod);
             // **Tạo đơn hàng**
             const order = new Order(orderData);
             const savedOrder = await order.save({ session });
             console.log("✅ Đơn hàng được tạo:", savedOrder._id);
 
             // **Xử lý phương thức thanh toán**
-            const paymentMethod = orderData.payment_method || "cash"; // Mặc định là 'cash' nếu không có giá trị
+            const Method = orderData.paymentMethod;
     
             const fullPaymentData = {
                 name: orderData.name, // Tên người nhận
@@ -78,7 +63,7 @@ class OrderService {
                 orderId: savedOrder._id, // ID đơn hàng vừa tạo
                 amount: orderData.total_payment, // Tổng số tiền thanh toán
                 currency: "VND", // Đơn vị tiền tệ
-                method: paymentMethod, // cash, momo, vnpay
+                method: Method, // cash, momo, vnpay
                 status: "pending" // Trạng thái mặc định
             };
     

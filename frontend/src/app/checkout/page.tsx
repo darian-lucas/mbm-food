@@ -40,13 +40,14 @@ const CheckoutPage = () => {
   const [discount, setDiscount] = useState(0); // Lưu giá trị giảm giá
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   const router = useRouter();
+  
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const userId = localStorage.getItem("userId");
         if (!userId) return;
-
+        
         const response = await fetch(
           `http://localhost:3001/api/user/${userId}`
         );
@@ -168,7 +169,6 @@ const CheckoutPage = () => {
       }
     }
     
-
     const paymentMethods = [
       { name: 'Tiền mặt', value: 'cash' }, 
       { name: 'Momo', value: 'momo' },
@@ -188,6 +188,7 @@ const CheckoutPage = () => {
       address: user.address[0]?.address || "",
       phone: user.address[0]?.phone || "",
       paymentMethod: selectedPaymentMethod.value,
+      
       products: cart.map((item) => ({
         id_product: item.id_product || "",
         name: item.name,
@@ -200,6 +201,7 @@ const CheckoutPage = () => {
       discount_value: discount,
       note: "Không có ghi chú",
       name: user.address[0]?.name || "",
+      // method : name,
       receive_address: user.address[0]?.address || "",
       total_amount: totalAmount,
     };
@@ -207,32 +209,56 @@ const CheckoutPage = () => {
     console.log("Cart:", cart);
     // Lưu vào localStorage
     localStorage.setItem("orderData", JSON.stringify(orderData));
-
-    // Điều hướng đến trang thành công
-    router.push("/success");
     
-    try {
-      const response = await fetch("http://localhost:3001/api/orders", {
+     try {
+      const orderResponse = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
-  
-      const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(responseData.error || "Đặt hàng thất bại!");
+
+      const orderResponseData = await orderResponse.json();
+
+      console.log("Dữ liệu của orderResponseData", orderResponseData);
+      if (!orderResponse.ok) {
+        throw new Error(orderResponseData.error || "Đặt hàng thất bại!");
       }
-  
+
+      if (selectedPaymentMethod.value === "momo") {
+        // Gọi API tạo thanh toán MoMo
+        const momoResponse = await fetch("http://localhost:3001/api/payments/momo/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: orderResponseData.id_user,
+            order_code: orderResponseData.result.order.order_code, 
+            amount: finalAmount
+          }),
+        });
+        
+        const momoData = await momoResponse.json();
+        console.log("Dữ liệu của momoResponse", momoData);
+        if (!momoResponse.ok) {
+          throw new Error(momoData.message || "Lỗi khi tạo thanh toán Momo!");
+        }
+
+        // Chuyển hướng đến cổng thanh toán MoMo
+        window.location.href = momoData.payUrl;
+        return;
+      }
+
       await fetch("http://localhost:3001/api/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email, orderData }),
       });
-  
+
       toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
       localStorage.removeItem("cart");
       setCart([]);
-      
+
+      router.push("/success");
+
     } catch (error) {
       const errMessage = (error as Error).message || "Đặt hàng thất bại!";
       console.error("⚠️ Lỗi khi đặt hàng:", errMessage);

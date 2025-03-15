@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Order {
-  orderId: string;
+  order_code: string;
   id_user: string;
   email: string;
   address: string;
   phone: string;
   paymentMethod: string;
-  order_code: string;
+  orderId: string;
   total_payment: number;
   total_amount: number;
   discount_code: string;

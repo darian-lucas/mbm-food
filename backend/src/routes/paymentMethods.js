@@ -8,4 +8,7 @@ router.post('/', paymentMethodController.create);
 router.patch('/:id', paymentMethodController.update);
 router.delete('/:id', paymentMethodController.remove);
 router.put("/:paymentId", paymentMethodController.payOrder);
+
+router.post("/momo/", paymentMethodController.createMomoPayment);
+router.post("/momo/callback", paymentMethodController.momoCallback);
 module.exports = router;

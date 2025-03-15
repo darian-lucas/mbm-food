@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
 const PaymentMethodSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order", required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    amount: { type: Number, required: true },
-    currency: { type: String, required: true, default: "VND" },
+    // name: { type: String, required: true },
+    // orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order", required: true },
+    // userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    // amount: { type: Number, required: true },
+    // currency: { type: String, required: true, default: "VND" },
 
-    method: { 
+    name: { 
         type: String, 
         enum: ["cash", "momo", "vnpay"], 
         required: true 
@@ -18,8 +18,6 @@ const PaymentMethodSchema = new mongoose.Schema({
         enum: ["pending", "completed", "failed", "refunded"], 
         default: "pending" 
     },
-
-    createdAt: { type: Date, default: Date.now }
-});
+},{timestamps: true});
 
 module.exports = mongoose.model("PaymentMethod", PaymentMethodSchema);
