@@ -109,7 +109,10 @@ const FavoritePage = () => {
                 {product.variants[0]?.image && (
                   <div className={`${styles.productImageWrapper}`}>
                     <Image
-                      src={product.variants[0].image.startsWith("http") ? product.variants[0].image : `/images/${product.variants[0].image}`}
+                      src={product.variants[0].image.startsWith("http")
+                        ? product.variants[0].image
+                        : `http://localhost:3001/images/${product.variants[0].image}`
+                      }                   
                       alt={product.name}
                       width={300}
                       height={300}
