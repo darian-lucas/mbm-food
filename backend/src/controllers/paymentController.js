@@ -90,6 +90,33 @@ const getAll = async (req, res) => {
 };
 
 // Thêm phương thức thanh toán
+const createPaymentMethod = async(req, res) =>{
+    try {
+        const method = await paymentMethodService.createPaymentMethod(req.body);
+        res.status(201).json(method);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+// update phương thức thanh toán : 
+const updatePaymentMethod = async (req, res) => {
+    try {
+        const updatedMethod = await paymentMethodService.updatePaymentMethod(req.params.id, req.body);
+        if (!updatedMethod) return res.status(404).json({ message: "Payment method not found" });
+        res.status(200).json(updatedMethod);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+// xóa phương thức thanh toán:
+const deletePaymentMethod = async (req, res) => {
+    try {
+        const deletedMethod = await paymentMethodService.deletePaymentMethod(req.params.id);
+        if (!deletedMethod) return res.status(404).json({ message: "Payment method not found" });
+        res.status(200).json({ message: "Deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
-
-module.exports = { getAll , createMomoPayment, momoCallback };
+module.exports = { getAll , createMomoPayment, momoCallback , createPaymentMethod, updatePaymentMethod, deletePaymentMethod };

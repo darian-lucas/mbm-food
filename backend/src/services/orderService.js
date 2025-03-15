@@ -47,28 +47,17 @@ class OrderService {
             if (!orderData.order_code) {
                 throw new Error("Thiếu order_code từ frontend");
             }
+
+            if (!orderData.paymentMethod) {
+                throw new Error("Thiếu phương thức thanh toán từ frontend");
+            }
+
             console.log("📌 Mã đơn hàng từ frontend:", orderData.order_code);
             console.log("📌 Kiểm tra paymentMethod trong orderData:", orderData.paymentMethod);
             // **Tạo đơn hàng**
             const order = new Order(orderData);
             const savedOrder = await order.save({ session });
             console.log("✅ Đơn hàng được tạo:", savedOrder._id);
-
-            // **Xử lý phương thức thanh toán**
-            const Method = orderData.paymentMethod;
-    
-            const fullPaymentData = {
-                payment_name: paymentMethod, // cash, momo, vnpay
-                status: "pending", // Trạng thái mặc định
-
-            };
-    
-            console.log("📌 Dữ liệu thanh toán trước khi lưu:", fullPaymentData);
-
-            // **Tạo phương thức thanh toán**
-            const payment = new PaymentMethod(fullPaymentData);
-            const savedPayment = await payment.save({ session });
-            console.log("✅ Phương thức thanh toán được tạo:", savedPayment._id);
 
             // **Tạo chi tiết đơn hàng**
             const orderDetails = products.map(product => ({
@@ -82,20 +71,12 @@ class OrderService {
             await OrderDetail.insertMany(orderDetails, { session });
             console.log("✅ Chi tiết đơn hàng được tạo:", orderDetails.length, "mục");
 
-            // **Cập nhật ID phương thức thanh toán vào đơn hàng**
-            await Order.updateOne(
-                { _id: savedOrder._id },
-                { id_payment_method: savedPayment._id },
-                { session }
-            );
-            console.log("✅ Đã cập nhật phương thức thanh toán vào đơn hàng");
-
             // **Commit transaction**
             await session.commitTransaction();
             console.log("🎉 Transaction commit thành công!");
 
             session.endSession();
-            return { order: savedOrder, payment: savedPayment };
+            return { order: savedOrder};
         } catch (error) {
             console.error("❌ Lỗi! Rollback transaction:", error);
             await session.abortTransaction();

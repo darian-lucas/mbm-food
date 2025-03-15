@@ -6,42 +6,15 @@ class OrderController {
     async createOrder(req, res) {
         try {
             const {
-                order_code,
-                id_user,
-                id_coupon,
-                id_payment_method,
-                total_amount,
-                total_payment,
-                address,
-                note,
-                phone,
-                name,
-                receive_address,
                 products,
-                paymentData,
-                
             } = req.body;
-    
+
             console.log("📌 Dữ liệu nhận từ client:", req.body); // Kiểm tra dữ liệu đầu vào
-    
+
             // Gọi service để tạo Order
             const result = await OrderService.createOrder(
-                { 
-                    order_code, 
-                    id_user, 
-                    id_coupon, 
-                    id_payment_method, 
-                    total_amount, 
-                    total_payment, 
-                    address, 
-                    note, 
-                    phone, 
-                    name, 
-                    receive_address,
-                    
-                },
-                products,
-                paymentData
+                req.body, // Pass the entire req.body as orderData
+                products
             );
     
             res.status(201).json({ message: "Order created successfully", result });
@@ -146,3 +119,4 @@ class OrderController {
 }
 
 module.exports = new OrderController();
+
