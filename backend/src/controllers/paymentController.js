@@ -53,4 +53,26 @@ const remove = async (req, res) => {
     }
 };
 
-module.exports = { getAll, create, update, remove };
+
+const payOrder = async (req, res) => {
+    try {
+        const payment = await paymentMethodService.updatePaymentStatus(req.params.paymentId, "completed");
+        if (!payment) return res.status(404).json({ success: false, message: "Không tìm thấy payment" });
+
+        res.json({ success: true, message: "Thanh toán thành công!", payment });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Lỗi khi cập nhật payment" });
+    }
+};
+const getPaymentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const payment = await paymentMethodService.getPaymentMethodById(id);
+        res.status(200).json(payment);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
+
+module.exports = { getAll, create, update, remove,payOrder,getPaymentById };

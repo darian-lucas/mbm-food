@@ -134,6 +134,7 @@ export default function Address() {
             setFormData({
                 name: "", phone: "", company: "", address: "", city: "", district: "", ward: "", zip: "", default: false
             });
+            window.location.reload();
         } catch (error) {
             setMessage("Lỗi: " + error.message);
             console.log([formData])
@@ -155,6 +156,7 @@ export default function Address() {
             await updateAddress(user._id, selectedAddress._id, formData, token);
             setMessage("Cập nhật địa chỉ thành công!");
             setShowUpdateModal(false);
+            window.location.reload();
         } catch (error) {
             setMessage("Lỗi: " + error.message);
         }
