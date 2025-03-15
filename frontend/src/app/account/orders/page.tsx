@@ -20,18 +20,7 @@ export default function AddressTable() {
     const fetchOrders = async (userId: string) => {
         try {
             const data = await orderService.getOrdersByUserId(userId);
-            if (data.orders.length > 0) {
-                const updatedOrders = await Promise.all(
-                    data.orders.map(async (order) => {
-                        if (order.id_payment_method?._id) {
-                            const paymentStatus = await fetchPaymentStatus(order.id_payment_method._id);
-                            return { ...order, payment_status: paymentStatus };
-                        }
-                        return { ...order, payment_status: "pending" };
-                    })
-                );
-                setOrders(updatedOrders);
-            }
+            setOrders(data.orders || []);
         } catch (err) {
             console.error("Lỗi khi lấy đơn hàng:", err);
         } finally {
@@ -39,36 +28,16 @@ export default function AddressTable() {
         }
     };
 
-    const fetchPaymentStatus = async (paymentId: string) => {
+    const cancelOrder = async (orderId: string) => {
         try {
-            const response = await fetch(`http://localhost:3001/api/payments/${paymentId}`);
-            const data = await response.json();
-            return data.status || "pending";
+            await orderService.updateOrderStatus(orderId, { status: "canceled" });
+            setOrders((prevOrders) =>
+                prevOrders.map((order) =>
+                    order._id === orderId ? { ...order, status: "canceled" } : order
+                )
+            );
         } catch (error) {
-            console.error("Lỗi khi lấy trạng thái thanh toán:", error);
-            return "pending";
-        }
-    };
-
-    const handlePayment = async (paymentId: string) => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/payments/${paymentId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                alert("Thanh toán thành công!");
-                const userId = localStorage.getItem("userId");
-                if (userId) {
-                    fetchOrders(userId); // Fetch lại danh sách đơn hàng để cập nhật trạng thái
-                }
-            } else {
-                alert("Thanh toán thất bại: " + data.message);
-            }
-        } catch (error) {
-            console.error("Lỗi khi thanh toán:", error);
+            console.error("Lỗi khi hủy đơn hàng:", error);
             alert("Có lỗi xảy ra, vui lòng thử lại!");
         }
     };
@@ -77,7 +46,7 @@ export default function AddressTable() {
     if (!orders.length) return <p>Không tìm thấy đơn hàng nào!</p>;
 
     return (
-        <div>
+        <div >
             <h5>ĐƠN HÀNG CỦA BẠN</h5>
             <table className="table table-bordered table-danger mt-3">
                 <thead>
@@ -91,7 +60,7 @@ export default function AddressTable() {
                         <th>Ngày đặt</th>
                         <th>Trạng thái</th>
                         <th>Tổng tiền</th>
-                        <th>Thanh toán</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,20 +74,18 @@ export default function AddressTable() {
                             <td>{order.note || "Không có ghi chú"}</td>
                             <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                             <td>
-                                <span className={`badge bg-${order.status === "pending" ? "warning" : "success"}`}>
+                                <span className={`badge ${order.status === "pending" ? "bg-warning" : order.status === "shipped" ? "bg-primary" : order.status === "delivered" ? "bg-success" : "bg-danger"}`}>
                                     {order.status}
                                 </span>
                             </td>
                             <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
                             <td>
-                                {order.payment_status === "completed" ? (
-                                    <span className="badge bg-success">Đã thanh toán</span>
-                                ) : (
+                                {["pending", "shipped"].includes(order.status) && (
                                     <button
-                                        className="btn btn-primary btn-sm"
-                                        onClick={() => handlePayment(order.id_payment_method?._id)}
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => cancelOrder(order._id)}
                                     >
-                                        Thanh toán
+                                        Hủy đơn
                                     </button>
                                 )}
                             </td>

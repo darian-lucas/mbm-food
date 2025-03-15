@@ -1,0 +1,88 @@
+.tableContainer {
+    width: 100%;
+  
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th,
+  .table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top; /* Chữ nằm trên */
+  }
+  
+  .table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+  }
+  
+  .expandBtn,
+  .collapseBtn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 5px;
+  }
+  
+  .expandBtn:hover,
+  .collapseBtn:hover {
+    text-decoration: underline;
+  }
+  
+ 
+  .statusBtn {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .statusBtn:disabled {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+  }
+  
+  .statusBtn:not(:disabled):hover {
+    filter: brightness(1.1);
+  }
+  .statusText {
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    min-width: 70px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    border: 1px solid;
+  }
+  
+  .statusPending {
+    color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .statusShipped {
+    color: #ffc107;
+    border-color: #ffc107;
+  }
+  
+  .statusDelivered {
+    color: #28a745;
+    border-color: #28a745;
+  }
+  
+  .statusCanceled {
+    color: #dc3545;
+    border-color: #dc3545;
+  }
+  

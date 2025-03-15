@@ -26,7 +26,7 @@ export default function AccountPage() {
     }
 
     return (
-        <div className="container">
+        <div className="" style={{ maxWidth: "1300px" }}>
             <h5 className="fw-bold text-uppercase mb-3">Thông tin tài khoản</h5>
             {user ? (
                 <>
