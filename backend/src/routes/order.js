@@ -9,4 +9,5 @@ router.get('/:id', OrderController.getOrderById);
 router.delete('/:id', OrderController.deleteOrder);
 router.put('/:orderId', OrderController.updateOrder);
 router.put("/:id/status", OrderController.updateOrderStatus);
+router.put("/:orderId/update-time", OrderController.updateOrderTime);
 module.exports = router;

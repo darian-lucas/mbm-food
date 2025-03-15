@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     avatar: { type: String, default: '' },
     role: { type: String, default: 'user', enum: ['user', 'admin'] },
-    address: { type: [addressSchema], default: [] },
-    defaultAddress: { type: mongoose.Schema.Types.ObjectId, default: null }, // Lưu ObjectId của địa chỉ mặc định
+    address: { type: [addressSchema], default: [],required: false },
+    defaultAddress: { type: mongoose.Schema.Types.ObjectId, default: null, }, // Lưu ObjectId của địa chỉ mặc định
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 

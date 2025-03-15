@@ -58,13 +58,9 @@ class OrderService {
             const Method = orderData.paymentMethod;
     
             const fullPaymentData = {
-                name: orderData.name, // Tên người nhận
-                userId: orderData.id_user, // ID người dùng
-                orderId: savedOrder._id, // ID đơn hàng vừa tạo
-                amount: orderData.total_payment, // Tổng số tiền thanh toán
-                currency: "VND", // Đơn vị tiền tệ
-                method: Method, // cash, momo, vnpay
-                status: "pending" // Trạng thái mặc định
+                payment_name: paymentMethod, // cash, momo, vnpay
+                status: "pending", // Trạng thái mặc định
+
             };
     
             console.log("📌 Dữ liệu thanh toán trước khi lưu:", fullPaymentData);
@@ -146,47 +142,64 @@ class OrderService {
     }
 
 
-     async updateOrderStatus(id, status) {
+    async updateOrderStatus(id, status) {
         if (!["pending", "shipped", "delivered", "canceled"].includes(status)) {
-          throw new Error("Trạng thái không hợp lệ");
+            throw new Error("Trạng thái không hợp lệ");
         }
-      
+
         const updatedOrder = await Order.findByIdAndUpdate(id, { status }, { new: true });
-      
+
         if (!updatedOrder) {
-          throw new Error("Không tìm thấy đơn hàng");
+            throw new Error("Không tìm thấy đơn hàng");
         }
-      
+
         return updatedOrder;
-      };
-    
+    };
+
 
     async deleteOrder(orderId) {
-    const order = await Order.findByIdAndDelete(orderId);
-    if (order) {
-        await OrderDetail.deleteMany({ id_order: orderId });
+        const order = await Order.findByIdAndDelete(orderId);
+        if (order) {
+            await OrderDetail.deleteMany({ id_order: orderId });
+        }
+        return order;
     }
-    return order;
-}
     async getOrdersByUserId(userId) {
-    try {
-        const orders = await Order.find({ id_user: userId })
-            .populate("id_user", "username email")
+        try {
+            const orders = await Order.find({ id_user: userId })
+                .populate("id_user", "username email")
 
-            .populate("id_payment_method", "method")
-            .sort({ createdAt: -1 });
+                .populate("id_payment_method", "method")
+                .sort({ createdAt: -1 });
 
-        const orderIds = orders.map(order => order._id);
-        const orderDetails = await OrderDetail.find({ id_order: { $in: orderIds } })
-            .populate("id_product", "name price");
+            const orderIds = orders.map(order => order._id);
+            const orderDetails = await OrderDetail.find({ id_order: { $in: orderIds } })
+                .populate("id_product", "name price");
 
-        return { orders, orderDetails };
-    } catch (error) {
-        throw new Error("Lỗi khi lấy đơn hàng của user: " + error.message);
+            return { orders, orderDetails };
+        } catch (error) {
+            throw new Error("Lỗi khi lấy đơn hàng của user: " + error.message);
+        }
     }
-}
-    
-    
+
+    async updateOrderTime(orderId, newCreatedAt) {
+        try {
+            const updatedOrder = await Order.findByIdAndUpdate(
+                orderId,
+                { createdAt: new Date(newCreatedAt) },
+                { new: true }
+            );
+
+            if (!updatedOrder) {
+                throw new Error("Không tìm thấy đơn hàng");
+            }
+
+            return updatedOrder;
+        } catch (error) {
+            throw new Error("Lỗi khi cập nhật thời gian đơn hàng: " + error.message);
+        }
+    }
+
 }
 
 module.exports = new OrderService();

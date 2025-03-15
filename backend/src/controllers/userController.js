@@ -189,7 +189,30 @@ const toggleActiveStatus = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-
+// Gửi email quên mật khẩu
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+      const result = await authService.sendResetPasswordEmail(email);
+      res.json({ message: result });
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  };
+  
+  // Xử lý reset mật khẩu
+  const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+    console.log("Mật khẩu mới nhận được:", newPassword);
+    try {
+      const result = await authService.resetPassword(token, newPassword);
+      res.json({ message: result });
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  };
 module.exports = { 
     toggleActiveStatus,
     getAllUsers, 
@@ -202,6 +225,8 @@ module.exports = {
     logout, 
     updatePassword, 
     addAddress,
-    updateAddress 
+    updateAddress,
+    forgotPassword,
+    resetPassword
 };
 

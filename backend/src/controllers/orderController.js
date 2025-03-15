@@ -18,7 +18,8 @@ class OrderController {
                 name,
                 receive_address,
                 products,
-                paymentData 
+                paymentData,
+                
             } = req.body;
     
             console.log("📌 Dữ liệu nhận từ client:", req.body); // Kiểm tra dữ liệu đầu vào
@@ -36,7 +37,8 @@ class OrderController {
                     note, 
                     phone, 
                     name, 
-                    receive_address 
+                    receive_address,
+                    
                 },
                 products,
                 paymentData
@@ -115,12 +117,29 @@ class OrderController {
             res.status(500).json({ error: error.message });
         }
     }
-      async getOrdersByUserId(req, res) {
+    async getOrdersByUserId(req, res) {
         try {
             const { userId } = req.params;
             const data = await OrderService.getOrdersByUserId(userId);
             res.json(data);
         } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    };
+    async updateOrderTime(req, res) {
+        try {
+            const { createdAt } = req.body;
+            const { orderId } = req.params;
+    
+            if (!createdAt) {
+                return res.status(400).json({ error: "Thiếu giá trị createdAt" });
+            }
+    
+            const updatedOrder = await OrderService.updateOrderTime(orderId, createdAt);
+    
+            res.json({ message: "Cập nhật thành công!", updatedOrder });
+        } catch (error) {
+            console.error("❌ Lỗi khi cập nhật thời gian:", error);
             res.status(500).json({ error: error.message });
         }
     };

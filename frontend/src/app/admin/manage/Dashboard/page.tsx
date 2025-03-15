@@ -49,81 +49,125 @@ export default function Dashboard() {
         let totalSales = 0;
         let successful = 0;
         let cancelled = 0;
+        let totalCancelledAmount = 0;
+    
         let monthlySales: number[] = new Array(12).fill(0);
         let monthlyOrders: number[] = new Array(12).fill(0);
         let monthlySuccessful: number[] = new Array(12).fill(0);
         let monthlyCancelled: number[] = new Array(12).fill(0);
-
+        let monthlyCancelledAmount: number[] = new Array(12).fill(0);
+    
+        // ✅ Dữ liệu chỉ của tháng hiện tại
+        let currentMonthSales = 0;
+        let currentMonthOrders = 0;
+        let currentMonthSuccessful = 0;
+        let currentMonthCancelled = 0;
+    
+        const currentMonth = new Date().getMonth();
+    
         orders.forEach(order => {
             const orderDate = new Date(order.createdAt);
             const month = orderDate.getMonth();
-
+    
+            // ✅ Tính tổng số liệu cho 12 tháng (Dùng cho biểu đồ)
             if (order.status === 'delivered') {
                 totalSales += order.total_payment || 0;
                 monthlySales[month] += order.total_payment || 0;
                 monthlyOrders[month]++;
-            }
-
-
-            if (order.status === 'delivered') {
-                successful++;
                 monthlySuccessful[month]++;
             } else if (order.status === 'canceled') {
                 cancelled++;
+                totalCancelledAmount += order.total_amount || 0;
                 monthlyCancelled[month]++;
+                monthlyCancelledAmount[month] += order.total_amount || 0;
+            }
+    
+            // ✅ Lưu riêng số liệu của **tháng hiện tại** cho Dashboard
+            if (month === currentMonth) {
+                if (order.status === 'delivered') {
+                    currentMonthSales += order.total_payment || 0;
+                    currentMonthOrders++;
+                    currentMonthSuccessful++;
+                } else if (order.status === 'canceled') {
+                    currentMonthCancelled++;
+                }
             }
         });
-
-        const currentMonth = new Date().getMonth();
+    
         const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-
+    
         setSalesChange(calcPercentageChange(monthlySales[previousMonth], monthlySales[currentMonth]));
         setOrdersChange(calcPercentageChange(monthlyOrders[previousMonth], monthlyOrders[currentMonth]));
         setSuccessfulChange(calcPercentageChange(monthlySuccessful[previousMonth], monthlySuccessful[currentMonth]));
         setCancelledChange(calcPercentageChange(monthlyCancelled[previousMonth], monthlyCancelled[currentMonth]));
-
-        setTotalSales(totalSales);
-        setTotalOrders(monthlyOrders.reduce((sum, count) => sum + count, 0));
-        setSuccessfulOrders(successful);
-        setCancelledOrders(cancelled);
-        renderCharts(monthlySales, monthlyCancelled);
+    
+        // ✅ Cập nhật dữ liệu của tháng hiện tại lên Dashboard
+        setTotalSales(currentMonthSales);
+        setTotalOrders(currentMonthOrders);
+        setSuccessfulOrders(currentMonthSuccessful);
+        setCancelledOrders(currentMonthCancelled);
+    
+        // ✅ Dữ liệu đầy đủ của 12 tháng vẫn gửi vào biểu đồ
+        renderCharts(monthlySales, monthlyCancelled, monthlyCancelledAmount);
     }
+    
     function calcPercentageChange(previous: number, current: number): number {
         if (previous === 0) return current === 0 ? 0 : 100;
         return ((current - previous) / previous) * 100;
     }
-    function renderCharts(monthlySales: number[], monthlyCancelled: number[]) {
+    function renderCharts(monthlySales: number[], monthlyCancelled: number[], monthlyCancelledAmount: number[]) {
+        const currentMonth = new Date().getMonth(); // Lấy tháng hiện tại (0-11)
+        const labels = [];
+    
+        // Lấy 12 tháng, trong đó tháng hiện tại nằm ở góc phải
+        for (let i = 11; i >= 0; i--) {
+            const monthIndex = (currentMonth - i + 12) % 12; // Lấy tháng lùi lại từ hiện tại
+            labels.push(new Date(2022, monthIndex, 1).toLocaleString('en-US', { month: 'short' })); // Tên tháng (Jan, Feb...)
+        }
+    
+        // Dữ liệu cũng phải được sắp xếp tương ứng
+        const salesData = [];
+        const cancelledData = [];
+        const cancelledAmountData = [];
+    
+        for (let i = 11; i >= 0; i--) {
+            const monthIndex = (currentMonth - i + 12) % 12;
+            salesData.push(monthlySales[monthIndex]);
+            cancelledData.push(monthlyCancelled[monthIndex]);
+            cancelledAmountData.push(monthlyCancelledAmount[monthIndex]);
+        }
+    
         if (salesChartRef.current) {
             new Chart(salesChartRef.current, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: labels, // Danh sách tháng theo thứ tự mới
                     datasets: [{
                         label: 'Total Sales',
-                        data: monthlySales,
+                        data: salesData, 
                         borderColor: 'blue',
                         fill: false
                     }]
                 }
             });
         }
-
+    
         if (statsChartRef.current) {
             new Chart(statsChartRef.current, {
                 type: 'bar',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: labels,
                     datasets: [
                         {
                             label: 'Monthly Sales',
-                            data: monthlySales,
+                            data: salesData, 
                             backgroundColor: 'rgba(54, 162, 235, 0.5)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1
                         },
                         {
-                            label: 'Cancelled Orders',
-                            data: monthlyCancelled,
+                            label: 'Cancelled Orders (Amount)',
+                            data: cancelledAmountData, 
                             backgroundColor: 'rgba(255, 99, 132, 0.5)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
@@ -133,11 +177,13 @@ export default function Dashboard() {
             });
         }
     }
+    
+    
 
     return (
         <div className="container mt-4">
             <div className="row g-4">
-                <DashboardCard title="Tổng doanh thu" value={totalSales} change={salesChange} icon="bi-cash-stack" color="success" />
+                <DashboardCard title="Tổng doanh thu tháng" value={totalSales} change={salesChange} icon="bi-cash-stack" color="success" />
                 <DashboardCard title="Tổng đơn hàng" value={totalOrders} change={ordersChange} icon="bi-cart-fill" color="primary" />
                 <DashboardCard title="Đơn hàng thành công" value={successfulOrders} change={successfulChange} icon="bi-check-circle" color="success" />
                 <DashboardCard title="Đơn hàng bị hủy" value={cancelledOrders} change={cancelledChange} icon="bi-x-circle" color="danger" />
