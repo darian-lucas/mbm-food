@@ -16,6 +16,7 @@ const couponRoutes = require('./src/routes/coupon');
 const tableRoutes = require('./src/routes/table');
 const registerRoutes = require('./src/routes/register');
 
+
 const cors = require("cors");
 // const { applyTimestamps } = require('./src/models/CouponModel');
 
