@@ -19,6 +19,7 @@ import {
 } from "../services/Favorite";
 import { incrementView } from "@/services/incrementView";
 import { toast } from "react-toastify";
+import Banner from "./banner/banner";
 import QuickView from "./components/layout/QuickView";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
@@ -265,7 +266,7 @@ export default function Home(): JSX.Element {
     <main className={styles.home}>
       {/* Banner */}
       <section className={styles.banner}>
-        {products.length > 0 && (
+        {/* {products.length > 0 && (
           <Link href={`/product/${products[2].slug}`} passHref>
             <Image
               src="/images/banner-1.png"
@@ -276,7 +277,8 @@ export default function Home(): JSX.Element {
               className={styles.bannerImage}
             />
           </Link>
-        )}
+        )} */}
+        <Banner></Banner>
       </section>
       {/* Danh mục nổi bật */}
       <section className={styles.section}>

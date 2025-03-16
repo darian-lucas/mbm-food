@@ -141,9 +141,9 @@
   text-decoration: none;
 }
 
-.block-content h3 a:hover {
-  text-decoration: none;
+.block-content h3:hover{
   color: #e31837;
+  text-decoration: none;
 }
 
 .time-post{
@@ -242,7 +242,7 @@
   color: #000;
   text-decoration: none;
 }
-.aside-list .aside-news-item a:hover {
+.aside-list .aside-news-item:hover {
   color: #e31837;
   text-decoration: none;
 }

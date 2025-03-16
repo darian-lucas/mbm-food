@@ -1,4 +1,87 @@
 const paymentMethodService = require('../services/paymentService');
+const axios = require("axios");
+const crypto = require("crypto");
+const PaymentMethod = require("../models/PaymentMethod");
+const Order = require("../models/Order");
+
+
+const MOMO_PARTNER_CODE = "MOMO"; // Thay bằng Partner Code của bạn
+const MOMO_ACCESS_KEY = "F8BBA842ECF85"; // Thay bằng Access Key
+const MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"; // Thay bằng Secret Key
+const MOMO_ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create";
+const RETURN_URL = "http://localhost:3002/result"; // URL frontend sau khi thanh toán thành công
+const NOTIFY_URL = "http://localhost:3100/api/payment/momo/callback"; // URL backend nhận callback
+
+// Tạo thanh toán Momo
+const createMomoPayment = async (req, res) => {
+    try {
+        console.log("Dữ liệu nhận được từ frontend:", req.body);
+        const { order_code, amount } = req.body;
+
+        if (!order_code || !amount) {
+            return res.status(400).json({ message: "Thiếu order_code hoặc amount" });
+        }
+        
+        // Tạo raw signature
+        const requestId = `${order_code}_${Date.now()}`;
+        const orderInfo = `Thanh toán đơn hàng #${order_code}`;
+        const rawSignature = `accessKey=${MOMO_ACCESS_KEY}&amount=${amount}&extraData=&ipnUrl=${NOTIFY_URL}&orderId=${order_code}&orderInfo=${orderInfo}&partnerCode=${MOMO_PARTNER_CODE}&redirectUrl=${RETURN_URL}&requestId=${requestId}&requestType=captureWallet`;
+        const signature = crypto.createHmac("sha256", MOMO_SECRET_KEY).update(rawSignature).digest("hex");
+        const orderExpireTime = Math.floor(Date.now() / 1000) + 300; // 5p
+
+        const paymentData = {
+            partnerCode: MOMO_PARTNER_CODE,
+            requestId,
+            amount,
+            orderId: order_code,
+            orderInfo,
+            redirectUrl: RETURN_URL,
+            ipnUrl: NOTIFY_URL,
+            extraData: "",
+            requestType: "captureWallet",
+            signature,
+            orderExpireTime,
+            lang: "vi"
+        };
+
+        // Gửi yêu cầu thanh toán đến Momo
+        const response = await axios.post(MOMO_ENDPOINT, paymentData);
+        return res.json({ payUrl: response.data.payUrl });
+
+    } catch (error) {
+        console.error("Lỗi khi tạo thanh toán Momo:", error);
+        res.status(500).json({ message: "Lỗi hệ thống" });
+    }
+};
+
+// Xử lý callback từ Momo
+const momoCallback = async (req, res) => {
+    try {
+        const { orderId, resultCode } = req.body; // orderId chính là order_code
+
+        if (resultCode === 0) {
+            await PaymentMethod.updateOne(
+                { order_code: orderId },
+                { status: "completed" }
+            );
+            await Order.updateOne(
+                { order_code: orderId },
+                { status: "paid" }
+            );
+            console.log(`✅ Thanh toán Momo thành công cho đơn hàng ${orderId}`);
+            
+        } else {
+            console.log(`❌ Thanh toán Momo thất bại cho đơn hàng ${orderId}`);
+            
+        }
+
+        res.status(200).json({ message: "Callback received" });
+
+    } catch (error) {
+        console.error("Lỗi xử lý callback Momo:", error);
+        res.status(500).json({ message: "Lỗi hệ thống" });
+    }
+};
 
 // Lấy danh sách phương thức thanh toán
 const getAll = async (req, res) => {
@@ -11,68 +94,33 @@ const getAll = async (req, res) => {
 };
 
 // Thêm phương thức thanh toán
-const create = async (req, res) => {
+const createPaymentMethod = async(req, res) =>{
     try {
-        const { userId, name, orderId, amount, currency, method,paymentType } = req.body;
-
-        // Tạo phương thức thanh toán mới
-        const newPayment = await paymentMethodService.createPaymentMethod({
-            userId,
-            name,
-            orderId,
-            amount,
-            currency,
-            method,
-            paymentType
-        });
-
-        res.status(201).json(newPayment);
+        const method = await paymentMethodService.createPaymentMethod(req.body);
+        res.status(201).json(method);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
-};
-
-
-// Cập nhật phương thức thanh toán
-const update = async (req, res) => {
+}
+// update phương thức thanh toán : 
+const updatePaymentMethod = async (req, res) => {
     try {
-        const updatedPayment = await paymentMethodService.updatePaymentMethod(req.params.id, req.body);
-        res.json(updatedPayment);
+        const updatedMethod = await paymentMethodService.updatePaymentMethod(req.params.id, req.body);
+        if (!updatedMethod) return res.status(404).json({ message: "Payment method not found" });
+        res.status(200).json(updatedMethod);
     } catch (error) {
-        res.status(404).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
-};
-
-// Xóa phương thức thanh toán
-const remove = async (req, res) => {
+}
+// xóa phương thức thanh toán:
+const deletePaymentMethod = async (req, res) => {
     try {
-        await paymentMethodService.deletePaymentMethod(req.params.id);
-        res.status(204).send(); // 204 No Content
+        const deletedMethod = await paymentMethodService.deletePaymentMethod(req.params.id);
+        if (!deletedMethod) return res.status(404).json({ message: "Payment method not found" });
+        res.status(200).json({ message: "Deleted successfully" });
     } catch (error) {
-        res.status(404).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
-};
+}
 
-
-const payOrder = async (req, res) => {
-    try {
-        const payment = await paymentMethodService.updatePaymentStatus(req.params.paymentId, "completed");
-        if (!payment) return res.status(404).json({ success: false, message: "Không tìm thấy payment" });
-
-        res.json({ success: true, message: "Thanh toán thành công!", payment });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Lỗi khi cập nhật payment" });
-    }
-};
-const getPaymentById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const payment = await paymentMethodService.getPaymentMethodById(id);
-        res.status(200).json(payment);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-};
-
-
-module.exports = { getAll, create, update, remove,payOrder,getPaymentById };
+module.exports = { getAll , createMomoPayment, momoCallback , createPaymentMethod, updatePaymentMethod, deletePaymentMethod };

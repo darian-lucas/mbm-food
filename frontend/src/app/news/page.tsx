@@ -156,8 +156,8 @@ export default function New() {
                   )}
                   <li><Link className="font-bold" href="/news">Tin tức</Link></li>
                   <li><Link href="/contact">Liên hệ</Link></li>
-                  <li><Link href="#">Câu hỏi thường gặp</Link></li>
-                  <li><Link href="#">Hệ thống cửa hàng</Link></li>
+                  <li><Link href="/faq">Câu hỏi thường gặp</Link></li>
+                  <li><Link href="/storesystem">Hệ thống cửa hàng</Link></li>
                   <li><Link href="#">Đặt bàn</Link></li>
                 </ul>
               </div>

@@ -3,6 +3,8 @@
     font-size: 14px;
     font-family: 'Quicksand', sans-serif;
     background-color: #f8f9fa;
+    max-width: 1300px;
+    margin:0px auto;
 }
 
 .breadcrumbContainer {
@@ -68,10 +70,12 @@
     background-color: darkred;
 }
 .row {
-    gap: 30px; /* Tạo khoảng cách giữa sidebar và nội dung chính */
+    gap: 30px; 
   }
   
   .content {
-    padding-left: 20px; /* Đẩy nội dung chính ra xa sidebar */
+    padding-left: 20px; 
+    flex-grow: 1;
+    max-width: 900px;
   }
-  /* CSS của Address */
+

@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import orderService from "../../services/OrderServices";
-import styles from "../../styles/Table.module.css";
+import styles from "../../styles/order.module.css";
 
-// Định nghĩa kiểu dữ liệu cho đơn hàng
 interface Order {
   _id: string;
   order_code: string;
@@ -15,12 +14,23 @@ interface Order {
   total_amount: number;
 }
 
-// Các trạng thái hợp lệ
-const STATUS_OPTIONS = ["pending", "shipped", "delivered", "canceled"];
+const STATUS_FLOW: Record<string, string[]> = {
+  pending: ["shipped"],
+  shipped: ["delivered"],
+  delivered: [],
+  canceled: [],
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  pending: "btn-primary",
+  shipped: "btn-warning",
+  delivered: "btn-success",
+  canceled: "btn-danger",
+};
 
 const OrderManagementPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [showAllOrders, setShowAllOrders] = useState(false);
+  const [expandedOrders, setExpandedOrders] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,6 +61,16 @@ const OrderManagementPage = () => {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     }
   };
+  const STATUS_COLORSs: Record<string, string> = {
+    pending: styles.statusPending,
+    shipped: styles.statusShipped,
+    delivered: styles.statusDelivered,
+    canceled: styles.statusCanceled,
+  };
+
+  const toggleExpand = (orderId: string) => {
+    setExpandedOrders((prev) => ({ ...prev, [orderId]: !prev[orderId] }));
+  };
 
   if (loading) return <p>Loading...</p>;
   if (!orders.length) return <p>Không có đơn hàng nào!</p>;
@@ -58,8 +78,7 @@ const OrderManagementPage = () => {
   return (
     <div className={styles.tableContainer}>
       <h4 className="fw-bold fs-3 mb-3">Danh sách đơn hàng</h4>
-
-      <table className="table mt-4">
+      <table className={styles.table}>
         <thead>
           <tr>
             <th>Order</th>
@@ -71,8 +90,8 @@ const OrderManagementPage = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.slice(0, showAllOrders ? orders.length : 5).map((order) => (
-            <tr key={order._id}>
+          {orders.map((order) => (
+            <tr key={order._id} className={styles.row}>
               <td>
                 <a href={`http://localhost:3002/admin/manage/custumerList/${order.id_user._id}`}>
                   #{order.order_code}
@@ -80,44 +99,59 @@ const OrderManagementPage = () => {
               </td>
               <td>{new Date(order.createdAt).toLocaleDateString()}</td>
               <td>
-                <select
-                  className={`form-select ${styles.statusDropdown}`}
-                  value={order.status}
-                  onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                >
-                  {STATUS_OPTIONS.map((status) => (
-                    <option key={status} value={status}>
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </option>
-                  ))}
-                </select>
+                <div className={`${styles.statusText} ${styles[`status${order.status.charAt(0).toUpperCase() + order.status.slice(1)}`]}`}>
+                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                </div>
               </td>
+
+
               <td>
-                {order.details.length > 0
-                  ? order.details.map((item, index) => (
-                      <div key={item._id || index}>
-                        {item.id_product.name} - {item.quantity} x{" "}
-                        {item.price.toLocaleString("vi-VN")} VND
+                {order.details.slice(0, 2).map((item) => (
+                  <div key={item._id}>
+                    {item.id_product.name} - {item.quantity} x {item.price.toLocaleString("vi-VN")} VND
+                  </div>
+                ))}
+                {order.details.length > 2 && !expandedOrders[order._id] && (
+                  <button
+                    className={styles.expandBtn}
+                    onClick={() => toggleExpand(order._id)}
+                  >
+                    ...
+                  </button>
+                )}
+                {expandedOrders[order._id] && (
+                  <>
+                    {order.details.slice(2).map((item) => (
+                      <div key={item._id}>
+                        {item.id_product.name} - {item.quantity} x {item.price.toLocaleString("vi-VN")} VND
                       </div>
-                    ))
-                  : "N/A"}
+                    ))}
+                    <button
+                      className={styles.collapseBtn}
+                      onClick={() => toggleExpand(order._id)}
+                    >
+                      Thu gọn
+                    </button>
+                  </>
+                )}
               </td>
               <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
               <td>
-                <button className="btn btn-danger btn-sm" onClick={() => console.log("Xóa đơn hàng", order._id)}>
-                  Xóa
-                </button>
+                {["pending", "shipped", "delivered", "canceled"].map((status) => (
+                  <button
+                    key={status}
+                    className={`btn btn-sm me-2 ${STATUS_COLORS[status]} ${styles.statusBtn}`}
+                    onClick={() => handleStatusChange(order._id, status)}
+                    disabled={!STATUS_FLOW[order.status].includes(status)}
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </button>
+                ))}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
-      {!showAllOrders && orders.length > 5 && (
-        <button className="btn btn-primary w-100" onClick={() => setShowAllOrders(true)}>
-          Xem tất cả
-        </button>
-      )}
     </div>
   );
 };

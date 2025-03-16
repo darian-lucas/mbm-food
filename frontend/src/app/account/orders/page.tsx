@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import orderService from "../../admin/services/OrderServices";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Swal from "sweetalert2";
 
 export default function AddressTable() {
     const [orders, setOrders] = useState<any[]>([]);
@@ -20,18 +21,14 @@ export default function AddressTable() {
     const fetchOrders = async (userId: string) => {
         try {
             const data = await orderService.getOrdersByUserId(userId);
-            if (data.orders.length > 0) {
-                const updatedOrders = await Promise.all(
-                    data.orders.map(async (order) => {
-                        if (order.id_payment_method?._id) {
-                            const paymentStatus = await fetchPaymentStatus(order.id_payment_method._id);
-                            return { ...order, payment_status: paymentStatus };
-                        }
-                        return { ...order, payment_status: "pending" };
-                    })
-                );
-                setOrders(updatedOrders);
-            }
+
+            // ✅ Ghép orderDetails vào từng order
+            const ordersWithDetails = data.orders.map(order => ({
+                ...order,
+                details: data.orderDetails.filter(detail => detail.id_order === order._id) || []
+            }));
+
+            setOrders(ordersWithDetails);
         } catch (err) {
             console.error("Lỗi khi lấy đơn hàng:", err);
         } finally {
@@ -39,37 +36,31 @@ export default function AddressTable() {
         }
     };
 
-    const fetchPaymentStatus = async (paymentId: string) => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/payments/${paymentId}`);
-            const data = await response.json();
-            return data.status || "pending";
-        } catch (error) {
-            console.error("Lỗi khi lấy trạng thái thanh toán:", error);
-            return "pending";
-        }
-    };
+    const cancelOrder = async (orderId: string) => {
+        const result = await Swal.fire({
+            title: "Bạn có chắc chắn muốn hủy đơn hàng này?",
+            text: "Hành động này không thể hoàn tác!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Có, hủy đơn!",
+            cancelButtonText: "Không",
+        });
 
-    const handlePayment = async (paymentId: string) => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/payments/${paymentId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-            });
+        if (!result.isConfirmed) return;
 
-            const data = await response.json();
-            if (data.success) {
-                alert("Thanh toán thành công!");
-                const userId = localStorage.getItem("userId");
-                if (userId) {
-                    fetchOrders(userId); // Fetch lại danh sách đơn hàng để cập nhật trạng thái
-                }
-            } else {
-                alert("Thanh toán thất bại: " + data.message);
-            }
+        try {
+            await orderService.updateOrderStatus(orderId, { status: "canceled" });
+            setOrders((prevOrders) =>
+                prevOrders.map((order) =>
+                    order._id === orderId ? { ...order, status: "canceled" } : order
+                )
+            );
+            Swal.fire("Đã hủy!", "Đơn hàng của bạn đã được hủy.", "success");
         } catch (error) {
-            console.error("Lỗi khi thanh toán:", error);
-            alert("Có lỗi xảy ra, vui lòng thử lại!");
+            console.error("Lỗi khi hủy đơn hàng:", error);
+            Swal.fire("Lỗi!", "Có lỗi xảy ra, vui lòng thử lại.", "error");
         }
     };
 
@@ -79,7 +70,7 @@ export default function AddressTable() {
     return (
         <div>
             <h5>ĐƠN HÀNG CỦA BẠN</h5>
-            <table className="table table-bordered table-danger mt-3">
+            <table className="table table-bordered table-danger mt-3 text-center">
                 <thead>
                     <tr>
                         <th>Mã đơn hàng</th>
@@ -87,11 +78,10 @@ export default function AddressTable() {
                         <th>Email</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ nhận</th>
-                        <th>Ghi chú</th>
-                        <th>Ngày đặt</th>
+                        <th>Đơn hàng của người dùng</th>
                         <th>Trạng thái</th>
                         <th>Tổng tiền</th>
-                        <th>Thanh toán</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,23 +92,38 @@ export default function AddressTable() {
                             <td>{order.id_user?.email || "N/A"}</td>
                             <td>{order.phone || "N/A"}</td>
                             <td>{order.receive_address || "N/A"}</td>
-                            <td>{order.note || "Không có ghi chú"}</td>
-                            <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                             <td>
-                                <span className={`badge bg-${order.status === "pending" ? "warning" : "success"}`}>
+                                {order.details.length > 0 ? (
+                                    <ul className="text-left p-0">
+                                        {order.details.map((item, index) => {
+                                            const product = item.id_product;
+                                            const price = item.price || product?.variants?.[0]?.price || 0; // ✅ Ưu tiên item.price trước
+                                            return (
+                                                <li key={index}>
+                                                    <strong>{product?.name || "Sản phẩm không xác định"}</strong>
+                                                    <br />
+                                                    Số lượng: {item.quantity}
+                                                    <br />
+                                                    Giá: {price.toLocaleString("vi-VN")} VND
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                ) : "Không có sản phẩm"}
+                            </td>
+                            <td>
+                                <span className={`badge ${order.status === "pending" ? "bg-warning" : order.status === "shipped" ? "bg-primary" : order.status === "delivered" ? "bg-success" : "bg-danger"}`}>
                                     {order.status}
                                 </span>
                             </td>
-                            <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
+                            <td>{order.total_amount?.toLocaleString("vi-VN") || "0"} VND</td>
                             <td>
-                                {order.payment_status === "completed" ? (
-                                    <span className="badge bg-success">Đã thanh toán</span>
-                                ) : (
+                                {["pending", "shipped"].includes(order.status) && (
                                     <button
-                                        className="btn btn-primary btn-sm"
-                                        onClick={() => handlePayment(order.id_payment_method?._id)}
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => cancelOrder(order._id)}
                                     >
-                                        Thanh toán
+                                        Hủy đơn
                                     </button>
                                 )}
                             </td>

@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./src/config/db');
 const userRoutes = require('./src/routes/users');
+//Bổ sung search
+const searchRoutes = require("./src/routes/search");
 const categoryRoutes = require('./src/routes/category');
 const productRoutes = require('./src/routes/product');
 const postRoutes = require('./src/routes/post')
@@ -35,6 +37,8 @@ connectDB();
 
 // Định tuyến
 app.use('/api/user', userRoutes);
+//Bổ sung search
+app.use("/api", searchRoutes);
 app.use('/api', postRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);

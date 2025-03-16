@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getFavorites } from "@/services/Favorite";
+import { useRouter } from "next/navigation";
 import countCart from "../../hooks/countCart";
 
 export default function Header(): JSX.Element {
@@ -11,6 +12,59 @@ export default function Header(): JSX.Element {
   const [showProductMenu, setShowProductMenu] = useState<boolean>(false);
   const [favoriteCount, setFavoriteCount] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  //Tìm kiếm
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<{
+    products: any[];
+    news: any[];
+  }>({
+    products: [],
+    news: [],
+  });
+  const [showResults, setShowResults] = useState<boolean>(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (searchTerm.trim() === "") {
+        setShowResults(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost:3001/api/search?query=${searchTerm}`
+        );
+        const data = await response.json();
+
+        setSearchResults({
+          products: data.products || [],
+          news: data.news || [],
+        });
+        setShowResults(true);
+      } catch (error) {
+        console.error("Lỗi tìm kiếm:", error);
+      }
+    };
+
+    const debounceTimeout = setTimeout(fetchResults, 300);
+    return () => clearTimeout(debounceTimeout);
+  }, [searchTerm]);
+
+  //Chuyển sang sản phẩm
+  const handleViewMore = () => {
+    router.push(`/search?query=${encodeURIComponent(searchTerm)}`);
+    setSearchTerm("");
+    setShowResults(false); 
+  };
+
+  //Chuyển trang tin tức
+  const handleViewMoreNews = () => {
+    router.push(`/news?query=${encodeURIComponent(searchTerm)}`);
+    setSearchTerm("");
+    setShowResults(false); 
+  };
+
   const cartCount = countCart();
   const menuItems = [
     { href: "/", label: "Trang chủ" },
@@ -30,6 +84,11 @@ export default function Header(): JSX.Element {
     { href: "/product/salad", label: "Salad" },
     { href: "/product/nuoc-uong", label: "Nước Uống" },
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
   
   useEffect(() => {
     const checkAuth = () => {
@@ -46,6 +105,7 @@ export default function Header(): JSX.Element {
       window.removeEventListener("storage", checkAuth);
     };
   }, []);
+  
   
 
   useEffect(() => {
@@ -90,7 +150,12 @@ export default function Header(): JSX.Element {
           />
         </Link>
         <div className={styles.searchBox}>
-          <input type="text" placeholder="Bạn muốn tìm gì?" />
+          <input
+            type="text"
+            placeholder="Bạn muốn tìm gì?"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <div className={styles.searchIcon}>
             <Image
               src="/images/search-icon.png"
@@ -99,7 +164,90 @@ export default function Header(): JSX.Element {
               height={20}
             />
           </div>
+          {showResults && (
+            <div className={styles.searchResults}>
+              {searchResults.products.length > 0 && (
+                <div className={styles.resultCategory}>
+                  <div>
+                    <h4 className={styles.categoryTitle}>Sản phẩm</h4>
+                    {searchResults.products.slice(0, 4).map((item, index) => (
+                      <Link
+                        key={index}
+                        href={`/product/${item.slug}`}
+                        className={styles.resultItem}
+                      >
+                        {item.image && (
+                          <Image
+                            src={`/images/${item.image}`}
+                            alt={item.name}
+                            width={50}
+                            height={50}
+                          />
+                        )}
+                        <div className={styles.resultInfo}>
+                          <p className={styles.resultName}>{item.name}</p>
+                          {item.price && (
+                            <p className={styles.resultPrice}>{item.price}đ</p>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                    {searchResults.products.length > 4 && (
+                      <button
+                        className={styles.viewMoreBtn}
+                        onClick={handleViewMore}
+                      >
+                        Xem thêm {searchResults.products.length - 4} sản phẩm
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {searchResults.news.length > 0 && (
+                <div className={styles.resultCategory}>
+                  <div>
+                  <h4 className={styles.categoryTitle}>Tin tức</h4>
+                  {searchResults.news.slice(0, 4).map((item, index) => (
+                    <Link
+                      key={index}
+                      href={`/news/${item.slug}`}
+                      className={styles.resultItem}
+                    >
+                      {item.image && (
+                        <Image
+                          src={`/images/${item.image}`}
+                          alt={item.title}
+                          width={50}
+                          height={50}
+                        />
+                      )}
+                      <div className={styles.resultInfo}>
+                        <p className={styles.resultName}>{item.title}</p>
+                      </div>
+                    </Link>
+                  ))}
+                  {searchResults.news.length > 2 && (
+                    <button
+                      className={styles.viewMoreBtn}
+                      onClick={handleViewMoreNews}
+                    >
+                      Xem thêm {searchResults.news.length - 2} tin tức
+                    </button>
+                  )}
+                  </div>
+                  
+                </div>
+              )}
+
+              {searchResults.products.length === 0 &&
+                searchResults.news.length === 0 && (
+                  <p>Không tìm thấy kết quả nào</p>
+                )}
+            </div>
+          )}
         </div>
+
         <div className={styles.delivery}>
           <Image
             src="/images/delivery-icon.png"
