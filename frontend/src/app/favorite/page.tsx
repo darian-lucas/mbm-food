@@ -93,7 +93,7 @@ const FavoritePage = () => {
 
     const selectedVariant = product.variants[0]; // Chọn biến thể đầu tiên
     handleAddToCart(product, selectedVariant, 1); // Mặc định số lượng là 1
-    toast.success("Đã thêm vào giỏ hàng!", { position: "top-right", autoClose: 3000 });
+    toast.success("Đã thêm vào giỏ hàng!");
   };
 
   return (
@@ -149,9 +149,9 @@ const FavoritePage = () => {
                 ></div>
 
                 {/* Giá và nút Thêm */}
-                <div className={`card-footer bg-white border-0 d-flex justify-content-between align-items-center ${styles.productFooter}`}>
+                <div className={`card-footer bg-white border-0 d-flex justify-content-between align-items-center p-2 ${styles.productFooter}`}>
                   <div>
-                    <p className="text-muted mb-1">Giá chỉ từ</p>
+                    <p className="fw-bold mb-1">Giá chỉ từ</p>
                     <p className="text-danger fw-bold">
                       {product.variants[0]?.price?.toLocaleString()}₫
                     </p>
