@@ -4,6 +4,21 @@ const PaymentMethod = require("../models/PaymentMethod");
 const mongoose = require("mongoose");
 
 class OrderService {
+    async generateOrderCode() {
+        let orderCode;
+        let isUnique = false;
+
+        while (!isUnique) {
+            const randomNum = Math.floor(100000 + Math.random() * 900000); // 6 chữ số
+            orderCode = `MBM-${randomNum}`;
+            const existingOrder = await Order.findOne({ order_code: orderCode });
+            if (!existingOrder) {
+                isUnique = true;
+            }
+        }
+
+        return orderCode;
+    }
     async updateOrder(orderId, updateData) {
         try {
             // Cập nhật thông tin Order
@@ -35,7 +50,7 @@ class OrderService {
         }
     }
 
-    async createOrder(orderData, products) {
+    async createOrder(orderData, products, paymentData) {
         const session = await mongoose.startSession();
         console.log("🟢 Bắt đầu session:", session.id);
 
@@ -43,21 +58,33 @@ class OrderService {
         console.log("🔄 Transaction bắt đầu");
 
         try {
-            // **Sử dụng order_code từ frontend**
-            if (!orderData.order_code) {
-                throw new Error("Thiếu order_code từ frontend");
-            }
+            const orderCode = await this.generateOrderCode();
+            console.log("📌 Mã đơn hàng:", orderCode);
 
-            if (!orderData.paymentMethod) {
-                throw new Error("Thiếu phương thức thanh toán từ frontend");
-            }
-
-            console.log("📌 Mã đơn hàng từ frontend:", orderData.order_code);
-            console.log("📌 Kiểm tra paymentMethod trong orderData:", orderData.paymentMethod);
-            // **Tạo đơn hàng**
-            const order = new Order(orderData);
+            // **Tạo đơn hàng trước**
+            const order = new Order({
+                ...orderData,
+                order_code: orderCode,
+            });
             const savedOrder = await order.save({ session });
             console.log("✅ Đơn hàng được tạo:", savedOrder._id);
+
+            // **Xử lý phương thức thanh toán**
+            const paymentMethod = orderData.payment_method || "cash"; // Mặc định là 'cash' nếu không có giá trị
+
+            const fullPaymentData = {
+                payment_name: paymentMethod, // cash, momo, vnpay
+                status: "pending", // Trạng thái mặc định
+
+            };
+
+            // Ghi log để kiểm tra
+            console.log("📌 Dữ liệu thanh toán trước khi lưu:", fullPaymentData);
+
+            // **Tạo phương thức thanh toán**
+            const payment = new PaymentMethod(fullPaymentData);
+            const savedPayment = await payment.save({ session });
+            console.log("✅ Phương thức thanh toán được tạo:", savedPayment._id);
 
             // **Tạo chi tiết đơn hàng**
             const orderDetails = products.map(product => ({
@@ -71,12 +98,20 @@ class OrderService {
             await OrderDetail.insertMany(orderDetails, { session });
             console.log("✅ Chi tiết đơn hàng được tạo:", orderDetails.length, "mục");
 
+            // **Cập nhật ID phương thức thanh toán vào đơn hàng**
+            await Order.updateOne(
+                { _id: savedOrder._id },
+                { id_payment_method: savedPayment._id },
+                { session }
+            );
+            console.log("✅ Đã cập nhật phương thức thanh toán vào đơn hàng");
+
             // **Commit transaction**
             await session.commitTransaction();
             console.log("🎉 Transaction commit thành công!");
 
             session.endSession();
-            return { order: savedOrder};
+            return { order: savedOrder, payment: savedPayment };
         } catch (error) {
             console.error("❌ Lỗi! Rollback transaction:", error);
             await session.abortTransaction();
@@ -84,9 +119,12 @@ class OrderService {
             throw new Error("Lỗi khi tạo đơn hàng và thanh toán: " + error.message);
         }
     }
-    
-    
-    
+
+
+
+
+
+
     async getAllOrders() {
         const orders = await Order.find()
             .populate('id_user', 'name')

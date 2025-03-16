@@ -98,9 +98,9 @@ const CheckoutPage = () => {
       const cartData = localStorage.getItem("cart");
       if (cartData) {
         const parsedCart = JSON.parse(cartData).map((item: CartItem) => ({
-          id_product: item._id,
+          id_product: item._id && item._id.trim() !== "" ? item._id : "UNKNOWN_ID",
           name: item.name || "Sản phẩm không có tên",
-          size: item.size || "Mặc định",
+          size: item.variants || item.option || "Mặc định",
           price: item.price || 0,
           quantity: item.quantity || 1,
           image: item.image || "",
@@ -110,6 +110,7 @@ const CheckoutPage = () => {
     };
     fetchCart();
   }, []);
+  
 
   // Tính tổng tiền
   const totalAmount = cart.reduce(
@@ -220,12 +221,14 @@ const CheckoutPage = () => {
     address: user.address[0]?.address || "",
     phone: user.address[0]?.phone || "",
     paymentMethod: selectedPayment,
-    products: cart.map((item) => ({
-      id_product: item.id_product || "",
-      name: item.name,
-      quantity: item.quantity,
-      price: item.price,
-    })),
+    products: cart
+      .filter((item) => item.id_product && item.id_product !== "UNKNOWN_ID") // Chỉ lấy sản phẩm có id hợp lệ
+      .map((item) => ({
+        id_product: item.id_product,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      })),
     order_code: `MBM${Date.now()}`,
     total_payment: finalAmount,
     discount_code: discountCode,
@@ -235,6 +238,7 @@ const CheckoutPage = () => {
     receive_address: user.address[0]?.address || "",
     total_amount: totalAmount,
   };
+  
 
   console.log("Dữ liệu orderData gửi lên:", orderData);
 
