@@ -9,7 +9,7 @@ const MOMO_PARTNER_CODE = "MOMO"; // Thay bằng Partner Code của bạn
 const MOMO_ACCESS_KEY = "F8BBA842ECF85"; // Thay bằng Access Key
 const MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"; // Thay bằng Secret Key
 const MOMO_ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create";
-const RETURN_URL = "http://localhost:3000/payment-success"; // URL frontend sau khi thanh toán thành công
+const RETURN_URL = "http://localhost:3002/result"; // URL frontend sau khi thanh toán thành công
 const NOTIFY_URL = "http://localhost:3100/api/payment/momo/callback"; // URL backend nhận callback
 
 // Tạo thanh toán Momo
@@ -27,6 +27,7 @@ const createMomoPayment = async (req, res) => {
         const orderInfo = `Thanh toán đơn hàng #${order_code}`;
         const rawSignature = `accessKey=${MOMO_ACCESS_KEY}&amount=${amount}&extraData=&ipnUrl=${NOTIFY_URL}&orderId=${order_code}&orderInfo=${orderInfo}&partnerCode=${MOMO_PARTNER_CODE}&redirectUrl=${RETURN_URL}&requestId=${requestId}&requestType=captureWallet`;
         const signature = crypto.createHmac("sha256", MOMO_SECRET_KEY).update(rawSignature).digest("hex");
+        const orderExpireTime = Math.floor(Date.now() / 1000) + 300; // 5p
 
         const paymentData = {
             partnerCode: MOMO_PARTNER_CODE,
@@ -39,6 +40,7 @@ const createMomoPayment = async (req, res) => {
             extraData: "",
             requestType: "captureWallet",
             signature,
+            orderExpireTime,
             lang: "vi"
         };
 
@@ -67,8 +69,10 @@ const momoCallback = async (req, res) => {
                 { status: "paid" }
             );
             console.log(`✅ Thanh toán Momo thành công cho đơn hàng ${orderId}`);
+            
         } else {
             console.log(`❌ Thanh toán Momo thất bại cho đơn hàng ${orderId}`);
+            
         }
 
         res.status(200).json({ message: "Callback received" });
