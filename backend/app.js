@@ -13,7 +13,10 @@ const orderRoutes = require('./src/routes/order');
 const paymentMethodRoutes = require('./src/routes/paymentMethods');
 const bannerRoutes = require('./src/routes/banner');
 const couponRoutes = require('./src/routes/coupon');
-const emailRoutes = require("./src/routes/emailRoutes");
+const tableRoutes = require('./src/routes/table');
+const registerRoutes = require('./src/routes/register');
+
+
 const cors = require("cors");
 // const { applyTimestamps } = require('./src/models/CouponModel');
 
@@ -46,7 +49,9 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentMethodRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/banners', bannerRoutes);
-app.use("/api/email", emailRoutes);
+app.use('/api/tables', tableRoutes);
+app.use('/api/registers', registerRoutes);
+
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
 

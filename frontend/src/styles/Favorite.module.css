@@ -52,6 +52,8 @@
   .productDescription {
     font-size: 14px;
     color: #666;
+    padding:10px;
+    padding-top:0px;
     text-align: left;
     height: 40px; /* Giới hạn mô tả */
     overflow: hidden;
@@ -62,6 +64,7 @@
   
   /* Phần footer chứa giá và nút thêm */
   .productFooter {
+    
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const PaymentMethodSchema = new mongoose.Schema({
     payment_name: { 
         type: String, 
-        // enum: ["cash", "momo", "vnpay"], 
+        enum: ["cash", "momo", "vnpay"], 
         required: true 
     },
 

@@ -2,8 +2,9 @@ const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const PaymentMethod = require("../models/PaymentMethod");
 const mongoose = require("mongoose");
-
+const Coupon = require("../models/CouponModel"); 
 class OrderService {
+   
     async updateOrder(orderId, updateData) {
         try {
             // Cập nhật thông tin Order
@@ -35,30 +36,76 @@ class OrderService {
         }
     }
 
-    async createOrder(orderData, products) {
+    // Import model Coupon
+
+   
+
+    async createOrder(orderData, products, paymentData) {
         const session = await mongoose.startSession();
         console.log("🟢 Bắt đầu session:", session.id);
-
+    
         session.startTransaction();
         console.log("🔄 Transaction bắt đầu");
-
+    
         try {
-            // **Sử dụng order_code từ frontend**
-            if (!orderData.order_code) {
-                throw new Error("Thiếu order_code từ frontend");
+            let orderCode = orderData.order_code;
+            console.log("📌 Mã đơn hàng:", orderCode);
+    
+            // **Tính tổng tiền chưa giảm giá**
+            let totalAmount = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
+            console.log("💰 Tổng tiền trước giảm giá:", totalAmount);
+    
+            // **Tìm id_coupon từ discount_code nếu có**
+            let id_coupon = null;
+            let discountAmount = 0;
+    
+            if (orderData.discount_code) {
+                const coupon = await Coupon.findOne({ code: orderData.discount_code }).session(session);
+                if (coupon) {
+                    id_coupon = coupon._id; // Gán id_coupon nếu tìm thấy
+                    console.log("✅ Mã giảm giá hợp lệ:", orderData.discount_code, " - ID:", id_coupon);
+    
+                    // **Tính tiền giảm giá**
+                    if (coupon.type === "Amount") {
+                        discountAmount = coupon.discount; // Giảm trực tiếp số tiền
+                    } else if (coupon.type === "Shipping") {
+                        discountAmount = Math.min(coupon.discount, totalAmount * 0.1); // Giảm phí vận chuyển tối đa 10% tổng tiền
+                    }
+                } else {
+                    console.log("⚠️ Không tìm thấy mã giảm giá:", orderData.discount_code);
+                }
             }
-
-            if (!orderData.paymentMethod) {
-                throw new Error("Thiếu phương thức thanh toán từ frontend");
-            }
-
-            console.log("📌 Mã đơn hàng từ frontend:", orderData.order_code);
-            console.log("📌 Kiểm tra paymentMethod trong orderData:", orderData.paymentMethod);
-            // **Tạo đơn hàng**
-            const order = new Order(orderData);
+    
+            // **Tính tổng thanh toán sau khi giảm giá**
+            let totalPayment = Math.max(0, totalAmount - discountAmount);
+            console.log("💳 Tổng tiền sau giảm giá:", totalPayment);
+    
+            // **Tạo đơn hàng trước**
+            const order = new Order({
+                ...orderData,
+                order_code: orderCode,
+                id_coupon, // Lưu id_coupon vào đơn hàng
+                total_amount: totalAmount, // Tổng tiền gốc
+                total_payment: totalPayment, // Tổng tiền sau giảm giá
+            });
+    
             const savedOrder = await order.save({ session });
             console.log("✅ Đơn hàng được tạo:", savedOrder._id);
-
+    
+            // **Xử lý phương thức thanh toán**
+            const paymentMethod = orderData.payment_method || "cash"; // Mặc định 'cash' nếu không có giá trị
+            const fullPaymentData = {
+                payment_name: paymentMethod,
+                status: "pending",
+            };
+    
+            console.log("📌 Dữ liệu thanh toán trước khi lưu:", fullPaymentData);
+    
+            // **Tạo phương thức thanh toán**
+            const payment = new PaymentMethod(fullPaymentData);
+            const savedPayment = await payment.save({ session });
+            console.log("✅ Phương thức thanh toán được tạo:", savedPayment._id);
+    
             // **Tạo chi tiết đơn hàng**
             const orderDetails = products.map(product => ({
                 id_order: savedOrder._id,
@@ -67,16 +114,24 @@ class OrderService {
                 quantity: product.quantity,
                 name: product.name
             }));
-
+    
             await OrderDetail.insertMany(orderDetails, { session });
             console.log("✅ Chi tiết đơn hàng được tạo:", orderDetails.length, "mục");
-
+    
+            // **Cập nhật ID phương thức thanh toán vào đơn hàng**
+            await Order.updateOne(
+                { _id: savedOrder._id },
+                { id_payment_method: savedPayment._id },
+                { session }
+            );
+            console.log("✅ Đã cập nhật phương thức thanh toán vào đơn hàng");
+    
             // **Commit transaction**
             await session.commitTransaction();
             console.log("🎉 Transaction commit thành công!");
-
+    
             session.endSession();
-            return { order: savedOrder};
+            return { order: savedOrder, payment: savedPayment };
         } catch (error) {
             console.error("❌ Lỗi! Rollback transaction:", error);
             await session.abortTransaction();
@@ -84,8 +139,6 @@ class OrderService {
             throw new Error("Lỗi khi tạo đơn hàng và thanh toán: " + error.message);
         }
     }
-    
-    
     
     async getAllOrders() {
         const orders = await Order.find()

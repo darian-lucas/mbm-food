@@ -29,3 +29,9 @@ export type TCreateCouponParams = {
   quantity: number;
   description:string;
 };
+
+export type TCreateTableParams = {
+  name: string;
+  status?: "Available" | "Reserved";
+  position:string;
+};

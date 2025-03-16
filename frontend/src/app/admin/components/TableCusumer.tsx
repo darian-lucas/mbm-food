@@ -122,7 +122,7 @@ export default function Table() {
       <table className="table table-hover">
         <thead>
           <tr>
-            <th></th>
+           
             <th>Username</th>
             <th>Email</th>
             <th>Role</th>
@@ -135,12 +135,7 @@ export default function Table() {
           {users && users.length > 0 ? (
             users.map((user) => (
               <tr key={user._id}>
-                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                  <input
-                    type="checkbox"
-                    style={{ width: "16px", height: "16px" }}
-                  />
-                </td>
+                
                 <td>
                   <div className={styles.avatarContainer}>
                     <img
