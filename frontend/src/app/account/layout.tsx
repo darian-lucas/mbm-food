@@ -22,6 +22,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
                             <li><Link href="/account">Thông tin tài khoản</Link></li>
                             <li><Link href="/account/orders">Đơn hàng của bạn</Link></li>
+                            <li><Link href="/account/booking">Lịch sử đặt bàn</Link></li>
                             <li><Link href="/account/change-password">Đổi mật khẩu</Link></li>
                             <li><Link href="/account/address">Sổ địa chỉ</Link></li>
                         </ul>

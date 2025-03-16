@@ -4,6 +4,19 @@ const API_URL_TABLE = "http://localhost:3001/api/tables";
 const API_URL_USER = "http://localhost:3001/api/user";
 const API_URL_REGISTER = "http://localhost:3001/api/registers";
 
+const getAllRegisters = async () => {
+  try {
+    const response = await fetch(API_URL_REGISTER);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error("Lỗi khi fetch dữ liệu:", error);
+  }
+};
+
 const getAllTables = async () => {
   try {
     const response = await fetch(API_URL_TABLE);
@@ -71,5 +84,6 @@ const BookingServices = {
   getTableById,
   createRegister,
   getUserById,
+  getAllRegisters
 };
 export default BookingServices;
