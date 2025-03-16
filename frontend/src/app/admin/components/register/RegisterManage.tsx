@@ -92,43 +92,12 @@ const RegisterManage = () => {
     itemsPerPage: ITEMS_PER_PAGE,
   });
 
-  // const handleToggleStatus = async (register: RegisterData) => {
-  //   Swal.fire({
-  //     title: "Bạn có chắc muốn đổi trạng thái đăng ký?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Cập nhật",
-  //   }).then(async (result) => {
-  //     if (result.isConfirmed) {
-  //       try {
-  //         const newStatus = register.status === "Confirmed" ? "Cancelled" : "Confirmed";
-
-  //         await RegisterServices.updateRegisterStatus(register._id, newStatus);
-
-  //         setRegisters((prev) =>
-  //           prev.map((item) =>
-  //             item._id === register._id ? { ...item, status: newStatus } : item
-  //           )
-  //         );
-
-  //         toast.success("Đã cập nhật trạng thái đăng ký!");
-  //       } catch (error) {
-  //         toast.error("Có lỗi xảy ra khi cập nhật trạng thái!");
-  //       }
-  //     }
-  //   });
-  // };
-
   const handleToggleStatus = async (register: RegisterData) => {
-    // Nếu đơn đã ở trạng thái Completed hoặc Cancelled, không cho phép thay đổi
     if (register.status === "Completed" || register.status === "Cancelled") {
       toast.info("Không thể thay đổi trạng thái của đơn đăng ký này!");
       return;
     }
 
-    // Chỉ xử lý khi đơn ở trạng thái Confirmed - chuyển sang Cancelled
     if (register.status === "Confirmed") {
       // Hiển thị xác nhận
       const confirmResult = await Swal.fire({

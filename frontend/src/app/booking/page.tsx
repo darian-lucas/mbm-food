@@ -55,15 +55,21 @@ const Booking = () => {
 
           if (userId) {
             const user = await BookingServices.getUserById(userId);
-            console.log("🚀 ~ fetchData ~ user:", user);
             setUserData(user);
 
-            setFormData((prev) => ({
-              ...prev,
-              name: user.address[0].name || "",
-              email: user.email || "",
-              phone: user.address[0].phone || "",
-            }));
+            if (user.address && user.address.length > 0) {
+              setFormData((prev) => ({
+                ...prev,
+                name: user.address[0].name || "",
+                email: user.email || "",
+                phone: user.address[0].phone || "",
+              }));
+            } else {
+              setFormData((prev) => ({
+                ...prev,
+                email: user.email || "",
+              }));
+            }
           }
         }
       } catch (error) {
@@ -96,6 +102,21 @@ const Booking = () => {
     if (!token) {
       router.push("/login");
       return;
+    }
+
+    if (userData && (!userData.address || userData.address.length === 0)) {
+      try {
+        // Gọi API để thêm địa chỉ từ thông tin đặt bàn
+        await BookingServices.addAddressFromBooking({
+          name: formData.name,
+          phone: formData.phone,
+        });
+
+        // Không cần đợi kết quả vì chúng ta tiếp tục xử lý đặt bàn
+      } catch (error) {
+        console.error("Error updating user address:", error);
+        // Vẫn tiếp tục đặt bàn ngay cả khi cập nhật địa chỉ thất bại
+      }
     }
 
     if (!selectedTable) {
@@ -206,12 +227,11 @@ const Booking = () => {
                     </label>
                     <input
                       type="text"
-                      name="fullName"
+                      name="name"
                       placeholder="Họ và tên..."
                       value={formData.name}
                       onChange={handleInputChange}
                       className="w-full p-2 rounded-md bg-white text-black outline-none"
-                      
                     />
                   </div>
                   <div>
@@ -225,7 +245,6 @@ const Booking = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       className="w-full p-2 rounded-md bg-white text-black outline-none"
-                     
                     />
                   </div>
                 </div>
@@ -271,7 +290,7 @@ const Booking = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 justify-center mt-4">
-                  {dataTable.map((table, index) => (
+                  {dataTable?.map((table, index) => (
                     <button
                       key={index}
                       type="button"
