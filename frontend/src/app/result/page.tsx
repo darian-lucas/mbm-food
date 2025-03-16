@@ -23,7 +23,7 @@ const OrderResult = () => {
         toast.success("Thanh toán MoMo thành công!");
 
         // Gửi email xác nhận
-        const email = localStorage.getItem("userEmail"); // Giả sử email đã được lưu trong localStorage
+        const email = localStorage.getItem("userEmail"); 
         if (email) {
           await fetch("http://localhost:3001/api/email/send", {
             method: "POST",
