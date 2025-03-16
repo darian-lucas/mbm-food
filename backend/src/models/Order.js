@@ -12,7 +12,6 @@ const orderSchema = new mongoose.Schema({
     note: { type: String, default: "" },
     receive_address: { type: String, required: true },
     id_payment_method: { type: mongoose.Schema.Types.ObjectId, ref: "PaymentMethod" },
-    // id_payment_method: { type: String, enum: ["cash", "momo", "vnpay"], required: true },
     status: { type: String, enum: ["pending", "shipped", "delivered", "canceled"], default: "pending" },
     createdAt: { type: Date, default: Date.now }
 });

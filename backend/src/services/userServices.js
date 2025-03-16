@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require("nodemailer");
 
 // Đăng ký người dùng
 const register = async (userData) => {
@@ -103,7 +104,7 @@ const addAddress = async (req, res) => {
             user.address = [];
         }
 
-        user.address.push(address); 
+        user.address.push(address);
         await user.save();
 
         res.status(200).json({ message: "Đã thêm địa chỉ mới", addresses: user.address });
@@ -151,7 +152,7 @@ const toggleUserStatus = async (userId) => {
         // Chỉ cập nhật trường `isActive`, không ảnh hưởng đến `address`
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { $set: { isActive: !user.isActive } }, 
+            { $set: { isActive: !user.isActive } },
             { new: true } // Trả về dữ liệu sau khi cập nhật
         );
 
@@ -162,7 +163,59 @@ const toggleUserStatus = async (userId) => {
         throw new Error(error.message);
     }
 };
+const sendResetPasswordEmail = async (email) => {
+    const user = await User.findOne({ email });
+    if (!user) throw { status: 404, message: "Email không tồn tại!" };
+    console.log("JWT_SECRET khi tạo token:", process.env.JWT_SECRET);
+    // Tạo token JWT có hiệu lực 15 phút
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+
+    const resetLink = `http://localhost:3002/reset-password/${token}`;
+
+    // Cấu hình gửi email
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Đặt lại mật khẩu",
+        html: `<p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào link sau để tiếp tục:</p>
+             <a href="${resetLink}">Đặt lại mật khẩu</a>
+             <p>Link có hiệu lực trong 15 phút.</p>`,
+    });
+
+    return "Email đặt lại mật khẩu đã được gửi!";
+};
+
+// Hàm đặt lại mật khẩu
+const resetPassword = async (token, newPassword) => {
+    try {
+        
+        console.log("JWT_SECRET khi verify token:", process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        const user = await User.findById(decoded.id);
+        console.log(user)
+        
+        if (!user) throw { status: 404, message: "Người dùng không tồn tại!" };
+        console.log(newPassword)
+        // Hash mật khẩu mới
+        const hashedPassword = newPassword;
+       
+        user.password = hashedPassword;
+        await user.save();
+
+        return "Mật khẩu đã được cập nhật thành công!";
+    } catch (error) {
+        throw { status: 400, message: "Token không hợp lệ hoặc đã hết hạn!" };
+    }
+};
 
 
-
-module.exports = { toggleUserStatus,addAddress ,updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById,updateAddress  };
+module.exports = { sendResetPasswordEmail, resetPassword, toggleUserStatus, addAddress, updatePassword, getAllUsers, deleteUser, updateUser, findUserByName, register, login, findUserById, updateAddress };
