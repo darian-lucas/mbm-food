@@ -14,19 +14,6 @@ const getAllRegisters = async () => {
   }
 };
 
-// const getTableById = async (id: string) => {
-//   try {
-//     const response = await fetch(`${API_URL}/${id}`);
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! Status: ${response.status}`);
-//     }
-//     const result = await response.json();
-//     return result;
-//   } catch (error) {
-//     console.error("Lỗi khi fetch dữ liệu:", error);
-//   }
-// };
-
 const updateRegisterStatus = async (
   id: string,
   status: string,
