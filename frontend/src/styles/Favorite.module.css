@@ -52,6 +52,7 @@
   .productDescription {
     font-size: 14px;
     color: #666;
+    padding-left:12px;
     text-align: left;
     height: 40px; /* Giới hạn mô tả */
     overflow: hidden;
