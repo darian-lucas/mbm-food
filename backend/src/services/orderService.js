@@ -102,9 +102,9 @@ class OrderService {
             console.log("📌 Dữ liệu thanh toán trước khi lưu:", fullPaymentData);
     
             // **Tạo phương thức thanh toán**
-            const payment = new PaymentMethod(fullPaymentData);
-            const savedPayment = await payment.save({ session });
-            console.log("✅ Phương thức thanh toán được tạo:", savedPayment._id);
+            // const payment = new PaymentMethod(fullPaymentData);
+            // const savedPayment = await payment.save({ session });
+            // console.log("✅ Phương thức thanh toán được tạo:", savedPayment._id);
     
             // **Tạo chi tiết đơn hàng**
             const orderDetails = products.map(product => ({
