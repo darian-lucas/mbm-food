@@ -1,8 +1,8 @@
 const Order = require("../models/Order");
 const OrderDetail = require("../models/OrderDetail");
-const PaymentMethod = require("../models/PaymentMethod");
+// const PaymentMethod = require("../models/PaymentMethod");
 const mongoose = require("mongoose");
-const Coupon = require("../models/CouponModel");
+// const Coupon = require("../models/CouponModel");
 class OrderService {
   async updateOrder(orderId, updateData) {
     try {
