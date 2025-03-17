@@ -1,19 +1,14 @@
 const mongoose = require("mongoose");
 
-const PaymentMethodSchema = new mongoose.Schema({
-    payment_name: { 
-        type: String, 
-        enum: ["cash", "momo"],
-        required: true 
+const PaymentMethodSchema = new mongoose.Schema(
+  {
+    payment_name: {
+      type: String,
+      enum: ["cash", "momo"],
+      required: true,
     },
-
-    status: { 
-        type: String, 
-        enum: ["pending", "completed", "failed", "refunded"], 
-        default: "pending" 
-    },
-
-    created_at: { type: Date, default: Date.now }
-});
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("PaymentMethod", PaymentMethodSchema);
