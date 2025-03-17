@@ -101,10 +101,7 @@ class OrderService {
     
             console.log("📌 Dữ liệu thanh toán trước khi lưu:", fullPaymentData);
     
-            // **Tạo phương thức thanh toán**
-            // const payment = new PaymentMethod(fullPaymentData);
-            // const savedPayment = await payment.save({ session });
-            // console.log("✅ Phương thức thanh toán được tạo:", savedPayment._id);
+           
     
             // **Tạo chi tiết đơn hàng**
             const orderDetails = products.map(product => ({
@@ -118,13 +115,7 @@ class OrderService {
             await OrderDetail.insertMany(orderDetails, { session });
             console.log("✅ Chi tiết đơn hàng được tạo:", orderDetails.length, "mục");
     
-            // **Cập nhật ID phương thức thanh toán vào đơn hàng**
-            // await Order.updateOne(
-            //     { _id: savedOrder._id },
-            //     { id_payment_method: savedPayment._id },
-            //     { session }
-            // );
-            // console.log("✅ Đã cập nhật phương thức thanh toán vào đơn hàng");
+     
     
             // **Commit transaction**
             await session.commitTransaction();
