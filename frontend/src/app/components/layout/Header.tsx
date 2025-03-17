@@ -346,10 +346,10 @@ export default function Header(): JSX.Element {
           </Link>
         </div>
         <div className={styles.icons}>
-          <Link href="/dat-mon">
+          <Link href="/product">
             <button>Đặt món online</button>
           </Link>
-          <Link href="/dat-ban">
+          <Link href="/booking">
             <button>Đặt bàn</button>
           </Link>
         </div>

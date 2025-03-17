@@ -49,7 +49,7 @@ const CouponManage = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -189,7 +189,7 @@ const CouponManage = () => {
           />
         </svg>
       </Link>
-      <div className="flex items-center gap-5 justify-between mb-3">
+      <div className="flex items-center gap-5 justify-between mb-3 mt-4">
         <Heading>Quản lý mã giảm giá</Heading>
         <div className="flex gap-3">
           <div className="w-full lg:w-[300px]">

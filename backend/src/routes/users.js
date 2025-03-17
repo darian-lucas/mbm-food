@@ -14,7 +14,8 @@ const {
     updateAddress,
     toggleActiveStatus,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    addAddressFromBooking
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -32,6 +33,8 @@ router.post('/logout', logout);
 // Các API yêu cầu xác thực người dùng
 router.put('/update-password', authMiddleware, updatePassword);
 router.post('/add-address', authMiddleware, addAddress);
+router.post('/address/booking', authMiddleware, addAddressFromBooking);
+
 // Cập nhật địa chỉ
 router.put("/:userId/address/:addressId", authMiddleware, updateAddress);
 // kich hoat!

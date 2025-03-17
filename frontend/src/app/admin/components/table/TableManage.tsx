@@ -36,7 +36,7 @@ const TableManage = () => {
   const [tables, setTables] = useState<TableData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 12;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,7 +146,7 @@ const TableManage = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
       </Link>
-      <div className="flex items-center gap-5 justify-between mb-3">
+      <div className="flex items-center gap-5 justify-between mb-3 mt-4">
         <Heading>Quản lý bàn</Heading>
         <div className="flex gap-3">
           <div className="w-full lg:w-[300px]">

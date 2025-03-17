@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -48,7 +49,7 @@ const ProductManage = () => {
   );
   const [loading, setLoading] = useState(true);
 
-  const ITEMS_PER_PAGE = 8; // Số sản phẩm trên mỗi trang
+  const ITEMS_PER_PAGE = 12; // Số sản phẩm trên mỗi trang
 
   useEffect(() => {
     const fetchData = async () => {
@@ -182,7 +183,7 @@ const ProductManage = () => {
           />
         </svg>
       </Link>
-      <div className="flex items-center gap-5 justify-between mb-3">
+      <div className="flex items-center gap-5 justify-between mb-3 mt-4">
         <Heading className="">Quản lý sản phẩm</Heading>
         <div className="flex gap-3">
           <div className="w-full lg:w-[300px]">
