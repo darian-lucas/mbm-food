@@ -75,7 +75,7 @@ const SuccessPage = () => {
         {/* Logo */}
         <div className="flex justify-center">
           <h2 className="text-3xl font-bold text-green-600 flex items-center">
-            <span className="text-red-500 text-5xl mr-2">V</span>DOLA <span className="text-red-500 ml-1">Food</span>
+            <span className="text-red-500 text-5xl mr-2">V</span>MBM <span className="text-red-500 ml-1">Food</span>
           </h2>
         </div>
 

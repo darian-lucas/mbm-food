@@ -5,11 +5,11 @@ const PaymentMethod = require("../models/PaymentMethod");
 const Order = require("../models/Order");
 
 
-const MOMO_PARTNER_CODE = "MOMO"; // Thay bằng Partner Code của bạn
-const MOMO_ACCESS_KEY = "F8BBA842ECF85"; // Thay bằng Access Key
-const MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"; // Thay bằng Secret Key
+const MOMO_PARTNER_CODE = "MOMO"; 
+const MOMO_ACCESS_KEY = "F8BBA842ECF85"; 
+const MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"; 
 const MOMO_ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create";
-const RETURN_URL = "http://localhost:3002/result"; // URL frontend sau khi thanh toán thành công
+const RETURN_URL = "http://localhost:3002/result"; 
 const NOTIFY_URL = "http://localhost:3100/api/payment/momo/callback"; // URL backend nhận callback
 
 // Tạo thanh toán Momo

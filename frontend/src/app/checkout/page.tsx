@@ -242,7 +242,7 @@ const CheckoutPage = () => {
 
   console.log("Dữ liệu orderData gửi lên:", orderData);
 
-    console.log("Payment Method:", paymentMethod); // Add this line to log paymentMethod
+    console.log("Payment Method:", paymentMethod); 
     console.log("Cart:", cart);
     // Lưu vào localStorage
     localStorage.setItem("orderData", JSON.stringify(orderData));
@@ -285,17 +285,7 @@ const CheckoutPage = () => {
         // Chuyển hướng đến cổng thanh toán MoMo
         window.location.href = momoData.payUrl;
         return;
-      } else if (paymentMethod === "cash") {
-        await fetch("http://localhost:3001/api/email/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: user.email, orderData }),
-        });
-
-        toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
-        localStorage.removeItem("cart");
-        setCart([]);
-        router.push(`/result?email=${encodeURIComponent(user.email)}&orderData=${encodeURIComponent(JSON.stringify(orderData))}`);
+      
       } else if (paymentMethod === "cash") {
         await fetch("http://localhost:3001/api/email/send", {
           method: "POST",
