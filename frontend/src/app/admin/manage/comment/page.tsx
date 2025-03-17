@@ -37,7 +37,7 @@ export default function CommentsPage() {
     const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
 
     return (
-        <div className="container mt-4">
+        <div className="mt-4">
             <h3 className="mb-4 fs-3 fw-bold">Danh sách Bình luận</h3>
 
             <Table striped bordered hover responsive>

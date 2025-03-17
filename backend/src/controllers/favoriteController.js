@@ -3,7 +3,6 @@ const favoriteService = require('../services/favoriteService');
 // Thêm sản phẩm vào danh sách yêu thích
 const addFavorite = async (req, res) => {
     try {
-        console.log("Thông tin người dùng từ token:", req.user); // Debug
 
         const { id_product } = req.body;
         if (!req.user || !req.user.userId) {
@@ -23,7 +22,6 @@ const addFavorite = async (req, res) => {
 
 const getFavorites = async (req, res) => {
     try {
-        console.log("Người dùng từ token:", req.user); // Kiểm tra user từ token
 
         const id_user = req.user.userId;
         if (!id_user) throw new Error("Không lấy được ID user từ token");
