@@ -57,18 +57,19 @@ const OrderManagementPage = () => {
     }
   };
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
+  const handleStatusChange = async (orderId: string, newStatus: Order["status"]) => {
     try {
-      await orderService.updateOrderStatus(orderId, { status: newStatus });
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order._id === orderId ? { ...order, status: newStatus } : order
-        )
-      );
+        await orderService.updateOrderStatus(orderId, { status: newStatus });
+        setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+                order._id === orderId ? { ...order, status: newStatus } : order
+            )
+        );
     } catch (error) {
-      console.error("Lỗi khi cập nhật trạng thái:", error);
+        console.error("Lỗi khi cập nhật trạng thái:", error);
     }
-  };
+};
+
 
   const toggleExpand = (orderId: string) => {
     setExpandedOrders((prev) => ({ ...prev, [orderId]: !prev[orderId] }));

@@ -7,7 +7,7 @@ const router = express.Router();
 ///api client////////
 // Lấy các bài viết hot chi title va image
 router.get('/posts/hot/4', postController.getHotPosts4);
-
+router.put("/posts/activate/:id", postController.activatePost);
 // Lấy 4 bài viết mới nhất
 router.get('/posts/newest/4', postController.getNewestFourPosts);
 // Lấy 4 bài viết mới nhất footer

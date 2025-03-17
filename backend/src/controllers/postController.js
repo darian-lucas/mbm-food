@@ -24,7 +24,22 @@ exports.searchPostsByTitle = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-
+exports.activatePost = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body; // Lấy trạng thái từ request body
+  
+      if (![1, 2].includes(status)) {
+        return res.status(400).json({ message: "Trạng thái không hợp lệ!" });
+      }
+  
+      const updatedPost = await postService.activatePost(id, status);
+      console.log(updatedPost)
+      res.json({ message: "Cập nhật trạng thái thành công!", post: updatedPost });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 exports.getPostById = async (req, res) => {
     try {
         const post = await postService.getPostById(req.params.id);
