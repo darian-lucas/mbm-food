@@ -119,19 +119,19 @@ class OrderService {
             console.log("✅ Chi tiết đơn hàng được tạo:", orderDetails.length, "mục");
     
             // **Cập nhật ID phương thức thanh toán vào đơn hàng**
-            await Order.updateOne(
-                { _id: savedOrder._id },
-                { id_payment_method: savedPayment._id },
-                { session }
-            );
-            console.log("✅ Đã cập nhật phương thức thanh toán vào đơn hàng");
+            // await Order.updateOne(
+            //     { _id: savedOrder._id },
+            //     { id_payment_method: savedPayment._id },
+            //     { session }
+            // );
+            // console.log("✅ Đã cập nhật phương thức thanh toán vào đơn hàng");
     
             // **Commit transaction**
             await session.commitTransaction();
             console.log("🎉 Transaction commit thành công!");
     
             session.endSession();
-            return { order: savedOrder, payment: savedPayment };
+            return { order: savedOrder};
         } catch (error) {
             console.error("❌ Lỗi! Rollback transaction:", error);
             await session.abortTransaction();
