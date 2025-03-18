@@ -43,8 +43,9 @@ class OrderService {
     session.startTransaction();
 
     try {
+      const orderCode = `MBM${Date.now()}`; // Define orderCode here (UNCOMMENTED)
       const newOrder = new Order({
-        order_code: orderCode,
+        order_code: orderCode, // <-- CORRECT: Use the defined orderCode variable
         id_user: orderData.id_user,
         id_coupon: orderData.id_coupon,
         total_amount: orderData.total_amount,
@@ -58,7 +59,6 @@ class OrderService {
         payment_status: orderData.payment_status || "Pending",
         order_status: orderData.order_status || "Pending",
       });
-
       const savedOrder = await newOrder.save({ session });
 
       const orderDetailPromises = orderDetails.map((detail) => {

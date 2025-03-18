@@ -125,8 +125,8 @@ const CheckoutPage = () => {
       setDiscount(data.discount);
       setSelectedCoupon(data);
       toast.success(`Áp dụng mã ${data.code}! Giảm ${data.discount.toLocaleString()}đ`);
-    } catch (error) {
-      toast.error("Không thể áp dụng mã giảm giá!");
+    } catch (e) {
+      toast.error(`Lỗi đặt hàng: ${(e as Error).message}`);
     }
   };
 
@@ -144,7 +144,7 @@ const CheckoutPage = () => {
     const orderData = {
       id_user: user._id,
       order_code: `MBM${Date.now()}`,
-      id_coupon: selectedCoupon?._id || "",
+      id_coupon: selectedCoupon?._id || null, // Send null if no coupon
       id_payment_method: paymentMethod?._id || "",
       total_amount: totalAmount,
       total_payment: finalAmount,
@@ -163,10 +163,18 @@ const CheckoutPage = () => {
       })),
     };
     
-    
+    const orderDetails = cart.map((item) => ({
+      id_product: item._id,
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
+
     // 🛑 Console log để debug
     console.log("🛒 Cart trước khi gửi:", cart);
     console.log("📦 orderData trước khi gửi:", orderData);
+    console.log("🧾 orderDetails trước khi gửi:", orderDetails); // Log orderDetails separately
     console.log("💰 Phương thức thanh toán đã chọn (_id):", paymentMethod);
     console.log("🎟️ Mã giảm giá đã chọn:", selectedCoupon?._id);
     
@@ -175,7 +183,7 @@ const CheckoutPage = () => {
       const orderResponse = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData ),
+        body: JSON.stringify({ orderData, orderDetails }), 
       });
 
       const orderDataResponse = await orderResponse.json();
@@ -183,16 +191,16 @@ const CheckoutPage = () => {
       if (!orderResponse.ok) {
         throw new Error(orderDataResponse.error || "Đặt hàng thất bại!");
       }
-
+      
       // Xử lý thanh toán nếu là MoMo
       if (paymentMethod.payment_name === "momo") {
         const momoResponse = await fetch("http://localhost:3001/api/payments/momo", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            id_user: user._id,
-            order_code: orderDataResponse.order_code,
-            amount: finalAmount,
+            id_user: orderDataResponse.data.order.id_user,
+            order_code: orderDataResponse.data.order.order_code,
+            amount: orderDataResponse.data.order.total_payment,
           }),
         });
 
@@ -207,10 +215,11 @@ const CheckoutPage = () => {
 
       toast.success("Đặt hàng thành công!");
       localStorage.removeItem("cart");
+      
       setCart([]);
-      router.push("/success");
-    } catch (error) {
-      toast.error(`Lỗi đặt hàng: ${(error as Error).message}`);
+      router.push(`/success?_id=${orderDataResponse.data.order._id}`);
+    } catch (e) {
+      toast.error(`Lỗi đặt hàng: ${(e as Error).message}`);
     }
   };
 
@@ -281,25 +290,25 @@ const CheckoutPage = () => {
           </select>
 
           <div className={styles.paymentOptions}>
-  <label>Phương thức thanh toán:</label>
-  <div>
-    {paymentMethods.map((method) => (
-      <label
-        key={method._id}
-        style={{ display: "block", marginBottom: "8px" }}
-      >
-        <input
-          type="radio"
-          name="paymentMethod"
-          value={method._id} // Lưu _id thay vì value
-          checked={paymentMethod?._id === method._id}
-          onChange={() => setPaymentMethod(method)}
-        />
-        {method.payment_name} {/* Hiển thị tên phương thức */}
-      </label>
-    ))}
-  </div>
-</div>
+          <label>Phương thức thanh toán:</label>
+          <div>
+            {paymentMethods.map((method) => (
+              <label
+                key={method._id}
+                style={{ display: "block", marginBottom: "8px" }}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value={method._id} // Lưu _id thay vì value
+                  checked={paymentMethod?._id === method._id}
+                  onChange={() => setPaymentMethod(method)}
+                />
+                {method.payment_name} {/* Hiển thị tên phương thức */}
+              </label>
+            ))}
+          </div>
+        </div>
 
         </form>
       </div>
@@ -362,8 +371,9 @@ const CheckoutPage = () => {
         <button className={styles.orderBtn} onClick={handleOrder}>
           ĐẶT HÀNG
         </button>
+        </div>
       </div>
-    </div>
+    
   );
 };
 

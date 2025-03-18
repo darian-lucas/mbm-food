@@ -35,7 +35,7 @@ const OrderResult = () => {
         // Xóa giỏ hàng sau khi thanh toán thành công
         localStorage.removeItem("cart");
 
-        router.push("/success");
+        router.push(`/success?_id=${orderId}`);
       } else {
         toast.error("Thanh toán thất bại hoặc bị hủy!");
         router.push("/checkout");
