@@ -9,6 +9,32 @@ import {
   faToggleOff,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+interface UserType {
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  createdAt: string;
+  avatar?: string;
+  address?: string; // Thêm vào đây
+}
+
+
+interface UserResponse {
+  users: UserType[];
+  currentPage: number;
+  totalPages: number;
+  totalUsers: number;
+}
+
+interface EditData {
+  username: string;
+  email: string;
+  role: string;
+  address?: string;
+  
+}
 
 export default function Table() {
   // States cho danh sách người dùng và phân trang
@@ -24,6 +50,7 @@ export default function Table() {
     username: "",
     email: "",
     role: "",
+    address: ""
   });
 
   // Load users khi component mount và khi page thay đổi (nếu không search)
@@ -41,7 +68,7 @@ export default function Table() {
     setTotalPages(data.totalPages);
   };
 
-  const handleToggleActive = async (id) => {
+  const handleToggleActive = async (id:any,isActive:any) => {
     const updatedUser = await userService.toggleUserStatus(id);
 
     if (updatedUser) {
@@ -81,12 +108,13 @@ export default function Table() {
   }, [search]);
 
   // Xử lý chỉnh sửa người dùng
-  const handleEdit = (user) => {
+  const handleEdit = (user:any) => {
     setEditingUser(user._id);
     setEditData({
       username: user.username,
       email: user.email,
       role: user.role,
+      address:user.address
     });
   };
 
@@ -137,12 +165,7 @@ export default function Table() {
               <tr key={user._id}>
                 
                 <td>
-                  <div className={styles.avatarContainer}>
-                    <img
-                      className={styles.avatar}
-                      src={user.avatar || "https://via.placeholder.com/40"}
-                      alt="Avatar"
-                    />
+                  <div className={styles.avatarContainer}>                    
                     <Link href={`custumerList/${user._id}`}>
                       <span className={styles.name}>{user.username}</span>
                     </Link>

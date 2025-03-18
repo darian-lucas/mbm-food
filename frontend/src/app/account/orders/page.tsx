@@ -23,9 +23,9 @@ export default function AddressTable() {
             const data = await orderService.getOrdersByUserId(userId);
 
             // ✅ Ghép orderDetails vào từng order
-            const ordersWithDetails = data.orders.map(order => ({
+            const ordersWithDetails = data.orders.map((order:any) => ({
                 ...order,
-                details: data.orderDetails.filter(detail => detail.id_order === order._id) || []
+                details: data.orderDetails.filter((detail:any) => detail.id_order === order._id) || []
             }));
 
             setOrders(ordersWithDetails);
@@ -95,7 +95,7 @@ export default function AddressTable() {
                             <td>
                                 {order.details.length > 0 ? (
                                     <ul className="text-left p-0">
-                                        {order.details.map((item, index) => {
+                                        {order.details.map((item:any, index:any) => {
                                             const product = item.id_product;
                                             const price = item.price || product?.variants?.[0]?.price || 0; // ✅ Ưu tiên item.price trước
                                             return (
@@ -118,7 +118,7 @@ export default function AddressTable() {
                             </td>
                             <td>{order.total_amount?.toLocaleString("vi-VN") || "0"} VND</td>
                             <td>
-                                {["pending", "shipped"].includes(order.status) && (
+                                {["pending"].includes(order.status) && (
                                     <button
                                         className="btn btn-danger btn-sm"
                                         onClick={() => cancelOrder(order._id)}
