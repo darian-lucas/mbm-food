@@ -1,28 +1,7 @@
 const OrderService = require("../services/orderService");
 
 class OrderController {
-  // async createOrder(req, res) {
-  //     try {
-  //         const {
-  //             products,
-  //         } = req.body;
-
-  //         console.log("📌 Dữ liệu nhận từ client:", req.body); // Kiểm tra dữ liệu đầu vào
-
-  //         // Gọi service để tạo Order
-  //         const result = await OrderService.createOrder(
-  //             req.body, // Pass the entire req.body as orderData
-  //             products
-  //         );
-
-  //         res.status(201).json({ message: "Order created successfully", result });
-  //     } catch (error) {
-  //         console.error("❌ Lỗi khi tạo đơn hàng:", error); // In lỗi chi tiết
-  //         res.status(500).json({ error: error.message });
-  //     }
-  // }
-
-  async createOrder  (req, res) {
+   async createOrder  (req, res) {
     try {
       const { orderData, orderDetails } = req.body;
       
@@ -110,6 +89,33 @@ class OrderController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async getOrderByOrderCode(req, res) {
+    try {
+      const { orderCode } = req.params;
+  
+      const order = await OrderService.getOrderByOrderCode(orderCode);
+  
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: "Không tìm thấy đơn hàng với mã đơn hàng này",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        data: order,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: `Lỗi khi lấy đơn hàng: ${error.message}`,
+      });
+    }
+  }
+  
+  
 
   async updateOrderStatus(req, res) {
     try {
