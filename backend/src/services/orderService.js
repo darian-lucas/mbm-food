@@ -43,9 +43,9 @@ class OrderService {
     session.startTransaction();
 
     try {
-      const orderCode = `MBM${Date.now()}`; // Define orderCode here (UNCOMMENTED)
+      const orderCode = `MBM${Date.now()}`; 
       const newOrder = new Order({
-        order_code: orderCode, // <-- CORRECT: Use the defined orderCode variable
+        order_code: orderCode, 
         id_user: orderData.id_user,
         id_coupon: orderData.id_coupon,
         total_amount: orderData.total_amount,
@@ -106,6 +106,27 @@ class OrderService {
     return ordersWithDetails;
   }
 
+  async getOrderByOrderCode(orderCode) {
+    try {
+      const order = await Order.findOne({ order_code: orderCode })
+        .populate("id_user", "name email")
+        .populate("id_payment_method", "name")
+        .lean();
+  
+      if (!order) return null;
+  
+      order.details = await OrderDetail.find({ id_order: order._id }).populate({
+        path: "id_product",
+        select: "name variants.price",
+      }).lean();
+  
+      return order;
+    } catch (error) {
+      throw new Error(`Lỗi khi lấy đơn hàng: ${error.message}`);
+    }
+  }
+  
+
   async getOrderById(orderId) {
     const order = await Order.findById(orderId)
       .populate("id_user", "name email")
@@ -120,6 +141,8 @@ class OrderService {
     });
     return order;
   }
+
+
 
   async updateOrderStatus(id, status) {
     if (!["pending", "shipped", "delivered", "canceled"].includes(status)) {

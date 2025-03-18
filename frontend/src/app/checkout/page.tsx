@@ -198,9 +198,19 @@ const CheckoutPage = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            _id: orderDataResponse.data.order._id,
             id_user: orderDataResponse.data.order.id_user,
             order_code: orderDataResponse.data.order.order_code,
             amount: orderDataResponse.data.order.total_payment,
+            id_coupon: orderDataResponse.data.order.id_coupon,
+            order_status: orderDataResponse.data.order.order_status,
+            payment_status: orderDataResponse.data.order.payment_status,
+            receive_address: orderDataResponse.data.order.receive_address,
+            id_payment_method: orderDataResponse.data.order.id_payment_method,
+            address: orderDataResponse.data.order.address,
+            phone: orderDataResponse.data.order.phone,
+            name: orderDataResponse.data.order.name,
+            note: orderDataResponse.data.order.note,
           }),
         });
 

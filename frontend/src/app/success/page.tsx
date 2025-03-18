@@ -45,7 +45,7 @@ const SuccessPage = () => {
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const orderId = searchParams.get("_id");
-
+  console.log("Dữ liệu orderId",orderId);
   useEffect(() => {
     if (!orderId) return;
 
@@ -53,7 +53,7 @@ const SuccessPage = () => {
       try {
         const response = await fetch(`http://localhost:3001/api/orders/${orderId}`);
         const data = await response.json();
-
+        console.log("Dữ liệu data trả về khi fetch",data);
         if (data._id) {
           setOrder(data);
         } else {

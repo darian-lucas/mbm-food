@@ -90,6 +90,33 @@ class OrderController {
     }
   }
 
+  async getOrderByOrderCode(req, res) {
+    try {
+      const { orderCode } = req.params;
+  
+      const order = await OrderService.getOrderByOrderCode(orderCode);
+  
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: "Không tìm thấy đơn hàng với mã đơn hàng này",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        data: order,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: `Lỗi khi lấy đơn hàng: ${error.message}`,
+      });
+    }
+  }
+  
+  
+
   async updateOrderStatus(req, res) {
     try {
       const { id } = req.params;
