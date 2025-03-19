@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -117,7 +118,7 @@ export default function CommentSection({ postId }: { postId: string }) {
             comments.map((comment) => (
               <div key={comment._id} className="article-comment clearfix">
                 <figure className="article-comment-user-image">
-                  <img src="" alt="user-avatar" className="block" />
+                  <Image src="" alt="user-avatar" className="block" />
                 </figure>
                 <div className="article-comment-user-comment">
                   <p className="user-name-comment">

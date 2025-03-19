@@ -8,6 +8,7 @@ import { fetchFeaturedNews, fetchNewsDetail, Post } from "../../../services/post
 import "../../../styles/id.css";
 import "../../../styles/new.css";
 import CommentSection from "@/app/comments/CommentSection";
+import Image from "next/image";
 
 export default function NewsDetail() {
   const { slug } = useParams();
@@ -30,7 +31,7 @@ export default function NewsDetail() {
 
         const [featuredNews, data] = await Promise.all([
           fetchFeaturedNews(),
-          fetchNewsDetail(slug),
+          fetchNewsDetail(slug as string),
         ]);
 
         if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
@@ -170,7 +171,7 @@ export default function NewsDetail() {
                   <li className="aside-news-item" key={i}>
                     <div className="block-thumb">
                       <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
-                        <img
+                        <Image
                           src={extractImageSrc(ttnoibat.imageSummary) || "/images/default.png"}
                           alt={ttnoibat.title}
                           width={120}

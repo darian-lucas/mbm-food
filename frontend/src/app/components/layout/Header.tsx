@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import styles from "@/styles/Header.module.css";
 import Image from "next/image";

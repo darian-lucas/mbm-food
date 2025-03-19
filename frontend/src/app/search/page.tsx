@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +7,8 @@ import styles from "../../styles/ProductList.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import "../../styles/new.css";
+import "../../styles/about.css";
+import "../../styles/id.css";
 import { toast } from "react-toastify";
 import { Heart } from "lucide-react";
 import { addFavorite, removeFavorite } from "@/services/Favorite";
@@ -184,31 +187,6 @@ export default function SearchPage() {
             </div>
           </div>
         )}
-
-        {/* {searchResults.news.length > 0 && (
-          <div className={styles.resultCategory}>
-            <h3>📰 Tin tức</h3>
-            <div className={styles.grid}>
-              {searchResults.news.map((item, index) => (
-                <Link
-                  key={index}
-                  href={`/news/${item.slug}`}
-                  className={styles.resultItem}
-                >
-                  {item.image && (
-                    <Image
-                      src={`/images/${item.image}`}
-                      alt={item.title}
-                      width={100}
-                      height={100}
-                    />
-                  )}
-                  <p>{item.title}</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )} */}
 
         {searchResults.products.length === 0}
       </div>

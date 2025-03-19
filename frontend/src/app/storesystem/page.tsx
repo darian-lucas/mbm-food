@@ -24,8 +24,8 @@ export default function Storesystem(){
         store.name.toLowerCase().includes(searchTerm.toLowerCase())
     );    
     
-    const handleShowMap = (e, location) => {
-        e.preventDefault();
+    const handleShowMap = (e: React.MouseEvent<HTMLAnchorElement>, location: string) => {
+        e.preventDefault();    
 
         if (!location) {
             console.error("Địa chỉ không hợp lệ.");

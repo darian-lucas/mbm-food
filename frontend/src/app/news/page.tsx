@@ -170,7 +170,7 @@ export default function New() {
                       <li className="aside-news-item" key={tintuc.slug}>
                         <div className="block-thumb">
                           <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                            <img
+                            <Image
                               src={extractImageUrl(tintuc.imageSummary)}
                               alt={tintuc.title}
                               width={120}
