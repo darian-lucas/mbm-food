@@ -54,8 +54,11 @@ const Login = () => {
           role: result.role.trim().toLowerCase(),
         })
       );
+      window.dispatchEvent(new Event("storage"));
 
-      toast.success("Đăng nhập thành công!");
+      toast.success("Đăng nhập thành công!", {
+        autoClose: 100,
+      });
 
       // Điều hướng theo vai trò
       const role = result.role.trim().toLowerCase();
@@ -64,8 +67,6 @@ const Login = () => {
           router.push("/admin");
         } else if (role === "user") {
           router.push("/");
-        } else if (role === "staff") {
-          router.push("/employee");
         } else {
           toast.error(`Vai trò "${result.role}" không có quyền truy cập.`);
         }

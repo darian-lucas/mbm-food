@@ -21,21 +21,25 @@ const CartPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]").map((item: any) => {
-      const variants = item.option ? item.option : "";
-      
-      return {
+    try {
+      const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      if (!Array.isArray(storedCart)) throw new Error("Invalid cart data");
+  
+      const formattedCart = storedCart.map((item: any) => ({
         _id: item._id || "", 
         name: item.name || "Sản phẩm không tên",
         price: item.price || 0,
         sale_price: item.sale_price || 0,
         quantity: item.quantity || 1,
         image: item.image || "default.jpg",
-        variants: variants || undefined,
-      };
-    });
-
-    setCart(storedCart);
+        variants: item.option ? item.option : undefined,
+      }));
+  
+      setCart(formattedCart);
+    } catch (error) {
+      console.error("Lỗi khi lấy giỏ hàng từ localStorage:", error);
+      setCart([]);
+    }
   }, []);
 
   const updateCart = (newCart: CartItem[]) => {
