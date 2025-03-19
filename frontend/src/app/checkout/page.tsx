@@ -225,6 +225,8 @@ const CheckoutPage = () => {
 
       toast.success("Đặt hàng thành công!");
       localStorage.removeItem("cart");
+      // 🔥 Phát sự kiện cập nhật
+      window.dispatchEvent(new Event("cartUpdated"));
       
       setCart([]);
       router.push(`/success?_id=${orderDataResponse.data.order._id}`);

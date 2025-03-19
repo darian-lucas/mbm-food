@@ -45,6 +45,8 @@ const CartPage = () => {
   const updateCart = (newCart: CartItem[]) => {
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
+    // 🔥 Phát sự kiện cập nhật
+    window.dispatchEvent(new Event("cartUpdated")); 
   };
 
   const increaseQuantity = (_id: string, event: React.MouseEvent) => {
@@ -68,6 +70,8 @@ const CartPage = () => {
   const removeItem = (_id: string) => {
     const newCart = cart.filter((item) => item._id !== _id);
     updateCart(newCart);
+    // 🔥 Phát sự kiện cập nhật
+    window.dispatchEvent(new Event("cartUpdated")); 
   };
 
   const getTotalPrice = () => {
