@@ -55,34 +55,95 @@
   .statusBtn:not(:disabled):hover {
     filter: brightness(1.1);
   }
-  .statusText {
-    padding: 3px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    min-width: 70px;
-    text-align: center;
-    font-size: 13px;
+  .statusBtn {
+    border: 2px solid;
+    padding: 4px 10px;
+    font-size: 14px;
     font-weight: bold;
-    border: 1px solid;
+    border-radius: 5px;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
   
-  .statusPending {
-    color: #007bff;
+  .Pending {
     border-color: #007bff;
+    color: #007bff;
   }
   
-  .statusShipped {
-    color: #ffc107;
+  .Shipped {
     border-color: #ffc107;
+    color: #ffc107;
   }
   
-  .statusDelivered {
-    color: #28a745;
+  .Delivered {
     border-color: #28a745;
+    color: #28a745;
   }
   
-  .statusCanceled {
-    color: #dc3545;
+  .Canceled {
     border-color: #dc3545;
+    color: #dc3545;
   }
+  .paymentStatus {
+    border: 2px solid;
+    padding: 4px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  /* Trạng thái Pending */
+  .paymentStatus.Pending {
+    color: #e67e22; /* Màu cam */
+    border-color: #e67e22;
+  }
+  
+  /* Trạng thái Completed */
+  .paymentStatus.Completed {
+    color: #27ae60; /* Màu xanh lá */
+    border-color: #27ae60;
+  }
+  .cash {
+    color: #27ae60; /* Xanh lá */
+    font-weight: bold;
+  }
+  
+  .momo {
+    color: #8e44ad; /* Tím Momo */
+    font-weight: bold;
+  }
+
+  .emptyState {
+    background-color: #f8f9fa; /* Nền xám nhạt */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .emptyState p {
+    font-size: 18px;
+    font-weight: 600;
+    color: #555; /* Màu chữ tối hơn một chút */
+  }
+  
+  .emptyState button {
+    background-color: #ff9800; /* Màu cam nhẹ */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .emptyState button:hover {
+    background-color: #e68900; /* Tông cam đậm hơn khi hover */
+  }
+  
   

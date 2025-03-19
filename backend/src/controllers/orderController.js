@@ -120,9 +120,9 @@ class OrderController {
   async updateOrderStatus(req, res) {
     try {
       const { id } = req.params;
-      const { status } = req.body;
+      const { order_status } = req.body;
 
-      const updatedOrder = await OrderService.updateOrderStatus(id, status);
+      const updatedOrder = await OrderService.updateOrderStatus(id, order_status);
 
       res.status(200).json(updatedOrder);
     } catch (error) {
