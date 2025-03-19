@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "../../styles/CheckoutPage.module.css";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -32,93 +32,81 @@ interface CartItem {
   image: string;
 }
 
+interface Coupon {
+  _id: string;
+  code: string;
+  discount: number;
+}
+
+interface PaymentMethod {
+  _id: string;
+  payment_name: string;
+}
+
 const CheckoutPage = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [discountCode, setDiscountCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   const router = useRouter();
-  const [paymentMethods, setPaymentMethods] = useState<
-    { name: string; value: string }[]
-  >([]);
 
-  // Fetch danh sách phương thức thanh toán từ API
+  // Hàm fetch API tái sử dụng
+  const fetchData = useCallback(async (url: string, errorMessage: string) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(errorMessage);
+      return await response.json();
+    } catch (error) {
+      console.error(errorMessage, error);
+      toast.error(errorMessage);
+      return null;
+    }
+  }, []);
+
+  // Lấy danh sách phương thức thanh toán (BỎ VNPAY)
   useEffect(() => {
     const fetchPaymentMethods = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/payments");
-        if (!response.ok)
-          throw new Error("Không thể lấy dữ liệu phương thức thanh toán!");
-
-        const data = await response.json();
-        const formattedMethods = data.map(
-          (method: { payment_name: string }) => ({
-            value: method.payment_name,
-            name:
-              method.payment_name === "cash"
-                ? "Thanh toán bằng tiền mặt"
-                : method.payment_name === "momo"
-                ? "Thanh toán bằng MoMo"
-                : method.payment_name === "vnpay"
-                ? "Thanh toán bằng VNPay"
-                : method.payment_name,
-          })
-        );
-
-        setPaymentMethods(formattedMethods);
-      } catch (error) {
-        console.error("Lỗi khi lấy phương thức thanh toán:", error);
+      const data = await fetchData("http://localhost:3001/api/payments/", "Không thể lấy phương thức thanh toán!");
+      if (data) {
+        const filteredMethods = data.filter((method: PaymentMethod) => method.payment_name !== "vnpay");
+        setPaymentMethods(filteredMethods);
+        setPaymentMethod(filteredMethods[0] || null);
       }
     };
-
     fetchPaymentMethods();
-  }, []);
+  }, [fetchData]);
 
+  // Lấy thông tin người dùng
   useEffect(() => {
     const fetchUser = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-        const response = await fetch(
-          `http://localhost:3001/api/user/${userId}`
-        );
-        const data: User = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+      const data = await fetchData(`http://localhost:3001/api/user/${userId}`, "Lỗi khi lấy thông tin người dùng!");
+      if (data) setUser(data);
     };
     fetchUser();
-  }, []);
+  }, [fetchData]);
 
+  // Lấy giỏ hàng từ localStorage
   useEffect(() => {
     const fetchCart = () => {
       const cartData = localStorage.getItem("cart");
       if (cartData) {
-        const parsedCart = JSON.parse(cartData).map((item: CartItem) => ({
-          id_product: item._id,
-          name: item.name || "Sản phẩm không có tên",
-          size: item.size || "Mặc định",
-          price: item.price || 0,
-          quantity: item.quantity || 1,
-          image: item.image || "",
-        }));
-        setCart(parsedCart);
+        setCart(JSON.parse(cartData));
       }
     };
     fetchCart();
   }, []);
 
   // Tính tổng tiền
-  const totalAmount = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-  const finalAmount = totalAmount - discount; // Tổng tiền sau giảm giá
+  const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const finalAmount = Math.max(0, totalAmount - discount); // Không để âm
 
-  // Xử lý áp dụng mã giảm giá
+  // Xử lý mã giảm giá
   const handleApplyDiscount = async () => {
     if (!discountCode) {
       toast.error("Vui lòng nhập mã giảm giá!");
@@ -126,190 +114,122 @@ const CheckoutPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/coupons`);
-      if (!response.ok) throw new Error("Không thể lấy dữ liệu mã giảm giá!");
-
+      const response = await fetch(`http://localhost:3001/api/coupons/check?code=${discountCode}`);
       const data = await response.json();
-      const coupons = data.data; // Mảng chứa danh sách mã giảm giá
 
-      const now = new Date(); // Ngày hiện tại
-      const coupon = coupons.find((item: any) => item.code === discountCode);
-
-      if (!coupon) {
-        toast.error("Mã giảm giá không tồn tại!");
+      if (!response.ok) {
+        toast.error(data.message || "Mã giảm giá không hợp lệ!");
         return;
       }
 
-      const startDate = new Date(coupon.start_date);
-      const endDate = new Date(coupon.end_date);
-
-      if (coupon.status !== "Active") {
-        toast.error("Mã giảm giá không hợp lệ!");
-        return;
-      }
-
-      if (coupon.quantity <= 0) {
-        toast.error("Mã giảm giá đã hết số lượng!");
-        return;
-      }
-
-      if (now < startDate || now > endDate) {
-        toast.error("Mã giảm giá đã hết hạn sử dụng!");
-        return;
-      }
-
-      // Kiểm tra điều kiện áp dụng mã giảm giá
-      if (coupon.type === "Amount" && totalAmount < 200000) {
-        toast.error(
-          "Mã giảm giá chỉ áp dụng cho đơn hàng từ 200.000đ trở lên!"
-        );
-        return;
-      }
-      if (coupon.type === "Shipping" && totalAmount < 300000) {
-        toast.error(
-          "Mã miễn phí vận chuyển chỉ áp dụng cho đơn hàng từ 300.000đ trở lên!"
-        );
-        return;
-      }
-
-      setDiscount(coupon.discount);
-      toast.success(
-        `Áp dụng mã ${coupon.code}! Giảm ${coupon.discount.toLocaleString()}đ`
-      );
-    } catch (error) {
-      console.error("Lỗi khi kiểm tra mã giảm giá:", error);
-      toast.error("Không thể áp dụng mã giảm giá!");
+      setDiscount(data.discount);
+      setSelectedCoupon(data);
+      toast.success(`Áp dụng mã ${data.code}! Giảm ${data.discount.toLocaleString()}đ`);
+    } catch (e) {
+      toast.error(`Lỗi đặt hàng: ${(e as Error).message}`);
     }
   };
 
+  // Xử lý đặt hàng
   const handleOrder = async () => {
     if (!user) {
       toast.error("Vui lòng đăng nhập để đặt hàng!");
       return;
     }
-    if (discountCode) {
-      try {
-        const response = await fetch(
-          "http://localhost:3001/api/coupons/apply-coupon",
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code: discountCode }),
-          }
-        );
-
-        const data = await response.json();
-        if (!response.ok) {
-          console.error("⚠️ Lỗi:", data.message);
-        } else {
-          console.log("✅ Mã giảm giá áp dụng thành công:", data);
-        }
-      } catch (error) {
-        console.error("⚠️ Lỗi khi áp dụng mã giảm giá:", error);
-      }
+    if (!paymentMethod) {
+      toast.error("Vui lòng chọn phương thức thanh toán!");
+      return;
     }
 
-   // Lấy payment_name của phương thức đang chọn
-  const selectedPayment = paymentMethods.find(
-    (method) => method.value === paymentMethod
-  )?.value || "cash";
-
-  const orderData = {
-    id_user: user._id,
-    email: user.email,
-    address: user.address[0]?.address || "",
-    phone: user.address[0]?.phone || "",
-    paymentMethod: selectedPayment,
-    products: cart.map((item) => ({
-      id_product: item.id_product || "",
+    const orderData = {
+      id_user: user._id,
+      order_code: `MBM${Date.now()}`,
+      id_coupon: selectedCoupon?._id || null, // Send null if no coupon
+      id_payment_method: paymentMethod?._id || "",
+      total_amount: totalAmount,
+      total_payment: finalAmount,
+      address: user.address[0]?.address || "",
+      phone: user.address[0]?.phone || "",
+      name: user.address[0]?.name || "",
+      note: "Không có ghi chú",
+      receive_address: user.address[0]?.address || "",
+      order_status: "Pending",
+      payment_status: "Pending",
+      orderDetails: cart.map((item) => ({
+        id_product: item._id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    };
+    
+    const orderDetails = cart.map((item) => ({
+      id_product: item._id,
       name: item.name,
       quantity: item.quantity,
       price: item.price,
-    })),
-    order_code: `MBM${Date.now()}`,
-    total_payment: finalAmount,
-    discount_code: discountCode,
-    discount_value: discount,
-    note: "Không có ghi chú",
-    name: user.address[0]?.name || "",
-    receive_address: user.address[0]?.address || "",
-    total_amount: totalAmount,
-  };
+    }));
 
-  console.log("Dữ liệu orderData gửi lên:", orderData);
 
-    console.log("Payment Method:", paymentMethod); // Add this line to log paymentMethod
-    console.log("Cart:", cart);
-    // Lưu vào localStorage
-    localStorage.setItem("orderData", JSON.stringify(orderData));
+    // 🛑 Console log để debug
+    console.log("🛒 Cart trước khi gửi:", cart);
+    console.log("📦 orderData trước khi gửi:", orderData);
+    console.log("🧾 orderDetails trước khi gửi:", orderDetails); // Log orderDetails separately
+    console.log("💰 Phương thức thanh toán đã chọn (_id):", paymentMethod);
+    console.log("🎟️ Mã giảm giá đã chọn:", selectedCoupon?._id);
+    
 
     try {
       const orderResponse = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify({ orderData, orderDetails }), 
       });
 
-      const orderResponseData = await orderResponse.json();
-
-      console.log("Dữ liệu của orderResponseData", orderResponseData);
+      const orderDataResponse = await orderResponse.json();
+      console.log("📢 Phản hồi từ backend:", orderDataResponse);
       if (!orderResponse.ok) {
-        throw new Error(orderResponseData.error || "Đặt hàng thất bại!");
+        throw new Error(orderDataResponse.error || "Đặt hàng thất bại!");
       }
-
-      if (paymentMethod === "momo") {
-        // Gọi API tạo thanh toán MoMo
-        const momoResponse = await fetch(
-          "http://localhost:3001/api/payments/momo/",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              userId: orderResponseData.id_user,
-              order_code: orderResponseData.result.order.order_code,
-              amount: finalAmount,
-            }),
-          }
-        );
+      
+      // Xử lý thanh toán nếu là MoMo
+      if (paymentMethod.payment_name === "momo") {
+        const momoResponse = await fetch("http://localhost:3001/api/payments/momo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            _id: orderDataResponse.data.order._id,
+            id_user: orderDataResponse.data.order.id_user,
+            order_code: orderDataResponse.data.order.order_code,
+            amount: orderDataResponse.data.order.total_payment,
+            id_coupon: orderDataResponse.data.order.id_coupon,
+            order_status: orderDataResponse.data.order.order_status,
+            payment_status: orderDataResponse.data.order.payment_status,
+            receive_address: orderDataResponse.data.order.receive_address,
+            id_payment_method: orderDataResponse.data.order.id_payment_method,
+            address: orderDataResponse.data.order.address,
+            phone: orderDataResponse.data.order.phone,
+            name: orderDataResponse.data.order.name,
+            note: orderDataResponse.data.order.note,
+          }),
+        });
 
         const momoData = await momoResponse.json();
-        console.log("Dữ liệu của momoResponse", momoData);
         if (!momoResponse.ok) {
           throw new Error(momoData.message || "Lỗi khi tạo thanh toán Momo!");
         }
 
-        // Chuyển hướng đến cổng thanh toán MoMo
         window.location.href = momoData.payUrl;
         return;
-      } else if (paymentMethod === "cash") {
-        await fetch("http://localhost:3001/api/email/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: user.email, orderData }),
-        });
-
-        toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
-        localStorage.removeItem("cart");
-        setCart([]);
-        router.push(`/result?email=${encodeURIComponent(user.email)}&orderData=${encodeURIComponent(JSON.stringify(orderData))}`);
-      } else if (paymentMethod === "cash") {
-        await fetch("http://localhost:3001/api/email/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: user.email, orderData }),
-        });
-
-        toast.success("Đặt hàng thành công! Email xác nhận đã được gửi.");
-        localStorage.removeItem("cart");
-        setCart([]);
-        router.push("/success");
-      } else {
-         router.push(`/result?email=${encodeURIComponent(user.email)}&orderData=${encodeURIComponent(JSON.stringify(orderData))}`);
       }
-    } catch (error) {
-      const errMessage = (error as Error).message || "Đặt hàng thất bại!";
-      console.error("⚠️ Lỗi khi đặt hàng:", errMessage);
-      toast.error(`Lỗi đặt hàng: ${errMessage}`);
+
+      toast.success("Đặt hàng thành công!");
+      localStorage.removeItem("cart");
+      
+      setCart([]);
+      router.push(`/success?_id=${orderDataResponse.data.order._id}`);
+    } catch (e) {
+      toast.error(`Lỗi đặt hàng: ${(e as Error).message}`);
     }
   };
 
@@ -380,25 +300,26 @@ const CheckoutPage = () => {
           </select>
 
           <div className={styles.paymentOptions}>
-            <label>Phương thức thanh toán:</label>
-            <div>
-              {paymentMethods.map((method) => (
-                <label
-                  key={method.value}
-                  style={{ display: "block", marginBottom: "8px" }}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value={method.value}
-                    checked={paymentMethod === method.value}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                  />
-                  {method.name}
-                </label>
-              ))}
-            </div>
+          <label>Phương thức thanh toán:</label>
+          <div>
+            {paymentMethods.map((method) => (
+              <label
+                key={method._id}
+                style={{ display: "block", marginBottom: "8px" }}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value={method._id} // Lưu _id thay vì value
+                  checked={paymentMethod?._id === method._id}
+                  onChange={() => setPaymentMethod(method)}
+                />
+                {method.payment_name} {/* Hiển thị tên phương thức */}
+              </label>
+            ))}
           </div>
+        </div>
+
         </form>
       </div>
 
@@ -460,8 +381,9 @@ const CheckoutPage = () => {
         <button className={styles.orderBtn} onClick={handleOrder}>
           ĐẶT HÀNG
         </button>
+        </div>
       </div>
-    </div>
+    
   );
 };
 

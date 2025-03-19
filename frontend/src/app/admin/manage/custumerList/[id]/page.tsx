@@ -3,29 +3,57 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import userService from "../../../services/UserService";
-import orderService from "../../../services/OrderServices"; // Import order service
+import orderService from "../../../services/OrderServices";
 import styles from "../../../styles/DetailUser.module.css";
 
-const UserDetailPage = () => {
+interface User {
+    _id: string;
+    username: string;
+    email: string;
+    phone: string;
+    avatar?: string;
+}
+
+interface OrderDetail {
+    _id: string;
+    id_order: string;
+    id_product: {
+        name: string;
+    };
+    quantity: number;
+    price: number;
+}
+
+interface Order {
+    _id: string;
+    order_code: string;
+    createdAt: string;
+    status: string;
+    total_amount: number;
+    phone: string;
+    details?: OrderDetail[];
+}
+
+const UserDetailPage: React.FC = () => {
     const { id: paramId } = useParams();
     const searchParams = useSearchParams();
     const [showAllOrders, setShowAllOrders] = useState(false);
-    const [user, setUser] = useState(null);
-    const [orders, setOrders] = useState([]);
+    const [user, setUser] = useState<User | null>(null);
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
-    const [orderDetails, setOrderDetails] = useState<any[]>([]);
+    const [orderDetails, setOrderDetails] = useState<OrderDetail[]>([]);
 
     useEffect(() => {
         const id = searchParams.get("id") || paramId;
         if (id) {
             userService.getUserById(id)
-                .then(data => setUser(data))
+                .then((data: User) => setUser(data))
                 .catch(err => console.error("Lỗi khi lấy user:", err));
 
             orderService.getOrdersByUserId(id)
-                .then(data => {
+                .then((data: { orders: Order[], orderDetails: OrderDetail[] }) => {
                     setOrders(data.orders || []);
-                    setOrderDetails(data.orderDetails || []); // ✅ Lưu orderDetails vào state
+                    setOrderDetails(data.orderDetails || []);
                 })
                 .catch(err => console.error("Lỗi khi lấy đơn hàng:", err))
                 .finally(() => setLoading(false));
@@ -46,8 +74,6 @@ const UserDetailPage = () => {
     return (
         <div className="container mt-4">
             <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
-            
-
             <div className="row pt-1">
                 <div className="col-md-3">
                     <div className="card text-center p-4 shadow-sm" style={{ backgroundColor: "#e9f7ef", borderRadius: "10px" }}>
@@ -67,12 +93,10 @@ const UserDetailPage = () => {
                         </button>
                     </div>
                 </div>
-
                 <div className="col-md-9">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h2 className="fw-bold fs-5">Orders</h2>
                     </div>
-
                     <div className="card p-3">
                         <p>
                             Total spent: <strong>{totalSpent.toLocaleString("vi-VN")} VND</strong>
@@ -114,11 +138,9 @@ const UserDetailPage = () => {
                                 ))}
                             </tbody>
                         </table>
-
                         {!showAllOrders && mergedOrders.length > 1 && (
                             <button className="btn btn-secondary w-100" onClick={() => setShowAllOrders(true)}>...</button>
                         )}
-
                         {showAllOrders && (
                             <button className="btn btn-danger w-100" onClick={() => setShowAllOrders(false)}>Đóng</button>
                         )}

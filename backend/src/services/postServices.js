@@ -30,7 +30,19 @@ exports.getAllPosts = async (page, limit) => {
         throw new Error("Không thể lấy danh sách bài viết");
     }
 };
+exports.activatePost = async (id, status) => {
+  if (![1, 2].includes(status)) {
+    throw new Error("Trạng thái không hợp lệ! Chỉ chấp nhận 1 (kích hoạt) hoặc 2 (không kích hoạt).");
+  }
 
+  const updatedPost = await Post.findByIdAndUpdate(id, { status }, { new: true });
+
+  if (!updatedPost) {
+    throw new Error("Không tìm thấy bài viết!");
+  }
+
+  return updatedPost;
+};
 
 // Lấy bài viết với giới hạn số lượng
 exports.getLimitedPosts = async (limit) => {
@@ -72,7 +84,7 @@ exports.getNewestFourPostsFooter = async () => {
   return await Post.find()
     .sort({ create_at: -1 }) // Sắp xếp theo ngày tạo
     .limit(4) // Giới hạn 4 bài viết
-    .select("title imageSummary"); // Chỉ lấy các trường title và imageSummary
+    .select("title imageSummary status"); // Chỉ lấy các trường title và imageSummary
 };
 
 // Lấy 4 bài viết mới nhất title content imageSummary create_at
@@ -80,18 +92,18 @@ exports.getNewestFourPosts = async () => {
     return await Post.find()
         .sort({ create_at: -1 })  // Sắp xếp theo ngày tạo
         .limit(4)  // Giới hạn 4 bài viết
-        .select('title content imageSummary create_at slug');  // Chỉ lấy các trường cần thiết
+        .select('title content imageSummary create_at slug status');  // Chỉ lấy các trường cần thiết
 };
 // Lấy 4 bài viết hot (chỉ lấy 'title' và 'imageSummary')
 exports.getHotPosts4 = async () => {
   return await Post.find({ hot: 1 }) // Lọc bài viết "hot"
     .sort({ create_at: -1 }) // Sắp xếp theo ngày tạo (mới nhất trước)
     .limit(4) // Giới hạn 4 bài viết
-    .select("title imageSummary"); // Chỉ lấy các trường title và imageSummary
+    .select("title imageSummary status"); // Chỉ lấy các trường title và imageSummary
 };
 // Lấy tất cả bài viết chỉ với 'title', 'create_at', 'imageSummary' và 'content'
 exports.getAllPostsSummary = async () => {
-  return await Post.find().select("title create_at imageSummary content"); // Chỉ lấy các trường title, create_at, imageSummary, và content
+  return await Post.find().select("title create_at imageSummary content status"); // Chỉ lấy các trường title, create_at, imageSummary, và content
 };
 ////....
 

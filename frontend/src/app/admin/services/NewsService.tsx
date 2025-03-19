@@ -11,7 +11,6 @@ const getAllNews = async (page: number = 1, limit: number = 5) => {
     }
 };
 
-
 const getNewsById = async (id: string) => {
     const response = await fetch(`${API_URL}/${id}`);
     return response.json();
@@ -44,4 +43,25 @@ const searchNewsByTitle = async (title: string) => {
     return response.json();
 };
 
-export default { getAllNews, getNewsById, addNews, updateNews, deleteNews, searchNewsByTitle };
+// 🆕 API kích hoạt bài viết
+const activateNews = async (id: string, status: number) => {
+    const response = await fetch(`${API_URL}/activate/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) throw new Error(`Lỗi ${response.status}: ${response.statusText}`);
+
+    return response.json();
+};
+
+export default { 
+    getAllNews, 
+    getNewsById, 
+    addNews, 
+    updateNews, 
+    deleteNews, 
+    searchNewsByTitle, 
+    activateNews // ✅ Đã thêm API kích hoạt bài viết
+};

@@ -7,16 +7,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddNews from "../../components/addPostNews";
 import EditNews from "../../components/editPostNews";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS
+
 
 export default function NewsTable() {
-    const [news, setNews] = useState([]);
+    const [news, setNews] = useState<NewsPost[]>([]);
     const [search, setSearch] = useState("");
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [editId, setEditId] = useState<string | null>(null);
+    const [editId, setEditId] = useState<string>(""); // Không dùng null
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const limit = 2; // Số bài viết mỗi trang
+    interface NewsPost {
+        _id: string;
+        title: string;
+        author: string;
+        create_at: string;
+        imageSummary: string;
+        status: number;
+    }
 
     useEffect(() => {
         loadNews(page);
@@ -36,6 +47,27 @@ export default function NewsTable() {
         await newsService.deleteNews(id);
         loadNews(page);
     };
+    const handleToggleStatus = async (id: string, status: number) => {
+        try {
+            console.log("Trạng thái hiện tại:", status); // Kiểm tra giá trị status
+            const newStatus = status === 1 ? 2 : 1;
+            console.log("Trạng thái mới:", newStatus); // Kiểm tra giá trị mới
+
+            await newsService.activateNews(id, newStatus);
+            setNews((prevNews) =>
+                prevNews.map((post) =>
+                    post._id === id ? { ...post, status: newStatus } : post
+                )
+            );
+
+            toast.success("Cập nhật trạng thái thành công!", { position: "top-right", autoClose: 3000 });
+        } catch (error) {
+            console.error("Lỗi khi thay đổi trạng thái bài viết:", error);
+            toast.error("Cập nhật trạng thái thất bại!", { position: "top-right", autoClose: 3000 });
+        }
+    };
+
+
 
     // Hàm tìm kiếm với debounce
     let debounceTimer: NodeJS.Timeout;
@@ -60,7 +92,7 @@ export default function NewsTable() {
 
     const handleAdd = () => setIsAdding(true);
     const handleEdit = (id: string) => {
-        setEditId(id);
+        setEditId(id ?? "");
         setIsEditing(true);
     };
 
@@ -68,7 +100,7 @@ export default function NewsTable() {
         <div className={styles.tableContainer}>
             <div className={styles.mainTitle}>
                 <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
-                
+
             </div>
 
             <div className={styles.headerActions}>
@@ -112,19 +144,25 @@ export default function NewsTable() {
                                     <FontAwesomeIcon icon={faPen} />
                                 </button>
                                 <button
-                                    className="btn btn-danger btn-sm"
+                                    className="btn btn-danger btn-sm me-2"
                                     onClick={() => {
-                                        console.log("Xác nhận xóa bài viết:", post._id);
                                         const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bài viết này?");
-                                        if (confirmDelete) {
-                                            handleDelete(post._id);
-                                        }
+                                        if (confirmDelete) handleDelete(post._id);
                                     }}
                                 >
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
+                                <button
+                                    className={`btn btn-sm ${post.status === 1 ? "btn-secondary" : "btn-success"}`}
+                                    onClick={() => handleToggleStatus(post._id, post.status)}
+                                >
+                                    {post.status === 1 ? "Hủy kích hoạt" : "Kích hoạt"}
+                                </button>
+
+
 
                             </td>
+
                         </tr>
                     ))}
                 </tbody>

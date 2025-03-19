@@ -8,6 +8,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Heart } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useCart from "../hooks/useCart"
+import Link from "next/link";
 
 
 interface Product {
@@ -84,6 +86,15 @@ const FavoritePage = () => {
       );
     }
   };
+  const { handleAddToCart } = useCart(); // Lấy hàm thêm vào giỏ hàng từ useCart.ts
+
+  const handleClickAddToCart = (product: Product) => {
+    if (!product || product.variants.length === 0) return;
+
+    const selectedVariant = product.variants[0]; // Chọn biến thể đầu tiên
+    handleAddToCart(product, selectedVariant, 1); // Mặc định số lượng là 1
+    toast.success("Đã thêm vào giỏ hàng!");
+  };
 
   return (
     <div className={`container mt-4 ${styles.favoriteContainer}`}>
@@ -102,47 +113,50 @@ const FavoritePage = () => {
                   onClick={() => toggleFavorite(product._id)}
                 >
                   <button className="border-0"><Heart size={20} color="#E51735" fill="#E51735" /></button>
-
                 </i>
 
-                {/* Hình ảnh sản phẩm */}
-                {product.variants[0]?.image && (
-                  <div className={`${styles.productImageWrapper}`}>
-                    <Image
-                      src={product.variants[0].image.startsWith("http")
-                        ? product.variants[0].image
-                        : `http://localhost:3001/images/${product.variants[0].image}`
-                      }                   
-                      alt={product.name}
-                      width={300}
-                      height={300}
-                      className={`${styles.productImage}`}
-                      priority
-                    />
-                  </div>
-                )}
+                {/* Hình ảnh và tiêu đề được bọc trong Link */}
+                <Link href={`/product/${product.slug}`} passHref legacyBehavior>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>
+                    {/* Hình ảnh sản phẩm */}
+                    {product.variants[0]?.image && (
+                      <div className={`${styles.productImageWrapper}`}>
+                        <Image
+                          src={product.variants[0].image.startsWith("http")
+                            ? product.variants[0].image
+                            : `http://localhost:3001/images/${product.variants[0].image}`
+                          }
+                          alt={product.name}
+                          width={300}
+                          height={300}
+                          className={`${styles.productImage}`}
+                          priority
+                        />
+                      </div>
+                    )}
 
-                <div className="card-body flex-grow-1 d-flex flex-column">
-                  {/* Tên sản phẩm */}
-                  <h5 className={`${styles.productTitle} mb-1`}>{product.name}</h5>
+                    {/* Tên sản phẩm */}
+                    <div className="card-body flex-grow-1 d-flex flex-column p-2">
+                      <h5 className={`${styles.productTitle} mb-1`}>{product.name}</h5>
+                    </div>
+                  </a>
+                </Link>
 
-                  {/* Mô tả sản phẩm */}
-                  <div
-                    className={`${styles.productDescription}`}
-                    dangerouslySetInnerHTML={{ __html: product.description }}
-                  ></div>
+                {/* Mô tả sản phẩm */}
+                <div
+                  className={`${styles.productDescription}`}
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                ></div>
 
-                </div>
-
-                {/* Phần chứa giá và nút Thêm (flex row) */}
-                <div className={`card-footer bg-white border-0 d-flex justify-content-between align-items-center ${styles.productFooter}`}>
+                {/* Giá và nút Thêm */}
+                <div className={`card-footer bg-white border-0 d-flex justify-content-between align-items-center p-2 ${styles.productFooter}`}>
                   <div>
-                    <p className="text-muted mb-1">Giá chỉ từ</p>
+                    <p className="fw-bold mb-1">Giá chỉ từ</p>
                     <p className="text-danger fw-bold">
                       {product.variants[0]?.price?.toLocaleString()}₫
                     </p>
                   </div>
-                  <button className="btn btn-success btn-sm">Thêm</button>
+                  <button className="btn btn-success btn-sm" onClick={() => handleClickAddToCart(product)}>Thêm</button>
                 </div>
               </div>
             </div>

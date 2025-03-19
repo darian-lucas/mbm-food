@@ -75,7 +75,7 @@ export default function Header(): JSX.Element {
     { href: "/contact", label: "Liên hệ" },
     { href: "/faq", label: "Câu hỏi thường gặp" },
     { href: "/storesystem", label: "Hệ thống cửa hàng" },
-    { href: "/dat-ban", label: "Đặt bàn" },
+    { href: "/booking", label: "Đặt bàn" },
   ];
 
   const productCategories = [
@@ -347,10 +347,10 @@ export default function Header(): JSX.Element {
           </Link>
         </div>
         <div className={styles.icons}>
-          <Link href="/dat-mon">
+          <Link href="/product">
             <button>Đặt món online</button>
           </Link>
-          <Link href="/dat-ban">
+          <Link href="/booking">
             <button>Đặt bàn</button>
           </Link>
         </div>

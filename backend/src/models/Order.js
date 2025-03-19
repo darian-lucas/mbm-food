@@ -1,9 +1,14 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const orderSchema = new mongoose.Schema({
-    order_code: { type: String, unique: true, required: true }, 
-    id_user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    id_coupon: { type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' },
+const orderSchema = new mongoose.Schema(
+  {
+    order_code: { type: String, unique: true, required: true },
+    id_user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    id_coupon: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon" },
     total_amount: { type: Number, required: true },
     total_payment: { type: Number, required: false },
     address: { type: String, required: true },
@@ -11,9 +16,25 @@ const orderSchema = new mongoose.Schema({
     name: { type: String, required: true },
     note: { type: String, default: "" },
     receive_address: { type: String, required: true },
-    id_payment_method: { type: mongoose.Schema.Types.ObjectId, ref: "PaymentMethod" },
-    status: { type: String, enum: ["pending", "shipped", "delivered", "canceled"], default: "pending" },
-    createdAt: { type: Date, default: Date.now }
-});
+    id_payment_method: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PaymentMethod",
+      required: true,
+    },
+    order_status: {
+      type: String,
+      enum: ["Pending", "Shipped", "Delivered", "Canceled"],
+      default: "Pending",
+    },
+    payment_status: {
+      type: String,
+      enum: ["Pending", "Completed", "Failed", "Refunded"],
+      default: "Pending",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = mongoose.model("Order", orderSchema);

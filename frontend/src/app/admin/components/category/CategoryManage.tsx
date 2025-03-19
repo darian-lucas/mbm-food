@@ -37,7 +37,7 @@ const CategoryManage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const ITEMS_PER_PAGE = 4;
+  const ITEMS_PER_PAGE = 10;
 
   // Fetch categories
   useEffect(() => {
@@ -130,7 +130,7 @@ const CategoryManage = () => {
           />
         </svg>
       </Link>
-      <div className="flex items-center gap-5 justify-between mb-3">
+      <div className="flex items-center gap-5 justify-between mb-3 mt-4">
         <Heading className="">Quản lý danh mục</Heading>
         <div className="flex gap-3">
           <div className="w-full lg:w-[300px]">

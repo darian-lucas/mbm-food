@@ -1,6 +1,6 @@
 const API_URL = "http://localhost:3001/api/orders";
 
-const getOrdersByUserId = async (userId) => {
+const getOrdersByUserId = async (userId:any) => {
     try {
         const response = await fetch(`${API_URL}/user/${userId}`);
         if (!response.ok) throw new Error("Lỗi khi lấy đơn hàng");

@@ -4,10 +4,28 @@ import { getAllComments, hideComment } from "../../services/cmtServices";
 import { Table, Button, Pagination } from "react-bootstrap";
 
 export default function CommentsPage() {
-    const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState<Comment[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const commentsPerPage = 5; // Số bình luận trên mỗi trang
-
+    const commentsPerPage = 10; // Số bình luận trên mỗi trang
+    interface User {
+        _id: string;
+        username: string;
+    }
+    
+    interface Post {
+        _id: string;
+        title: string;
+    }
+    
+    interface Comment {
+        _id: string;
+        id_user: User | null;
+        id_post: Post | null;
+        create_at: string; // ISO date string
+        comment: string;
+        hidden: boolean;
+    }
+    
     useEffect(() => {
         fetchComments();
     }, []);
@@ -21,7 +39,7 @@ export default function CommentsPage() {
         }
     };
 
-    const handleToggleVisibility = async (commentId) => {
+    const handleToggleVisibility = async (commentId:any) => {
         try {
             await hideComment(commentId);
             fetchComments(); // Cập nhật lại danh sách
@@ -37,7 +55,7 @@ export default function CommentsPage() {
     const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
 
     return (
-        <div className="container mt-4">
+        <div className="mt-4">
             <h3 className="mb-4 fs-3 fw-bold">Danh sách Bình luận</h3>
 
             <Table striped bordered hover responsive>
