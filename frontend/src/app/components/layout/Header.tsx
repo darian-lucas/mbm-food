@@ -98,9 +98,6 @@ export default function Header(): JSX.Element {
     };
   }, []);
   
-  
-  
-
   useEffect(() => {
     const fetchFavorites = async () => {
       const token = localStorage.getItem("token");
