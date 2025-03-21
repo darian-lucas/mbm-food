@@ -416,7 +416,7 @@
   justify-content: center;
   align-items: center;
   width: 310px;
-  height: 310px;
+  height: auto;
 }
 
 .promoItem {
@@ -1367,4 +1367,168 @@
 
 .subscribeForm button:hover {
   background-color: #004d23;
+}
+/* Responsive cho Tablet */
+@media (max-width: 1024px) {
+  .bannerImage {
+    width: 100%;
+    height: auto;
+  }
+
+  .categoryList {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .categoryItem {
+    width: 48%;
+    height: auto;
+    padding: 8px;
+  }
+
+  .aboutContainer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .discountSection {
+    padding: 40px 30px;
+    height: auto;
+  }
+
+  .discountHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .discountContent {
+    width: 100%;
+    text-align: center;
+  }
+
+  .discountBanner {
+    width: 80%;
+  }
+
+  .foodList {
+    justify-content: center;
+  }
+
+  .foodItem {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .foodItem img {
+    width: 100px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .bestSellingList {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .bestSellingItem {
+    max-width: 200px;
+  }
+
+  .newsContainer {
+    justify-content: center;
+  }
+
+  .newsItem {
+    width: 45%;
+  }
+}
+
+/* Responsive cho Mobile */
+@media (max-width: 768px) {
+  .home {
+    padding: 10px;
+  }
+
+  .bannerImage {
+    width: 100%;
+    height: auto;
+  }
+
+  .categoryList {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .categoryItem {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+  }
+
+  .aboutContainer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .aboutImage img {
+    width: 100%;
+    height: auto;
+  }
+
+  .discountSection {
+    padding: 20px;
+    height: auto;
+  }
+
+  .discountHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .discountBanner {
+    width: 100%;
+  }
+
+  .foodList {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .foodItem {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .foodItem img {
+    width: 100px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .newsItem {
+    width: 100%;
+  }
+
+  .subscribe {
+    flex-direction: column;
+    text-align: center;
+    height: auto;
+  }
+
+  .subscribeForm {
+    flex-direction: column;
+  }
+
+  .subscribeForm input {
+    width: 90%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .subscribeForm button {
+    width: 90%;
+    border-radius: 5px;
+  }
 }
