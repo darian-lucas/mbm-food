@@ -115,10 +115,26 @@ export default function Header(): JSX.Element {
         }
       }
     };
-
-    fetchFavorites();
+  
+    fetchFavorites(); // Gọi ngay khi component mount
+  
+    const interval = setInterval(fetchFavorites, 5000); // Cập nhật mỗi 5 giây
+  
+    // Lắng nghe sự thay đổi trong localStorage
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "favoritesUpdated") {
+        fetchFavorites();
+      }
+    };
     
+    window.addEventListener("storage", handleStorageChange);
+  
+    return () => {
+      clearInterval(interval); // Dọn dẹp interval khi unmount
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
+  
   // Xử lí dăng xuất !
   const handleLogout = () => {
     localStorage.removeItem("token");
