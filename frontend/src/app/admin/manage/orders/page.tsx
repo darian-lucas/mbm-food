@@ -135,16 +135,7 @@ const OrderManagementPage = () => {
   const paginatedOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   if (loading) return <p>Loading...</p>;
-  if (!filteredOrders.length) {
-    return (
-      <div className={`text-center ${styles.emptyState}`}>
-        <p>Không có đơn hàng nào!</p>
-        <button onClick={() => setSearchDate("")}>
-          <FaArrowLeft className="" /> 
-        </button>
-      </div>
-    );
-  }
+  
 
 
   return (
@@ -192,44 +183,52 @@ const OrderManagementPage = () => {
           </tr>
         </thead>
         <tbody>
-          {paginatedOrders.map((order) => (
-            <tr key={order._id} className={styles.row}>
-              <td>
-                <a href={`http://localhost:3002/admin/manage/customerList/${order.id_user._id}`}>
-                  #{order.order_code}
-                </a>
+          {filteredOrders.length > 0 ? (
+            paginatedOrders.map((order) => (
+              <tr key={order._id} className={styles.row}>
+                <td>
+                  <a href={`http://localhost:3002/admin/manage/customerList/${order.id_user._id}`}>
+                    #{order.order_code}
+                  </a>
+                </td>
+                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td>
+                  {order.details.slice(0, 2).map((item) => (
+                    <div key={item._id}>
+                      {item.id_product.name} - {item.quantity} x {item.price.toLocaleString("vi-VN")} VND
+                    </div>
+                  ))}
+                </td>
+                <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
+                <td className="text-center">
+                  <button
+                    className={`${styles.statusBtn} ${styles[order.order_status]}`}
+                    onClick={() => handleStatusChange(order._id, order.order_status)}
+                  >
+                    {order.order_status}
+                  </button>
+                </td>
+                <td className="text-center p-3">
+                  <span className={`${styles.paymentStatus} ${styles[order.payment_status]}`}>
+                    {order.payment_status}
+                  </span>
+                  <br />
+                  <span className={order.id_payment_method._id === "67d8351376759d2abe579970" ? styles.cash : styles.momo}>
+                    {order.id_payment_method._id === "67d8351376759d2abe579970" ? "💵 Cash" : "📱 Momo"}
+                  </span>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="text-center">
+                <p className="fw-bold text-muted">Không có đơn hàng nào!</p>
               </td>
-              <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-              <td>
-                {order.details.slice(0, 2).map((item) => (
-                  <div key={item._id}>
-                    {item.id_product.name} - {item.quantity} x {item.price.toLocaleString("vi-VN")} VND
-                  </div>
-                ))}
-              </td>
-              <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
-              <td className="text-center">
-                <button
-                  className={`${styles.statusBtn} ${styles[order.order_status]}`}
-                  onClick={() => handleStatusChange(order._id, order.order_status)}
-                >
-                  {order.order_status}
-                </button>
-              </td>
-              <td className="text-center p-3">
-                <span className={`${styles.paymentStatus} ${styles[order.payment_status]}`}>
-                  {order.payment_status}
-                </span>
-                <br />
-                <span className={order.id_payment_method._id === "67d8351376759d2abe579970" ? styles.cash : styles.momo}>
-                  {order.id_payment_method._id === "67d8351376759d2abe579970" ? "💵 Cash" : "📱 Momo"}
-                </span>
-              </td>
-
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+
 
       {/* Phân trang */}
       {totalPages > 1 && (

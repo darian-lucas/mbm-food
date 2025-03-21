@@ -21,6 +21,7 @@ import { incrementView } from "@/services/incrementView";
 import { toast } from "react-toastify";
 import Banner from "./banner/banner";
 import QuickView from "./components/layout/QuickView";
+import { checkTokenValidity } from "@/services/Auth";
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -91,26 +92,50 @@ export default function Home(): JSX.Element {
     fetchCategories();
   }, []);
 
+
+  
   useEffect(() => {
     const fetchProducts = async () => {
+      const storedToken = localStorage.getItem("token");
+      let tokenStatus = { valid: false }; // Định nghĩa tokenStatus mặc định
+  
+      if (storedToken) {
+        tokenStatus = await checkTokenValidity(storedToken);
+        if (!tokenStatus.valid) {
+          localStorage.removeItem("token"); // Xóa token khỏi localStorage
+          setToken(null); // Cập nhật state token
+  
+          // Hiển thị thông báo
+          toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!", {
+            position: "top-right",
+            autoClose: 2000,
+          });
+  
+          // Chuyển hướng sau 3 giây
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
+        }
+      }
+  
       try {
+        // Gọi API sản phẩm dù có token hay không
         const response = await fetch("http://localhost:3001/api/products");
-
+  
         if (!response.ok) {
           throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
         }
-
+  
         const data = await response.json();
-
         if (data && Array.isArray(data.data)) {
           setProducts(data.data); // Lưu danh sách sản phẩm
-
-          if (token) {
-            // Kiểm tra trạng thái yêu thích với user từ token
+  
+          // Nếu có token hợp lệ, kiểm tra trạng thái yêu thích
+          if (storedToken && tokenStatus.valid) {
             const favoriteStatus: { [key: string]: boolean } = {};
             await Promise.all(
-              data.data.map(async (product) => {
-                const result = await checkFavorite(product._id, token);
+              data.data.map(async (product: any) => {
+                const result = await checkFavorite(product._id, storedToken);
                 favoriteStatus[product._id] = result?.isFavorite || false;
               })
             );
@@ -123,16 +148,23 @@ export default function Home(): JSX.Element {
         console.error("Lỗi khi tải sản phẩm:", error);
       }
     };
-
+  
     fetchProducts();
-  }, [token]); // Cập nhật lại nếu token thay đổi
+  }, [token]); // Chạy lại khi token thay đổi
+  
+  
+  
+  
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, []);
   // Toggle trạng thái yêu thích
   const toggleFavorite = async (food_id: string) => {
     if (!token) {
-      alert("Bạn cần đăng nhập để yêu thích sản phẩm!");
+      toast.error("Bạn cần đăng nhập để yêu thích sản phẩm!", {
+        position: "top-right",
+        autoClose: 2000,
+      });;
       return;
     }
 
@@ -143,14 +175,14 @@ export default function Home(): JSX.Element {
       newFavorites[food_id] = false;
       toast.error("Đã xóa sản phẩm khỏi danh sách yêu thích!", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
     } else {
       await addFavorite(food_id, token);
       newFavorites[food_id] = true;
       toast.success("Đã thêm sản phẩm vào danh sách yêu thích!", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
     }
 
