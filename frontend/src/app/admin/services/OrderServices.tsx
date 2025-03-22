@@ -26,7 +26,7 @@ const getAllOrders = async () => {
         return [];
     }
 };
-const updateOrderStatus = async (orderId: string, data: { status: string }) => {
+const updateOrderStatus = async (orderId: string, data: { order_status: string }) => {
     try {
         const response = await fetch(`http://localhost:3001/api/orders/${orderId}/status`, {
             method: "PUT",

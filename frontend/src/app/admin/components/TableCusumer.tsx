@@ -260,14 +260,8 @@ export default function Table() {
                 setEditData({ ...editData, email: e.target.value })
               }
             />
-            <label>Address:</label>
-            <input
-              type="text"
-              value={editData.address}
-              onChange={(e) =>
-                setEditData({ ...editData, address: e.target.value })
-              }
-            />
+            
+            
             <label>Role:</label>
             <select
               value={editData.role}
@@ -277,7 +271,7 @@ export default function Table() {
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
-              <option value="staff">Staff</option>
+             
             </select>
             <div className={styles.modalButtons}>
               <button onClick={handleUpdate}>Update</button>

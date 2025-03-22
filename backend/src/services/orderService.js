@@ -144,23 +144,30 @@ class OrderService {
 
 
 
-  async updateOrderStatus(id, status) {
-    if (!["pending", "shipped", "delivered", "canceled"].includes(status)) {
-      throw new Error("Trạng thái không hợp lệ");
+  async updateOrderStatus(id, order_status) {
+    if (!["Pending", "Shipped", "Delivered", "Canceled"].includes(order_status)) {
+        throw new Error("Trạng thái không hợp lệ");
     }
 
-    const updatedOrder = await Order.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
-
-    if (!updatedOrder) {
-      throw new Error("Không tìm thấy đơn hàng");
+    // Lấy đơn hàng hiện tại
+    const order = await Order.findById(id);
+    if (!order) {
+        throw new Error("Không tìm thấy đơn hàng");
     }
+
+    // Cập nhật trạng thái đơn hàng
+    let updateData = { order_status };
+
+    // Nếu trạng thái mới là "Delivered" và phương thức thanh toán là "67d8351376759d2abe579970"
+    if (order_status === "Delivered" && order.id_payment_method.toString() === "67d8351376759d2abe579970") {
+        updateData.payment_status = "Completed";
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(id, updateData, { new: true });
 
     return updatedOrder;
-  }
+}
+
 
   async deleteOrder(orderId) {
     const order = await Order.findByIdAndDelete(orderId);

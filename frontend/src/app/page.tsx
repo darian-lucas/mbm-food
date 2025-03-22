@@ -8,7 +8,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef  } from "react";
 import { Heart } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
@@ -21,6 +21,9 @@ import { incrementView } from "@/services/incrementView";
 import { toast } from "react-toastify";
 import Banner from "./banner/banner";
 import QuickView from "./components/layout/QuickView";
+import { checkTokenValidity } from "@/services/Auth";
+import Swal from "sweetalert2";
+
 // import { FaChevronRight } from "react-icons/fa";
 interface Category {
   _id: string;
@@ -61,78 +64,116 @@ export default function Home(): JSX.Element {
   const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  // const [menuFavorites, setMenuFavorites] = useState<Record<string, boolean>>(
-  //   {}
-  // );
+  const alertShown = useRef(false);
   const handleScrollToCategory = (categoryId: string) => {
     const section = document.getElementById(categoryId);
     if (section) {
       section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/categories");
+
+        if (response.status === 403) return; 
+
         const data = await response.json();
-
-        // console.log("Dữ liệu từ API:", data);
-
         if (data && Array.isArray(data.data)) {
           setCategories(data.data.slice(0, 5));
-        } else {
-          console.error("Dữ liệu từ API không đúng định dạng mong đợi:", data);
         }
-      } catch (error) {
-        console.error("Lỗi khi tải danh mục:", error);
+      } catch (error: unknown) {
+        if (error instanceof Error && !error.message.includes("403")) {
+          console.error("Lỗi khi tải danh mục:", error.message);
+        }
       }
     };
 
     fetchCategories();
   }, []);
 
+
   useEffect(() => {
     const fetchProducts = async () => {
+      const storedToken = localStorage.getItem("token");
+      let tokenStatus = { valid: false };
+
+      if (storedToken) {
+        tokenStatus = await checkTokenValidity(storedToken);
+        if (!tokenStatus.valid) {
+          localStorage.removeItem("token");
+          setToken(null);
+
+          if (!alertShown.current) {
+            alertShown.current = true;
+            Swal.fire({
+              title: "Phiên đăng nhập đã hết hạn!",
+              text: "Bạn có muốn đăng nhập lại không?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Đăng nhập lại",
+              cancelButtonText: "Tiếp tục",
+              confirmButtonColor: "#d33",
+              cancelButtonColor: "#3085d6",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.push("/login");
+              }
+            });
+          }
+        }
+      }
+
       try {
         const response = await fetch("http://localhost:3001/api/products");
+
+        if (response.status === 403) return; 
 
         if (!response.ok) {
           throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
         }
 
         const data = await response.json();
+        if (data?.data && Array.isArray(data.data)) {
+          setProducts(data.data);
 
-        if (data && Array.isArray(data.data)) {
-          setProducts(data.data); // Lưu danh sách sản phẩm
-
-          if (token) {
-            // Kiểm tra trạng thái yêu thích với user từ token
+         
+          if (storedToken && tokenStatus.valid) {
             const favoriteStatus: { [key: string]: boolean } = {};
             await Promise.all(
-              data.data.map(async (product) => {
-                const result = await checkFavorite(product._id, token);
+              data.data.map(async (product: any) => {
+                const result = await checkFavorite(product._id, storedToken);
                 favoriteStatus[product._id] = result?.isFavorite || false;
               })
             );
             setFavorites(favoriteStatus);
           }
-        } else {
-          console.error("Dữ liệu từ API không đúng định dạng mong đợi:", data);
         }
-      } catch (error) {
-        console.error("Lỗi khi tải sản phẩm:", error);
+      } catch (error: unknown) {
+        if (error instanceof Error && !error.message.includes("403")) {
+          console.error("Lỗi khi tải sản phẩm:", error.message);
+        }
       }
     };
 
     fetchProducts();
-  }, [token]); // Cập nhật lại nếu token thay đổi
+  }, [token]);
+
+  
+  
+  
+  
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, []);
   // Toggle trạng thái yêu thích
   const toggleFavorite = async (food_id: string) => {
     if (!token) {
-      alert("Bạn cần đăng nhập để yêu thích sản phẩm!");
+      toast.error("Bạn cần đăng nhập để yêu thích sản phẩm!", {
+        position: "top-right",
+        autoClose: 2000,
+      });;
       return;
     }
 
@@ -143,14 +184,14 @@ export default function Home(): JSX.Element {
       newFavorites[food_id] = false;
       toast.error("Đã xóa sản phẩm khỏi danh sách yêu thích!", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
     } else {
       await addFavorite(food_id, token);
       newFavorites[food_id] = true;
       toast.success("Đã thêm sản phẩm vào danh sách yêu thích!", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
     }
 
