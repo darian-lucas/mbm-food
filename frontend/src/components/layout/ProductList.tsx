@@ -6,7 +6,7 @@ import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../../styles/ProductList.module.css";
 import { addFavorite, removeFavorite, checkFavorite } from "@/services/Favorite";
-import QuickView from "../../app/components/layout/QuickView";
+import QuickView from "./QuickView";
 
 interface Variant {
   option: string;

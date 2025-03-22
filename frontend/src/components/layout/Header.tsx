@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getFavorites } from "@/services/Favorite";
 import { useRouter } from "next/navigation";
-import countCart from "../../hooks/countCart";
+import countCart from "../../app/hooks/countCart";
 
 export default function Header(): JSX.Element {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
