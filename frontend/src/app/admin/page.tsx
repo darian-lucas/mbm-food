@@ -104,7 +104,7 @@ export default function Dashboard() {
     
         // ✅ Cập nhật dữ liệu của tháng hiện tại lên Dashboard
         setTotalSales(currentMonthSales);
-        setTotalOrders(currentMonthOrders);
+        setTotalOrders(currentMonthSuccessful + currentMonthCancelled);
         setSuccessfulOrders(currentMonthSuccessful);
         setCancelledOrders(currentMonthCancelled);
     

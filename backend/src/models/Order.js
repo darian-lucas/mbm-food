@@ -31,9 +31,10 @@ const orderSchema = new mongoose.Schema(
       enum: ["Pending", "Completed", "Failed", "Refunded"],
       default: "Pending",
     },
+    createdAt: { type: Date, default: Date.now }, // Cho phép ghi đè
   },
   {
-    timestamps: true,
+    timestamps: { createdAt: true, updatedAt: true }, // Vẫn giữ timestamps để có updatedAt
   }
 );
 
