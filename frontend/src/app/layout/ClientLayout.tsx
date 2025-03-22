@@ -15,9 +15,8 @@ export default function ClientLayout({
       <Header />
       <Breadcrumb
         homeElement={"Home"}
-        activeClasses="text-stone-900"
-        container="flex py-5 bg-gradient-to-r from-amber-200 to-green-500"
-        listClasses="hover:underline font-bold text-stone-500"
+        activeClasses="text-breadcrumb"
+        listClasses="hover:text-breadcrumb"
         capitalizeLinks
       />
       <main>{children}</main>

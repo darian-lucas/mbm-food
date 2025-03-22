@@ -5,13 +5,6 @@ import styles from "@/styles/Account.module.css";
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className={styles.accountContainer} >
-            <nav className={`breadcrumb-container p-2 ${styles.breadcrumbContainer}`} >
-                <div className="container" style={{ maxWidth: "1300px" }}>
-                    <Link href="/" className="text-decoration-none text-dark">Trang chủ</Link>
-                    <span className="text-danger"> &gt; Trang khách hàng</span>
-                </div>
-            </nav>
-
             {/* Container căn giữa */}
             <div className="container d-flex mt-2 " style={{ maxWidth: "1300px" }}>
                 <div className="row bg-white p-3 rounded shadow-sm w-100" style={{ maxWidth: "1300px" }}>

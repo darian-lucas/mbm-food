@@ -12,10 +12,11 @@ const config: Config = {
     extend: {
       colors: {
         primary: "#8873EF",
+        breadcrumb: "#e31837 !important",
       },
       screens: {
-        "2xl": "1500px", 
-				"xmall": { "max": "576px" },
+        "2xl": "1500px",
+        xmall: { max: "576px" },
       },
       keyframes: {
         "accordion-down": {

@@ -1,6 +1,5 @@
 "use client";
 import { jwtDecode } from "jwt-decode";
-import Breadcrum from "@/components/common/Breadcrum";
 import BookingServices from "@/services/Booking";
 import { TCreateRegisterParams } from "@/types/enum";
 import { useRouter } from "next/navigation";
@@ -182,7 +181,6 @@ const Booking = () => {
 
   return (
     <section className="w-full">
-      <Breadcrum></Breadcrum>
       <div className="heading max-w-[1300px] mx-auto py-3 text-center">
         <h2 className="text-[36px] font-semibold text-[#006a31] mb-[40px] mt-2">
           Đặt bàn
