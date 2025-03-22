@@ -197,21 +197,28 @@ class OrderService {
 
   async updateOrderTime(orderId, newCreatedAt) {
     try {
-      const updatedOrder = await Order.findByIdAndUpdate(
-        orderId,
-        { createdAt: new Date(newCreatedAt) },
-        { new: true }
+        console.log("🔄 Đang cập nhật thời gian cho đơn hàng:", orderId);
+        console.log("📅 Thời gian mới:", newCreatedAt);
+
+        const updatedOrder = await Order.findByIdAndUpdate(
+          orderId,
+          { $set: { createdAt: new Date(newCreatedAt) } }, // 🔥 Bắt buộc dùng $set để update
+          { new: true, timestamps: false } // ⛔ Tắt timestamps để tránh bị ghi đè
       );
+      
 
-      if (!updatedOrder) {
-        throw new Error("Không tìm thấy đơn hàng");
-      }
+        console.log("✅ Đơn hàng sau khi cập nhật:", updatedOrder);
 
-      return updatedOrder;
+        if (!updatedOrder) {
+            throw new Error("Không tìm thấy đơn hàng");
+        }
+
+        return updatedOrder;
     } catch (error) {
-      throw new Error("Lỗi khi cập nhật thời gian đơn hàng: " + error.message);
+        throw new Error("Lỗi khi cập nhật thời gian đơn hàng: " + error.message);
     }
-  }
+}
+
 }
 
 module.exports = new OrderService();

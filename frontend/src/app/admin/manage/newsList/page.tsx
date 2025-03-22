@@ -19,7 +19,7 @@ export default function NewsTable() {
     const [editId, setEditId] = useState<string>(""); // Không dùng null
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const limit = 2; // Số bài viết mỗi trang
+    const limit = 10; // Số bài viết mỗi trang
     interface NewsPost {
         _id: string;
         title: string;
@@ -97,7 +97,7 @@ export default function NewsTable() {
     };
 
     return (
-        <div className={styles.tableContainer}>
+        <div className={`${styles.tableContainer} mt-4`}>
             <div className={styles.mainTitle}>
                 <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
 
@@ -169,27 +169,52 @@ export default function NewsTable() {
             </table>
 
             {/* Phân trang */}
-            {search.trim() === "" && (
-                <div className={`${styles.pagination} d-flex justify-content-center align-items-center`}>
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => setPage(prev => Math.max(prev - 1, 1))}
-                        disabled={page === 1}
-                    >
-                        &laquo; Prev
-                    </button>
-                    <span className="mx-3">
-                        Page {page} of {totalPages}
-                    </span>
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
-                        disabled={page === totalPages}
-                    >
-                        Next &raquo;
-                    </button>
-                </div>
-            )}
+            {search.trim() === "" && totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-3">
+          <button
+            className="btn btn-light border-0 shadow-none mx-1"
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
+            ←
+          </button>
+
+          {[...Array(totalPages)].map((_, index) => {
+            const pageNumber = index + 1;
+
+            if (
+              pageNumber === 1 ||
+              pageNumber === totalPages ||
+              (pageNumber >= page - 1 && pageNumber <= page + 1)
+            ) {
+              return (
+                <button
+                  key={pageNumber}
+                  className={`btn mx-1 border-0 shadow-none ${page === pageNumber ? "btn-primary text-white" : "btn-light"
+                    }`}
+                  onClick={() => setPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              );
+            }
+
+            if (pageNumber === page - 2 || pageNumber === page + 2) {
+              return <span key={pageNumber} className="mx-2">...</span>;
+            }
+
+            return null;
+          })}
+
+          <button
+            className="btn btn-light border-0 shadow-none mx-1"
+            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={page === totalPages}
+          >
+            →
+          </button>
+        </div>
+      )}
 
 
             {/* Modal Thêm Bài Viết */}
