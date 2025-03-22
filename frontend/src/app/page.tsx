@@ -20,7 +20,7 @@ import {
 import { incrementView } from "@/services/incrementView";
 import { toast } from "react-toastify";
 import Banner from "./banner/banner";
-import QuickView from "./components/layout/QuickView";
+import QuickView from "../components/layout/QuickView";
 import { checkTokenValidity } from "@/services/Auth";
 import Swal from "sweetalert2";
 
