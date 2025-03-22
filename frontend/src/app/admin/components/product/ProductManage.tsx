@@ -55,7 +55,7 @@ const ProductManage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const productData = await ProductServices.getAllProducts();
+        const productData = await ProductServices.getAllProductsForAdmin();
         setProducts(productData);
 
         const categoryData = await CategoryServices.getAllCategories();
