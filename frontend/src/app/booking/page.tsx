@@ -188,9 +188,9 @@ const Booking = () => {
           Đặt bàn
         </h2>
       </div>
-      <div className="content bg-[url(https://bizweb.dktcdn.net/100/510/571/themes/941527/assets/datlich.png?1727255430829)] bg-cover py-[100px] h-[657px]">
-        <div className="row-item flex max-w-[1300px] mx-auto gap-x-8">
-          <div className="flex-[0_0_50%] max-w-[50%]">
+      <div className="content bg-[url(https://bizweb.dktcdn.net/100/510/571/themes/941527/assets/datlich.png?1727255430829)] bg-cover py-[100px]">
+        <div className="flex row-item 2xl:flex-row xl:flex-row lg:flex-row 2xl:max-w-[1300px] xl:max-w-[1140px] md:flex-col flex-col sm:flex-col lg:max-w-[960px] md:max-w-[720px] sm:max-w-[540px] max-w-[540px] mx-auto gap-x-8 xmall:flex-col xmall:px-4">
+          <div className="2xl:flex-[0_0_50%] md:w-full w-full sm:w-full 2xl:mt-0 xl:mt-0 lg:mt-0 xl:flex-[0_0_50%] lg:flex-[0_0_50%]">
             <div className="thumb-time rounded-lg bg-[#fff] p-4 h-full">
               <div className="font-[lobster] text-[30px] text-[#e31837] pb-[10px] text-center mb-[20px] border-b-2 border-b-[#e31837]">
                 Thời gian mở cửa
@@ -217,7 +217,7 @@ const Booking = () => {
               </div>
             </div>
           </div>
-          <div className="flex-[0_0_50%] max-w-[50%]">
+          <div className="2xl:flex-[0_1_50%] md:w-full w-full sm:w-full 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-5 sm:mt-5 xl:flex-[0_1_50%] lg:flex-[0_1_50%] xmall:mt-5">
             <div className="thumb-time rounded-lg bg-[#006a31] p-4 h-full">
               <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4">
