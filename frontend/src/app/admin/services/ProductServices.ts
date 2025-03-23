@@ -1,8 +1,8 @@
 const API_URL = "http://localhost:3001/api/products";
 
-const getAllProducts = async () => {
+const getAllProductsForAdmin = async () => {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(`${API_URL}/admin`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -86,7 +86,7 @@ const updateStatusProduct = async (
 };
 
 const ProductServices = {
-  getAllProducts,
+  getAllProductsForAdmin,
   deleteProduct,
   createProduct,
   getProductById,

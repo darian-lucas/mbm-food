@@ -23,7 +23,7 @@ const orderSchema = new mongoose.Schema(
     },
     order_status: {
       type: String,
-      enum: ["Pending", "Shipped", "Delivered", "Canceled"],
+      enum: ["Pending", "Shipping", "Delivered", "Canceled"],
       default: "Pending",
     },
     payment_status: {
@@ -31,9 +31,10 @@ const orderSchema = new mongoose.Schema(
       enum: ["Pending", "Completed", "Failed", "Refunded"],
       default: "Pending",
     },
+    createdAt: { type: Date, default: Date.now }, // Cho phép ghi đè
   },
   {
-    timestamps: true,
+    timestamps: { createdAt: true, updatedAt: true }, // Vẫn giữ timestamps để có updatedAt
   }
 );
 

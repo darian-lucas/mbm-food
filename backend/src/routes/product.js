@@ -8,7 +8,8 @@ const {
   getByCategory,
   getBySlugProduct,
   updateStatusProduct,
-  updateViewProduct
+  updateViewProduct,
+  getAllProductsForAdmin
 } = require("../controllers/productController");
 
 const upload = require("../middleware/uploadImage");
@@ -23,6 +24,8 @@ for (let i = 0; i < MAX_VARIANTS; i++) {
 const router = express.Router();
 
 router.get('/', getAllProducts);
+
+router.get('/admin', getAllProductsForAdmin);
 
 router.get('/:id', getByIdProduct);
 

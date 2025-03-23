@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import styles from "../../../styles/QuickView.module.css";
-import useCart from "../../hooks/useCart";
+import styles from "../../styles/QuickView.module.css";
+import useCart from "../../app/hooks/useCart";
 
 interface Variant {
   option: string;

@@ -11,12 +11,12 @@ export default function CommentsPage() {
         _id: string;
         username: string;
     }
-    
+
     interface Post {
         _id: string;
         title: string;
     }
-    
+
     interface Comment {
         _id: string;
         id_user: User | null;
@@ -25,7 +25,7 @@ export default function CommentsPage() {
         comment: string;
         hidden: boolean;
     }
-    
+
     useEffect(() => {
         fetchComments();
     }, []);
@@ -39,7 +39,7 @@ export default function CommentsPage() {
         }
     };
 
-    const handleToggleVisibility = async (commentId:any) => {
+    const handleToggleVisibility = async (commentId: any) => {
         try {
             await hideComment(commentId);
             fetchComments(); // Cập nhật lại danh sách
@@ -89,18 +89,53 @@ export default function CommentsPage() {
                 </tbody>
             </Table>
 
-            {/* Phân trang */}
-            <Pagination className="justify-content-center">
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <Pagination.Item
-                        key={i + 1}
-                        active={i + 1 === currentPage}
-                        onClick={() => setCurrentPage(i + 1)}
+            {totalPages > 1 && (
+                <div className="d-flex justify-content-center mt-3">
+                    <button
+                        className="btn btn-light mx-1"
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
                     >
-                        {i + 1}
-                    </Pagination.Item>
-                ))}
-            </Pagination>
+                        ←
+                    </button>
+
+                    {Array.from({ length: totalPages }, (_, i) => {
+                        const pageNumber = i + 1;
+
+                        if (
+                            pageNumber === 1 ||
+                            pageNumber === totalPages ||
+                            (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                        ) {
+                            return (
+                                <button
+                                    key={pageNumber}
+                                    className={`btn mx-1 ${currentPage === pageNumber ? "btn-primary text-white" : "btn-light"}`}
+                                    onClick={() => setCurrentPage(pageNumber)}
+                                >
+                                    {pageNumber}
+                                </button>
+                            );
+                        }
+
+                        if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
+                            return <span key={pageNumber} className="mx-2">...</span>;
+                        }
+
+                        return null;
+                    })}
+
+                    <button
+                        className="btn btn-light mx-1"
+                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                    >
+                        →
+                    </button>
+                </div>
+            )}
+
+
         </div>
     );
 }

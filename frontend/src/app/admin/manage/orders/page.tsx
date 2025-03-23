@@ -33,7 +33,7 @@ const OrderManagementPage = () => {
   const [statusFilter, setStatusFilter] = useState<"" | Order["order_status"]>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchDate, setSearchDate] = useState("");
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchOrders();
@@ -47,14 +47,9 @@ const OrderManagementPage = () => {
     setLoading(true);
     try {
       const data = await orderService.getAllOrders();
-      const updatedOrders = data.map((order: Order) => {
-        // Nếu payment_status là "Completed" và id_payment_method khác "67d8351376759d2abe579970"
-        if (order.payment_status === "Completed" && order.id_payment_method._id !== "67d8351376759d2abe579970") {
-          updateOrderStatus(order._id, "Delivered"); // Gọi API để cập nhật trạng thái
-          return { ...order, order_status: "Delivered" };
-        }
-        return order;
-      });
+      const updatedOrders = data
+
+        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Sắp xếp mới nhất trước
 
       setOrders(updatedOrders);
     } catch (err) {
@@ -63,6 +58,7 @@ const OrderManagementPage = () => {
       setLoading(false);
     }
   };
+
 
   const filterOrders = () => {
     let filtered = orders;
@@ -99,15 +95,26 @@ const OrderManagementPage = () => {
         return;
       }
 
+      // Kiểm tra nếu trạng thái mới là "Delivered" và phương thức thanh toán là "Cash" thì cập nhật luôn payment_status
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order._id === orderId ? { ...order, order_status: newStatus } : order
+          order._id === orderId
+            ? {
+              ...order,
+              order_status: newStatus,
+              payment_status:
+                newStatus === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970"
+                  ? "Completed"
+                  : order.payment_status, // Giữ nguyên nếu không phải thanh toán tiền mặt
+            }
+            : order
         )
       );
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     }
   };
+
 
   const handleStatusChange = async (orderId: string, currentStatus: Order["order_status"]) => {
     const nextStatus = STATUS_FLOW[currentStatus]?.[0];
@@ -135,11 +142,11 @@ const OrderManagementPage = () => {
   const paginatedOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   if (loading) return <p>Loading...</p>;
-  
+
 
 
   return (
-    <div className={styles.tableContainer}>
+    <div className={`${styles.tableContainer} mt-4` } >
       <h4 className="fw-bold fs-3 mb-3">Danh sách đơn hàng</h4>
 
       {/* Ô tìm kiếm và lọc trạng thái */}
@@ -179,7 +186,9 @@ const OrderManagementPage = () => {
             <th>Items</th>
             <th>Amount</th>
             <th className="text-center">Status</th>
+            <th className="text-center">Payment Method</th>
             <th className="text-center">Payment Status</th>
+
           </tr>
         </thead>
         <tbody>
@@ -209,12 +218,13 @@ const OrderManagementPage = () => {
                   </button>
                 </td>
                 <td className="text-center p-3">
-                  <span className={`${styles.paymentStatus} ${styles[order.payment_status]}`}>
-                    {order.payment_status}
-                  </span>
-                  <br />
                   <span className={order.id_payment_method._id === "67d8351376759d2abe579970" ? styles.cash : styles.momo}>
                     {order.id_payment_method._id === "67d8351376759d2abe579970" ? "💵 Cash" : "📱 Momo"}
+                  </span>
+                </td>
+                <td className="text-center p-3">
+                  <span className={`${styles.paymentStatus} ${styles[order.payment_status]}`}>
+                    {order.payment_status}
                   </span>
                 </td>
               </tr>
@@ -230,28 +240,57 @@ const OrderManagementPage = () => {
       </table>
 
 
+      
       {/* Phân trang */}
       {totalPages > 1 && (
         <div className="d-flex justify-content-center mt-3">
           <button
-            className="btn btn-secondary me-2"
+            className="btn btn-light"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
-            Trang trước
+            ←
           </button>
-          <span className="align-self-center">
-            Trang {currentPage} / {totalPages}
-          </span>
+
+          {[...Array(totalPages)].map((_, index) => {
+            const pageNumber = index + 1;
+
+            if (
+              pageNumber === 1 ||
+              pageNumber === totalPages ||
+              (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+            ) {
+              return (
+                <button
+                  key={pageNumber}
+                  className={`btn mx-1 ${currentPage === pageNumber ? "btn-primary text-white" : "btn-light"}`}
+                  onClick={() => setCurrentPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              );
+            }
+
+            if (
+              pageNumber === currentPage - 2 ||
+              pageNumber === currentPage + 2
+            ) {
+              return <span key={pageNumber} className="mx-2">...</span>;
+            }
+
+            return null;
+          })}
+
           <button
-            className="btn btn-secondary ms-2"
+            className="btn btn-light"
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
           >
-            Trang sau
+            →
           </button>
         </div>
       )}
+
     </div>
   );
 };

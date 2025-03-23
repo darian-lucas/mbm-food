@@ -8,13 +8,14 @@ export const checkTokenValidity = async (token: string) => {
             },
         });
 
+        if (response.status === 403) return { valid: false }; // Không in lỗi nếu 403
+
         if (!response.ok) {
             throw new Error("Token không hợp lệ hoặc đã hết hạn");
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Lỗi kiểm tra token:", error);
-        return { valid: false }; // Trả về false nếu token không hợp lệ
+        return { valid: false }; // Không in lỗi ra console
     }
 };

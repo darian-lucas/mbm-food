@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal, Button, Spinner } from "react-bootstrap";
-import styles from "@/app/components/Login.module.css";
+import styles from "../../styles/Login.module.css";
 
 interface LoginForm {
   email: string;

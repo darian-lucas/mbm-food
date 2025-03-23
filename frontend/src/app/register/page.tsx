@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import styles from "@/app/components/Register.module.css";
+import styles from "../../styles/Register.module.css";
 
 interface RegisterForm {
   username: string;
