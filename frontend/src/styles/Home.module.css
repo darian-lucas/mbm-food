@@ -1575,11 +1575,16 @@
   }
 
   .addButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     max-width: 70px;
-    margin-top: 5px;
-    margin-right: 65px;
+    height: 35px;
+    margin: 10px auto 0;
+    text-align: center;
   }
+  
 
   .customSwiper :global(.swiper-button-prev::after),
   .customSwiper :global(.swiper-button-next::after) {
@@ -1745,7 +1750,7 @@
   }
   
   .readMore:hover {
-    background-color: #0056b3;
+    background-color: #E51735;
   }
   
 
