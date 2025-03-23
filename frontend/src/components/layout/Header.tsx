@@ -178,10 +178,14 @@ export default function Header(): JSX.Element {
                     <h4 className={styles.categoryTitle}>Sản phẩm</h4>
                     {searchResults.products.slice(0, 4).map((item, index) => (
                       <Link
-                        key={index}
-                        href={`/product/${item.slug}`}
-                        className={styles.resultItem}
-                      >
+                      key={index}
+                      href={`/product/${item.slug}`}
+                      className={styles.resultItem}
+                      onClick={() => {
+                        setSearchTerm("");
+                        setShowResults(false);
+                      }}
+                    >                    
                         {item.image && (
                           <Image
                             src={`/images/${item.image}`}
@@ -219,7 +223,12 @@ export default function Header(): JSX.Element {
                       key={index}
                       href={`/news/${item.slug}`}
                       className={styles.resultItem}
+                      onClick={() => {
+                        setSearchTerm("");
+                        setShowResults(false);
+                      }}
                     >
+                  
                       {item.image && (
                         <Image
                           src={`/images/${item.image}`}
