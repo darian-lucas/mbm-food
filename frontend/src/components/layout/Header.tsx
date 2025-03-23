@@ -78,11 +78,11 @@ export default function Header(): JSX.Element {
   ];
 
   const productCategories = [
-    { href: "/product/pizza", label: "Pizza" },
-    { href: "/product/khai-vi", label: "Khai Vị" },
-    { href: "/product/my-y", label: "Mỳ Ý" },
-    { href: "/product/salad", label: "Salad" },
-    { href: "/product/nuoc-uong", label: "Nước Uống" },
+    { href: "/product/categories/pizza", label: "Pizza" },
+    { href: "/product/categories/khai-vi", label: "Khai Vị" },
+    { href: "/product/categories/my-y", label: "Mỳ Ý" },
+    { href: "/product/categories/salad", label: "Salad" },
+    { href: "/product/categories/nuoc-uong", label: "Nước Uống" },
   ];
 
   useEffect(() => {

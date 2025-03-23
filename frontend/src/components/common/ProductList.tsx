@@ -6,7 +6,7 @@ import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../../styles/ProductList.module.css";
 import { addFavorite, removeFavorite, checkFavorite } from "@/services/Favorite";
-import QuickView from "./QuickView";
+import QuickView from "../layout/QuickView";
 
 interface Variant {
   option: string;
@@ -32,9 +32,10 @@ interface Product {
 
 interface ProductListProps {
   idcate: string;
+  showAll?: boolean;
 }
 
-const ProductList = ({ idcate }: ProductListProps) => {
+const ProductList = ({ idcate , showAll = false }: ProductListProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const [token, setToken] = useState<string | null>(null);
@@ -50,7 +51,7 @@ const ProductList = ({ idcate }: ProductListProps) => {
         const res = await fetch("http://localhost:3001/api/products/");
         const data = await res.json();
         const filteredProducts = data.data.filter((product: Product) => product.idcate === idcate);
-        setProducts(filteredProducts.slice(0, 10));
+        setProducts(showAll ? filteredProducts : filteredProducts.slice(0, 10));
 
         if (token) {
           const favoriteStatuses: { [key: string]: boolean } = {};
