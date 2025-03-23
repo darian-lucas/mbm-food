@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import Link from "next/link";
 import { SetStateAction, useState } from "react";
 import "../../styles/new.css";
 import "../../styles/faq.css";

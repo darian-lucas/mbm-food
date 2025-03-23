@@ -233,6 +233,7 @@
   font-weight: bold;
 }
 .swiper-slide .thumb-content .content {
+  color: #fff;
   padding: 10px;
   border-radius: 0px 5px 5px 5px;
 }

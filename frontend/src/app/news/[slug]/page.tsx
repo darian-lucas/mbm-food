@@ -88,11 +88,11 @@ export default function NewsDetail() {
                   <div className="goto-warpper ftoc-head">
                     <a href="title-goto-wrapper" style={{fontWeight: "bold", paddingBottom:"10px"}}>Nội dung chính</a>
                   <div className="dola-toc">
-                    <ol className="toc-list" dangerouslySetInnerHTML={{ __html: post.summary }} />
+                    <ol className="toc-list" dangerouslySetInnerHTML={{ __html: post.summary || "" }} />
                   </div>
                   </div>
                 </div>
-                <div className="content" dangerouslySetInnerHTML={{ __html: post.content }} />
+                <div className="content" dangerouslySetInnerHTML={{ __html: post.content || "" }} />
               </div>
             </div>
           </div>
@@ -122,8 +122,8 @@ export default function NewsDetail() {
               )}
               <li><Link className="font-bold" href="/news">Tin tức</Link></li>
               <li><Link href="/contact">Liên hệ</Link></li>
-              <li><Link href="#">Câu hỏi thường gặp</Link></li>
-              <li><Link href="#">Đặt bàn</Link></li>
+              <li><Link href="/faq">Câu hỏi thường gặp</Link></li>
+              <li><Link href="/booking">Đặt bàn</Link></li>
             </ul>
           </div>
 

@@ -139,5 +139,67 @@
   }
 
   
-  
+  /* Responsive cho Mobile */
+@media (max-width: 576px) {
+    .container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+    .col-lg-9,
+    .col-lg-5 {
+        width: 100%;
+        margin-left: 0;
+    }
+    .page-faq .faq h4 {
+        font-size: 16px;
+        padding: 10px 15px;
+    }
+    .page-faq .faq .content p {
+        font-size: 14px;
+    }
+    .page-faq .contact h4 {
+        font-size: 18px;
+    }
+    .page-faq .contact .group_contact input,
+    .page-faq .contact .group_contact textarea {
+        padding: 8px 15px;
+    }
+    .page-faq .contact .group_contact .btn-lienhe {
+        font-size: 12px;
+        padding: 0 15px;
+        line-height: 30px;
+    }
+}
+
+/* Responsive cho Tablet */
+@media (min-width: 577px) and (max-width: 991px) {
+    .container {
+        max-width: 90%;
+        padding: 0 20px;
+    }
+    .col-lg-9 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-left: 0;
+    }
+    .col-lg-5 {
+        flex: 0 0 50%;
+        width: 50%;
+    }
+    .page-faq .faq h4 {
+        font-size: 18px;
+        padding: 12px 18px;
+    }
+    .page-faq .faq .content p {
+        font-size: 15px;
+    }
+    .page-faq .contact h4 {
+        font-size: 20px;
+    }
+    .page-faq .contact .group_contact input,
+    .page-faq .contact .group_contact textarea {
+        padding: 10px 18px;
+    }
+}
+
   
