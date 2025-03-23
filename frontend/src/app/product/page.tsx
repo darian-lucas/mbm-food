@@ -6,10 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
-import PizzaList from "../components/layout/PizzaList";
-import KhaiviList from "../components/layout/KhaiviList";
-import MiyList from "../components/layout/MiyList";
-import SaladList from "../components/layout/SaladList";
+import ProductList from "@/components/layout/ProductList";
 
 
 interface Category {
@@ -65,7 +62,7 @@ export default function PageProduct(): JSX.Element {
                 <a href="">Pizza</a>
               </h3>
             </div>
-            <PizzaList/>
+            <ProductList idcate="67b0a4fbb5a39baf9de368ff"/>
           </div>
 
           <div className={styles.section_product}>
@@ -74,7 +71,7 @@ export default function PageProduct(): JSX.Element {
                 <a href="">Khai vị</a>
               </h3>
             </div>
-            <KhaiviList/>
+            <ProductList idcate="67b0a54db5a39baf9de36902"/>
           </div>
 
           <div className={styles.section_product}>
@@ -83,7 +80,7 @@ export default function PageProduct(): JSX.Element {
                 <a href="">Mì ý</a>
               </h3>
             </div>
-            <MiyList/>
+            <ProductList idcate="67b0a582b5a39baf9de36904"/>
           </div>
 
           <div className={styles.section_product}>
@@ -92,11 +89,21 @@ export default function PageProduct(): JSX.Element {
                 <a href="">Salad</a>
               </h3>
             </div>
-            <SaladList/>
+            <ProductList idcate="67b0a5d2b5a39baf9de36907"/>
           </div>
           
+
+
+          <div className={styles.section_product}>
+            <div className={styles.titleModule}>
+              <h3>
+                <a href="">Thức Uống</a>
+              </h3>
+            </div>
+            <ProductList idcate="67b0a75ab5a39baf9de3690a"/>
+          </div>
         </div>
-      
+          
     </main>
   );
 }

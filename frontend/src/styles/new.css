@@ -7,49 +7,6 @@
       max-width: 1300px;
   }
 }
-.breadcrumb {
-  margin: 0;
-  font-size: 14px;
-  padding: 15px 0px;
-  border-radius: 0;
-  font-weight: 400;
-  line-height: 24px;
-  width: 100%;
-  text-align: left;
-}
-.breadcrumb li {
-  display: inline;
-  display: flex;
-  align-items: center;
-  padding: 5px;
-}
-.breadcrumb li>a {
-  color: #000;
-  text-decoration: none;
-}
-.breadcrumb li>a>span {
-  color: #000;
-}
-.breadcrumb li .mr_lr {
-  padding: 0px 3px;
-  color: #000;
-}
-.breadcrumb li .mr_lr svg {
-  width: 10px;
-  height: 10px;
-  margin-top: -5px;
-}
-.breadcrumb li a:hover,
-.breadcrumb li strong {
-  color: #e31837;
-  font-weight: 400;
-  text-decoration: none;
-}
-.breadcrumb li a:hover span,
-.breadcrumb li strong span {
-  color: #e31837;
-}
-
 
 .layout {
   padding-bottom: 30px;

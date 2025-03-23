@@ -14,7 +14,7 @@ interface Order {
     name: string;
     total_amount: number;
     total_payment: number;
-    status: string;
+    order_status: string;
     createdAt: string;
     details?: { name: string }[];
 }
@@ -71,12 +71,12 @@ export default function Dashboard() {
             const month = orderDate.getMonth();
     
             // ✅ Tính tổng số liệu cho 12 tháng (Dùng cho biểu đồ)
-            if (order.status === 'delivered') {
+            if (order.order_status === 'Delivered') {
                 totalSales += order.total_payment || 0;
                 monthlySales[month] += order.total_payment || 0;
                 monthlyOrders[month]++;
                 monthlySuccessful[month]++;
-            } else if (order.status === 'canceled') {
+            } else if (order.order_status === 'Canceled') {
                 cancelled++;
                 totalCancelledAmount += order.total_amount || 0;
                 monthlyCancelled[month]++;
@@ -85,11 +85,11 @@ export default function Dashboard() {
     
             // ✅ Lưu riêng số liệu của **tháng hiện tại** cho Dashboard
             if (month === currentMonth) {
-                if (order.status === 'delivered') {
+                if (order.order_status === 'Delivered') {
                     currentMonthSales += order.total_payment || 0;
                     currentMonthOrders++;
                     currentMonthSuccessful++;
-                } else if (order.status === 'canceled') {
+                } else if (order.order_status === 'Canceled') {
                     currentMonthCancelled++;
                 }
             }
@@ -104,7 +104,7 @@ export default function Dashboard() {
     
         // ✅ Cập nhật dữ liệu của tháng hiện tại lên Dashboard
         setTotalSales(currentMonthSales);
-        setTotalOrders(currentMonthOrders);
+        setTotalOrders(currentMonthSuccessful + currentMonthCancelled);
         setSuccessfulOrders(currentMonthSuccessful);
         setCancelledOrders(currentMonthCancelled);
     
@@ -229,7 +229,7 @@ export default function Dashboard() {
                                             <td>{order.name}</td>
                                             <td>{order.details?.map(d => d.name).join(', ') || 'N/A'}</td>
                                             <td>${order.total_amount.toLocaleString()}</td>
-                                            <td>{order.status}</td>
+                                            <td>{order.order_status}</td>
                                         </tr>
                                     ))}
                             </tbody>

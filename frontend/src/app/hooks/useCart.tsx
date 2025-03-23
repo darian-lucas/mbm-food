@@ -40,8 +40,12 @@ const useCart = () => {
   useEffect(() => {
     if (cart.length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
+      setTimeout(() => {
+        window.dispatchEvent(new Event("cartUpdated")); // 🔥 Phát sự kiện
+      }, 0);
     }
   }, [cart]);
+
 
   // Hàm thêm sản phẩm vào giỏ hàng
   const addToCart = (item: CartItem) => {
@@ -62,7 +66,9 @@ const useCart = () => {
       localStorage.setItem("cart", JSON.stringify(updatedCart));
 
       // 🔥 Phát sự kiện cập nhật giỏ hàng
-      window.dispatchEvent(new Event("cartUpdated"));
+      setTimeout(() => {
+        window.dispatchEvent(new Event("cartUpdated"));
+      }, 0);
 
       return updatedCart;
     });

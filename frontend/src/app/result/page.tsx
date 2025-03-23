@@ -64,6 +64,8 @@ const OrderResult = () => {
           await handleMomoCallback(data.data.order_code);
 
           localStorage.removeItem("cart");
+          // 🔥 Phát sự kiện cập nhật
+          window.dispatchEvent(new Event("cartUpdated"));
         } else {
           console.error("Lỗi lấy dữ liệu đơn hàng:", data.message || "Không tìm thấy đơn hàng");
         }

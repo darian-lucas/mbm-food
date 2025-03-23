@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import styles from "../../../styles/QuickView.module.css";
-import useCart from "../../hooks/useCart";
+import styles from "../../styles/QuickView.module.css";
+import useCart from "../../app/hooks/useCart";
 
 interface Variant {
   option: string;
@@ -26,14 +26,9 @@ interface QuickViewProps {
 }
 
 const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
-  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
+  const initialVariant = product?.variants.length > 0 ? product.variants[0] : null;
+  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(initialVariant);
   const [quantity, setQuantity] = useState<number>(1);
-
-  useEffect(() => {
-    if (!product) return;
-
-    setSelectedVariant(product.variants.length > 0 ? product.variants[0] : null);
-  }, [product]);
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
@@ -43,7 +38,12 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
   const handleClickAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!product || !selectedVariant) return;
+  
     handleAddToCart(product, selectedVariant, quantity);
+  };
+  
+  const handleClose = () => {
+    onClose();
   };
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
@@ -51,7 +51,8 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={onClose}>✖</button>
+      <button className={styles.closeButton} onClick={handleClose}>✖</button>
+
         <div className={styles.content}>
           <Image
             src={`http://localhost:3001/images/${selectedVariant.image}`}

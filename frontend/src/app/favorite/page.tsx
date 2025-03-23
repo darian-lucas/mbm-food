@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { addFavorite, getFavorites, removeFavorite } from "../../services/Favorite";
 import styles from "../../styles/Favorite.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Heart } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useCart from "../hooks/useCart"
+import useCart from "../hooks/useCart";
 import Link from "next/link";
-
+import { Modal, Button } from "react-bootstrap"; // Import Modal Bootstrap
 
 interface Product {
   _id: string;
@@ -28,12 +29,14 @@ interface Product {
 
 const FavoritePage = () => {
   const [favorites, setFavorites] = useState<Product[]>([]);
+  const [showModal, setShowModal] = useState(false); // Kiểm soát hiển thị modal
+  const router = useRouter();
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
     const fetchFavorites = async () => {
       if (!token) {
-        alert("vui lòng đăng nhập");
+        setShowModal(true); // Hiển thị modal khi chưa đăng nhập
         return;
       }
 
@@ -57,7 +60,7 @@ const FavoritePage = () => {
 
   const toggleFavorite = async (productId: string) => {
     if (!token) {
-      alert("Bạn cần đăng nhập để thực hiện chức năng này.");
+      setShowModal(true); // Hiển thị modal khi chưa đăng nhập
       return;
     }
 
@@ -86,14 +89,15 @@ const FavoritePage = () => {
       );
     }
   };
-  const { handleAddToCart } = useCart(); // Lấy hàm thêm vào giỏ hàng từ useCart.ts
+
+  const { handleAddToCart } = useCart();
 
   const handleClickAddToCart = (product: Product) => {
     if (!product || product.variants.length === 0) return;
 
-    const selectedVariant = product.variants[0]; // Chọn biến thể đầu tiên
-    handleAddToCart(product, selectedVariant, 1); // Mặc định số lượng là 1
-    toast.success("Đã thêm vào giỏ hàng!");
+    const selectedVariant = product.variants[0];
+    handleAddToCart(product, selectedVariant, 1);
+    
   };
 
   return (
@@ -107,18 +111,17 @@ const FavoritePage = () => {
           {favorites.map((product) => (
             <div key={product._id} className="col-md-3 col-sm-6 mb-4">
               <div className={`card border-1 shadow-sm ${styles.productCard}`}>
-                {/* Icon trái tim */}
                 <i
                   className={`${styles.favoriteIcon} position-absolute top-0 end-0 p-2`}
                   onClick={() => toggleFavorite(product._id)}
                 >
-                  <button className="border-0"><Heart size={20} color="#E51735" fill="#E51735" /></button>
+                  <button className="border-0">
+                    <Heart size={20} color="#E51735" fill="#E51735" />
+                  </button>
                 </i>
 
-                {/* Hình ảnh và tiêu đề được bọc trong Link */}
                 <Link href={`/product/${product.slug}`} passHref legacyBehavior>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
-                    {/* Hình ảnh sản phẩm */}
                     {product.variants[0]?.image && (
                       <div className={`${styles.productImageWrapper}`}>
                         <Image
@@ -135,20 +138,17 @@ const FavoritePage = () => {
                       </div>
                     )}
 
-                    {/* Tên sản phẩm */}
                     <div className="card-body flex-grow-1 d-flex flex-column p-2">
                       <h5 className={`${styles.productTitle} mb-1`}>{product.name}</h5>
                     </div>
                   </a>
                 </Link>
 
-                {/* Mô tả sản phẩm */}
                 <div
                   className={`${styles.productDescription}`}
                   dangerouslySetInnerHTML={{ __html: product.description }}
                 ></div>
 
-                {/* Giá và nút Thêm */}
                 <div className={`card-footer bg-white border-0 d-flex justify-content-between align-items-center p-2 ${styles.productFooter}`}>
                   <div>
                     <p className="fw-bold mb-1">Giá chỉ từ</p>
@@ -163,6 +163,24 @@ const FavoritePage = () => {
           ))}
         </div>
       )}
+
+      {/* Modal thông báo yêu cầu đăng nhập */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Yêu cầu đăng nhập</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <p>Bạn cần đăng nhập để sử dụng tính năng này.</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Tiếp tục xem
+          </Button>
+          <Button variant="primary" onClick={() => router.push("/login")}>
+            Đăng nhập ngay
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

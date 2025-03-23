@@ -10,6 +10,15 @@ exports.getAllProducts = async (req, res, next) => {
   }
 };
 
+exports.getAllProductsForAdmin = async (req, res, next) => {
+  try {
+    const result = await productServices.getAllProductsForAdmin();
+    res.status(200).json({ data: result });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
 // Lấy chi tiết một sản phẩm
 exports.getByIdProduct = async (req, res, next) => {
   try {

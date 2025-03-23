@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getFavorites } from "@/services/Favorite";
 import { useRouter } from "next/navigation";
-import countCart from "../../hooks/countCart";
+import countCart from "../../app/hooks/countCart";
 
 export default function Header(): JSX.Element {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
@@ -87,19 +87,11 @@ export default function Header(): JSX.Element {
   ];
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-  }, []);
-  
-  useEffect(() => {
     const checkAuth = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
   
-    // Kiểm tra ngay khi component render
-    checkAuth();
-  
-    // Theo dõi sự thay đổi của localStorage
+    checkAuth(); // Kiểm tra ngay khi component render
     window.addEventListener("storage", checkAuth);
   
     return () => {
@@ -107,8 +99,6 @@ export default function Header(): JSX.Element {
     };
   }, []);
   
-  
-
   useEffect(() => {
     const fetchFavorites = async () => {
       const token = localStorage.getItem("token");
@@ -123,14 +113,29 @@ export default function Header(): JSX.Element {
         }
       }
     };
-
-    fetchFavorites();
+  
+    fetchFavorites(); // Gọi ngay khi component mount
+  
+    const interval = setInterval(fetchFavorites, 5000); // Cập nhật mỗi 5 giây
+  
+    // Lắng nghe sự thay đổi trong localStorage
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "favoritesUpdated") {
+        fetchFavorites();
+      }
+    };
     
+    window.addEventListener("storage", handleStorageChange);
+  
+    return () => {
+      clearInterval(interval); // Dọn dẹp interval khi unmount
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
+  
   // Xử lí dăng xuất !
   const handleLogout = () => {
     localStorage.removeItem("token");
-    //Bổ sung khi đăng xuất thì xóa luôn userId để khi đăng nhập mới được bình luận
     localStorage.removeItem("userId"); // Xóa userId
     localStorage.removeItem("user"); // Xóa thông tin đăng nhập
     localStorage.removeItem("token"); // Xóa token nếu có

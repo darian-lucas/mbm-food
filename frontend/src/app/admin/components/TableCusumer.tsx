@@ -33,7 +33,7 @@ interface EditData {
   email: string;
   role: string;
   address?: string;
-  
+
 }
 
 export default function Table() {
@@ -42,7 +42,7 @@ export default function Table() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 5; // Số bản ghi mỗi trang
+  const limit = 10; // Số bản ghi mỗi trang
 
   // States cho edit
   const [editingUser, setEditingUser] = useState(null);
@@ -68,27 +68,27 @@ export default function Table() {
     setTotalPages(data.totalPages);
   };
 
-  const handleToggleActive = async (id:any,isActive:any) => {
+  const handleToggleActive = async (id: any, isActive: any) => {
     const updatedUser = await userService.toggleUserStatus(id);
 
     if (updatedUser) {
-        setUsers((prevUsers) => 
-            prevUsers.map((user) => 
-                user._id === id ? { ...user, isActive: updatedUser.isActive } : user
-            )
-        );
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === id ? { ...user, isActive: updatedUser.isActive } : user
+        )
+      );
 
-        // Nếu không có tìm kiếm, tải lại danh sách
-        if (search.trim() === "") {
-            loadUsers(page);
-        } else {
-            const user = await userService.findUserByName(search);
-            setUsers(user ? [user] : []);
-        }
+      // Nếu không có tìm kiếm, tải lại danh sách
+      if (search.trim() === "") {
+        loadUsers(page);
+      } else {
+        const user = await userService.findUserByName(search);
+        setUsers(user ? [user] : []);
+      }
     } else {
-        console.error("Failed to update user status.");
+      console.error("Failed to update user status.");
     }
-};
+  };
 
 
   // Xử lý tìm kiếm có debounce
@@ -108,13 +108,13 @@ export default function Table() {
   }, [search]);
 
   // Xử lý chỉnh sửa người dùng
-  const handleEdit = (user:any) => {
+  const handleEdit = (user: any) => {
     setEditingUser(user._id);
     setEditData({
       username: user.username,
       email: user.email,
       role: user.role,
-      address:user.address
+      address: user.address
     });
   };
 
@@ -131,9 +131,9 @@ export default function Table() {
   };
 
   return (
-    <div className={styles.tableContainer}>
+    <div className={`${styles.tableContainer} mt-4`}>
       <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
-      
+
 
       <div className={styles.headerActions}>
         <div className={styles.searchContainer}>
@@ -150,7 +150,7 @@ export default function Table() {
       <table className="table table-hover">
         <thead>
           <tr>
-           
+
             <th>Username</th>
             <th>Email</th>
             <th>Role</th>
@@ -163,17 +163,17 @@ export default function Table() {
           {users && users.length > 0 ? (
             users.map((user) => (
               <tr key={user._id}>
-                
+
                 <td>
-                  <div className={styles.avatarContainer}>                    
+                  <div className={styles.avatarContainer}>
                     <Link href={`custumerList/${user._id}`}>
                       <span className={styles.name}>{user.username}</span>
                     </Link>
                   </div>
                 </td>
                 <td>{user.email}</td>
-                
-               <td>
+
+                <td>
                   <span className={styles.role}>{user.role}</span>
                 </td>
                 <td>
@@ -214,30 +214,55 @@ export default function Table() {
         </tbody>
       </table>
 
+    
       {/* Phân trang */}
-      {search.trim() === "" && (
-        <div
-          className={`${styles.pagination} d-flex justify-content-center align-items-center`}
-        >
+      {search.trim() === "" && totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-3">
           <button
-            className="btn btn-primary"
+            className="btn btn-light border-0 shadow-none mx-1"
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
           >
-            &laquo; Prev
+            ←
           </button>
-          <span className="mx-3">
-            Page {page} of {totalPages}
-          </span>
+
+          {[...Array(totalPages)].map((_, index) => {
+            const pageNumber = index + 1;
+
+            if (
+              pageNumber === 1 ||
+              pageNumber === totalPages ||
+              (pageNumber >= page - 1 && pageNumber <= page + 1)
+            ) {
+              return (
+                <button
+                  key={pageNumber}
+                  className={`btn mx-1 border-0 shadow-none ${page === pageNumber ? "btn-primary text-white" : "btn-light"
+                    }`}
+                  onClick={() => setPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              );
+            }
+
+            if (pageNumber === page - 2 || pageNumber === page + 2) {
+              return <span key={pageNumber} className="mx-2">...</span>;
+            }
+
+            return null;
+          })}
+
           <button
-            className="btn btn-primary"
+            className="btn btn-light border-0 shadow-none mx-1"
             onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={page === totalPages}
           >
-            Next &raquo;
+            →
           </button>
         </div>
       )}
+
 
       {/* Modal chỉnh sửa */}
       {editingUser && (
@@ -260,14 +285,8 @@ export default function Table() {
                 setEditData({ ...editData, email: e.target.value })
               }
             />
-            <label>Address:</label>
-            <input
-              type="text"
-              value={editData.address}
-              onChange={(e) =>
-                setEditData({ ...editData, address: e.target.value })
-              }
-            />
+
+
             <label>Role:</label>
             <select
               value={editData.role}
@@ -277,7 +296,7 @@ export default function Table() {
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
-              <option value="staff">Staff</option>
+
             </select>
             <div className={styles.modalButtons}>
               <button onClick={handleUpdate}>Update</button>
