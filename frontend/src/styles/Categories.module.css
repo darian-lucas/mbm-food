@@ -1,0 +1,208 @@
+.container{
+    margin: 0 auto;
+    max-width: 1300px;
+}
+.title_page{
+    font-size: 40px;
+    z-index: 9;
+    padding: 0;
+    margin: 0 0;
+    position: relative;
+    display: block;
+    color: #006a31;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.row{
+    display: flex    ;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.dqdt_sidebar{
+    flex: 0 0 25%;
+    max-width: 25%;
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    display: block;
+}
+.aside_content_menu{
+    margin-bottom: 30px;
+}
+.title_head_col{
+    position: relative;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    display: block;
+    background: #006a31;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.nav_category{
+    display: block;
+    unicode-bidi: isolate;
+}
+.nav_category ul{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.navbar_pills {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+    unicode-bidi: isolate;   
+}
+.nav_item{
+    position: relative;
+    transition: all .4sease;
+}
+.navlink{
+    display: block;
+    padding: 8px 0;
+    font-size: 16px;
+    color: #000;
+    font-weight: 700;
+    word-break: break-word;
+    text-decoration: none;
+    background-color: transparent;
+}
+.down_icon{
+    height: 20px !important;
+    width: 20px !important;
+    position: absolute;
+    right: 7.5px;
+    top: 21px;
+    transform: translate(0, -50%);
+    cursor: pointer;
+}
+.down_icon::before{
+    width: 11px;
+    height: 1px;
+    opacity: 1;
+    position: absolute;
+    content: '';
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    background-color: #000;
+    transition: transform 0.4sease-in-out, opacity 0.4sease-in-out;
+}
+.down_icon::after{
+    width: 1px;
+    height: 11px;
+    position: absolute;
+    content: '';
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    background-color: #000;
+    transition: transform 0.4sease-in-out, opacity 0.4sease-in-out;
+}
+.menu_down{
+    padding-left: 10px !important;
+    display: block;
+}
+.filter_content{
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 15px;
+}
+.filter_container{
+    box-sizing: border-box;
+}
+.filter_price{
+    margin-right: 0px;
+    position: relative;
+    float: left;
+    width: 100%;
+    border-radius: 15px;
+    font-size: 16px;
+    display: block;
+    unicode-bidi: isolate;
+}
+.title_head{
+    position: relative;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 10px 0px;
+    color: #006a31;
+}
+.filter_group{
+    width: 100%;
+    position: relative;
+    max-height: 200px;
+    padding: 0px 0px 0;
+    border-top: none;
+    border-radius: 0px;
+}
+.filter_group ul {
+    padding-left: 0px;
+    margin-bottom: 0;
+    list-style: none;
+}
+.filter_item{
+    transition: all .4sease;
+    display: list-item;
+    unicode-bidi: isolate;
+}
+.filter_item label{
+    display: inline-block;
+    margin-bottom: .5rem;
+    cursor: pointer;
+}
+.block_collection{
+    flex: 0 0 75%;
+    max-width: 75%;
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.category_products{
+    margin-bottom: 20px;
+    border-radius: 15px;
+    background: #fff;
+}
+.sort_cate{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; 
+}
+.sort_cate ul {
+    display: flex;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+.sort_cate h3{
+    color: #000;
+    font-size: 14px;
+    float: left;
+    margin: 0;
+    margin-top: 2px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+.sort_cate ul li {
+    margin-left: 10px;
+    transition: all .4sease;
+    list-style: none;
+}
+.btn_quick_sort a {
+    color: #006a31;
+    display: block;
+    padding: 5px 10px;
+    border: 1px solid #e31837;
+    border-radius: 5px;
+    text-decoration: none;
+    background-color: transparent;
+}
