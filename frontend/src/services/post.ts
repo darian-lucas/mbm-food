@@ -25,7 +25,6 @@ export const fetchNews = async (): Promise<Post[]> => {
     // 🔥 Lọc chỉ lấy bài viết có status = 1
     const filteredPosts = data.posts.filter((post: Post) => post.status === 1);
 
-    console.log("Dữ liệu tin tức đã lọc:", filteredPosts);
     return filteredPosts;
   } catch (error) {
     console.error("Lỗi khi fetch tin tức:", error);
@@ -43,8 +42,6 @@ export const fetchFeaturedNews = async (): Promise<Post[]> => {
 
     // 🔥 Lọc chỉ lấy bài viết có status = 1
     const filteredPosts = data.filter((post: Post) => post.status === 1);
-
-    console.log("Dữ liệu tin nổi bật đã lọc:", filteredPosts);
     return filteredPosts;
   } catch (error) {
     console.error("Lỗi khi fetch tin nổi bật:", error);

@@ -3,6 +3,11 @@ const productModel = require("../models/ProductModel.js");
 // Lấy tất cả sản phẩm
 
 exports.getAllProducts = async () => {
+  const products = await productModel.find({ status: "Active" });
+  return products;
+};
+
+exports.getAllProductsForAdmin = async () => {
   const products = await productModel.find();
   return products;
 };
