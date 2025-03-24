@@ -292,12 +292,12 @@ const Booking = () => {
                     <button
                       key={index}
                       type="button"
-                      className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 ${
+                      className={`w-16 h-16 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
                         table.status === "Reserved"
                           ? "bg-gray-400 cursor-not-allowed"
                           : selectedTable === table._id
-                          ? "bg-red-600"
-                          : "bg-green-500 hover:bg-red-600"
+                          ? "bg-red-600 text-white"
+                          : "bg-[url(/images/tablebg.jpg)] bg-cover hover:bg-red-600 hover:bg-none hover:text-white "
                       }`}
                       onClick={() => handleTableSelection(table._id)}
                       onMouseEnter={() => setHoveredIndex(index)}
