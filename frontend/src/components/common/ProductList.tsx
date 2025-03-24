@@ -33,6 +33,7 @@ interface Product {
 interface ProductListProps {
   idcate: string;
   showAll?: boolean;
+  
 }
 
 const ProductList = ({ idcate , showAll = false }: ProductListProps) => {

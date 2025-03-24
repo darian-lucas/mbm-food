@@ -161,9 +161,8 @@
 }
 .block_collection{
     flex: 0 0 75%;
-    max-width: 75%;
+    max-width: 100%;
     position: relative;
-    width: 100%;
     padding-right: 15px;
     padding-left: 15px;
 }
@@ -205,4 +204,12 @@
     border-radius: 5px;
     text-decoration: none;
     background-color: transparent;
+}
+.product_view{
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+    
 }

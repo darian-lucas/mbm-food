@@ -154,7 +154,7 @@ export default function CategoryPage({ params }: { params: { categories: string 
                             <li className={style.btn_quick_sort}><a href="">Giá cao đến thấp</a></li>
                         </ul>
                     </div>
-                    <section className="product_view">
+                    <section className={style.product_view}>
                         {/* Gọi ProductList, nhưng ép nó hiển thị toàn bộ sản phẩm */}
                         <ProductList idcate={categoryId} showAll={true} />
                     </section>
