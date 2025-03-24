@@ -65,4 +65,9 @@
     transform: translateY(-50%) scale(0.95);
   }
   
-  
+  @media (max-width: 768px) {
+    .bannerImage {
+      width: 100% !important;
+      height: auto !important;
+    }
+  }
