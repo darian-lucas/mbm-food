@@ -5,9 +5,20 @@ import { fetchBanners } from "@/services/banner";
 import { fetchProducts } from "@/services/product";
 import styles from "@/styles/Banner.module.css";
 
+interface Banner {
+  _id: string;
+  image: string;
+  title?: string;
+}
+
+interface Product {
+  slug: string;
+}
+
+
 const Banner = () => {
-  const [banners, setBanners] = useState([]);
-  const [products, setProducts] = useState([]); 
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

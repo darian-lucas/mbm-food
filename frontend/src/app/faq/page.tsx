@@ -1,17 +1,18 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import "../../styles/new.css";
 import "../../styles/faq.css";
 
 
 export default function faq() {
   // Trạng thái lưu câu hỏi nào đang mở
-  const [openIndex, setOpenIndex] = useState();
+  const [openIndex, setOpenIndex] = useState<string | null>(null);
+
 
   //Hàm đóng mở câu hỏi
-  const toggleFAQ = (index) => {
+  const toggleFAQ = (index: SetStateAction<string | null>) => {
     setOpenIndex(openIndex === index ? null : index);
   };
   //Dữ liệu câu hỏi và trả lời
@@ -36,13 +37,13 @@ export default function faq() {
             "Quý khách nên sử dụng tài khoản cá nhân để đảm bảo độ tin cậy cũng như quyền lợi của bản thân khi mua sắm. Việc sử dụng chung tài khoản có thể dẫn đến những sai sót mà người chịu ảnh hưởng trực tiếp chính là quý khách hàng.",
         },
         {
-          question: "4. Tại sao tôi nên đăng ký thành viên Dola?",
+          question: "4. Tại sao tôi nên đăng ký thành viên MBM?",
           answer:
-            "Việc đăng ký tài khoản là cơ hội giúp quý khách trở thành một trong những khách hàng thân thiết của Dola, được tiếp cận nhanh nhất các chương trình khuyến mãi, thông tin ưu đãi khi mua sắm.",
+            "Việc đăng ký tài khoản là cơ hội giúp quý khách trở thành một trong những khách hàng thân thiết của MBM, được tiếp cận nhanh nhất các chương trình khuyến mãi, thông tin ưu đãi khi mua sắm.",
         },
         {
           question:
-            "5. Dola có chương trình ưu đãi nào hấp dẫn dành cho khách hàng thân thiết?",
+            "5. MBM có chương trình ưu đãi nào hấp dẫn dành cho khách hàng thân thiết?",
           answer:
             "Khi tổng giá trị đơn hàng của quý khách tích lũy đạt đủ điều kiện của từng mức hạng thành viên, quý khách sẽ nhận được ưu đãi giảm giá cho mọi đơn hàng tương, voucher sinh nhật tương ứng của hạng mức thành viên.",
         },
@@ -69,7 +70,7 @@ export default function faq() {
         {
           question: "4. Tôi muốn xem lại lịch sử đơn hàng?",
           answer:
-            "Quý khách vào trang tài khoản bằng cách bấm vào nút “Tài khoản” ở thanh menu trên cùng của màn hình (Đối với Desktop) hoặc tại góc trái màn hình, chọn biểu tượng Menu rồi chọn “Tài khoản” (Đối với Mobile). Sau đó chọn “Đơn hàng của bạn” để kiểm tra lại các sản phẩm đã đặt mua. Hoặc quý khách có thể kiểm tra lại những email Dola thông báo trạng thái đơn hàng.",
+            "Quý khách vào trang tài khoản bằng cách bấm vào nút “Tài khoản” ở thanh menu trên cùng của màn hình (Đối với Desktop) hoặc tại góc trái màn hình, chọn biểu tượng Menu rồi chọn “Tài khoản” (Đối với Mobile). Sau đó chọn “Đơn hàng của bạn” để kiểm tra lại các sản phẩm đã đặt mua. Hoặc quý khách có thể kiểm tra lại những email MBM thông báo trạng thái đơn hàng.",
         },
         {
           question: "5. Tôi có thể hủy hoặc thay đổi đơn hàng không?",
@@ -80,7 +81,7 @@ export default function faq() {
           question:
             "6. Tôi muốn khiếu nại/ đổi trả hàng, quy trình thực hiện như thế nào?",
           answer:
-            "Dola luôn sẵn lòng đón nhận các ý kiến góp ý và phản hồi của quý khách quý khách vui lòng liên hệ tư vấn viên của Dola Hotline 1900 6750 để được hủy hoặc thay đổi sản phẩm trong đơn hàng.",
+            "MBM luôn sẵn lòng đón nhận các ý kiến góp ý và phản hồi của quý khách quý khách vui lòng liên hệ tư vấn viên của MBM Hotline 1900 6750 để được hủy hoặc thay đổi sản phẩm trong đơn hàng.",
         },
       ],
     },

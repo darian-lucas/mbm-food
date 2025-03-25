@@ -1,5 +1,8 @@
 import Image from "next/image";
 import "../../styles/about.css";
+import "../../styles/new.css";
+import "../../styles/id.css";
+
 
 export default function About() {
   return (
