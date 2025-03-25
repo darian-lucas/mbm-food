@@ -56,14 +56,14 @@ export default function Header(): JSX.Element {
   const handleViewMore = () => {
     router.push(`/search?query=${encodeURIComponent(searchTerm)}`);
     setSearchTerm("");
-    setShowResults(false); 
+    setShowResults(false);
   };
 
   //Chuyển trang tin tức
   const handleViewMoreNews = () => {
     router.push(`/news?query=${encodeURIComponent(searchTerm)}`);
     setSearchTerm("");
-    setShowResults(false); 
+    setShowResults(false);
   };
 
   const cartCount = countCart();
@@ -79,26 +79,26 @@ export default function Header(): JSX.Element {
   ];
 
   const productCategories = [
-    { href: "/product/pizza", label: "Pizza" },
-    { href: "/product/khai-vi", label: "Khai Vị" },
-    { href: "/product/my-y", label: "Mỳ Ý" },
-    { href: "/product/salad", label: "Salad" },
-    { href: "/product/nuoc-uong", label: "Nước Uống" },
+    { href: "/pizza", label: "Pizza" },
+    { href: "/khai-vi", label: "Khai Vị" },
+    { href: "/my-y", label: "Mỳ Ý" },
+    { href: "/salad", label: "Salad" },
+    { href: "/nuoc-uong", label: "Nước Uống" },
   ];
 
   useEffect(() => {
     const checkAuth = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
-  
+
     checkAuth(); // Kiểm tra ngay khi component render
     window.addEventListener("storage", checkAuth);
-  
+
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
   }, []);
-  
+
   useEffect(() => {
     const fetchFavorites = async () => {
       const token = localStorage.getItem("token");
@@ -113,26 +113,26 @@ export default function Header(): JSX.Element {
         }
       }
     };
-  
+
     fetchFavorites(); // Gọi ngay khi component mount
-  
+
     const interval = setInterval(fetchFavorites, 5000); // Cập nhật mỗi 5 giây
-  
+
     // Lắng nghe sự thay đổi trong localStorage
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === "favoritesUpdated") {
         fetchFavorites();
       }
     };
-    
+
     window.addEventListener("storage", handleStorageChange);
-  
+
     return () => {
       clearInterval(interval); // Dọn dẹp interval khi unmount
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-  
+
   // Xử lí dăng xuất !
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -146,6 +146,18 @@ export default function Header(): JSX.Element {
     <header>
       <div className={styles.headerTop}>Nhiều ưu đãi dành cho bạn</div>
       <div className={styles.headerMain}>
+        {/* <div
+          className={styles.menuToggle}
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+        >
+          <Image
+            src="/images/menu-icon.png"
+            alt="Menu"
+            width={30}
+            height={30}
+          />
+        </div> */}
+
         <Link href="/" className={styles.logo}>
           <Image
             src="/images/logo.png"
@@ -250,8 +262,35 @@ export default function Header(): JSX.Element {
                       Xem thêm {searchResults.news.length - 2} tin tức
                     </button>
                   )}
+                    <h4 className={styles.categoryTitle}>Tin tức</h4>
+                    {searchResults.news.slice(0, 4).map((item, index) => (
+                      <Link
+                        key={index}
+                        href={`/news/${item.slug}`}
+                        className={styles.resultItem}
+                      >
+                        {item.image && (
+                          <Image
+                            src={`/images/${item.image}`}
+                            alt={item.title}
+                            width={50}
+                            height={50}
+                          />
+                        )}
+                        <div className={styles.resultInfo}>
+                          <p className={styles.resultName}>{item.title}</p>
+                        </div>
+                      </Link>
+                    ))}
+                    {searchResults.news.length > 2 && (
+                      <button
+                        className={styles.viewMoreBtn}
+                        onClick={handleViewMoreNews}
+                      >
+                        Xem thêm {searchResults.news.length - 2} tin tức
+                      </button>
+                    )}
                   </div>
-                  
                 </div>
               )}
 
@@ -396,6 +435,8 @@ export default function Header(): JSX.Element {
           )
         )}
       </div>
+  
     </header>
   );
+  
 }

@@ -111,3 +111,73 @@
     height: 100%;
     border-radius: 5px;
   }
+  @media (max-width: 1024px) {
+    .contentBox {
+      grid-template-columns: 1fr; /* Chuyển sang 1 cột */
+      text-align: center;
+    }
+  
+    .leftBox, .rightBox {
+      align-items: center;
+    }
+  
+    .infoGrid {
+      grid-template-columns: 1fr; /* Chuyển thành 1 cột để dễ đọc */
+    }
+  
+    .infoItem {
+      justify-content: center; /* Căn giữa nội dung */
+    }
+  
+    .form {
+      width: 100%; /* Đảm bảo form không bị co nhỏ */
+      max-width: 500px; /* Giới hạn form để không quá rộng */
+    }
+  
+    .input, .textarea {
+      width: 100%; /* Đảm bảo input đầy đủ chiều rộng */
+    }
+  
+    .button {
+      width: 100%; /* Nút bấm rộng toàn bộ */
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .contentBox {
+      display: flex;
+      flex-direction: column; /* Chuyển thành cột */
+      align-items: center;
+      text-align: center;
+    }
+  
+    .leftBox, .rightBox {
+      width: 100%; /* Cả hai phần bằng nhau */
+      max-width: 400px; /* Giới hạn độ rộng */
+    }
+  
+    .rightBox iframe {
+      height: 250px; /* Giới hạn chiều cao bản đồ */
+    }
+  
+    .infoGrid {
+      display: flex;
+      flex-direction: column; /* Xếp dọc các thông tin */
+      gap: 10px;
+    }
+  
+    .infoItem {
+      justify-content: center;
+      flex-direction: column;
+    }
+  
+    .form {
+      width: 100%;
+    }
+  
+    .input, .textarea, .button {
+      width: 100%;
+    }
+  }
+  
+  

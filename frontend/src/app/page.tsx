@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import styles from "@/styles/Home.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +9,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { useEffect, useState,useRef  } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Heart } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
@@ -77,7 +78,7 @@ export default function Home(): JSX.Element {
       try {
         const response = await fetch("http://localhost:3001/api/categories");
 
-        if (response.status === 403) return; 
+        if (response.status === 403) return;
 
         const data = await response.json();
         if (data && Array.isArray(data.data)) {
@@ -92,7 +93,6 @@ export default function Home(): JSX.Element {
 
     fetchCategories();
   }, []);
-
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -128,7 +128,7 @@ export default function Home(): JSX.Element {
       try {
         const response = await fetch("http://localhost:3001/api/products");
 
-        if (response.status === 403) return; 
+        if (response.status === 403) return;
 
         if (!response.ok) {
           throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
@@ -138,7 +138,6 @@ export default function Home(): JSX.Element {
         if (data?.data && Array.isArray(data.data)) {
           setProducts(data.data);
 
-         
           if (storedToken && tokenStatus.valid) {
             const favoriteStatus: { [key: string]: boolean } = {};
             await Promise.all(
@@ -160,10 +159,6 @@ export default function Home(): JSX.Element {
     fetchProducts();
   }, [token]);
 
-  
-  
-  
-  
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, []);
@@ -173,7 +168,7 @@ export default function Home(): JSX.Element {
       toast.error("Bạn cần đăng nhập để yêu thích sản phẩm!", {
         position: "top-right",
         autoClose: 2000,
-      });;
+      });
       return;
     }
 
@@ -307,18 +302,6 @@ export default function Home(): JSX.Element {
     <main className={styles.home}>
       {/* Banner */}
       <section className={styles.banner}>
-        {/* {products.length > 0 && (
-          <Link href={`/product/${products[2].slug}`} passHref>
-            <Image
-              src="/images/banner-1.png"
-              alt="Banner chính"
-              width={1280}
-              height={500}
-              priority
-              className={styles.bannerImage}
-            />
-          </Link>
-        )} */}
         <Banner></Banner>
       </section>
       {/* Danh mục nổi bật */}
@@ -469,22 +452,24 @@ export default function Home(): JSX.Element {
                     >
                       <p className={styles.viewMore}>Xem thêm</p>
                     </Link>
-                    <p className={styles.foodPriceLabel}>Giá chỉ từ: </p>
-                    <span className={styles.foodPrice}>
-                      {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
-                    </span>
+                    <div className={styles.foodPriceContainer}>
+                      <p className={styles.foodPriceLabel}>Giá chỉ từ: </p>
+                      <span className={styles.foodPrice}>
+                        {food.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
+                      </span>
+                    </div>
                   </div>
-                  <button 
+                  <button
                     className={styles.addButton}
                     onClick={() => setSelectedProduct(food)}
-                  >Thêm</button>
+                  >
+                    Thêm
+                  </button>
                 </div>
               </SwiperSlide>
             ))}
         </Swiper>
-        
       </section>
-      
       {/* Chương trình khuyến mãi */}
       <section className={styles.section}>
         {/* Tiêu đề nhỏ "Chương trình" */}
@@ -591,15 +576,20 @@ export default function Home(): JSX.Element {
                     <div className={styles.discountFoodPrice}>
                       <p>Giá chỉ từ:</p>
                       <span>
-                        {variant.sale_price
-                          ? `${variant.sale_price.toLocaleString()}đ`
-                          : `${variant.price.toLocaleString()}đ`}
+                        <strong>{variant.price.toLocaleString()}đ</strong>
+                        {variant.sale_price && variant.sale_price > 0 && (
+                          <del style={{ color: "gray", marginLeft: "8px" }}>
+                            {variant.sale_price.toLocaleString()}đ
+                          </del>
+                        )}
                       </span>
                     </div>
-                    <button 
-                    className={styles.discountAddButton}
-                    onClick={() => setSelectedProduct(item)}
-                    >Thêm</button>
+                    <button
+                      className={styles.discountAddButton}
+                      onClick={() => setSelectedProduct(item)}
+                    >
+                      Thêm
+                    </button>
                   </div>
                 </div>
               );
@@ -679,10 +669,11 @@ export default function Home(): JSX.Element {
                         {item.variants[0]?.price.toLocaleString() || "Liên hệ"}đ
                       </span>
                     </div>
-                    <button 
+                    <button
                       className={styles.bestSellingAddButton}
                       onClick={() => setSelectedProduct(item)}
-                      >Thêm
+                    >
+                      Thêm
                     </button>
                   </div>
                 </div>
@@ -787,10 +778,12 @@ export default function Home(): JSX.Element {
                         >
                           Xem thêm
                         </Link>
-                        <button 
+                        <button
                           className={styles.menufoodAdd}
                           onClick={() => setSelectedProduct(item)}
-                          >Thêm</button>
+                        >
+                          Thêm
+                        </button>
                       </div>
                     </div>
                     <button

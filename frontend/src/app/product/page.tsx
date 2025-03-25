@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
-import ProductList from "@/components/layout/ProductList";
+import ProductList from "../../components/common/ProductList";
 
 
 interface Category {
