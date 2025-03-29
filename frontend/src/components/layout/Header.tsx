@@ -142,6 +142,12 @@ export default function Header(): JSX.Element {
     setIsLoggedIn(false);
     window.location.reload();
   };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header>
       <div className={styles.headerTop}>Nhiều ưu đãi dành cho bạn</div>
@@ -408,6 +414,45 @@ export default function Header(): JSX.Element {
           </Link>
         </div>
       </div>
+      <div className={styles.menuIcon} onClick={toggleMenu}>
+        ☰
+      </div>
+
+      {/* Navbar Overlay */}
+      <div className={`${styles.menuOverlay} ${isMenuOpen ? styles.open : ""}`}>
+        <button onClick={toggleMenu} className={styles.closeButton}>×</button>
+
+        {/* Danh sách menu */}
+        <nav>
+          {menuItems.map(({ href, label, isDropdown }) =>
+            isDropdown ? (
+              <div
+                key={href}
+                className={styles.productMenuContainer}
+                onClick={() => setShowProductMenu(!showProductMenu)}
+              >
+                <div className={styles.menuItem}>
+                  {label} <span>{showProductMenu ? "−" : "+"}</span>
+                </div>
+                {showProductMenu && (
+                  <div className={styles.dropdownMenu}>
+                    {productCategories.map(({ href, label }) => (
+                      <Link key={href} href={href} className={styles.menuItem}>
+                        {label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link key={href} href={href} className={styles.menuItem}>
+                {label}
+              </Link>
+            )
+          )}
+        </nav>
+      </div>
+
       <div className={styles.navbar}>
         {menuItems.map(({ href, label, isDropdown }) =>
           isDropdown ? (
