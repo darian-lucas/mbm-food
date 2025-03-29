@@ -102,7 +102,7 @@
     content: '';
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-90deg);
+    transform: translate(-50%, -50%) rotate(0deg); /* Mặc định ngang (dấu -) */
     background-color: #000;
     transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 }
@@ -114,16 +114,27 @@
     content: '';
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-90deg);
+    transform: translate(-50%, -50%) rotate(0deg); /* Mặc định dọc (dấu +) */
     background-color: #000;
     transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 }
 
-.menu_down {
-    padding-left: 10px !important;
-    display: block;
+.down_icon.open::before {
+    transform: translate(-50%, -50%) rotate(0deg); /* Khi mở, giữ nguyên dấu - */
 }
 
+.down_icon.open::after {
+    opacity: 0; /* Khi mở, ẩn dấu + */
+}
+
+
+.menu_down {
+    padding-left: 10px !important;
+    display: none;
+}
+.menu_down.open {
+    display: block;
+  }
 .filter_content {
     display: inline-block;
     width: 100%;
@@ -219,15 +230,18 @@
     transition: all 0.4s ease;
     list-style: none;
 }
-
-.btn_quick_sort a {
+.btn_quick_sort button {
+    border: 1px solid #e31837;
+    background-color: transparent;
+    border-radius: 5px;
     color: #006a31;
     display: block;
     padding: 5px 10px;
-    border: 1px solid #e31837;
-    border-radius: 5px;
-    text-decoration: none;
-    background-color: transparent;
+}
+
+.btn_quick_sort button.active {
+    background: red;
+    color: white;
 }
 
 .product_view {
