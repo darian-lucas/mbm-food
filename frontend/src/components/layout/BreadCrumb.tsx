@@ -25,7 +25,7 @@ const Breadcrumb = ({
 
   return (
     <>
-      <section className="w-full py-3 bg-[#ddd] mb-5 text-sm">
+      <section className="w-full py-3 bg-[#ddd] md:mt-0 mt-12 mb-6 text-sm">
         <nav
           className={`flex items-center max-w-[1300px] px-3 mx-auto ${
             container || ""
