@@ -30,18 +30,6 @@ exports.getByIdProduct = async (req, res, next) => {
   }
 };
 
-// lấy sp theo danh mục
-// exports.getByCategory = async (req, res) => {
-//   try {
-//     const { idcate } = req.params;
-//     const query = req.query;
-//     const result = await productServices.getByCategory(idcate, query);
-//     res.status(200).json({ data: result });
-//   } catch (error) {
-//     res.status(404).json({ error: error.message });
-//   }
-// };
-
 exports.getByCategory = async (req, res) => {
   try {
     const { idcate } = req.params;
