@@ -44,13 +44,10 @@ const Breadcrumb = ({
             const href = `/${pathNames.slice(0, index + 1).join("/")}`;
             const isActive = pathname === href;
             const itemClasses = isActive ? activeClasses : listClasses;
-
-            console.log(`Link: ${link}, href: ${href}, isActive: ${isActive}`);
             
             const itemLink = capitalizeLinks
             ? link[0].toUpperCase() + link.slice(1)
             : link;
-            console.log("🚀 ~ {pathNames.map ~ itemLink:", itemLink)
 
             return (
               <div key={index} className="flex items-center">

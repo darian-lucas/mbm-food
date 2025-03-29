@@ -155,18 +155,27 @@ class OrderService {
         throw new Error("Không tìm thấy đơn hàng");
     }
 
-    // Cập nhật trạng thái đơn hàng
     let updateData = { order_status };
 
-    // Nếu trạng thái mới là "Delivered" và phương thức thanh toán là "67d8351376759d2abe579970"
+    // Nếu trạng thái mới là "Delivered" và phương thức thanh toán là tiền mặt (Cash)
     if (order_status === "Delivered" && order.id_payment_method.toString() === "67d8351376759d2abe579970") {
         updateData.payment_status = "Completed";
+    }
+
+    // Nếu phương thức thanh toán là MOMO và đã hoàn thành thanh toán, tự động chuyển trạng thái đơn hàng thành "Shipped"
+    if (
+        order.id_payment_method.toString() !== "67d8351376759d2abe579970" && // Không phải thanh toán tiền mặt (Cash)
+        order.payment_status === "Completed" && // Thanh toán đã hoàn tất
+        order_status !== "Shipped" // Đảm bảo không ghi đè khi đã là "Shipped"
+    ) {
+        updateData.order_status = "Shipped";
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(id, updateData, { new: true });
 
     return updatedOrder;
 }
+
 
 
   async deleteOrder(orderId) {

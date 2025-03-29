@@ -8,6 +8,7 @@ import { fetchFeaturedNews, fetchNewsDetail, Post } from "../../../services/post
 import "../../../styles/id.css";
 import "../../../styles/new.css";
 import CommentSection from "@/app/comments/CommentSection";
+import Image from "next/image";
 
 export default function NewsDetail() {
   const { slug } = useParams();
@@ -30,7 +31,7 @@ export default function NewsDetail() {
 
         const [featuredNews, data] = await Promise.all([
           fetchFeaturedNews(),
-          fetchNewsDetail(slug),
+          fetchNewsDetail(slug as string),
         ]);
 
         if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
@@ -87,11 +88,11 @@ export default function NewsDetail() {
                   <div className="goto-warpper ftoc-head">
                     <a href="title-goto-wrapper" style={{fontWeight: "bold", paddingBottom:"10px"}}>Nội dung chính</a>
                   <div className="dola-toc">
-                    <ol className="toc-list" dangerouslySetInnerHTML={{ __html: post.summary }} />
+                    <ol className="toc-list" dangerouslySetInnerHTML={{ __html: post.summary || "" }} />
                   </div>
                   </div>
                 </div>
-                <div className="content" dangerouslySetInnerHTML={{ __html: post.content }} />
+                <div className="content" dangerouslySetInnerHTML={{ __html: post.content || "" }} />
               </div>
             </div>
           </div>
@@ -121,8 +122,8 @@ export default function NewsDetail() {
               )}
               <li><Link className="font-bold" href="/news">Tin tức</Link></li>
               <li><Link href="/contact">Liên hệ</Link></li>
-              <li><Link href="#">Câu hỏi thường gặp</Link></li>
-              <li><Link href="#">Đặt bàn</Link></li>
+              <li><Link href="/faq">Câu hỏi thường gặp</Link></li>
+              <li><Link href="/booking">Đặt bàn</Link></li>
             </ul>
           </div>
 
@@ -134,7 +135,7 @@ export default function NewsDetail() {
                   <li className="aside-news-item" key={i}>
                     <div className="block-thumb">
                       <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
-                        <img
+                        <Image
                           src={extractImageSrc(ttnoibat.imageSummary) || "/images/default.png"}
                           alt={ttnoibat.title}
                           width={120}

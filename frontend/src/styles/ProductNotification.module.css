@@ -58,7 +58,7 @@
   .notificationContent h4 {
     font-weight: bold;
     margin: 0;
-    font-size: 18px;
+    font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -73,6 +73,7 @@
   .notificationContent p {
     color: #e51735;
     margin: 8px 0 0 0;
+    font-size: 14px;
   }
   
   .notificationContent span {

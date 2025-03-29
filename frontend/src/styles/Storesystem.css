@@ -231,4 +231,72 @@
 }
 
 
+@media (max-width: 991px) {
+    /* Điều chỉnh layout cho tablet */
+    .hethong-info .row-fix {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hethong-info .row-fix .col-fix {
+        max-width: 100%;
+        flex: 1 1 auto;
+    }
+
+    .option-chos.option-chos1 .group-city {
+        max-width: 100%;
+    }
+
+    .page-he-thong .wrapcontact {
+        width: 100%;
+        height: auto;
+    }
+}
+@media (max-width: 767px) {
+    /* Điều chỉnh layout cho mobile */
+    .hethong-info .item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hethong-info .item .thump img {
+        max-height: 60px;
+        margin-bottom: 5px;
+    }
+
+    .hethong-info .item span {
+        font-size: 14px;
+    }
+
+    .hethong-info .item span b {
+        font-size: 36px;
+    }
+
+    .option-chos.option-chos1 {
+        padding: 15px;
+    }
+
+    .option-chos.option-chos1 .group-city {
+        max-width: 100%;
+    }
+
+    .page-he-thong .option-chos .info-store .store-list {
+        padding: 10px;
+    }
+
+    .page-he-thong .option-chos .info-store .store-list .store-name b,
+    .page-he-thong .option-chos .info-store .store-list .store-phone b {
+        margin-bottom: 5px;
+    }
+
+    .page-he-thong .wrapcontact iframe {
+        height: 300px !important;
+    }
+
+    .page-he-thong .pagebody {
+        height: auto;
+    }
+}
+
+
 

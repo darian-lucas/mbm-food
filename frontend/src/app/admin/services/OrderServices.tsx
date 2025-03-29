@@ -28,7 +28,7 @@ const getAllOrders = async () => {
 };
 const updateOrderStatus = async (orderId: string, data: { order_status: string }) => {
     try {
-        const response = await fetch(`http://localhost:3001/api/orders/${orderId}/status`, {
+        const response = await fetch(`${API_URL}/${orderId}/status`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -37,15 +37,19 @@ const updateOrderStatus = async (orderId: string, data: { order_status: string }
         });
 
         if (!response.ok) {
-            throw new Error(`Lỗi cập nhật trạng thái: ${response.statusText}`);
+            const errorText = await response.text(); // Lấy nội dung lỗi từ server
+            throw new Error(`Lỗi cập nhật trạng thái: ${response.status} - ${errorText}`);
         }
 
-        return await response.json();
+        const updatedOrder = await response.json();
+        console.log("Cập nhật thành công:", updatedOrder); // Debug log
+        return updatedOrder;
     } catch (error) {
         console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
-        return null; // Tránh quăng lỗi không kiểm soát
+        return null;
     }
 };
+
 
   
 

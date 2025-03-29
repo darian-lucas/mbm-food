@@ -28,7 +28,7 @@ export default function New() {
         const [news, featuredNews] = await Promise.all([
           fetchNews(),
           fetchFeaturedNews(),
-        ]);
+        ]) as [Post[], Post[]];
   
         if (!news.length) throw new Error("Không có bài viết nào.");
         if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
@@ -118,7 +118,7 @@ export default function New() {
                   </li>
                   {isOpen && (
                     <ul className="submenu">
-                      <li><Link href="/products/pizza">Pizza</Link></li>
+                      <li><Link href="/product/pizza">Pizza</Link></li>
                       <li><Link href="/products/khaivi">Khai vị</Link></li>
                       <li><Link href="/products/myy">Mỳ Ý</Link></li>
                       <li><Link href="/products/salad">Salad</Link></li>
@@ -129,7 +129,7 @@ export default function New() {
                   <li><Link href="/contact">Liên hệ</Link></li>
                   <li><Link href="/faq">Câu hỏi thường gặp</Link></li>
                   <li><Link href="/storesystem">Hệ thống cửa hàng</Link></li>
-                  <li><Link href="#">Đặt bàn</Link></li>
+                  <li><Link href="/booking">Đặt bàn</Link></li>
                 </ul>
               </div>
 
@@ -141,7 +141,7 @@ export default function New() {
                       <li className="aside-news-item" key={tintuc.slug}>
                         <div className="block-thumb">
                           <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                            <img
+                            <Image
                               src={extractImageUrl(tintuc.imageSummary)}
                               alt={tintuc.title}
                               width={120}

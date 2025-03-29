@@ -91,29 +91,46 @@ const OrderManagementPage = () => {
     try {
       const response = await orderService.updateOrderStatus(orderId, { order_status: newStatus });
       if (!response) {
-        alert("Lỗi khi cập nhật trạng thái đơn hàng!");
+        console.error("Lỗi khi cập nhật trạng thái đơn hàng!");
         return;
       }
-
-      // Kiểm tra nếu trạng thái mới là "Delivered" và phương thức thanh toán là "Cash" thì cập nhật luôn payment_status
+  
       setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order._id === orderId
-            ? {
-              ...order,
-              order_status: newStatus,
-              payment_status:
-                newStatus === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970"
-                  ? "Completed"
-                  : order.payment_status, // Giữ nguyên nếu không phải thanh toán tiền mặt
-            }
-            : order
-        )
+        prevOrders.map((order) => {
+          if (order._id !== orderId) return order;
+  
+          // Nếu thanh toán MOMO và đã thanh toán, tự động chuyển sang "Shipped"
+          if (order.id_payment_method._id !== "67d8351376759d2abe579970" && order.payment_status === "Completed") {
+            return { ...order, order_status: "Shipped" };
+          }
+  
+          // Nếu đơn hàng chuyển sang "Delivered" và thanh toán COD, cập nhật trạng thái thanh toán
+          if (newStatus === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970") {
+            return { ...order, order_status: "Delivered", payment_status: "Completed" };
+          }
+  
+          return { ...order, order_status: newStatus };
+        })
       );
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     }
   };
+  
+  // Kiểm tra và cập nhật tự động khi điều kiện phù hợp
+  useEffect(() => {
+    orders.forEach((order) => {
+      if (order.order_status === "Pending" && order.payment_status === "Completed" && order.id_payment_method._id !== "67d8351376759d2abe579970") {
+        updateOrderStatus(order._id, "Shipped");
+      }
+  
+      if (order.order_status === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970" && order.payment_status !== "Completed") {
+        updateOrderStatus(order._id, "Delivered");
+      }
+    });
+  }, [orders]); // Chạy khi danh sách đơn hàng thay đổi
+  
+  
 
 
   const handleStatusChange = async (orderId: string, currentStatus: Order["order_status"]) => {
