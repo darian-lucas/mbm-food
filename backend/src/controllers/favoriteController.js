@@ -26,10 +26,8 @@ const getFavorites = async (req, res) => {
         const id_user = req.user.userId;
         if (!id_user) throw new Error("Không lấy được ID user từ token");
 
-        console.log("ID user yêu thích:", id_user); // Kiểm tra ID user
 
         const favorites = await favoriteService.getFavorites(id_user);
-        console.log("Danh sách yêu thích lấy từ DB:", favorites); // Kiểm tra dữ liệu từ DB
 
         res.json(favorites);
     } catch (error) {

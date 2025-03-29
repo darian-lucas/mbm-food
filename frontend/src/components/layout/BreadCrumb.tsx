@@ -25,7 +25,7 @@ const Breadcrumb = ({
 
   return (
     <>
-      <section className="w-full py-3 bg-[#ddd] mb-5 text-sm">
+      <section className="w-full py-3 bg-[#ddd] md:mt-0 mt-12 mb-6 text-sm">
         <nav
           className={`flex items-center max-w-[1300px] px-3 mx-auto ${
             container || ""
@@ -44,13 +44,10 @@ const Breadcrumb = ({
             const href = `/${pathNames.slice(0, index + 1).join("/")}`;
             const isActive = pathname === href;
             const itemClasses = isActive ? activeClasses : listClasses;
-
-            console.log(`Link: ${link}, href: ${href}, isActive: ${isActive}`);
             
             const itemLink = capitalizeLinks
             ? link[0].toUpperCase() + link.slice(1)
             : link;
-            console.log("🚀 ~ {pathNames.map ~ itemLink:", itemLink)
 
             return (
               <div key={index} className="flex items-center">
