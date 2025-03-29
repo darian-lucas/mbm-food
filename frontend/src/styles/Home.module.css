@@ -565,10 +565,10 @@
   /* object-fit: cover; */
 }
 
-.discountItem:hover img {
+/* .discountItem:hover img {
   transform: rotate(3deg);
   transition: 0.5s;
-}
+} */
 
 .discountItem h3 {
   white-space: nowrap;
@@ -1464,6 +1464,10 @@
     padding: 10px;
   }
 
+  .banner {
+    position: relative;
+    margin-top: 50px !important;
+  }
   .bannerImage {
     width: 100% !important;
     height: auto !important;

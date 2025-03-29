@@ -524,9 +524,21 @@ export default function Home(): JSX.Element {
         <div className={styles.discountWrapper}>
           <div className={styles.discountList}>
             {discountItems.map((item) => {
-              const variant = item.variants[0]; // Lấy biến thể đầu tiên
+              const variant = item.variants[0];
               return (
                 <div key={item._id} className={styles.discountItem}>
+                  <span className={styles.bestSellingNewTag}>
+                    {variant.sale_price && variant.sale_price > 0 && (
+                      <span>
+                        -
+                        {Math.round(
+                          100 - (variant.price / variant.sale_price) * 100
+                        )}
+                        %
+                      </span>
+                    )}
+                  </span>
+
                   <button
                     className={styles.heartIcon}
                     onClick={async () => {
