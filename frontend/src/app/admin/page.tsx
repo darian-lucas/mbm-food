@@ -182,7 +182,7 @@ export default function Dashboard() {
     
 
     return (
-        <div className="mt-4">
+        <div className="mt-4 pl-4">
             <div className="row g-4">
                 <DashboardCard title="Tổng doanh thu tháng" value={totalSales} change={salesChange} icon="bi-cash-stack" color="success" />
                 <DashboardCard title="Tổng đơn hàng" value={totalOrders} change={ordersChange} icon="bi-cart-fill" color="primary" />
