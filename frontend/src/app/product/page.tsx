@@ -13,6 +13,7 @@ interface Category {
   _id: string;
   name: string;
   image: string;
+  slug: string;
 }
 export default function PageProduct(): JSX.Element {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -41,7 +42,7 @@ export default function PageProduct(): JSX.Element {
         <h2 className={styles.title1}>Danh mục nổi bật</h2>
         <div className={styles.categoryList}>
           {categories.slice(0, 4).map((category) => (
-            <Link key={category._id} href="#" className={styles.categoryLink}>
+            <Link key={category._id} href={`/${category.slug}`} className={styles.categoryLink}>
               <div className={styles.categoryItem}>
                 <p>{category.name}</p>
                 <Image

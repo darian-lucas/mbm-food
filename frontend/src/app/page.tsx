@@ -30,6 +30,7 @@ interface Category {
   _id: string;
   name: string;
   image: string;
+  slug: string;
 }
 interface Product {
   _id: string;
@@ -310,7 +311,11 @@ export default function Home(): JSX.Element {
         <h2 className={styles.title}>Danh mục nổi bật</h2>
         <div className={styles.categoryList}>
           {categories.slice(0, 4).map((category) => (
-            <Link key={category._id} href="#" className={styles.categoryLink}>
+            <Link
+              key={category.slug}
+              href={`/${category.slug}`}
+              className={styles.categoryLink}
+            >
               <div className={styles.categoryItem}>
                 <p>{category.name}</p>
                 <Image
@@ -774,6 +779,13 @@ export default function Home(): JSX.Element {
                           __html: item.description || "Không có mô tả",
                         }}
                       ></p>
+                      <Link
+                          href={`/product/${item.slug}`}
+                          className={styles.menufoodMore}
+                          onClick={() => incrementView(item._id, item.view)}
+                        >
+                          Xem thêm
+                        </Link>
                       <p className={styles.menufoodPrice}>
                         Giá chỉ từ:{" "}
                         <span>
@@ -783,13 +795,7 @@ export default function Home(): JSX.Element {
                         </span>
                       </p>
                       <div className={styles.menufoodActions}>
-                        <Link
-                          href={`/product/${item.slug}`}
-                          className={styles.menufoodMore}
-                          onClick={() => incrementView(item._id, item.view)}
-                        >
-                          Xem thêm
-                        </Link>
+                        
                         <button
                           className={styles.menufoodAdd}
                           onClick={() => setSelectedProduct(item)}
@@ -816,9 +822,12 @@ export default function Home(): JSX.Element {
                   </div>
                 ))}
               </div>
-              <button className={styles.menufoodViewMore}>
+              <Link
+                href={`/${category.slug}`}
+                className={styles.menufoodViewMore}
+              >
                 Xem chi tiết &raquo;
-              </button>
+              </Link>
             </div>
           );
         })}

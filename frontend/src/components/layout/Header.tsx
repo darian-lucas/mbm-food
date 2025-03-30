@@ -83,7 +83,7 @@ export default function Header(): JSX.Element {
     { href: "/khai-vi", label: "Khai Vị" },
     { href: "/my-y", label: "Mỳ Ý" },
     { href: "/salad", label: "Salad" },
-    { href: "/nuoc-uong", label: "Nước Uống" },
+    { href: "/thuc-uong", label: "Thức Uống" },
   ];
 
   useEffect(() => {
