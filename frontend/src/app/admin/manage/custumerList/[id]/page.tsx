@@ -28,7 +28,7 @@ interface Order {
     _id: string;
     order_code: string;
     createdAt: string;
-    status: string;
+    order_status: string;
     total_amount: number;
     phone: string;
     details?: OrderDetail[];
@@ -37,11 +37,12 @@ interface Order {
 const UserDetailPage: React.FC = () => {
     const { id: paramId } = useParams();
     const searchParams = useSearchParams();
-    const [showAllOrders, setShowAllOrders] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [orderDetails, setOrderDetails] = useState<OrderDetail[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ordersPerPage = 10;
 
     useEffect(() => {
         const id = searchParams.get("id") || paramId;
@@ -65,61 +66,70 @@ const UserDetailPage: React.FC = () => {
 
     const totalSpent = orders.reduce((sum, order) => sum + order.total_amount, 0);
     const userPhone = orders.length > 0 ? orders[0].phone : user.phone;
-    
+    const avatarUrl = user.avatar || `https://api.dicebear.com/7.x/identicon/svg?seed=${user.username}`;
+
     const mergedOrders = orders.map(order => ({
         ...order,
         details: orderDetails.filter(detail => detail.id_order === order._id)
     }));
 
+    const totalPages = Math.ceil(orders.length / ordersPerPage);
+    const indexOfLastOrder = currentPage * ordersPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+    const currentOrders = mergedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+
     return (
-        <div className="container mt-4">
-            <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
+        <div className="container mt-4" style={{ maxWidth: "100%" }}>
+            <h4 className="fw-bold fs-3 mb-3">
+                Thông tin người dùng: {user?.username}
+            </h4>
             <div className="row pt-1">
                 <div className="col-md-3">
-                    <div className="card text-center p-4 shadow-sm" style={{ backgroundColor: "#e9f7ef", borderRadius: "10px" }}>
+                    <div
+                        className="card text-center p-3 shadow-sm"
+                        style={{ backgroundColor: "#e9f7ef", borderRadius: "10px" }}
+                    >
                         <img
-                            src={user.avatar || "https://via.placeholder.com/100"}
+                            src={avatarUrl}
                             className="rounded-circle mx-auto d-block border border-success"
                             alt="Profile"
-                            style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                            style={{ width: "120px", height: "120px", objectFit: "cover", marginBottom: "15px" }}
                         />
-                        <h5 className="mt-3 text-success fw-bold">Name: {user.username}</h5>
-                        <p className="text-muted">Number: {userPhone}</p>
-                        <a href={`mailto:${user.email}`} className="text-success fw-bold text-decoration-none">
+                        <h5 className="mt-4 mb-2 text-success fw-bold">Tên: {user.username}</h5>
+                        <p className="text-muted mb-3">Số điện thoại: {userPhone}</p>
+                        <a
+                            href={`mailto:${user.email}`}
+                            className="text-success fw-bold text-decoration-none mb-3 d-block"
+                        >
                             Email: {user.email}
                         </a>
-                        <button className="btn btn-success w-100 mt-3 fw-bold">
-                            Total: {totalSpent.toLocaleString("vi-VN")} VND
+                        <button className="btn btn-success w-100 mt-4 py-2 fw-bold">
+                            Tổng tiền: {totalSpent.toLocaleString("vi-VN")} VND
                         </button>
                     </div>
+
                 </div>
                 <div className="col-md-9">
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h2 className="fw-bold fs-5">Orders</h2>
-                    </div>
                     <div className="card p-3">
-                        <p>
-                            Total spent: <strong>{totalSpent.toLocaleString("vi-VN")} VND</strong>
-                            on <strong>{orders.length} orders</strong>
-                        </p>
+                        <h2 className="fw-bold fs-5">Đơn hàng của người dùng</h2>
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Order</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Items</th>
-                                    <th>Amount</th>
+                                    <th>Mã đơn hàng</th>
+                                    <th>Ngày tháng</th>
+                                    <th>Trạng thái đơn hàng</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Thành tiền</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {mergedOrders.slice(0, showAllOrders ? mergedOrders.length : 1).map(order => (
+                                {currentOrders.map(order => (
                                     <tr key={order._id}>
                                         <td><a href="#">#{order.order_code}</a></td>
                                         <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                                         <td>
-                                            <span className={`badge bg-${order.status === "pending" ? "warning" : "success"}`}>
-                                                {order.status}
+                                            <span className={`badge bg-${order.order_status === "pending" ? "warning" : "success"}`}>
+                                                {order.order_status}
                                             </span>
                                         </td>
                                         <td>
@@ -138,11 +148,53 @@ const UserDetailPage: React.FC = () => {
                                 ))}
                             </tbody>
                         </table>
-                        {!showAllOrders && mergedOrders.length > 1 && (
-                            <button className="btn btn-secondary w-100" onClick={() => setShowAllOrders(true)}>...</button>
-                        )}
-                        {showAllOrders && (
-                            <button className="btn btn-danger w-100" onClick={() => setShowAllOrders(false)}>Đóng</button>
+
+                        {/* PHÂN TRANG */}
+                        {totalPages > 1 && (
+                            <div className="d-flex justify-content-center mt-3">
+                                <button
+                                    className="btn btn-light border-0 shadow-none mx-1"
+                                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                    disabled={currentPage === 1}
+                                >
+                                    ←
+                                </button>
+
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+
+                                    if (
+                                        pageNumber === 1 ||
+                                        pageNumber === totalPages ||
+                                        (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                className={`btn mx-1 border-0 shadow-none ${currentPage === pageNumber ? "btn-primary text-white" : "btn-light"
+                                                    }`}
+                                                onClick={() => setCurrentPage(pageNumber)}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    }
+
+                                    if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
+                                        return <span key={pageNumber} className="mx-2">...</span>;
+                                    }
+
+                                    return null;
+                                })}
+
+                                <button
+                                    className="btn btn-light border-0 shadow-none mx-1"
+                                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                    disabled={currentPage === totalPages}
+                                >
+                                    →
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>

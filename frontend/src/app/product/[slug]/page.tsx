@@ -184,7 +184,7 @@ const ProductDetail = () => {
                           </div>
                           <div className={styles.selectOption}>
                             {product.variants
-                              .filter((variant) => variant.option.trim() !== "") // Lọc các option rỗng
+                              .filter((variant) => variant.option.trim() !== "")
                               .map((variant) => (
                                 <label
                                   key={variant.option}
@@ -238,22 +238,13 @@ const ProductDetail = () => {
                             </button>
                           </div>
                         </div>
-
-                        <div className={styles.addCart}>
-                          <button
-                            className={styles.add}
-                            onClick={handleClickAddToCart}
-                          >
-                            Thêm vào giỏ hàng
-                          </button>
-                        </div>
                       </div>
                       <div className={styles.groupBtn}>
-                        <button className={styles.buyNow}>Mua Ngay</button>
+                        <button className={styles.buyNow} onClick={handleClickAddToCart}>Thêm vào giỏ hàng</button>
                         <button className={styles.booking}>Đặt bàn</button>
                       </div>
                       <div className={styles.hotline}>
-                        Gọi<a href="$">123456</a>Để được hỗ trợ ngay
+                        Gọi<a href="$"> 123456</a>Để được hỗ trợ ngay
                       </div>
                     </div>
                   </div>

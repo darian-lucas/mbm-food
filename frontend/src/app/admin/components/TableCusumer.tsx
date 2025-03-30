@@ -151,12 +151,12 @@ export default function Table() {
         <thead>
           <tr>
 
-            <th>Username</th>
+            <th>Tên</th>
             <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Join On</th>
-            <th>Action</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo tài khoản</th>
+            <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -268,8 +268,8 @@ export default function Table() {
       {editingUser && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h4>Edit User</h4>
-            <label>Username:</label>
+            <h4>Chỉnh sửa</h4>
+            <label>Tên:</label>
             <input
               type="text"
               value={editData.username}
@@ -287,20 +287,20 @@ export default function Table() {
             />
 
 
-            <label>Role:</label>
+            <label>Vai trò:</label>
             <select
               value={editData.role}
               onChange={(e) =>
                 setEditData({ ...editData, role: e.target.value })
               }
             >
-              <option value="user">User</option>
+              <option value="user">Người dùng</option>
               <option value="admin">Admin</option>
 
             </select>
             <div className={styles.modalButtons}>
-              <button onClick={handleUpdate}>Update</button>
-              <button onClick={() => setEditingUser(null)}>Cancel</button>
+              <button onClick={handleUpdate}>Thay đổi</button>
+              <button onClick={() => setEditingUser(null)}>Bỏ qua</button>
             </div>
           </div>
         </div>

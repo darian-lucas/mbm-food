@@ -121,10 +121,14 @@ export default function Dashboard() {
         const labels = [];
     
         // Lấy 12 tháng, trong đó tháng hiện tại nằm ở góc phải
+        const currentYear = new Date().getFullYear(); // Thêm dòng này để tránh lỗi
         for (let i = 11; i >= 0; i--) {
-            const monthIndex = (currentMonth - i + 12) % 12; // Lấy tháng lùi lại từ hiện tại
-            labels.push(new Date(2022, monthIndex, 1).toLocaleString('en-US', { month: 'short' })); // Tên tháng (Jan, Feb...)
+            const monthIndex = (currentMonth - i + 12) % 12; // Giữ nguyên cách tính tháng
+            const year = currentYear - (currentMonth - i < 0 ? 1 : 0); // Nếu lùi về năm trước, giảm 1 năm
+            labels.push(`${monthIndex + 1}/${year}`); // Định dạng MM/YYYY
         }
+        
+        
     
         // Dữ liệu cũng phải được sắp xếp tương ứng
         const salesData = [];
@@ -144,7 +148,7 @@ export default function Dashboard() {
                 data: {
                     labels: labels, // Danh sách tháng theo thứ tự mới
                     datasets: [{
-                        label: 'Total Sales',
+                        label: 'Tổng doanh thu',
                         data: salesData, 
                         borderColor: 'blue',
                         fill: false
@@ -160,14 +164,14 @@ export default function Dashboard() {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Monthly Sales',
+                            label: 'Doanh số hàng tháng',
                             data: salesData, 
                             backgroundColor: 'rgba(54, 162, 235, 0.5)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1
                         },
                         {
-                            label: 'Cancelled Orders (Amount)',
+                            label: 'Đơn đặt hàng bị hủy (Số tiền)',
                             data: cancelledAmountData, 
                             backgroundColor: 'rgba(255, 99, 132, 0.5)',
                             borderColor: 'rgba(255, 99, 132, 1)',
@@ -184,7 +188,7 @@ export default function Dashboard() {
     return (
         <div className="mt-4 pl-4">
             <div className="row g-4">
-                <DashboardCard title="Tổng doanh thu tháng" value={totalSales} change={salesChange} icon="bi-cash-stack" color="success" />
+                <DashboardCard title="Tổng doanh thu tháng " value={`${totalSales.toLocaleString()} VND`}  change={salesChange} icon="bi-cash-stack" color="success" />
                 <DashboardCard title="Tổng đơn hàng" value={totalOrders} change={ordersChange} icon="bi-cart-fill" color="primary" />
                 <DashboardCard title="Đơn hàng thành công" value={successfulOrders} change={successfulChange} icon="bi-check-circle" color="success" />
                 <DashboardCard title="Đơn hàng bị hủy" value={cancelledOrders} change={cancelledChange} icon="bi-x-circle" color="danger" />
@@ -193,13 +197,13 @@ export default function Dashboard() {
             <div className="row mt-4">
                 <div className="col-md-6">
                     <div className="card p-3 shadow-sm">
-                        <h5 className="card-title">Total Sales</h5>
+                        <h5 className="card-title">Tổng doanh thu</h5>
                         <canvas ref={salesChartRef}></canvas>
                     </div>
                 </div>
                 <div className="col-md-6">
                     <div className="card p-3 shadow-sm">
-                        <h5 className="card-title">Monthly Statistics</h5>
+                        <h5 className="card-title">Doanh số hàng tháng</h5>
                         <canvas ref={statsChartRef}></canvas>
                     </div>
                 </div>
@@ -208,15 +212,15 @@ export default function Dashboard() {
             <div className="row mt-4">
                 <div className="col-12">
                     <div className="card p-3 shadow-sm">
-                        <h5 className="card-title">Recent Orders</h5>
+                        <h5 className="card-title">Đơn đặt hàng gần đây</h5>
                         <table className="table table-hover">
                             <thead className="table-success">
                                 <tr>
-                                    <th>Order Code</th>
-                                    <th>Customer</th>
-                                    <th>Products</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
+                                    <th>Mã đơn hàng</th>
+                                    <th>Khách hàng</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Thành tiền</th>
+                                    <th>Trạng thái </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -228,7 +232,7 @@ export default function Dashboard() {
                                             <td>{order.order_code}</td>
                                             <td>{order.name}</td>
                                             <td>{order.details?.map(d => d.name).join(', ') || 'N/A'}</td>
-                                            <td>${order.total_amount.toLocaleString()}</td>
+                                            <td>{order.total_amount.toLocaleString()} VND</td>
                                             <td>{order.order_status}</td>
                                         </tr>
                                     ))}
@@ -241,7 +245,7 @@ export default function Dashboard() {
         </div>
     );
 }
-function DashboardCard({ title, value, change, icon, color }: { title: string; value: number; change: number; icon: string; color: string; }) {
+function DashboardCard({ title, value, change, icon, color }: { title: string; value: string | number; change: number; icon: string; color: string; }) {
     return (
         <div className="col-md-3">
             <div className="card shadow-sm p-3 text-center">

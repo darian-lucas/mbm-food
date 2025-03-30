@@ -114,7 +114,7 @@ export default function AddressTable() {
     if (!orders.length) return <p>Không tìm thấy đơn hàng nào!</p>;
 
     return (
-        <div className={`container mt-4 ${styles["table-container"]}`}>
+        <div className={`container ${styles["table-container"]}`}>
             <h5 className="mb-3">📦 ĐƠN HÀNG CỦA BẠN</h5>
             <table className={styles["table-custom"]}>
               <thead >

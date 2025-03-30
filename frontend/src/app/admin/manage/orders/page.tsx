@@ -198,13 +198,13 @@ const OrderManagementPage = () => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Order</th>
-            <th>Date</th>
-            <th>Items</th>
-            <th>Amount</th>
-            <th className="text-center">Status</th>
-            <th className="text-center">Payment Method</th>
-            <th className="text-center">Payment Status</th>
+            <th>Mã đơn hàng</th>
+            <th>Ngày đặt hàng</th>
+            <th>Sản phẩm</th>
+            <th>Thành tiền</th>
+            <th className="text-center">Trạng thái đơn hàng</th>
+            <th className="text-center">Phương thức thanh toán</th>
+            <th className="text-center">Trạng thái thanh toán</th>
 
           </tr>
         </thead>
@@ -213,7 +213,7 @@ const OrderManagementPage = () => {
             paginatedOrders.map((order) => (
               <tr key={order._id} className={styles.row}>
                 <td>
-                  <a href={`http://localhost:3002/admin/manage/customerList/${order.id_user._id}`}>
+                  <a href={`http://localhost:3002/admin/manage/custumerList/${order.id_user._id}`}>
                     #{order.order_code}
                   </a>
                 </td>
