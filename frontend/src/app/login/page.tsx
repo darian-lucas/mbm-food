@@ -30,38 +30,55 @@ const Login = () => {
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     setLoading(true);
     try {
-        const res = await fetch("http://localhost:3001/api/user/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-            credentials: "include", // Quan trọng! Cho phép gửi cookies
-        });
+      const res = await fetch("http://localhost:3001/api/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-        const result = await res.json();
-        if (!res.ok) throw new Error(result.message || "Đăng nhập thất bại");
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Đăng nhập thất bại");
 
-        if (!result.token || !result.userId || !result.role) {
-            throw new Error("Dữ liệu từ server không hợp lệ.");
+      if (!result.token || !result.userId || !result.role) {
+        throw new Error("Dữ liệu từ server không hợp lệ.");
+      }
+
+      // Lưu token vào localStorage
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("userId", result.userId);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          isLoggedIn: true,
+          userId: result.userId,
+          role: result.role.trim().toLowerCase(),
+        })
+      );
+      window.dispatchEvent(new Event("storage"));
+
+      toast.success("Đăng nhập thành công!", {
+        autoClose: 100,
+      });
+
+      // Điều hướng theo vai trò
+      const role = result.role.trim().toLowerCase();
+      setTimeout(() => {
+        if (role === "admin") {
+          router.push("/admin");
+        } else if (role === "user") {
+          router.push("/");
+        } else {
+          toast.error(`Vai trò "${result.role}" không có quyền truy cập.`);
         }
-
-        // Lưu token vào cookies thay vì localStorage
-        document.cookie = `token=${result.token}; path=/; Secure; HttpOnly`;
-
-        toast.success("Đăng nhập thành công!", { autoClose: 100 });
-
-        // Điều hướng theo vai trò
-        setTimeout(() => {
-            router.push(result.role.trim().toLowerCase() === "admin" ? "/admin" : "/");
-        }, 1000);
+      }, 1000);
     } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Đã xảy ra lỗi";
-        setError(errorMessage);
-        toast.error(errorMessage);
+      const errorMessage = err instanceof Error ? err.message : "Đã xảy ra lỗi";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
+  };
 
   // Xử lý gửi email quên mật khẩu
   const onForgotPasswordSubmit: SubmitHandler<ForgotPasswordForm> = async (data) => {
