@@ -7,15 +7,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
     useEffect(() => {
-        const role = localStorage.getItem("role");
-        if (role === "admin") {
-            setIsAdmin(true);
-        } else {
-            router.replace("/");
+        if (typeof window !== "undefined") {
+            const user = localStorage.getItem("user");
+            const role = user ? JSON.parse(user).role : null;
+
+            if (role === "admin") {
+                setIsAdmin(true);
+            } else {
+                router.replace("/");
+            }
         }
     }, []);
 
-    if (isAdmin === null) return null; 
+    if (isAdmin === null) return null;
 
-    return <>{children}</>; 
+    return <>{children}</>;
 }
