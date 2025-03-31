@@ -27,7 +27,14 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+    cors({
+      origin: (origin, callback) => {
+        callback(null, origin); // Cho phép tất cả các origin gửi request
+      },
+      credentials: true,
+    })
+  );
 app.use('/images', express.static('public/images'));
 app.use(express.json({ type: "application/json", charset: "utf-8" }));
 
