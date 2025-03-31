@@ -29,6 +29,8 @@ export default function Dashboard() {
     const [ordersChange, setOrdersChange] = useState(0);
     const [successfulChange, setSuccessfulChange] = useState(0);
     const [cancelledChange, setCancelledChange] = useState(0);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 
     const salesChartRef = useRef<HTMLCanvasElement>(null);
     const statsChartRef = useRef<HTMLCanvasElement>(null);

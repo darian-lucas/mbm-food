@@ -190,7 +190,7 @@ export default function AddressTable() {
                                 )}
                             </td>
                             <td>
-                                {order.order_status === "Pending" && (
+                                { order.id_payment_method?._id == "67d8351b76759d2abe579972" &&(
                                     <button className="btn btn-danger btn-sm" onClick={() => cancelOrder(order)}>
                                         Hủy đơn
                                     </button>
