@@ -145,7 +145,7 @@ class OrderService {
 
 
   async updateOrderStatus(id, order_status) {
-    if (!["Pending", "Shipped", "Delivered", "Canceled"].includes(order_status)) {
+    if (!["Pending", "Shipping", "Delivered", "Canceled"].includes(order_status)) {
         throw new Error("Trạng thái không hợp lệ");
     }
 
@@ -162,13 +162,13 @@ class OrderService {
         updateData.payment_status = "Completed";
     }
 
-    // Nếu phương thức thanh toán là MOMO và đã hoàn thành thanh toán, tự động chuyển trạng thái đơn hàng thành "Shipped"
+    // Nếu phương thức thanh toán là MOMO và đã hoàn thành thanh toán, tự động chuyển trạng thái đơn hàng thành "Shipping"
     if (
         order.id_payment_method.toString() !== "67d8351376759d2abe579970" && // Không phải thanh toán tiền mặt (Cash)
         order.payment_status === "Completed" && // Thanh toán đã hoàn tất
-        order_status !== "Shipped" // Đảm bảo không ghi đè khi đã là "Shipped"
+        order_status !== "Shipping" // Đảm bảo không ghi đè khi đã là "Shipping"
     ) {
-        updateData.order_status = "Shipped";
+        updateData.order_status = "Shipping";
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(id, updateData, { new: true });
