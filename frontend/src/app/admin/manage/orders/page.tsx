@@ -100,8 +100,12 @@ const OrderManagementPage = () => {
           if (order._id !== orderId) return order;
   
           // Nếu thanh toán MOMO và đã thanh toán, tự động chuyển sang "Shipped"
-          if (order.id_payment_method._id !== "67d8351376759d2abe579970" && order.payment_status === "Completed") {
-            return { ...order, order_status: "Shipped" };
+          if (
+            order.order_status === "Pending" && 
+            order.payment_status === "Completed" && 
+            order.id_payment_method._id !== "67d8351376759d2abe579970" // Không phải COD
+          ) {
+            updateOrderStatus(order._id, "Shipped");
           }
   
           // Nếu đơn hàng chuyển sang "Delivered" và thanh toán COD, cập nhật trạng thái thanh toán
