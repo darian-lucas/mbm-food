@@ -34,7 +34,8 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
-  
+  const [note, setNote] = useState<string>("");
+
   const couponConditions: Record<string, string> = {
     MBM20:
       "Áp dụng cho đơn hàng từ 200k trở lên. Không đi kèm với chương trình khác.",
@@ -87,7 +88,7 @@ const ProductDetail = () => {
   const handleClickAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!product || !selectedVariant) return; 
-    handleAddToCart(product, selectedVariant, quantity);
+    handleAddToCart(product, selectedVariant, quantity, note);
   };
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
@@ -212,6 +213,8 @@ const ProductDetail = () => {
                         type="text"
                         placeholder="Ghi chú món ăn"
                         className={styles.inputNote}
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
                       />
                     </div>
                     <div className={styles.clearForm}>
