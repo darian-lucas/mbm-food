@@ -325,22 +325,23 @@ const CheckoutPage = () => {
           <div className={styles.paymentOptions}>
           <label>Phương thức thanh toán:</label>
           <div>
-            {paymentMethods.map((method) => (
-              <label
-                key={method._id}
-                style={{ display: "block", marginBottom: "8px" }}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value={method._id} // Lưu _id thay vì value
-                  checked={paymentMethod?._id === method._id}
-                  onChange={() => setPaymentMethod(method)}
-                />
-                {method.payment_name} {/* Hiển thị tên phương thức */}
-              </label>
-            ))}
-          </div>
+          {paymentMethods.map((method) => (
+            <label key={method._id} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+              <input type="radio" name="paymentMethod" value={method._id} checked={paymentMethod?._id === method._id} onChange={() => setPaymentMethod(method)} />
+              {method.payment_name === "cash" ? (
+                <>
+                  <Image src={`${API_URL}/images/cash.png`} alt="Tiền mặt" width={24} height={24} /> Tiền Mặt
+                </>
+              ) : method.payment_name === "momo" ? (
+                <>
+                  <Image src={`${API_URL}/images/momo.png`} alt="Momo" width={24} height={24} /> Chuyển khoản Momo
+                </>
+              ) : (
+                method.payment_name
+              )}
+            </label>
+          ))}
+        </div>
         </div>
 
         </form>

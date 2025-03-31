@@ -125,7 +125,15 @@ const SuccessPage = () => {
           </div>
           <div>
             <h3 className="font-semibold">PHƯƠNG THỨC THANH TOÁN</h3>
-            <p>{paymentMethod ? paymentMethod.payment_name : "Không xác định"}</p>
+            <p>
+            {paymentMethod
+              ? paymentMethod.payment_name === "cash"
+                ? "Tiền Mặt"
+                : paymentMethod.payment_name === "momo"
+                ? "Chuyển khoản Momo"
+                : paymentMethod.payment_name
+              : "Không xác định"}
+          </p>
           </div>
         </div>
 

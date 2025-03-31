@@ -48,31 +48,29 @@ const OrderResult = () => {
 
   useEffect(() => {
     if (!orderId) return;
-
+  
     const fetchOrder = async () => {
       try {
         const response = await fetch(`http://localhost:3001/api/orders/code/${orderId}`);
         const data = await response.json();
-
+  
         if (data.success && data.data) {
           const updatedOrder = { ...data.data, orderDetails: data.data.details || [] };
-
-          // 🔥 Xử lý callback Momo trước khi cập nhật state
+  
+          // 🔥 Kiểm tra callback Momo
           const momoSuccess = await handleMomoCallback(data.data.order_code);
-
-          // Nếu thanh toán thành công (từ API hoặc sau callback), gửi email xác nhận
+  
+          // ✅ Nếu thanh toán thành công, cập nhật lại state
           if (updatedOrder.payment_status === "Completed" || momoSuccess) {
+            updatedOrder.payment_status = "Completed";
             await sendConfirmationEmail(updatedOrder);
-            updatedOrder.payment_status = "Completed"; // Cập nhật luôn để tránh gửi lại
           }
-
-          // 🛒 Xóa giỏ hàng sau khi đặt hàng thành công
+  
+          // 🛒 Xóa giỏ hàng
           localStorage.removeItem("cart");
           window.dispatchEvent(new Event("cartUpdated"));
-
+  
           setOrder(updatedOrder);
-        } else {
-          console.error("Lỗi lấy dữ liệu đơn hàng:", data.message || "Không tìm thấy đơn hàng");
         }
       } catch (error) {
         console.error("Lỗi kết nối đến API:", error);
@@ -80,20 +78,17 @@ const OrderResult = () => {
         setLoading(false);
       }
     };
-
-    const fetchPaymentMethods = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/payments");
-        const data = await response.json();
-        setPaymentMethods(data);
-      } catch (error) {
-        console.error("Lỗi lấy phương thức thanh toán:", error);
-      }
-    };
-
+  
     fetchOrder();
-    fetchPaymentMethods();
   }, [orderId]);
+  
+  // 🎯 Theo dõi order.payment_status để cập nhật lại UI khi thay đổi
+  useEffect(() => {
+    if (order?.payment_status === "Completed") {
+      setOrder({ ...order });
+    }
+  }, [order?.payment_status]);
+  
 
   // 🏦 Gửi yêu cầu callback Momo để cập nhật trạng thái thanh toán
   const handleMomoCallback = async (orderCode: string) => {
@@ -103,16 +98,24 @@ const OrderResult = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId: orderCode, resultCode: 0 }),
       });
-
+  
       const data = await response.json();
       console.log("🔄 Kết quả xử lý Momo:", data);
-
+  
+      if (data.success) {
+        // ✅ Cập nhật ngay trạng thái để render lại UI
+        setOrder((prevOrder) =>
+          prevOrder ? { ...prevOrder, payment_status: "Completed" } : prevOrder
+        );
+      }
+  
       return data.success;
     } catch (error) {
       console.error("❌ Lỗi gửi callback Momo:", error);
       return false;
     }
   };
+  
 
   // 📧 Gửi email xác nhận đơn hàng
   const sendConfirmationEmail = async (orderData: Order) => {
@@ -193,7 +196,15 @@ const OrderResult = () => {
           </div>
           <div>
             <h3 className="font-semibold">PHƯƠNG THỨC THANH TOÁN</h3>
-            <p>{paymentMethod ? paymentMethod.payment_name : "Không xác định"}</p>
+            <p>
+            {paymentMethod
+              ? paymentMethod.payment_name === "cash"
+                ? "Tiền Mặt"
+                : paymentMethod.payment_name === "momo"
+                ? "Chuyển khoản Momo"
+                : paymentMethod.payment_name
+              : "Không xác định"}
+          </p>
           </div>
         </div>
 
