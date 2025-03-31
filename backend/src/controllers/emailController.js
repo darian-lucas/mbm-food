@@ -1,20 +1,22 @@
-const { sendEmail } = require("../services/emailService");
+const { sendMail } = require("../services/emailService"); // ✅ Kiểm tra lại đường dẫn
 const { generateEmailTemplate } = require("../services/emailTemplate");
 
 const sendMailController = async (req, res) => {
     try {
         const { email, orderData } = req.body;
 
-        // Tạo template HTML từ orderData
-        const htmlContent = generateEmailTemplate(orderData);
+        if (!email || !orderData) {
+            return res.status(400).json({ message: "Thiếu email hoặc dữ liệu đơn hàng" });
+        }
 
-        // Gửi email
-        await sendEmail(email, "Xác nhận đơn hàng", htmlContent);
+        const emailContent = generateEmailTemplate(orderData);
 
-        res.status(200).json({ success: true, message: "Email sent successfully" });
+        await sendMail(email, "Xác nhận đơn hàng", emailContent);
+
+        res.status(200).json({ message: "Email đã được gửi thành công" });
     } catch (error) {
-        console.error("⚠️ Error sending email:", error);
-        res.status(500).json({ success: false, message: "Failed to send email", error: error.message });
+        console.error("❌ Lỗi gửi email:", error);
+        res.status(500).json({ message: "Lỗi khi gửi email" });
     }
 };
 

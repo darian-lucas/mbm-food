@@ -1,15 +1,15 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async (to,subject, htmlContent) => {
-    const transporter = nodemailer.createTransport({
+const sendMail = async (to, subject, htmlContent) => {
+    let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: process.env.EMAIL_USER, 
-            pass: process.env.EMAIL_PASS  
-        }
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
     });
-    
-    const mailOptions = {
+
+    let mailOptions = {
         from: process.env.EMAIL_USER,
         to,
         subject,
@@ -19,5 +19,5 @@ const sendEmail = async (to,subject, htmlContent) => {
     return transporter.sendMail(mailOptions);
 };
 
-module.exports = { sendEmail };
-
+// ✅ Đảm bảo xuất hàm đúng
+module.exports = { sendMail };
