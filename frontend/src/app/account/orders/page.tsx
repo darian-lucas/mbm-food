@@ -33,10 +33,10 @@ export default function AddressTable() {
             // 🔥 Kiểm tra đơn hàng MOMO đã thanh toán và cập nhật trạng thái nếu cần
             const updatedOrders = await Promise.all(
                 ordersWithDetails.map(async (order: any) => {
-                    if (order.id_payment_method?._id !== "67d8351b76759d2abe579972" && order.paid === true && order.order_status === "Pending") {
+                    if (order.id_payment_method?._id === "67d8351b76759d2abe579972" && order.order_status === "Pending") {
                         try {
-                            await orderService.updateOrderStatus(order._id, { order_status: "Shipped" });
-                            return { ...order, order_status: "Shipped" };
+                            await orderService.updateOrderStatus(order._id, { order_status: "Canceled" });
+                            return { ...order, order_status: "Canceled" };
                         } catch (err) {
                             console.error("Lỗi khi cập nhật trạng thái MOMO:", err);
                         }
@@ -44,6 +44,7 @@ export default function AddressTable() {
                     return order;
                 })
             );
+            
 
             setOrders(updatedOrders);
         } catch (err) {
