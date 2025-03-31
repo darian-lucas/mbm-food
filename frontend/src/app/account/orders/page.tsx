@@ -29,11 +29,16 @@ export default function AddressTable() {
                 ...order,
                 details: data.orderDetails.filter((detail: any) => detail.id_order === order._id) || [],
             }));
-
-            // 🔥 Kiểm tra đơn hàng MOMO đã thanh toán và cập nhật trạng thái nếu cần
+    
+            // 🔥 Kiểm tra và cập nhật trạng thái đơn hàng MoMo
             const updatedOrders = await Promise.all(
                 ordersWithDetails.map(async (order: any) => {
-                    if (order.id_payment_method?._id === "67d8351b76759d2abe579972" && order.order_status === "Pending") {
+                    // Nếu là MoMo, chưa thanh toán -> tự động hủy đơn hàng
+                    if (
+                        order.id_payment_method?._id !== "67d8351376759d2abe579970" && // Không phải COD (tức là MoMo)
+                        order.order_status === "Pending" &&
+                        order.payment_status !== "Completed"
+                    ) {
                         try {
                             await orderService.updateOrderStatus(order._id, { order_status: "Canceled" });
                             return { ...order, order_status: "Canceled" };
@@ -41,11 +46,25 @@ export default function AddressTable() {
                             console.error("Lỗi khi cập nhật trạng thái MOMO:", err);
                         }
                     }
+    
+                    // ✅ Nếu MoMo đã thanh toán -> chuyển trạng thái đơn hàng sang "Shipping"
+                    if (
+                        order.id_payment_method?._id !== "67d8351376759d2abe579970" && // Không phải COD (tức là MoMo)
+                        order.order_status === "Pending" &&
+                        order.payment_status === "Completed"
+                    ) {
+                        try {
+                            await orderService.updateOrderStatus(order._id, { order_status: "Shipping" });
+                            return { ...order, order_status: "Shipping" };
+                        } catch (err) {
+                            console.error("Lỗi khi cập nhật trạng thái MOMO:", err);
+                        }
+                    }
+    
                     return order;
                 })
             );
-            
-
+    
             setOrders(updatedOrders);
         } catch (err) {
             console.error("Lỗi khi lấy đơn hàng:", err);
@@ -53,6 +72,7 @@ export default function AddressTable() {
             setLoading(false);
         }
     };
+    
 
 
     const cancelOrder = async (order: any) => {
@@ -147,7 +167,7 @@ export default function AddressTable() {
                             </td>
 
                             <td>
-                                <span className={`badge ${order.order_status === "Pending" ? "bg-warning" : order.order_status === "Shipped" ? "bg-primary" : order.order_status === "Delivered" ? "bg-success" : "bg-danger"}`}>
+                                <span className={`badge ${order.order_status === "Pending" ? "bg-warning" : order.order_status === "Shipping" ? "bg-primary" : order.order_status === "Delivered" ? "bg-success" : "bg-danger"}`}>
                                     {order.order_status}
                                 </span>
                             </td>
