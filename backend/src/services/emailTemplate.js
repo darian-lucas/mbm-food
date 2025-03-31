@@ -1,47 +1,46 @@
 const generateEmailTemplate = (orderData) => {
+    if (!orderData || !Array.isArray(orderData.orderDetails)) {
+        console.error("❌ orderDetails không hợp lệ:", orderData.orderDetails);
+        throw new Error("Dữ liệu orderDetails không hợp lệ!");
+    }
+
     return `
-    <html>
-    <head>
-        <style>
-            .container { font-family: Arial, sans-serif; padding: 20px; }
-            .header { background-color: #4CAF50; color: white; text-align: center; padding: 10px; font-size: 24px; }
-            .content { margin-top: 20px; }
-            .order-details { border-collapse: collapse; width: 100%; }
-            .order-details th, .order-details td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            .footer { margin-top: 20px; font-size: 14px; text-align: center; color: #555; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">Xác nhận đơn hàng</div>
-            <div class="content">
-                <p>Chào ${orderData.name},</p>
-                <p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi. Dưới đây là chi tiết đơn hàng của bạn:</p>
-                <p><strong>Mã đơn hàng:</strong> ${orderData.order_code}</p>
-                <table class="order-details">
-                    <tr>
-                        <th>Tên sản phẩm</th>
-                        <th>Số lượng</th>
-                        <th>Giá</th>
-                    </tr>
-                    ${orderData.products.map(item => `
-                        <tr>
-                            <td>${item.name}</td>
-                            <td>${item.quantity}</td>
-                            <td>${item.price.toLocaleString()}đ</td>
-                        </tr>
-                    `).join('')}
-                </table>
-                <p><strong>Mã giảm giá:</strong> ${orderData.discount_code ? orderData.discount_code : "Không áp dụng"}</p>
-                <p><strong>Giảm giá : ${orderData.discount_value.toLocaleString()}đ</strong></p>
-                <p><strong>Tổng tiền đơn hàng:</strong> ${orderData.total_amount.toLocaleString()}đ</p>
-                <p><strong>Tổng tiền thanh toán:</strong> ${orderData.total_payment.toLocaleString()}đ</p>
-                <p><strong>Địa chỉ giao hàng:</strong> ${orderData.receive_address}</p>
+        <div style="max-width: 600px; margin: 20px auto; font-family: Arial, sans-serif; border: 2px solid #016a30; border-radius: 8px; overflow: hidden;">
+            <div style="background: #016a30; color: white; text-align: center; padding: 15px;">
+                <h1 style="margin: 0; font-size: 24px;">HÓA ĐƠN ĐẶT HÀNG</h1>
             </div>
-            <div class="footer">Cảm ơn bạn đã đặt hàng! Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi.</div>
+            <div style="padding: 20px; background: #f9f9f9;">
+                <p style="font-size: 16px; margin: 5px 0;"><strong>Mã đơn hàng:</strong> ${orderData.order_code}</p>
+                <p style="font-size: 16px; margin: 5px 0;"><strong>Tên khách hàng:</strong> ${orderData.name}</p>
+                <p style="font-size: 16px; margin: 5px 0;"><strong>Địa chỉ nhận hàng:</strong> ${orderData.receive_address}</p>
+                <p style="font-size: 16px; margin: 5px 0;"><strong>Số điện thoại:</strong> ${orderData.phone}</p>
+                <p style="font-size: 16px; margin: 5px 0;"><strong>Tổng tiền:</strong> <span style="color: #d9534f; font-weight: bold;">${orderData.total_payment.toLocaleString()} VND</span></p>
+
+                <h2 style="color: #016a30; border-bottom: 2px solid #016a30; padding-bottom: 5px;">Chi tiết đơn hàng</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #016a30; color: white;">
+                            <th style="padding: 10px; text-align: left;">Sản phẩm</th>
+                            <th style="padding: 10px; text-align: center;">Số lượng</th>
+                            <th style="padding: 10px; text-align: right;">Giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${orderData.orderDetails.map(item => `
+                        <tr style="background: #fff;">
+                            <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.name}</td>
+                            <td style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">${item.quantity}</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd; font-weight: bold;">${item.price.toLocaleString()} VND</td>
+                        </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+            <div style="background: #016a30; color: white; text-align: center; padding: 10px;">
+                <p style="margin: 0;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi!</p>
+            </div>
         </div>
-    </body>
-    </html>`;
+    `;
 };
 
 module.exports = { generateEmailTemplate };
