@@ -1,22 +1,21 @@
-
-const registerService = require('../services/registerServices');
+const registerService = require("../services/registerServices");
 
 // Tạo đơn đăng ký đặt bàn mới
 exports.createRegister = async (req, res) => {
   try {
     const registerData = req.body;
-    
+
     const newRegister = await registerService.createRegister(registerData);
-    
+
     return res.status(201).json({
       success: true,
-      message: 'Đăng ký đặt bàn thành công',
-      data: newRegister
+      message: "Đăng ký đặt bàn thành công",
+      data: newRegister,
     });
   } catch (error) {
     return res.status(400).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -25,17 +24,17 @@ exports.createRegister = async (req, res) => {
 exports.getAllRegisters = async (req, res) => {
   try {
     const registers = await registerService.getAllRegisters();
-    
+
     return res.status(200).json({
       success: true,
       count: registers.length,
-      data: registers
+      data: registers,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Không thể lấy danh sách đăng ký',
-      error: error.message
+      message: "Không thể lấy danh sách đăng ký",
+      error: error.message,
     });
   }
 };
@@ -44,15 +43,15 @@ exports.getAllRegisters = async (req, res) => {
 exports.getRegisterById = async (req, res) => {
   try {
     const register = await registerService.getRegisterById(req.params.id);
-    
+
     return res.status(200).json({
       success: true,
-      data: register
+      data: register,
     });
   } catch (error) {
     return res.status(404).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -62,26 +61,26 @@ exports.getRegistersByUser = async (req, res) => {
   try {
     // Sử dụng ID từ params hoặc từ user đã xác thực
     const userId = req.params.userId || (req.user && req.user.id);
-    
+
     if (!userId) {
       return res.status(400).json({
         success: false,
-        message: 'Không có ID người dùng'
+        message: "Không có ID người dùng",
       });
     }
-    
+
     const registers = await registerService.getRegistersByUserId(userId);
-    
+
     return res.status(200).json({
       success: true,
       count: registers.length,
-      data: registers
+      data: registers,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Không thể lấy danh sách đăng ký',
-      error: error.message
+      message: "Không thể lấy danh sách đăng ký",
+      error: error.message,
     });
   }
 };
@@ -90,18 +89,21 @@ exports.getRegistersByUser = async (req, res) => {
 exports.updateRegisterStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    
-    const cancelledRegister = await registerService.updateRegisterStatus(id);
-    
+    const { note } = req.body;
+    const cancelledRegister = await registerService.updateRegisterStatus(
+      id,
+      note
+    );
+
     return res.status(200).json({
       success: true,
-      message: 'Hủy đăng ký thành công',
-      data: cancelledRegister
+      message: "Hủy đăng ký thành công",
+      data: cancelledRegister,
     });
   } catch (error) {
     return res.status(400).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };

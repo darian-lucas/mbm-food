@@ -116,3 +116,88 @@
   padding: 20px;
   color: #7f8c8d;
 }
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modalTitle {
+  margin-top: 0;
+  color: #333;
+  font-size: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.reasonContainer {
+  margin: 20px 0;
+}
+
+.reasonOption {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.reasonOption input[type="radio"] {
+  margin-right: 10px;
+}
+
+.reasonOption label {
+  cursor: pointer;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.confirmCancelButton {
+  background-color: #d33;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.confirmCancelButton:hover {
+  background-color: #c22;
+}
+
+.keepButton {
+  background-color: #eee;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.keepButton:hover {
+  background-color: #ddd;
+}

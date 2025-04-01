@@ -17,6 +17,7 @@ const getAllRegisters = async () => {
 const updateRegisterStatus = async (
   id: string,
   status: string,
+  note:string,
 ) => {
   const response = await fetch(`${API_URL}/${id}/status`, {
     method: "PUT",
@@ -25,6 +26,7 @@ const updateRegisterStatus = async (
     },
     body: JSON.stringify({
       status,
+      note
     }),
   });
 
