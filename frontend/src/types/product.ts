@@ -12,5 +12,6 @@ export interface Variant {
     slug: string;
     idcate: string;
     variants: Variant[];
+    matchedVariant?: Variant; 
   }
   

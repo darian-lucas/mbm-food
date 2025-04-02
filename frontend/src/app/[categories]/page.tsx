@@ -16,7 +16,14 @@ const categoryMap: Record<string, string> = {
   "khai-vi": "67b0a54db5a39baf9de36902",
   "my-y": "67b0a582b5a39baf9de36904",
   salad: "67b0a5d2b5a39baf9de36907",
-  "nuoc-uong": "67b0a75ab5a39baf9de3690a",
+  "thuc-uong": "67b0a75ab5a39baf9de3690a",
+};
+const categoryNameMap: Record<string, string> = {
+  pizza: "Pizza",
+  "khai-vi": "Khai vị",
+  "my-y": "Mỳ Ý",
+  salad: "Salad",
+  "thuc-uong": "Thức uống",
 };
 
 export default function CategoryPage({ params }: CategoryPageProps) {
@@ -68,7 +75,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   return (
     <div className={style.container}>
       <div className={style.title_page}>
-        {params.categories.replace("-", " ").toUpperCase()}
+        {categoryNameMap[params.categories] || "Danh mục"}
       </div>
       <div className={style.row}>
         <aside className={style.dqdt_sidebar}>
@@ -124,9 +131,10 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       <li key={label} className={style.filter_item}>
                         <label>
                           <input
-                            type="radio"
+                            type="checkbox"
                             name="price"
                             checked={minPrice === min && maxPrice === max}
+                            className={style.input}
                             onChange={() => {
                               setMinPrice(min);
                               setMaxPrice(max);
@@ -150,10 +158,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         <li key={size} className={style.filter_item}>
                           <label>
                             <input
-                              type="radio"
+                              type="checkbox"
                               name="size"
                               checked={selectedSize === size}
                               onChange={() => setSelectedSize(size)}
+                              className={style.input}
                             />
                             {size}
                           </label>
