@@ -180,12 +180,16 @@
 .filter_item {
     transition: all 0.4s ease;
     display: list-item;
+    
 }
 
 .filter_item label {
     display: inline-block;
     margin-bottom: .5rem;
     cursor: pointer;
+}
+.input{
+    margin-right: 10px;
 }
 
 .block_collection {

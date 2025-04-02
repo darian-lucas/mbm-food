@@ -6,6 +6,7 @@ import styles from "../../styles/CartPage.module.css";
 import CartIcon from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
 
+
 interface CartItem {
   _id: string; 
   name: string;
@@ -14,6 +15,7 @@ interface CartItem {
   quantity: number;
   image: string;
   variants?: string;
+  note?: string;
 }
 
 const CartPage = () => {
@@ -33,6 +35,7 @@ const CartPage = () => {
         quantity: item.quantity || 1,
         image: item.image || "default.jpg",
         variants: item.option ? item.option : undefined,
+        note:item.note || "Không có ghi chú"
       }));
   
       setCart(formattedCart);
@@ -135,6 +138,12 @@ const CartPage = () => {
                               {item.variants && (
                                 <span className={styles.VariantTitle}>{item.variants}</span>
                               )}
+                              {item.note && (
+                                <div className={styles.note}>
+                                  <span className={styles.VariantTitle}>Ghi chú: {item.note}</span> 
+                                </div>
+                              )}
+
                               <button
                                 className={styles.removebtn}
                                 onClick={() => removeItem(item._id)}

@@ -174,7 +174,7 @@ const CheckoutPage = () => {
     // 🛑 Console log để debug
     console.log("🛒 Cart trước khi gửi:", cart);
     console.log("📦 orderData trước khi gửi:", orderData);
-    console.log("🧾 orderDetails trước khi gửi:", orderDetails); // Log orderDetails separately
+    console.log("🧾 orderDetails trước khi gửi:", orderDetails);
     console.log("💰 Phương thức thanh toán đã chọn (_id):", paymentMethod);
     console.log("🎟️ Mã giảm giá đã chọn:", selectedCoupon?._id);
     
@@ -191,7 +191,28 @@ const CheckoutPage = () => {
       if (!orderResponse.ok) {
         throw new Error(orderDataResponse.error || "Đặt hàng thất bại!");
       }
-      
+      if (paymentMethod.payment_name === "cash") {
+        console.log("📢 Dữ liệu gửi đến email API:", {
+          email: user.email,
+          orderData: orderDataResponse.data.order,
+        });
+        await fetch("http://localhost:3001/api/email/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: user.email,
+            orderData: {
+              ...orderDataResponse.data.order,
+              orderDetails: cart.map((item) => ({
+                id_product: item._id,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+              })),
+            },
+          }),
+        });
+      }
       // Xử lý thanh toán nếu là MoMo
       if (paymentMethod.payment_name === "momo") {
         const momoResponse = await fetch("http://localhost:3001/api/payments/momo", {
@@ -304,22 +325,23 @@ const CheckoutPage = () => {
           <div className={styles.paymentOptions}>
           <label>Phương thức thanh toán:</label>
           <div>
-            {paymentMethods.map((method) => (
-              <label
-                key={method._id}
-                style={{ display: "block", marginBottom: "8px" }}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value={method._id} // Lưu _id thay vì value
-                  checked={paymentMethod?._id === method._id}
-                  onChange={() => setPaymentMethod(method)}
-                />
-                {method.payment_name} {/* Hiển thị tên phương thức */}
-              </label>
-            ))}
-          </div>
+          {paymentMethods.map((method) => (
+            <label key={method._id} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+              <input type="radio" name="paymentMethod" value={method._id} checked={paymentMethod?._id === method._id} onChange={() => setPaymentMethod(method)} />
+              {method.payment_name === "cash" ? (
+                <>
+                  <Image src={`${API_URL}/images/cash.png`} alt="Tiền mặt" width={24} height={24} /> Tiền Mặt
+                </>
+              ) : method.payment_name === "momo" ? (
+                <>
+                  <Image src={`${API_URL}/images/momo.png`} alt="Momo" width={24} height={24} /> Chuyển khoản Momo
+                </>
+              ) : (
+                method.payment_name
+              )}
+            </label>
+          ))}
+        </div>
         </div>
 
         </form>

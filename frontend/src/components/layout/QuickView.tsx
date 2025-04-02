@@ -29,7 +29,7 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
   const initialVariant = product?.variants.length > 0 ? product.variants[0] : null;
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(initialVariant);
   const [quantity, setQuantity] = useState<number>(1);
-
+  const [note, setNote] = useState<string>("");
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
 
@@ -39,7 +39,7 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
     event.preventDefault();
     if (!product || !selectedVariant) return;
   
-    handleAddToCart(product, selectedVariant, quantity);
+    handleAddToCart(product, selectedVariant, quantity , note);
   };
   
   const handleClose = () => {
@@ -100,8 +100,18 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
                   </div>
                 </div>
               )}
-              <label className={styles.labelNote}>Ghi chú</label>
-              <input type="text" placeholder="Ghi chú món ăn" className={styles.inputNote} />
+              <div className={styles.note}>
+                <label htmlFor="" className={styles.labelNote}>
+                  Ghi chú
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ghi chú món ăn"
+                  className={styles.inputNote}
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
 
               <div className={styles.quantity}>
                 <label>Số lượng</label>

@@ -31,8 +31,9 @@ exports.createRegister = async (registerData) => {
     const newRegister = new Register({
       id_user: registerData.id_user,
       id_table: registerData.id_table,
-      create_at: new Date(),
       start_time: registerData.start_time,
+      end_time: registerData.end_time || "",
+      note: registerData.note || "",
       status: "Confirmed",
     });
 
@@ -53,7 +54,15 @@ exports.createRegister = async (registerData) => {
 exports.getAllRegisters = async () => {
   try {
     const registers = await Register.find()
-      .populate("id_user", "username email")
+      // .populate("id_user", "username email")
+      .populate({
+        path: "id_user",
+        select: "username email address",
+        populate: {
+          path: "address", 
+          select: "name"
+        }   
+      })
       .populate("id_table", "position name status");
     return registers;
   } catch (error) {
@@ -82,7 +91,15 @@ exports.getRegisterById = async (id) => {
 exports.getRegistersByUserId = async (userId) => {
   try {
     const registers = await Register.find({ id_user: userId })
-      .populate("id_user", "username email avatar")
+      // .populate("id_user", "username email avatar")
+      .populate({
+        path: "id_user",
+        select: "username email address",
+        populate: {
+          path: "address", 
+          select: "name"
+        }   
+      })
       .populate("id_table", "position name img status");
     return registers;
   } catch (error) {
@@ -92,7 +109,7 @@ exports.getRegistersByUserId = async (userId) => {
 
 
 // Hủy đơn đăng ký
-exports.updateRegisterStatus = async (id) => {
+exports.updateRegisterStatus = async (id, note) => {
   try {
     const register = await Register.findById(id);
     if (!register) {
@@ -101,6 +118,9 @@ exports.updateRegisterStatus = async (id) => {
 
     // Cập nhật trạng thái đơn đăng ký
     register.status = "Cancelled";
+    if (note) {
+      register.note = note;
+    }
     await register.save();
 
     // Cập nhật trạng thái bàn

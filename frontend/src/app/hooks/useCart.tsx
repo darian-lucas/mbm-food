@@ -9,6 +9,7 @@ interface CartItem {
   option: string;
   image: string;
   quantity: number;
+  note?: string;
 }
 
 interface Product {
@@ -58,6 +59,12 @@ const useCart = () => {
       if (existingItemIndex !== -1) {
         updatedCart = [...prevCart];
         updatedCart[existingItemIndex].quantity += item.quantity;
+
+        // ✅ Nếu có ghi chú mới, cập nhật luôn
+      if (item.note) {
+        updatedCart[existingItemIndex].note = item.note;
+      }
+      
       } else {
         updatedCart = [...prevCart, item];
       }
@@ -77,17 +84,18 @@ const useCart = () => {
   };
 
   // Hàm xử lý khi ấn nút "Thêm vào giỏ hàng"
-  const handleAddToCart = (product: Product, selectedVariant: Variant, quantity: number) => {
+  const handleAddToCart = (product: Product, selectedVariant: Variant, quantity: number, note?:string) => {
     if (!product || !selectedVariant) return;
 
     const newItem: CartItem = {
-      _id: product._id, // ✅ Sử dụng _id từ API thay vì slug
+      _id: product._id, 
       name: product.name,
       price: selectedVariant.price,
       sale_price: selectedVariant.sale_price,
       option: selectedVariant.option,
       image: selectedVariant.image,
       quantity: quantity,
+      note: note,
     };
 
     addToCart(newItem);

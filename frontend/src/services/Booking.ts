@@ -81,7 +81,7 @@ const createRegister = async (data: TCreateRegisterParams) => {
   }
 };
 
-const updateRegisterStatus = async (id: string, status: string) => {
+const updateRegisterStatus = async (id: string, status: string, note:string) => {
   const response = await fetch(`${API_URL_REGISTER}/${id}/status`, {
     method: "PUT",
     headers: {
@@ -89,6 +89,7 @@ const updateRegisterStatus = async (id: string, status: string) => {
     },
     body: JSON.stringify({
       status,
+      note
     }),
   });
 

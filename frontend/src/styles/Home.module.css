@@ -218,6 +218,10 @@
   font-weight: bold;
 }
 
+.TitleHot:hover{
+  color: #E51735;
+}
+
 .foodList {
   display: flex;
   flex-wrap: wrap;
@@ -387,10 +391,12 @@
   /* left: 15px !important; */
   /* width: 100% !important; */
 }
-.slideItem{
+
+.slideItem {
   margin-right: 0 !important;
   width: 651.5px !important;
 }
+
 .subTitle {
   text-align: center;
   font-size: 20px;
@@ -405,7 +411,7 @@
   text-align: center;
   font-size: 28px;
   font-weight: bold;
-  color: #116520;
+  color: #006A31;
   margin-bottom: 20px;
 }
 
@@ -771,7 +777,7 @@
 }
 
 .bestSellingAddButton {
-  background: #136734;
+  background: #006A31;
   color: white;
   padding: 10px;
   border: none;
@@ -838,7 +844,7 @@
 
 .menufoodTitle {
   font-size: 26px;
-  color: #136734;
+  color: #006A31;
   font-weight: bold;
 }
 
@@ -911,9 +917,9 @@
 }
 
 .menufoodImage {
-  border-radius: 8px;
-  width: 100px;
-  height: 70px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .menufoodContent {
@@ -958,14 +964,16 @@
 .menufoodActions {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 10px;
 }
 
 .menufoodMore {
+  display: block;
   color: #E51735 !important;
   text-decoration: none !important;
   font-size: 14px !important;
-  float: left !important;
+  margin-bottom: 5px;
 }
 
 .menufoodMore:hover {
@@ -973,14 +981,15 @@
 }
 
 .menufoodAdd {
-  background: #136734;
+  background: #006A31;
   color: white;
   padding: 8px 12px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: -25px;
   height: 40px;
+  margin-left: auto;
+  margin-top: -70px;
 }
 
 .menufoodAdd:hover {
@@ -1000,8 +1009,8 @@
 
 .menufoodViewMore {
   margin-top: 20px;
-  background: #136734;
-  color: white;
+  background: #006A31;
+  color: white !important;
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
@@ -1029,7 +1038,7 @@
 
 .mainTitle {
   font-size: 28px;
-  color: green;
+  color: #006A31;
   margin-bottom: 20px;
 }
 
@@ -1131,7 +1140,7 @@
 .newsContent a {
   display: block;
   margin-top: 10px;
-  color: green;
+  color: #006A31;
   text-decoration: none;
   font-weight: bold;
 }
@@ -1378,7 +1387,7 @@
 }
 
 .subscribeForm button:hover {
-  background-color: #004d23;
+  background-color: #006A31;
 }
 
 /* Responsive cho Tablet */
@@ -1468,6 +1477,7 @@
     position: relative;
     margin-top: 50px !important;
   }
+
   .bannerImage {
     width: 100% !important;
     height: auto !important;
@@ -1499,10 +1509,26 @@
     height: auto;
   }
 
+  .discountList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .discountItem {
-    width: 220px;
-    padding: 10px;
-    font-size: 14px;
+    width: 100%;
+    max-width: 338px;
+    padding: 15px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .discountItem img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: auto;
+    object-fit: contain
   }
 
   .discountFoodPrice p {
@@ -1535,14 +1561,24 @@
   }
 
   .bestSellingList {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: 1fr;
+    /* Chỉ 1 sản phẩm trên một hàng */
+    justify-items: center;
+    /* Căn giữa sản phẩm */
   }
 
   .bestSellingItem {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bestSellingItem img {
+    display: block;
+    margin: 0 auto;
     width: 100%;
-    max-width: 230px;
+    height: auto;
+    object-fit: contain
   }
 
   .specialBannerItem {
@@ -1563,17 +1599,17 @@
     padding: 0;
     overflow: hidden;
   }
-  
+
   .slideItem {
     flex: 0 0 51% !important;
-    max-width: 51% !important; 
+    max-width: 51% !important;
     display: flex;
     justify-content: center;
     height: 300px;
     box-sizing: border-box;
     padding: 0 10px;
   }
-  
+
   .foodItem {
     width: 100%;
     max-width: 220px;
@@ -1602,7 +1638,7 @@
     text-overflow: ellipsis;
     width: 100%;
   }
-  
+
   .foodPriceContainer {
     margin-top: auto;
     text-align: center;
@@ -1624,7 +1660,7 @@
     margin: 10px auto 0;
     text-align: center;
   }
-  
+
 
   .customSwiper :global(.swiper-button-prev::after),
   .customSwiper :global(.swiper-button-next::after) {
@@ -1666,9 +1702,9 @@
   }
 
   .menufoodImage {
-    max-width: 90px;
-    height: 70px;
-    margin-bottom: 10px;
+    width: 100%;
+    height: auto;
+    object-fit: contain
   }
 
   .menufoodItemName {
@@ -1693,6 +1729,7 @@
   }
 
   .menufoodPrice {
+    text-align: left;
     font-size: 15px;
     font-weight: bold;
     color: #000;
@@ -1705,16 +1742,28 @@
   }
 
   .menufoodMore {
-    color: red;
+    color: #E51735;
     font-size: 13px;
+    text-align: left;
   }
 
+  .menufoodViewMore {
+    display: block;
+    position: relative;
+    margin: 30px auto 0;
+    width: 50%;
+    max-width: 200px;
+    text-align: center;
+}
+
+
   .menufoodAdd {
-    background-color: #165b33;
+    background-color: #006A31;
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
+    margin-top: -70px;
   }
 
   .newsList {
@@ -1722,7 +1771,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
-  
+
   .newsItem {
     display: flex;
     flex-direction: column;
@@ -1732,23 +1781,23 @@
     transition: transform 0.3s ease-in-out;
     width: 100%;
   }
-  
+
   .newsItem:hover {
     transform: translateY(-5px);
   }
-  
+
   .newsImgWrapper {
     width: 100%;
     height: 200px;
     overflow: hidden;
   }
-  
+
   .newsImgWrapper div {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  
+
   .newsContent {
     padding: 15px;
     flex: 1;
@@ -1756,19 +1805,19 @@
     flex-direction: column;
     justify-content: space-between;
   }
-  
+
   .newsTitle {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 8px;
   }
-  
+
   .newsDate {
     font-size: 14px;
     color: #666;
     margin-bottom: 10px;
   }
-  
+
   .newsDesc {
     font-size: 16px;
     color: #444;
@@ -1777,7 +1826,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .readMore {
     background-color: #006A31;
     color: white;
@@ -1788,11 +1837,14 @@
     border-radius: 5px;
     margin-top: auto;
   }
-  
+
   .readMore:hover {
     background-color: #E51735;
   }
-  
+
+  .danhgiaContent{
+    max-width: 300px;
+  }
 
   .subscribe {
     flex-direction: column;
@@ -1814,7 +1866,8 @@
     width: 90%;
     border-radius: 5px;
   }
-  .imageLeft,.imageRight{
+
+  .imageLeft, .imageRight {
     display: none;
   }
 }

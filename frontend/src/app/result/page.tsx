@@ -38,36 +38,39 @@ interface Order {
     name: string;
   }[];
 }
- 
+
 const OrderResult = () => {
   const [order, setOrder] = useState<Order | null>(null);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
-  console.log("Dữ liệu orderId",orderId);
 
   useEffect(() => {
     if (!orderId) return;
-
+  
     const fetchOrder = async () => {
       try {
         const response = await fetch(`http://localhost:3001/api/orders/code/${orderId}`);
         const data = await response.json();
-        console.log("Dữ liệu data trả về khi fetch",data);
+  
         if (data.success && data.data) {
-          setOrder({
-            ...data.data,
-            details: data.data.details || [], 
-          });
-
-          await handleMomoCallback(data.data.order_code);
-
+          const updatedOrder = { ...data.data, orderDetails: data.data.details || [] };
+  
+          // 🔥 Kiểm tra callback Momo
+          const momoSuccess = await handleMomoCallback(data.data.order_code);
+  
+          // ✅ Nếu thanh toán thành công, cập nhật lại state
+          if (updatedOrder.payment_status === "Completed" || momoSuccess) {
+            updatedOrder.payment_status = "Completed";
+            await sendConfirmationEmail(updatedOrder);
+          }
+  
+          // 🛒 Xóa giỏ hàng
           localStorage.removeItem("cart");
-          // 🔥 Phát sự kiện cập nhật
           window.dispatchEvent(new Event("cartUpdated"));
-        } else {
-          console.error("Lỗi lấy dữ liệu đơn hàng:", data.message || "Không tìm thấy đơn hàng");
+  
+          setOrder(updatedOrder);
         }
       } catch (error) {
         console.error("Lỗi kết nối đến API:", error);
@@ -75,22 +78,19 @@ const OrderResult = () => {
         setLoading(false);
       }
     };
-    
-
-    const fetchPaymentMethods = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/payments");
-        const data = await response.json();
-        setPaymentMethods(data);
-      } catch (error) {
-        console.error("Lỗi lấy phương thức thanh toán:", error);
-      }
-    };
-
+  
     fetchOrder();
-    fetchPaymentMethods();
   }, [orderId]);
-  // Gửi yêu cầu callback Momo để cập nhật trạng thái thanh toán
+  
+  // 🎯 Theo dõi order.payment_status để cập nhật lại UI khi thay đổi
+  useEffect(() => {
+    if (order?.payment_status === "Completed") {
+      setOrder({ ...order });
+    }
+  }, [order?.payment_status]);
+  
+
+  // 🏦 Gửi yêu cầu callback Momo để cập nhật trạng thái thanh toán
   const handleMomoCallback = async (orderCode: string) => {
     try {
       const response = await fetch("http://localhost:3001/api/payments/momo/callback", {
@@ -98,11 +98,59 @@ const OrderResult = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId: orderCode, resultCode: 0 }),
       });
-
+  
       const data = await response.json();
       console.log("🔄 Kết quả xử lý Momo:", data);
+  
+      if (data.success) {
+        // ✅ Cập nhật ngay trạng thái để render lại UI
+        setOrder((prevOrder) =>
+          prevOrder ? { ...prevOrder, payment_status: "Completed" } : prevOrder
+        );
+      }
+  
+      return data.success;
     } catch (error) {
       console.error("❌ Lỗi gửi callback Momo:", error);
+      return false;
+    }
+  };
+  
+
+  // 📧 Gửi email xác nhận đơn hàng
+  const sendConfirmationEmail = async (orderData: Order) => {
+    if (!orderData.id_user?.email || !orderData.details || orderData.details.length === 0) {
+      console.error("❌ Lỗi: Thiếu email hoặc dữ liệu đơn hàng!", orderData);
+      return;
+    }
+
+    try {
+      console.log("📩 Đang gửi email với dữ liệu:", {
+        email: orderData.id_user.email,
+        orderDetails: orderData.details.map((item) => ({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      });
+
+      const response = await fetch("http://localhost:3001/api/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: orderData.id_user.email,
+          orderDetails: orderData.details.map((item) => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+
+      const data = await response.json();
+      console.log("📩 Kết quả gửi email:", data);
+    } catch (error) {
+      console.error("❌ Lỗi gửi email xác nhận:", error);
     }
   };
 
@@ -118,12 +166,10 @@ const OrderResult = () => {
   const paymentMethod = paymentMethods.find(
     (method) => method._id === order.id_payment_method._id
   );
-  
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl">
-        {/* Logo */}
         <div className="flex justify-center">
           <h2 className="text-3xl font-bold text-green-600 flex items-center">
             <span className="text-red-500 text-5xl mr-2">MBM</span>
@@ -131,18 +177,16 @@ const OrderResult = () => {
           </h2>
         </div>
 
-        {/* Thông báo */}
         <div className="mt-6 text-center">
           <div className="text-green-600 text-5xl">✔</div>
           <h2 className="text-xl font-semibold mt-3">Cảm ơn bạn đã đặt hàng</h2>
-          {order.id_user.email && (
+          {order.id_user.email && order.payment_status === "Completed" && (
             <p className="text-gray-600 text-sm">
               Một email xác nhận đã được gửi tới <b>{order.id_user.email}</b>. Xin vui lòng kiểm tra email của bạn.
             </p>
           )}
         </div>
 
-        {/* Thông tin khách hàng */}
         <div className="mt-6 flex justify-between border p-4 rounded-lg">
           <div>
             <h3 className="font-semibold">THÔNG TIN MUA HÀNG</h3>
@@ -152,11 +196,18 @@ const OrderResult = () => {
           </div>
           <div>
             <h3 className="font-semibold">PHƯƠNG THỨC THANH TOÁN</h3>
-            <p>{paymentMethod ? paymentMethod.payment_name : "Không xác định"}</p>
+            <p>
+            {paymentMethod
+              ? paymentMethod.payment_name === "cash"
+                ? "Tiền Mặt"
+                : paymentMethod.payment_name === "momo"
+                ? "Chuyển khoản Momo"
+                : paymentMethod.payment_name
+              : "Không xác định"}
+          </p>
           </div>
         </div>
-        
-           {/* Trạng thái thanh toán */}
+
         <div className="mt-6 border p-4 rounded-lg text-center">
           <h3 className="font-semibold">Trạng thái thanh toán</h3>
           <p className={`font-bold ${order.payment_status === "Completed" ? "text-green-600" : "text-red-600"}`}>
@@ -164,26 +215,6 @@ const OrderResult = () => {
           </p>
         </div>
 
-        {/* Thông tin đơn hàng */}
-        <div className="mt-6 border p-4 rounded-lg">
-          <h3 className="font-semibold mb-2">Mã đơn #{order.order_code}</h3>
-          {order.details.map((item, index) => (
-            <div key={index} className="flex justify-between items-center border-b py-2">
-              <div>
-                <p className="font-semibold">{item.id_product.name}</p>
-                <p className="text-sm text-gray-500">Số lượng: {item.quantity}</p>
-              </div>
-              <p className="font-semibold">{item.price.toLocaleString()}đ</p>
-            </div>
-          ))}
-
-          <div className="flex justify-between font-semibold mt-3">
-            <p>TỔNG TIỀN THANH TOÁN</p>
-            <p className="text-blue-600">{order.total_payment.toLocaleString()}đ</p>
-          </div>
-        </div>
-
-        {/* Nút tiếp tục mua hàng */}
         <div className="mt-6 text-center">
           <Link href="/">
             <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">

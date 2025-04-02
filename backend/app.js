@@ -31,9 +31,6 @@ app.use(cors());
 app.use('/images', express.static('public/images'));
 app.use(express.json({ type: "application/json", charset: "utf-8" }));
 
-
-
-
 // Kết nối DB
 connectDB();
 

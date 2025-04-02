@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const commonClassNames = {
   status:
     "text-green-500 border-green-500 border-2 bg-green-500 bg-opacity-10 rounded-md font-medium px-3 py-1 text-xs whitespace-nowrap",
