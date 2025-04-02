@@ -22,6 +22,7 @@ interface Product {
   slug: string;
   idcate: string;
   variants: Variant[];
+  matchedVariant : Variant;
   hot: number;
   view: number;
   status: string;
@@ -70,7 +71,20 @@ const ProductListCate = ({
         const data = await res.json();
         let filteredProducts: Product[] = data.data;
 
-        // Lọc theo size nếu có
+        // **Lọc biến thể có giá phù hợp**
+        filteredProducts = filteredProducts
+          .map((product) => {
+            const matchedVariant = product.variants.find(
+              (variant) =>
+                (!minPrice || variant.price >= minPrice) &&
+                (!maxPrice || variant.price <= maxPrice)
+            );
+
+            return matchedVariant ? { ...product, matchedVariant } : null;
+          })
+          .filter((product): product is Product & { matchedVariant: Variant } => product !== null);
+
+        // **Lọc theo size nếu có**
         if (selectedSize) {
           filteredProducts = filteredProducts.filter((product) =>
             product.variants.some((variant) => variant.option === selectedSize)
@@ -80,10 +94,10 @@ const ProductListCate = ({
         // **Áp dụng sắp xếp theo sortOption**
         switch (sortOption) {
           case "price-asc":
-            filteredProducts.sort((a, b) => a.variants[0].price - b.variants[0].price);
+            filteredProducts.sort((a, b) => a.matchedVariant.price - b.matchedVariant.price);
             break;
           case "price-desc":
-            filteredProducts.sort((a, b) => b.variants[0].price - a.variants[0].price);
+            filteredProducts.sort((a, b) => b.matchedVariant.price - a.matchedVariant.price);
             break;
           case "name-asc":
             filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
@@ -151,7 +165,7 @@ const ProductListCate = ({
                   <Link href={`/product/${item.slug}`} className={styles.imageThum}>
                     <Image
                       className={styles.img}
-                      src={`${API_URL}/images/${item.variants[0].image}`}
+                      src={`${API_URL}/images/${item.matchedVariant.image}`}
                       alt={item.name}
                       width={234}
                       height={234}
@@ -167,17 +181,18 @@ const ProductListCate = ({
                 </div>
                 <div className={styles.productInfo}>
                   <h3 className={styles.productName}>
-                    <Link href={`/product/${item.slug}`} className={styles.productName}>
-                      {item.name}
-                    </Link>
+                    <Link href={`/product/${item.slug}`}>{item.name}</Link>
                   </h3>
                   <div className={styles.productContent}>
-                    <span className={styles.ProductDesc} dangerouslySetInnerHTML={{ __html: item.description }} />
+                    <span
+                      className={styles.ProductDesc}
+                      dangerouslySetInnerHTML={{ __html: item.description }}
+                    />
                     <Link href={`/product/${item.slug}`}>Xem thêm</Link>
                   </div>
                   <div className={styles.groupForm}>
                     <div className={styles.priceBox}>
-                      <span>Giá chỉ từ: </span> {item.variants[0].price.toLocaleString()}₫
+                      <span>Giá: </span> {item.matchedVariant.price.toLocaleString()}₫
                     </div>
                     <button className={styles.add} onClick={() => setSelectedProduct(item)}>
                       Thêm
@@ -189,7 +204,10 @@ const ProductListCate = ({
           ))}
         </div>
       </section>
-      {selectedProduct && <QuickView product={{ ...selectedProduct, id: selectedProduct._id }} onClose={() => setSelectedProduct(null)} />}
+
+      {selectedProduct && (
+        <QuickView product={{ ...selectedProduct, id: selectedProduct._id }} onClose={() => setSelectedProduct(null)} />
+      )}
     </div>
   );
 };
