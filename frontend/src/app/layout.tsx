@@ -22,13 +22,20 @@ export default function RootLayout({
         .split("/")
         .filter((part) => part)
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1));
-      formattedTitle = `Mbmfood | ${parts.join(" | ")}`
+      formattedTitle = `Mbmfood | ${parts.join(" | ")}`;
     }
     document.title = formattedTitle;
   }, [pathname]);
 
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="icon"
+          sizes="120x120"
+          href="/apple-icon-120x120.png"
+        ></link>
+      </head>
       <body className={manrope.className}>
         <ToastContainer position="top-right" autoClose={1500} />
         {isAdmin ? (
