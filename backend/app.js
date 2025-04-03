@@ -17,7 +17,13 @@ const emailRouter = require('./src/routes/emailRoutes')
 const tableRoutes = require('./src/routes/table');
 const registerRoutes = require('./src/routes/register');
 const authRoutes = require("./src/routes/authRoutes");
+const emailCustomerRouter = require("./src/routes/emailCustomerRoutes");
 
+//Bổ sung email gửi về khách hàng khi điền form
+const nodemailer = require("nodemailer");
+// const bodyParser = require("body-parser");
+
+// app.use(bodyParser.json());
 const cors = require("cors");
 // const { applyTimestamps } = require('./src/models/CouponModel');
 
@@ -43,6 +49,8 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/favorite', favoriteRoutes);
 app.use('/api/cmt', postCommentRoutes);
+//Bổ sung email gửi thông tin (liên hệ, faq)
+app.use("/api/emailCustomer", emailCustomerRouter);
 app.use('/api/email',emailRouter);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentMethodRoutes);

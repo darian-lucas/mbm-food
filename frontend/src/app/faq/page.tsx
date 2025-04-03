@@ -1,15 +1,72 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import "../../styles/new.css";
 import "../../styles/faq.css";
+import FaqServices from "../../services/faq";
+import { sendEmail } from "../../services/faq"; // Import hàm sendEmail
 
 
 export default function faq() {
   // Trạng thái lưu câu hỏi nào đang mở
   const [openIndex, setOpenIndex] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null); // 👉 Thêm state lưu thông báo
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+});
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        const user = await FaqServices.getUserById(userId);
+        if (user) {
+          setFormData({
+            name: user?.address?.[0]?.name || "",
+            email: user?.email || "",
+            phone: user?.phone || "",
+            message: "",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin người dùng:", error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  setFormData({ ...formData, [e.target.name]: e.target.value });
+};
+
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setMessage(null); // Reset thông báo trước khi gửi
+
+  // Gọi hàm sendEmail từ faq.ts
+  const result = await sendEmail(formData);
+
+  if (result.success) {
+    setMessage(result.message);
+    //Reset lại form 
+    setFormData((prevData) => ({
+      ...prevData,
+      phone: "",
+      message: "",
+    }));
+  } else {
+    setMessage(result.message);
+  }
+};
 
   //Hàm đóng mở câu hỏi
   const toggleFAQ = (index: SetStateAction<string | null>) => {
@@ -162,29 +219,41 @@ export default function faq() {
                     Nếu bạn có thắc mắc gì, có thể gửi yêu cầu cho chúng tôi, và
                     chúng tôi sẽ liên lạc lại với bạn sớm nhất có thể .
                   </span>
+                   {/* Hiển thị thông báo nếu có */}
+                   {message && <div className="message-box">{message}</div>}
                   <div id="pagelogin">
-                    <form action="">
+                    <form action="" onSubmit={handleSubmit}>
                       <div className="group_contact">
                         <input
                           type="text"
                           placeholder="Họ tên"
                           className="form-control"
+                          onChange={handleChange}
+                          name="name"
+                          value={formData.name}
                         />
                         <input
                           type="email"
                           placeholder="Email"
                           className="form-control"
+                          onChange={handleChange}
+                          name="email"
+                          value={formData.email}
                         />
                         <input
                           type="number"
-                          placeholder="Điện thoại"
+                          placeholder="Điện thoại *"
                           className="form-control"
+                          onChange={handleChange}
+                          name="phone"
+                          value={formData.phone}
                         />
                         <textarea
-                          name=""
-                          id=""
                           placeholder="Nội dung"
                           className="form-control"
+                          onChange={handleChange}
+                          name="message"
+                          value={formData.message}
                         ></textarea>
                         <button type="submit" className="btn-lienhe">
                           Gửi thông tin
