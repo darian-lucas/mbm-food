@@ -32,12 +32,18 @@ interface Category {
   image: string;
   slug: string;
 }
+interface Variant {
+  option: string;
+  price: number;
+  sale_price: number;
+  image: string;
+}
 interface Product {
   _id: string;
   name: string;
   idcate: string;
   description: string;
-  variants: { price: number; image: string; sale_price?: number }[];
+  variants: Variant[];
   hot?: number;
   view: number;
   slug: string;
