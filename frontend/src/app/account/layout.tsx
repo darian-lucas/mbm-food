@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import styles from "@/styles/Account.module.css";
+import styles from "@/styles/account.module.css";
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
