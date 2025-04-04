@@ -9,6 +9,7 @@ export type TCreateProductParams = {
   name: string;
   description: string;
   variants: {
+    _id: string;
     option: string;
     image: string;
     price: number;
