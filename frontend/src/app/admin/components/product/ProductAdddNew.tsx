@@ -134,7 +134,7 @@ function ProductAddNew() {
         idcate: values.idcate || "",
         hot: values.hot || 0,
         variants: values.variants.map((variant, index) => ({
-          _id:variant._id,
+          _id:variant._id || "",
           option: variant.option || "",
           price: parseFloat(variant.price || "0"),
           sale_price: parseFloat(variant.sale_price || "0"),
