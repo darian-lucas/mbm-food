@@ -46,32 +46,48 @@ export default function Dashboard() {
             }
         }
         fetchOrders();
-    }, []);
+    }, [selectedMonth, selectedYear]); // Thêm selectedMonth & selectedYear vào dependency
+
 
     function processOrders(orders: Order[]) {
         let totalSales = 0;
         let successful = 0;
         let cancelled = 0;
         let totalCancelledAmount = 0;
-    
+
         let monthlySales: number[] = new Array(12).fill(0);
         let monthlyOrders: number[] = new Array(12).fill(0);
         let monthlySuccessful: number[] = new Array(12).fill(0);
         let monthlyCancelled: number[] = new Array(12).fill(0);
         let monthlyCancelledAmount: number[] = new Array(12).fill(0);
-    
+
         // ✅ Dữ liệu chỉ của tháng hiện tại
         let currentMonthSales = 0;
         let currentMonthOrders = 0;
         let currentMonthSuccessful = 0;
         let currentMonthCancelled = 0;
-    
-        const currentMonth = new Date().getMonth();
-    
+
+        const currentMonth = selectedMonth;
+        const currentYear = selectedYear;
+
         orders.forEach(order => {
             const orderDate = new Date(order.createdAt);
             const month = orderDate.getMonth();
-    
+            const orderMonth = orderDate.getMonth();
+            const orderYear = orderDate.getFullYear();
+
+            if (order.order_status === 'Delivered' || order.order_status === 'Canceled') {
+                if (orderMonth === selectedMonth && orderYear === currentYear) {
+                    if (order.order_status === 'Delivered') {
+                        currentMonthSales += order.total_payment || 0;
+                        currentMonthOrders++;
+                        currentMonthSuccessful++;
+                    } else if (order.order_status === 'Canceled') {
+                        currentMonthCancelled++;
+                    }
+                }
+            
+        
             // ✅ Tính tổng số liệu cho 12 tháng (Dùng cho biểu đồ)
             if (order.order_status === 'Delivered') {
                 totalSales += order.total_payment || 0;
@@ -84,36 +100,26 @@ export default function Dashboard() {
                 monthlyCancelled[month]++;
                 monthlyCancelledAmount[month] += order.total_amount || 0;
             }
-    
-            // ✅ Lưu riêng số liệu của **tháng hiện tại** cho Dashboard
-            if (month === currentMonth) {
-                if (order.order_status === 'Delivered') {
-                    currentMonthSales += order.total_payment || 0;
-                    currentMonthOrders++;
-                    currentMonthSuccessful++;
-                } else if (order.order_status === 'Canceled') {
-                    currentMonthCancelled++;
-                }
-            }
+        }
         });
-    
+
         const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-    
+
         setSalesChange(calcPercentageChange(monthlySales[previousMonth], monthlySales[currentMonth]));
         setOrdersChange(calcPercentageChange(monthlyOrders[previousMonth], monthlyOrders[currentMonth]));
         setSuccessfulChange(calcPercentageChange(monthlySuccessful[previousMonth], monthlySuccessful[currentMonth]));
         setCancelledChange(calcPercentageChange(monthlyCancelled[previousMonth], monthlyCancelled[currentMonth]));
-    
+
         // ✅ Cập nhật dữ liệu của tháng hiện tại lên Dashboard
         setTotalSales(currentMonthSales);
         setTotalOrders(currentMonthSuccessful + currentMonthCancelled);
         setSuccessfulOrders(currentMonthSuccessful);
         setCancelledOrders(currentMonthCancelled);
-    
+
         // ✅ Dữ liệu đầy đủ của 12 tháng vẫn gửi vào biểu đồ
         renderCharts(monthlySales, monthlyCancelled, monthlyCancelledAmount);
     }
-    
+
     function calcPercentageChange(previous: number, current: number): number {
         if (previous === 0) return current === 0 ? 0 : 100;
         return ((current - previous) / previous) * 100;
@@ -121,7 +127,7 @@ export default function Dashboard() {
     function renderCharts(monthlySales: number[], monthlyCancelled: number[], monthlyCancelledAmount: number[]) {
         const currentMonth = new Date().getMonth(); // Lấy tháng hiện tại (0-11)
         const labels = [];
-    
+
         // Lấy 12 tháng, trong đó tháng hiện tại nằm ở góc phải
         const currentYear = new Date().getFullYear(); // Thêm dòng này để tránh lỗi
         for (let i = 11; i >= 0; i--) {
@@ -129,21 +135,21 @@ export default function Dashboard() {
             const year = currentYear - (currentMonth - i < 0 ? 1 : 0); // Nếu lùi về năm trước, giảm 1 năm
             labels.push(`${monthIndex + 1}/${year}`); // Định dạng MM/YYYY
         }
-        
-        
-    
+
+
+
         // Dữ liệu cũng phải được sắp xếp tương ứng
         const salesData = [];
         const cancelledData = [];
         const cancelledAmountData = [];
-    
+
         for (let i = 11; i >= 0; i--) {
             const monthIndex = (currentMonth - i + 12) % 12;
             salesData.push(monthlySales[monthIndex]);
             cancelledData.push(monthlyCancelled[monthIndex]);
             cancelledAmountData.push(monthlyCancelledAmount[monthIndex]);
         }
-    
+
         if (salesChartRef.current) {
             new Chart(salesChartRef.current, {
                 type: 'line',
@@ -151,14 +157,14 @@ export default function Dashboard() {
                     labels: labels, // Danh sách tháng theo thứ tự mới
                     datasets: [{
                         label: 'Tổng doanh thu',
-                        data: salesData, 
+                        data: salesData,
                         borderColor: 'blue',
                         fill: false
                     }]
                 }
             });
         }
-    
+
         if (statsChartRef.current) {
             new Chart(statsChartRef.current, {
                 type: 'bar',
@@ -167,14 +173,14 @@ export default function Dashboard() {
                     datasets: [
                         {
                             label: 'Doanh số hàng tháng',
-                            data: salesData, 
+                            data: salesData,
                             backgroundColor: 'rgba(54, 162, 235, 0.5)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Đơn đặt hàng bị hủy (Số tiền)',
-                            data: cancelledAmountData, 
+                            data: cancelledAmountData,
                             backgroundColor: 'rgba(255, 99, 132, 0.5)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
@@ -184,13 +190,43 @@ export default function Dashboard() {
             });
         }
     }
-    
-    
+
+
 
     return (
         <div className="mt-4 pl-4">
+            <div className="row mb-3">
+                <div className="col-md-6">
+                    <label>Chọn tháng:</label>
+                    <select
+                        className="form-select"
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                    >
+                        {Array.from({ length: 12 }, (_, i) => (
+                            <option key={i} value={i}>{`Tháng ${i + 1}`}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="col-md-6">
+                    <label>Chọn năm:</label>
+                    <select
+                        className="form-select"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    >
+                        {Array.from({ length: 5 }, (_, i) => {
+                            const year = new Date().getFullYear() - i;
+                            return (
+                                <option key={year} value={year}>{year}</option>
+                            );
+                        })}
+                    </select>
+                </div>
+            </div>
+
             <div className="row g-4">
-                <DashboardCard title="Tổng doanh thu tháng " value={`${totalSales.toLocaleString()} VND`}  change={salesChange} icon="bi-cash-stack" color="success" />
+                <DashboardCard title={`Tổng doanh thu tháng ${selectedMonth + 1}/${selectedYear}`}   value={`${totalSales.toLocaleString()} VND`} change={salesChange} icon="bi-cash-stack" color="success" />
                 <DashboardCard title="Tổng đơn hàng" value={totalOrders} change={ordersChange} icon="bi-cart-fill" color="primary" />
                 <DashboardCard title="Đơn hàng thành công" value={successfulOrders} change={successfulChange} icon="bi-check-circle" color="success" />
                 <DashboardCard title="Đơn hàng bị hủy" value={cancelledOrders} change={cancelledChange} icon="bi-x-circle" color="danger" />

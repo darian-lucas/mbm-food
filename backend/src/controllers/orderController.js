@@ -44,7 +44,14 @@ class OrderController {
       });
     }
   };
-
+  async getTopSellingProducts(req, res) {
+    try {
+      const topProducts = await OrderService.getTop5SellingProducts();
+      res.status(200).json(topProducts);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
   async updateOrder(req, res) {
     try {
       console.log("Dữ liệu nhận từ client:", req.body);
