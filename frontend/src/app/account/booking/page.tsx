@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
 import styles from "../../../styles/Booking.module.css";
@@ -65,6 +64,7 @@ const ShowHistoryBooking = () => {
           setRegisters(data);
         }
       } catch (error) {
+        console.log("🚀 ~ fetchData ~ error:", error)
         toast.error("Không thể tải dữ liệu đặt bàn, vui lòng thử lại sau!");
       } finally {
         setLoading(false);
@@ -102,6 +102,7 @@ const ShowHistoryBooking = () => {
       toast.success("Đã hủy đơn đặt bàn thành công!");
       setShowCancelModal(false);
     } catch (error) {
+      console.log("🚀 ~ handleCancelBooking ~ error:", error)
       toast.error("Có lỗi xảy ra khi hủy đơn đặt bàn!");
     }
   };

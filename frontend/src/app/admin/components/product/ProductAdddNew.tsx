@@ -34,6 +34,7 @@ import ProductServices from "../../services/ProductServices";
 
 // Định nghĩa schema cho một variant
 const variantSchema = z.object({
+  _id: z.string().optional(),
   option: z.string().optional(),
   image: z.string().optional(),
   price: z.string().optional(),
@@ -133,6 +134,7 @@ function ProductAddNew() {
         idcate: values.idcate || "",
         hot: values.hot || 0,
         variants: values.variants.map((variant, index) => ({
+          _id:variant._id,
           option: variant.option || "",
           price: parseFloat(variant.price || "0"),
           sale_price: parseFloat(variant.sale_price || "0"),
