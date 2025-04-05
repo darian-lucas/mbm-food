@@ -126,28 +126,38 @@ export default function Dashboard() {
     }
     function renderCharts(monthlySales: number[], monthlyCancelled: number[], monthlyCancelledAmount: number[]) {
         const currentMonth = new Date().getMonth(); // Lấy tháng hiện tại (0-11)
+        const currentYear = new Date().getFullYear(); 
         const labels = [];
+        const salesData = [];
+        const cancelledData = [];
+        const cancelledAmountData = [];
 
-        // Lấy 12 tháng, trong đó tháng hiện tại nằm ở góc phải
-        const currentYear = new Date().getFullYear(); // Thêm dòng này để tránh lỗi
+        
+        
         for (let i = 11; i >= 0; i--) {
-            const monthIndex = (currentMonth - i + 12) % 12; // Giữ nguyên cách tính tháng
-            const year = currentYear - (currentMonth - i < 0 ? 1 : 0); // Nếu lùi về năm trước, giảm 1 năm
+            const monthIndex = (currentMonth - i + 12) % 12; // Tính tháng tương ứng trong 12 tháng qua
+            const year = currentYear - (currentMonth - i < 0 ? 1 : 0); // Kiểm tra nếu tháng trước là tháng thuộc năm trước thì trừ đi 1 năm
             labels.push(`${monthIndex + 1}/${year}`); // Định dạng MM/YYYY
         }
 
 
 
         // Dữ liệu cũng phải được sắp xếp tương ứng
-        const salesData = [];
-        const cancelledData = [];
-        const cancelledAmountData = [];
-
+        
         for (let i = 11; i >= 0; i--) {
             const monthIndex = (currentMonth - i + 12) % 12;
+            const year = currentYear - (currentMonth - i < 0 ? 1 : 0); // Lấy năm tương ứng với tháng
+            const dataIndex = `${monthIndex + 1}/${year}`; // Tạo chuỗi định dạng MM/YYYY để so sánh
+    
+            // Thêm các dữ liệu tương ứng vào mỗi tháng
             salesData.push(monthlySales[monthIndex]);
             cancelledData.push(monthlyCancelled[monthIndex]);
             cancelledAmountData.push(monthlyCancelledAmount[monthIndex]);
+    
+            // Optional: Nếu bạn muốn kiểm tra và chỉ thêm dữ liệu khi tháng này thuộc năm hiện tại, có thể thêm điều kiện:
+            if (`${monthIndex + 1}/${year}` === `${currentMonth + 1}/${currentYear}`) {
+                console.log('Tháng hiện tại:', dataIndex); // Để kiểm tra tháng hiện tại
+            }
         }
 
         if (salesChartRef.current) {
