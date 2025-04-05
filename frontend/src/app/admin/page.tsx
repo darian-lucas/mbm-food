@@ -86,21 +86,21 @@ export default function Dashboard() {
                         currentMonthCancelled++;
                     }
                 }
-            
-        
-            // ✅ Tính tổng số liệu cho 12 tháng (Dùng cho biểu đồ)
-            if (order.order_status === 'Delivered') {
-                totalSales += order.total_payment || 0;
-                monthlySales[month] += order.total_payment || 0;
-                monthlyOrders[month]++;
-                monthlySuccessful[month]++;
-            } else if (order.order_status === 'Canceled') {
-                cancelled++;
-                totalCancelledAmount += order.total_amount || 0;
-                monthlyCancelled[month]++;
-                monthlyCancelledAmount[month] += order.total_amount || 0;
+
+
+                // ✅ Tính tổng số liệu cho 12 tháng (Dùng cho biểu đồ)
+                if (order.order_status === 'Delivered') {
+                    totalSales += order.total_payment || 0;
+                    monthlySales[month] += order.total_payment || 0;
+                    monthlyOrders[month]++;
+                    monthlySuccessful[month]++;
+                } else if (order.order_status === 'Canceled') {
+                    cancelled++;
+                    totalCancelledAmount += order.total_amount || 0;
+                    monthlyCancelled[month]++;
+                    monthlyCancelledAmount[month] += order.total_amount || 0;
+                }
             }
-        }
         });
 
         const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
@@ -126,14 +126,15 @@ export default function Dashboard() {
     }
     function renderCharts(monthlySales: number[], monthlyCancelled: number[], monthlyCancelledAmount: number[]) {
         const currentMonth = new Date().getMonth(); // Lấy tháng hiện tại (0-11)
-        const currentYear = new Date().getFullYear(); 
-        const labels = [];
-        const salesData = [];
-        const cancelledData = [];
-        const cancelledAmountData = [];
+        const currentYear = new Date().getFullYear();
+        const labels: string[] = [];
+        const salesData: number[] = [];
+        const cancelledData: number[] = [];
+        const cancelledAmountData: number[] = [];
 
-        
-        
+
+
+
         for (let i = 11; i >= 0; i--) {
             const monthIndex = (currentMonth - i + 12) % 12; // Tính tháng tương ứng trong 12 tháng qua
             const year = currentYear - (currentMonth - i < 0 ? 1 : 0); // Kiểm tra nếu tháng trước là tháng thuộc năm trước thì trừ đi 1 năm
@@ -143,17 +144,17 @@ export default function Dashboard() {
 
 
         // Dữ liệu cũng phải được sắp xếp tương ứng
-        
+
         for (let i = 11; i >= 0; i--) {
             const monthIndex = (currentMonth - i + 12) % 12;
             const year = currentYear - (currentMonth - i < 0 ? 1 : 0); // Lấy năm tương ứng với tháng
             const dataIndex = `${monthIndex + 1}/${year}`; // Tạo chuỗi định dạng MM/YYYY để so sánh
-    
+
             // Thêm các dữ liệu tương ứng vào mỗi tháng
             salesData.push(monthlySales[monthIndex]);
             cancelledData.push(monthlyCancelled[monthIndex]);
             cancelledAmountData.push(monthlyCancelledAmount[monthIndex]);
-    
+
             // Optional: Nếu bạn muốn kiểm tra và chỉ thêm dữ liệu khi tháng này thuộc năm hiện tại, có thể thêm điều kiện:
             if (`${monthIndex + 1}/${year}` === `${currentMonth + 1}/${currentYear}`) {
                 console.log('Tháng hiện tại:', dataIndex); // Để kiểm tra tháng hiện tại
@@ -236,7 +237,7 @@ export default function Dashboard() {
             </div>
 
             <div className="row g-4">
-                <DashboardCard title={`Tổng doanh thu tháng ${selectedMonth + 1}/${selectedYear}`}   value={`${totalSales.toLocaleString()} VND`} change={salesChange} icon="bi-cash-stack" color="success" />
+                <DashboardCard title={`Tổng doanh thu tháng ${selectedMonth + 1}/${selectedYear}`} value={`${totalSales.toLocaleString()} VND`} change={salesChange} icon="bi-cash-stack" color="success" />
                 <DashboardCard title="Tổng đơn hàng" value={totalOrders} change={ordersChange} icon="bi-cart-fill" color="primary" />
                 <DashboardCard title="Đơn hàng thành công" value={successfulOrders} change={successfulChange} icon="bi-check-circle" color="success" />
                 <DashboardCard title="Đơn hàng bị hủy" value={cancelledOrders} change={cancelledChange} icon="bi-x-circle" color="danger" />
