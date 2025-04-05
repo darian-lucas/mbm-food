@@ -63,7 +63,7 @@ const toggleUserStatus = async (id) => {
         console.log("✅ API response:", data);
         return data.user;
     } catch (error) {
-        console.error("🔥 Error in toggleUserStatus:", error.message);
+        console.error("❌ Error toggling user status:", error);
         return null;
     }
 };

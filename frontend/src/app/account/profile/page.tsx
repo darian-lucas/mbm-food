@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState } from "react";
 import { getUserById } from "@/services/user";
-import styles from "@/styles/Account.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function AccountInfo() {
