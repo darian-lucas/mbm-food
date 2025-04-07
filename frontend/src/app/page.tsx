@@ -353,7 +353,7 @@ export default function Home(): JSX.Element {
           ))}
         </div>
       </section>
-      ;{/* Giới thiệu */}
+      {/* Giới thiệu */}
       <section className={styles.about}>
         <div className={styles.aboutContainer}>
           {/* Hình lớn bên trái */}
