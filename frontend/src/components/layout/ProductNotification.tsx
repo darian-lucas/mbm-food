@@ -35,7 +35,9 @@ const ProductNotification: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/products");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products`
+        );
         if (!response.ok) {
           throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
         }
@@ -82,7 +84,7 @@ const ProductNotification: React.FC = () => {
   if (hidden) return null; // Chỉ ẩn khi hiệu ứng đã hoàn tất
 
   const productImage = randomProduct?.variants[0]?.image
-    ? `http://localhost:3001/images/${randomProduct.variants[0].image}`
+    ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${randomProduct.variants[0].image}`
     : "/placeholder.png";
 
   return (

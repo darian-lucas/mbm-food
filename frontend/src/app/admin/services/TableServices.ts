@@ -1,6 +1,6 @@
-import {TCreateTableParams } from "../types";
+import { TCreateTableParams } from "../types";
 
-const API_URL = "http://localhost:3001/api/tables";
+const API_URL = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/tables`;
 
 const createTable = async (data: TCreateTableParams) => {
   try {
@@ -70,10 +70,7 @@ const deleteTable = async (id: string) => {
   return response.json();
 };
 
-const updateTableStatus = async (
-  id: string,
-  status: string,
-) => {
+const updateTableStatus = async (id: string, status: string) => {
   const response = await fetch(`${API_URL}/${id}/status`, {
     method: "PUT",
     headers: {
@@ -97,6 +94,6 @@ const TableServices = {
   getTableById,
   updateTable,
   deleteTable,
-  updateTableStatus
+  updateTableStatus,
 };
 export default TableServices;

@@ -15,7 +15,6 @@ interface Product {
   slug: string;
 }
 
-
 const Banner = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -66,11 +65,15 @@ const Banner = () => {
           }`}
         >
           <Link
-            href={products.length > 0 ? `/product/${products[index % products.length].slug}` : "#"}
+            href={
+              products.length > 0
+                ? `/product/${products[index % products.length].slug}`
+                : "#"
+            }
             passHref
           >
             <Image
-              src={`http://localhost:3001/images/${banner.image}`}
+              src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${banner.image}`}
               alt={banner.title || "Banner"}
               width={1280}
               height={500}

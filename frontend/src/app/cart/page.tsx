@@ -127,7 +127,7 @@ const CartPage = () => {
                         <div className={styles.ajaxCartProduct}>
                           <Image
                             className={styles.ajaxImage}
-                            src={`http://localhost:3001/images/${item.image}`}
+                            src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${item.image}`}
                             alt={item.name}
                             width={100}
                             height={100}

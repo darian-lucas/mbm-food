@@ -120,7 +120,7 @@ function ProductUpdate() {
           productData.variants?.map((variant) => variant.image || "") || [];
 
         setExistingImages(initialExistingImages);
-        // setPreviewImages(initialExistingImages); 
+        // setPreviewImages(initialExistingImages);
 
         // Reset form với dữ liệu sản phẩm
         form.reset({

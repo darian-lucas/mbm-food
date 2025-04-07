@@ -1,6 +1,4 @@
-
-
-const API_URL = "http://localhost:3001/api/banners";
+const API_URL = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/banners`;
 
 const getAllBanners = async () => {
   try {

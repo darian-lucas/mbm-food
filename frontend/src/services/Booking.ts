@@ -1,10 +1,10 @@
 import { TCreateRegisterParams } from "@/types/enum";
 
-const API_URL_TABLE = "http://localhost:3001/api/tables";
-const API_URL_USER = "http://localhost:3001/api/user";
-const API_URL_REGISTER = "http://localhost:3001/api/registers";
+const API_URL_TABLE = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/tables`;
+const API_URL_USER = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/user`;
+const API_URL_REGISTER = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/registers`;
 
-const getRegistersByUser = async (userId:string) => {
+const getRegistersByUser = async (userId: string) => {
   try {
     const response = await fetch(`${API_URL_REGISTER}/user/${userId}`);
     if (!response.ok) {
@@ -81,7 +81,11 @@ const createRegister = async (data: TCreateRegisterParams) => {
   }
 };
 
-const updateRegisterStatus = async (id: string, status: string, note:string) => {
+const updateRegisterStatus = async (
+  id: string,
+  status: string,
+  note: string
+) => {
   const response = await fetch(`${API_URL_REGISTER}/${id}/status`, {
     method: "PUT",
     headers: {
@@ -89,7 +93,7 @@ const updateRegisterStatus = async (id: string, status: string, note:string) => 
     },
     body: JSON.stringify({
       status,
-      note
+      note,
     }),
   });
 

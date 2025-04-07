@@ -12,16 +12,19 @@ const ResetPassword = ({ params }: { params: { token: string } }) => {
     e.preventDefault();
     console.log("Mật khẩu gửi đi:", password);
     console.log("Token gửi đi:", params.token);
-    
+
     try {
       const bodyData = JSON.stringify({ newPassword: password });
       console.log("Dữ liệu gửi đi:", bodyData);
 
-      const res = await fetch(`http://localhost:3001/api/user/reset-password/${params.token}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: bodyData,
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/user/reset-password/${params.token}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: bodyData,
+        }
+      );
 
       const result = await res.json();
       console.log("Phản hồi từ server:", result);
@@ -38,7 +41,10 @@ const ResetPassword = ({ params }: { params: { token: string } }) => {
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow-lg p-4" style={{ maxWidth: "400px", width: "100%" }}>
+      <div
+        className="card shadow-lg p-4"
+        style={{ maxWidth: "400px", width: "100%" }}
+      >
         <h2 className="text-center mb-4">Đặt lại mật khẩu</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -52,7 +58,9 @@ const ResetPassword = ({ params }: { params: { token: string } }) => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Cập nhật mật khẩu</button>
+          <button type="submit" className="btn btn-primary w-100">
+            Cập nhật mật khẩu
+          </button>
         </form>
       </div>
     </div>

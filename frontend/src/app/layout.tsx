@@ -7,13 +7,13 @@ import "./globals.scss";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
+import { log } from "console";
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
-
   useEffect(() => {
     if (!pathname) return;
     let formattedTitle = "Mbmfood";

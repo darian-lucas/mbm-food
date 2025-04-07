@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Heart } from "lucide-react";
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../../styles/ProductList.module.css";
-import { addFavorite, removeFavorite, checkFavorite } from "@/services/Favorite";
+import {
+  addFavorite,
+  removeFavorite,
+  checkFavorite,
+} from "@/services/Favorite";
 import QuickView from "../layout/QuickView";
 
 interface Variant {
@@ -33,10 +37,9 @@ interface Product {
 interface ProductListProps {
   idcate: string;
   showAll?: boolean;
-  
 }
 
-const ProductList = ({ idcate , showAll = false }: ProductListProps) => {
+const ProductList = ({ idcate, showAll = false }: ProductListProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const [token, setToken] = useState<string | null>(null);
@@ -49,9 +52,13 @@ const ProductList = ({ idcate , showAll = false }: ProductListProps) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/products/");
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products`
+        );
         const data = await res.json();
-        const filteredProducts = data.data.filter((product: Product) => product.idcate === idcate);
+        const filteredProducts = data.data.filter(
+          (product: Product) => product.idcate === idcate
+        );
         setProducts(showAll ? filteredProducts : filteredProducts.slice(0, 10));
 
         if (token) {
@@ -103,7 +110,10 @@ const ProductList = ({ idcate , showAll = false }: ProductListProps) => {
             <div className={styles.colFix} key={item._id}>
               <div className={styles.productAction}>
                 <div className={styles.productThumnail}>
-                  <Link href={`/product/${item.slug}`} className={styles.imageThum}>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    className={styles.imageThum}
+                  >
                     <Image
                       className={styles.img}
                       src={`${API_URL}/images/${item.variants[0].image}`}
@@ -112,7 +122,10 @@ const ProductList = ({ idcate , showAll = false }: ProductListProps) => {
                       height={234}
                     />
                   </Link>
-                  <button className={styles.whistList} onClick={() => toggleFavorite(item._id)}>
+                  <button
+                    className={styles.whistList}
+                    onClick={() => toggleFavorite(item._id)}
+                  >
                     <Heart
                       size={20}
                       color={favorites[item._id] ? "#E51735" : "gray"}
@@ -122,19 +135,29 @@ const ProductList = ({ idcate , showAll = false }: ProductListProps) => {
                 </div>
                 <div className={styles.productInfo}>
                   <h3 className={styles.productName}>
-                    <Link href={`/product/${item.slug}`} className={styles.productName}>
+                    <Link
+                      href={`/product/${item.slug}`}
+                      className={styles.productName}
+                    >
                       {item.name}
                     </Link>
                   </h3>
                   <div className={styles.productContent}>
-                    <span className={styles.ProductDesc} dangerouslySetInnerHTML={{ __html: item.description }} />
+                    <span
+                      className={styles.ProductDesc}
+                      dangerouslySetInnerHTML={{ __html: item.description }}
+                    />
                     <Link href={`/product/${item.slug}`}>Xem thêm</Link>
                   </div>
                   <div className={styles.groupForm}>
                     <div className={styles.priceBox}>
-                      <span>Giá chỉ từ: </span> {item.variants[0].price.toLocaleString()}₫
+                      <span>Giá chỉ từ: </span>{" "}
+                      {item.variants[0].price.toLocaleString()}₫
                     </div>
-                    <button className={styles.add} onClick={() => setSelectedProduct(item)}>
+                    <button
+                      className={styles.add}
+                      onClick={() => setSelectedProduct(item)}
+                    >
                       Thêm
                     </button>
                   </div>
@@ -144,7 +167,12 @@ const ProductList = ({ idcate , showAll = false }: ProductListProps) => {
           ))}
         </div>
       </section>
-      {selectedProduct && <QuickView product={{ ...selectedProduct, id: selectedProduct._id }} onClose={() => setSelectedProduct(null)} />}
+      {selectedProduct && (
+        <QuickView
+          product={{ ...selectedProduct, id: selectedProduct._id }}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
       {/* <ToastContainer position="top-right" autoClose={2000} /> */}
     </div>
   );

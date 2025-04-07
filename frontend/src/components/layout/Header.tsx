@@ -34,7 +34,7 @@ export default function Header(): JSX.Element {
 
       try {
         const response = await fetch(
-          `http://localhost:3001/api/search?query=${searchTerm}`
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/search?query=${searchTerm}`
         );
         const data = await response.json();
 
@@ -196,14 +196,14 @@ export default function Header(): JSX.Element {
                     <h4 className={styles.categoryTitle}>Sản phẩm</h4>
                     {searchResults.products.slice(0, 4).map((item, index) => (
                       <Link
-                      key={index}
-                      href={`/product/${item.slug}`}
-                      className={styles.resultItem}
-                      onClick={() => {
-                        setSearchTerm("");
-                        setShowResults(false);
-                      }}
-                    >                    
+                        key={index}
+                        href={`/product/${item.slug}`}
+                        className={styles.resultItem}
+                        onClick={() => {
+                          setSearchTerm("");
+                          setShowResults(false);
+                        }}
+                      >
                         {item.image && (
                           <Image
                             src={`/images/${item.image}`}
@@ -235,39 +235,38 @@ export default function Header(): JSX.Element {
               {searchResults.news.length > 0 && (
                 <div className={styles.resultCategory}>
                   <div>
-                  <h4 className={styles.categoryTitle}>Tin tức</h4>
-                  {searchResults.news.slice(0, 4).map((item, index) => (
-                    <Link
-                      key={index}
-                      href={`/news/${item.slug}`}
-                      className={styles.resultItem}
-                      onClick={() => {
-                        setSearchTerm("");
-                        setShowResults(false);
-                      }}
-                    >
-                  
-                      {item.image && (
-                        <Image
-                          src={`/images/${item.image}`}
-                          alt={item.title}
-                          width={50}
-                          height={50}
-                        />
-                      )}
-                      <div className={styles.resultInfo}>
-                        <p className={styles.resultName}>{item.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                  {searchResults.news.length > 2 && (
-                    <button
-                      className={styles.viewMoreBtn}
-                      onClick={handleViewMoreNews}
-                    >
-                      Xem thêm {searchResults.news.length - 2} tin tức
-                    </button>
-                  )}
+                    <h4 className={styles.categoryTitle}>Tin tức</h4>
+                    {searchResults.news.slice(0, 4).map((item, index) => (
+                      <Link
+                        key={index}
+                        href={`/news/${item.slug}`}
+                        className={styles.resultItem}
+                        onClick={() => {
+                          setSearchTerm("");
+                          setShowResults(false);
+                        }}
+                      >
+                        {item.image && (
+                          <Image
+                            src={`/images/${item.image}`}
+                            alt={item.title}
+                            width={50}
+                            height={50}
+                          />
+                        )}
+                        <div className={styles.resultInfo}>
+                          <p className={styles.resultName}>{item.title}</p>
+                        </div>
+                      </Link>
+                    ))}
+                    {searchResults.news.length > 2 && (
+                      <button
+                        className={styles.viewMoreBtn}
+                        onClick={handleViewMoreNews}
+                      >
+                        Xem thêm {searchResults.news.length - 2} tin tức
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
@@ -392,7 +391,9 @@ export default function Header(): JSX.Element {
 
       {/* Navbar Overlay */}
       <div className={`${styles.menuOverlay} ${isMenuOpen ? styles.open : ""}`}>
-        <button onClick={toggleMenu} className={styles.closeButton}>×</button>
+        <button onClick={toggleMenu} className={styles.closeButton}>
+          ×
+        </button>
 
         {/* Danh sách menu */}
         <nav>
@@ -452,8 +453,6 @@ export default function Header(): JSX.Element {
           )
         )}
       </div>
-  
     </header>
   );
-  
 }
