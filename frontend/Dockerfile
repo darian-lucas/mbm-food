@@ -1,23 +1,24 @@
-# Sử dụng Node.js phiên bản 18
-FROM node:18
+# Stage 1: Build
+FROM node:18-alpine AS builder
+WORKDIR /app
 
-# Đặt thư mục làm việc trong container
-WORKDIR /usr/src/app
+RUN apk add --no-cache libc6-compat
 
-# Copy package.json và package-lock.json
 COPY package*.json ./
-
-# Cài đặt dependencies
 RUN npm install
-
-# Copy toàn bộ source code
 COPY . .
-
-# Build Next.js (bắt buộc để chạy production mode)
 RUN npm run build
 
-# Expose cổng của Next.js (mặc định 3000)
-EXPOSE 3002
+# Stage 2: Run
+FROM node:18-alpine AS runner
+WORKDIR /app
 
-# Chạy ứng dụng
+RUN apk add --no-cache libc6-compat
+
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package*.json ./
+RUN npm install --omit=dev && npm cache clean --force
+
+EXPOSE 3000
 CMD ["npm", "start"]

@@ -1,13 +1,21 @@
-const API_URL_USER = "http://localhost:3001/api/user";
-const API_URL_REGISTER = "http://localhost:3001/api/registers";
+const API_URL_USER = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/user`;
+const API_URL_REGISTER = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/registers`;
 
-export const sendEmail = async (formData: { name: string; email: string; phone: string; message: string }) => {
+export const sendEmail = async (formData: {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}) => {
   try {
-    const response = await fetch("http://localhost:3001/api/emailCustomer/send-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/emailCustomer/send-email`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      }
+    );
 
     const result = await response.json();
 
@@ -19,7 +27,10 @@ export const sendEmail = async (formData: { name: string; email: string; phone: 
     }
   } catch (error) {
     console.error("❌ Lỗi khi gọi API:", error);
-    return { success: false, message: "❌ Có lỗi xảy ra, vui lòng thử lại sau!" };
+    return {
+      success: false,
+      message: "❌ Có lỗi xảy ra, vui lòng thử lại sau!",
+    };
   }
 };
 // Lấy thông tin người dùng theo ID

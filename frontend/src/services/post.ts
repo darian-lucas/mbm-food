@@ -13,7 +13,7 @@ export interface Post {
 // ✅ Fetch tất cả bài viết có status = 1
 export const fetchNews = async (): Promise<Post[]> => {
   try {
-    const res = await fetch("http://localhost:3001/api/posts");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/posts`);
     if (!res.ok) throw new Error(`Lỗi khi lấy tin tức! Mã lỗi: ${res.status}`);
 
     const data = await res.json();
@@ -35,7 +35,7 @@ export const fetchNews = async (): Promise<Post[]> => {
 // ✅ Fetch tin nổi bật có status = 1
 export const fetchFeaturedNews = async (): Promise<Post[]> => {
   try {
-    const res = await fetch(`http://localhost:3001/api/posts/newest/4`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/posts/newest/4`);
     if (!res.ok) throw new Error("Lỗi khi lấy tin nổi bật!");
 
     const data = await res.json();
@@ -57,8 +57,11 @@ export const fetchNewsDetail = async (slug: string): Promise<Post | null> => {
   }
 
   try {
-    const res = await fetch(`http://localhost:3001/api/posts/slug/${slug}`);
-    if (!res.ok) throw new Error(`Bài viết không tồn tại! Mã lỗi: ${res.status}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/posts/slug/${slug}`
+    );
+    if (!res.ok)
+      throw new Error(`Bài viết không tồn tại! Mã lỗi: ${res.status}`);
 
     const data: Post = await res.json();
     console.log("Dữ liệu trả về:", data);

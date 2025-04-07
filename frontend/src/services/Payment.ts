@@ -1,4 +1,4 @@
-const API_URL_METHOD = "http://localhost:3001/api/payments";
+const API_URL_METHOD = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/payments`;
 const getAllPaymentMethods = async () => {
   try {
     const response = await fetch(API_URL_METHOD);
@@ -12,6 +12,6 @@ const getAllPaymentMethods = async () => {
   }
 };
 const PaymentServices = {
-    getAllPaymentMethods
-  };
-  export default PaymentServices;
+  getAllPaymentMethods,
+};
+export default PaymentServices;

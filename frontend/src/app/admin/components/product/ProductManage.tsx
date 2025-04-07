@@ -56,6 +56,7 @@ const ProductManage = () => {
       setLoading(true);
       try {
         const productData = await ProductServices.getAllProductsForAdmin();
+        console.log("🚀 ~ fetchData ~ productData:", productData)
         setProducts(productData);
 
         const categoryData = await CategoryServices.getAllCategories();
@@ -134,13 +135,13 @@ const ProductManage = () => {
         try {
           const newStatus = product.status === "Active" ? "Unactive" : "Active";
           const newFlag = newStatus === "Active";
-    
+
           await ProductServices.updateStatusProduct(
             product._id,
             newStatus,
             newFlag
           );
-    
+
           // Cập nhật state sau khi thay đổi trạng thái
           setProducts((prev) => {
             return prev.map((item) => {

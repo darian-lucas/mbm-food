@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001/api/products";
+const API_URL = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products`;
 
 const getAllProductsForAdmin = async () => {
   try {

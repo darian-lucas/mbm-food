@@ -45,15 +45,17 @@ const SuccessPage = () => {
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const orderId = searchParams.get("_id");
-  console.log("Dữ liệu orderId",orderId);
+  console.log("Dữ liệu orderId", orderId);
   useEffect(() => {
     if (!orderId) return;
 
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/orders/${orderId}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/orders/${orderId}`
+        );
         const data = await response.json();
-        console.log("Dữ liệu data trả về khi fetch",data);
+        console.log("Dữ liệu data trả về khi fetch", data);
         if (data._id) {
           setOrder(data);
         } else {
@@ -68,7 +70,9 @@ const SuccessPage = () => {
 
     const fetchPaymentMethods = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/payments");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/payments`
+        );
         const data = await response.json();
         setPaymentMethods(data);
       } catch (error) {
@@ -110,7 +114,8 @@ const SuccessPage = () => {
           <h2 className="text-xl font-semibold mt-3">Cảm ơn bạn đã đặt hàng</h2>
           {order.id_user.email && (
             <p className="text-gray-600 text-sm">
-              Một email xác nhận đã được gửi tới <b>{order.id_user.email}</b>. Xin vui lòng kiểm tra email của bạn.
+              Một email xác nhận đã được gửi tới <b>{order.id_user.email}</b>.
+              Xin vui lòng kiểm tra email của bạn.
             </p>
           )}
         </div>
@@ -119,21 +124,30 @@ const SuccessPage = () => {
         <div className="mt-6 flex justify-between border p-4 rounded-lg">
           <div>
             <h3 className="font-semibold">THÔNG TIN MUA HÀNG</h3>
-            <p><strong>Khách hàng : </strong>{order.name}</p>
-            <p><strong>Email : </strong>{order.id_user.email}</p>
-            <p><strong>Số điện thoại : </strong>{order.phone}</p>
+            <p>
+              <strong>Khách hàng : </strong>
+              {order.name}
+            </p>
+            <p>
+              <strong>Email : </strong>
+              {order.id_user.email}
+            </p>
+            <p>
+              <strong>Số điện thoại : </strong>
+              {order.phone}
+            </p>
           </div>
           <div>
             <h3 className="font-semibold">PHƯƠNG THỨC THANH TOÁN</h3>
             <p>
-            {paymentMethod
-              ? paymentMethod.payment_name === "cash"
-                ? "Tiền Mặt"
-                : paymentMethod.payment_name === "momo"
-                ? "Chuyển khoản Momo"
-                : paymentMethod.payment_name
-              : "Không xác định"}
-          </p>
+              {paymentMethod
+                ? paymentMethod.payment_name === "cash"
+                  ? "Tiền Mặt"
+                  : paymentMethod.payment_name === "momo"
+                  ? "Chuyển khoản Momo"
+                  : paymentMethod.payment_name
+                : "Không xác định"}
+            </p>
           </div>
         </div>
 
@@ -141,10 +155,15 @@ const SuccessPage = () => {
         <div className="mt-6 border p-4 rounded-lg">
           <h3 className="font-semibold mb-2">Mã đơn #{order.order_code}</h3>
           {order.details.map((item, index) => (
-            <div key={index} className="flex justify-between items-center border-b py-2">
+            <div
+              key={index}
+              className="flex justify-between items-center border-b py-2"
+            >
               <div>
                 <p className="font-semibold">{item.id_product.name}</p>
-                <p className="text-sm text-gray-500">Số lượng: {item.quantity}</p>
+                <p className="text-sm text-gray-500">
+                  Số lượng: {item.quantity}
+                </p>
               </div>
               <p className="font-semibold">{item.price.toLocaleString()}đ</p>
             </div>
@@ -152,7 +171,9 @@ const SuccessPage = () => {
 
           <div className="flex justify-between font-semibold mt-3">
             <p>TỔNG TIỀN THANH TOÁN</p>
-            <p className="text-blue-600">{order.total_payment.toLocaleString()}đ</p>
+            <p className="text-blue-600">
+              {order.total_payment.toLocaleString()}đ
+            </p>
           </div>
         </div>
 

@@ -45,12 +45,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     setActiveSortOption(option);
   };
 
-
   // Hàm lấy danh sách kích thước sản phẩm theo danh mục
   const fetchSizes = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/products/categories/${categoryId}`
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products/categories/${categoryId}`
       );
       const result = await response.json();
       const products: Product[] = Array.isArray(result.data) ? result.data : [];
@@ -84,27 +83,61 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             <nav className={style.nav_category}>
               <ul className={style.navbar_pills}>
                 <li className={style.nav_item}>
-                  <a href="/" className={style.navlink}>Trang chủ</a>
+                  <a href="/" className={style.navlink}>
+                    Trang chủ
+                  </a>
                 </li>
                 <li className={style.nav_item}>
-                  <a href="/about" className={style.navlink}>Giới thiệu</a>
+                  <a href="/about" className={style.navlink}>
+                    Giới thiệu
+                  </a>
                 </li>
                 <li className={style.nav_item}>
-                <a href="/product" className={style.navlink}>Sản phẩm</a>
+                  <a href="/product" className={style.navlink}>
+                    Sản phẩm
+                  </a>
                   <i className={style.down_icon} onClick={toggleSubMenu}></i>
-                  <ul className={`${style.menu_down} ${isSubMenuOpen ? style.open : ""}`}>
-                    <li className={style.nav_item}><a href="/pizza" className={style.navlink}>Pizza</a></li>
-                    <li className={style.nav_item}><a href="/khai-vi" className={style.navlink}>Khai vị</a></li>
-                    <li className={style.nav_item}><a href="/my-y" className={style.navlink}>Mỳ ý</a></li>
-                    <li className={style.nav_item}><a href="/salad" className={style.navlink}>Salad</a></li>
-                    <li className={style.nav_item}><a href="/thuc-uong" className={style.navlink}>Thức uống</a></li>
+                  <ul
+                    className={`${style.menu_down} ${
+                      isSubMenuOpen ? style.open : ""
+                    }`}
+                  >
+                    <li className={style.nav_item}>
+                      <a href="/pizza" className={style.navlink}>
+                        Pizza
+                      </a>
+                    </li>
+                    <li className={style.nav_item}>
+                      <a href="/khai-vi" className={style.navlink}>
+                        Khai vị
+                      </a>
+                    </li>
+                    <li className={style.nav_item}>
+                      <a href="/my-y" className={style.navlink}>
+                        Mỳ ý
+                      </a>
+                    </li>
+                    <li className={style.nav_item}>
+                      <a href="/salad" className={style.navlink}>
+                        Salad
+                      </a>
+                    </li>
+                    <li className={style.nav_item}>
+                      <a href="/thuc-uong" className={style.navlink}>
+                        Thức uống
+                      </a>
+                    </li>
                   </ul>
                 </li>
                 <li className={style.nav_item}>
-                  <a href="/news" className={style.navlink}>Tin tức</a>
+                  <a href="/news" className={style.navlink}>
+                    Tin tức
+                  </a>
                 </li>
                 <li className={style.nav_item}>
-                  <a href="/contact" className={style.navlink}>Liên hệ</a>
+                  <a href="/contact" className={style.navlink}>
+                    Liên hệ
+                  </a>
                 </li>
               </ul>
             </nav>
@@ -114,7 +147,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           <div className={style.filter_content}>
             <div className={style.title_head_col}>Bộ lọc sản phẩm</div>
             <div className={style.filter_container}>
-
               {/* Bộ lọc giá */}
               <aside className={style.filter_price}>
                 <div className={style.title_head}>Chọn mức giá</div>
@@ -122,10 +154,26 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                   <ul>
                     {[
                       { min: 0, max: 100000, label: "Dưới 100.000đ" },
-                      { min: 100000, max: 200000, label: "100.000đ - 200.000đ" },
-                      { min: 200000, max: 300000, label: "200.000đ - 300.000đ" },
-                      { min: 300000, max: 500000, label: "300.000đ - 500.000đ" },
-                      { min: 500000, max: 1000000, label: "500.000đ - 1.000.000đ" },
+                      {
+                        min: 100000,
+                        max: 200000,
+                        label: "100.000đ - 200.000đ",
+                      },
+                      {
+                        min: 200000,
+                        max: 300000,
+                        label: "200.000đ - 300.000đ",
+                      },
+                      {
+                        min: 300000,
+                        max: 500000,
+                        label: "300.000đ - 500.000đ",
+                      },
+                      {
+                        min: 500000,
+                        max: 1000000,
+                        label: "500.000đ - 1.000.000đ",
+                      },
                       { min: 1000000, max: null, label: "Trên 1.000.000đ" },
                     ].map(({ min, max, label }) => (
                       <li key={label} className={style.filter_item}>
@@ -174,7 +222,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                   )}
                 </div>
               </aside>
-
             </div>
           </div>
         </aside>
@@ -182,29 +229,71 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         {/* Menu sắp xếp dạng danh sách */}
         <div className={style.block_collection}>
           <div className={style.category_products}>
-          <div className={style.sort_cate}>
-            <h3>Xếp theo:</h3>
-            <ul>
-              <li className={style.btn_quick_sort}>
-                <button className={activeSortOption === "default" ? style.active : ""} onClick={() => handleSort("default")}>Mặc định</button>
-              </li>
-              <li className={style.btn_quick_sort}>
-                <button className={activeSortOption === "name-asc" ? style.active : ""} onClick={() => handleSort("name-asc")}>Tên A-Z</button>
-              </li>
-              <li className={style.btn_quick_sort}>
-                <button className={activeSortOption === "name-desc" ? style.active : ""} onClick={() => handleSort("name-desc")}>Tên Z-A</button>
-              </li>
-              <li className={style.btn_quick_sort}>
-                <button className={activeSortOption === "newest" ? style.active : ""} onClick={() => handleSort("newest")}>Hàng mới</button>
-              </li>
-              <li className={style.btn_quick_sort}>
-                <button className={activeSortOption === "price-asc" ? style.active : ""} onClick={() => handleSort("price-asc")}>Giá thấp đến cao</button>
-              </li>
-              <li className={style.btn_quick_sort}>
-                <button className={activeSortOption === "price-desc" ? style.active : ""} onClick={() => handleSort("price-desc")}>Giá cao đến thấp</button>
-              </li>
-            </ul>
-          </div>
+            <div className={style.sort_cate}>
+              <h3>Xếp theo:</h3>
+              <ul>
+                <li className={style.btn_quick_sort}>
+                  <button
+                    className={
+                      activeSortOption === "default" ? style.active : ""
+                    }
+                    onClick={() => handleSort("default")}
+                  >
+                    Mặc định
+                  </button>
+                </li>
+                <li className={style.btn_quick_sort}>
+                  <button
+                    className={
+                      activeSortOption === "name-asc" ? style.active : ""
+                    }
+                    onClick={() => handleSort("name-asc")}
+                  >
+                    Tên A-Z
+                  </button>
+                </li>
+                <li className={style.btn_quick_sort}>
+                  <button
+                    className={
+                      activeSortOption === "name-desc" ? style.active : ""
+                    }
+                    onClick={() => handleSort("name-desc")}
+                  >
+                    Tên Z-A
+                  </button>
+                </li>
+                <li className={style.btn_quick_sort}>
+                  <button
+                    className={
+                      activeSortOption === "newest" ? style.active : ""
+                    }
+                    onClick={() => handleSort("newest")}
+                  >
+                    Hàng mới
+                  </button>
+                </li>
+                <li className={style.btn_quick_sort}>
+                  <button
+                    className={
+                      activeSortOption === "price-asc" ? style.active : ""
+                    }
+                    onClick={() => handleSort("price-asc")}
+                  >
+                    Giá thấp đến cao
+                  </button>
+                </li>
+                <li className={style.btn_quick_sort}>
+                  <button
+                    className={
+                      activeSortOption === "price-desc" ? style.active : ""
+                    }
+                    onClick={() => handleSort("price-desc")}
+                  >
+                    Giá cao đến thấp
+                  </button>
+                </li>
+              </ul>
+            </div>
 
             <section className={style.product_view}>
               <ProductListCate
@@ -213,7 +302,14 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 minPrice={minPrice ?? undefined}
                 maxPrice={maxPrice ?? undefined}
                 selectedSize={selectedSize}
-                sortOption={sortOption as "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest"}
+                sortOption={
+                  sortOption as
+                    | "price-asc"
+                    | "price-desc"
+                    | "name-asc"
+                    | "name-desc"
+                    | "newest"
+                }
               />
             </section>
           </div>

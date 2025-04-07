@@ -41,14 +41,18 @@ export default function SearchPage() {
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("query") || "";
-  const [searchResults, setSearchResults] = useState<{ products: Product[] }>({ products: [] });
+  const [searchResults, setSearchResults] = useState<{ products: Product[] }>({
+    products: [],
+  });
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const fetchResults = async () => {
       if (!searchTerm) return;
       try {
-        const response = await fetch(`http://localhost:3001/api/search?query=${searchTerm}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/search?query=${searchTerm}`
+        );
         if (!response.ok) throw new Error(`Lỗi: ${response.status}`);
         const data = await response.json();
         setSearchResults({ products: data.products || [] });
@@ -101,7 +105,10 @@ export default function SearchPage() {
                     <div className={styles.colFix} key={item._id}>
                       <div className={styles.productAction}>
                         <div className={styles.productThumnail}>
-                          <Link href={`/product/${item.slug}`} className={styles.imageThum}>
+                          <Link
+                            href={`/product/${item.slug}`}
+                            className={styles.imageThum}
+                          >
                             <Image
                               className={styles.img}
                               src={`${API_URL}/images/${item.variants[0].image}`}
@@ -110,30 +117,47 @@ export default function SearchPage() {
                               height={234}
                             />
                           </Link>
-                          <button className={styles.whistList} onClick={() => toggleFavorite(item._id)}>
+                          <button
+                            className={styles.whistList}
+                            onClick={() => toggleFavorite(item._id)}
+                          >
                             <Heart
                               size={20}
                               color={favorites[item._id] ? "#E51735" : "gray"}
-                              fill={favorites[item._id] ? "#E51735" : "transparent"}
+                              fill={
+                                favorites[item._id] ? "#E51735" : "transparent"
+                              }
                             />
                           </button>
                         </div>
 
                         <div className={styles.productInfo}>
                           <h3 className={styles.productName}>
-                            <Link href={`/product/${item.slug}`} className={styles.productName}>
+                            <Link
+                              href={`/product/${item.slug}`}
+                              className={styles.productName}
+                            >
                               {item.name}
                             </Link>
                           </h3>
                           <div className={styles.productContent}>
-                            <span className={styles.ProductDesc} dangerouslySetInnerHTML={{ __html: item.description }} />
+                            <span
+                              className={styles.ProductDesc}
+                              dangerouslySetInnerHTML={{
+                                __html: item.description,
+                              }}
+                            />
                             <Link href={`/product/${item.slug}`}>Xem thêm</Link>
                           </div>
                           <div className={styles.groupForm}>
                             <div className={styles.priceBox}>
-                              <span>Giá chỉ từ: </span> {item.variants[0].price.toLocaleString()}₫
+                              <span>Giá chỉ từ: </span>{" "}
+                              {item.variants[0].price.toLocaleString()}₫
                             </div>
-                            <button className={styles.add} onClick={() => setSelectedProduct(item)}>
+                            <button
+                              className={styles.add}
+                              onClick={() => setSelectedProduct(item)}
+                            >
                               Thêm
                             </button>
                           </div>
@@ -147,10 +171,17 @@ export default function SearchPage() {
           </div>
         )}
 
-        {searchResults.products.length === 0 && <p>Không tìm thấy sản phẩm nào.</p>}
+        {searchResults.products.length === 0 && (
+          <p>Không tìm thấy sản phẩm nào.</p>
+        )}
       </div>
 
-      {selectedProduct && <QuickView product={{ ...selectedProduct, id: selectedProduct._id }} onClose={() => setSelectedProduct(null)} />}
+      {selectedProduct && (
+        <QuickView
+          product={{ ...selectedProduct, id: selectedProduct._id }}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 }

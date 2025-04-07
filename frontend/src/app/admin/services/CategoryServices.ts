@@ -1,7 +1,6 @@
 // import { TCreateCategoryParams } from "../types";
 
-const API_URL = "http://localhost:3001/api/categories";
-
+const API_URL = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/categories`;
 const getAllCategories = async () => {
   try {
     const response = await fetch(API_URL);

@@ -1,7 +1,7 @@
 // services/productService.ts
 export const fetchProducts = async () => {
   try {
-    const response = await fetch("http://localhost:3001/api/products");
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products`);
 
     if (!response.ok) {
       throw new Error(`Lỗi HTTP! Mã trạng thái: ${response.status}`);
