@@ -99,7 +99,7 @@ export default function NewsTable() {
     return (
         <div className={`${styles.tableContainer} mt-4`}>
             <div className={styles.mainTitle}>
-                <h4 className="fw-bold fs-3 mb-3">Danh sách người dùng</h4>
+                <h4 className="fw-bold fs-3 mb-3">Danh sách bài viết</h4>
 
             </div>
 
