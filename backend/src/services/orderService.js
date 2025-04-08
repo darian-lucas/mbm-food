@@ -147,7 +147,6 @@ class OrderService {
       // Lấy danh sách ID sản phẩm
       const productIds = topProducts.map((product) => product._id.toString());
   
-      console.log("✅ 5 sản phẩm bán chạy nhất:", productIds);
   
       // Gọi API để lấy thông tin sản phẩm
       return await this.fetchProductDetails(productIds);
@@ -176,7 +175,6 @@ class OrderService {
       // Lấy dữ liệu từ các responses
       const products = responses.map((response) => response.data);
   
-      console.log("📦 Thông tin các sản phẩm bán chạy:", products);
   
       return products;
     } catch (error) {
