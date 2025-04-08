@@ -54,8 +54,8 @@ export default function Home(): JSX.Element {
               <Image
                 src={`${API_URL}/images/${category.image}`}
                 alt={category.name}
-                width={50}
-                height={50}
+                width={85}
+                height={95}
               />
             </div>
           </Link>
