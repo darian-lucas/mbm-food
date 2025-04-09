@@ -142,8 +142,7 @@ exports.createPost = async (req, res) => {
             content,
             summary,
             imageSummary,
-            
-            
+
             author,
             status,
             hot,
