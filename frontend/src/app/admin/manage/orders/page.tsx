@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import orderService from "../../services/OrderServices";
 import styles from "../../styles/order.module.css";
 import Swal from "sweetalert2";
-import { FaArrowLeft } from "react-icons/fa";
+
 
 interface Order {
   _id: string;
@@ -235,7 +235,7 @@ const OrderManagementPage = () => {
             paginatedOrders.map((order) => (
               <tr key={order._id} className={styles.row}>
                 <td>
-                  <a href={`http://localhost:3002/admin/manage/custumerList/${order.id_user._id}`}>
+                  <a href={`https://mbmfood.store/admin/manage/custumerList/${order.id_user._id}`}>
                     #{order.order_code}
                   </a>
                 </td>
