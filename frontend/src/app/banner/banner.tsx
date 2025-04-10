@@ -70,7 +70,7 @@ const Banner = () => {
             passHref
           >
             <Image
-              src={`http://localhost:3001/images/${banner.image}`}
+              src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${banner.image}`}
               alt={banner.title || "Banner"}
               width={1280}
               height={500}

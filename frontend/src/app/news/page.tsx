@@ -46,11 +46,11 @@ export default function New() {
   }, []);
   
 
-  const extractImageUrl = (htmlString?: string) => {
-    if (!htmlString) return "/images/default.png";
-    const match = htmlString.match(/src=['"]([^'"]+)['"]/);
-    return match ? match[1] : "/images/default.png";
-  };
+  // const extractImageUrl = (htmlString?: string) => {
+  //   if (!htmlString) return "/images/default.png";
+  //   const match = htmlString.match(/src=['"]([^'"]+)['"]/);
+  //   return match ? match[1] : "/images/default.png";
+  // };
 
   const truncateHTML = (html: string, maxLength: number) => {
     const tempDiv = document.createElement("div");
@@ -77,7 +77,7 @@ export default function New() {
                         <div className="block-thumb">
                           <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                             <Image
-                              src={extractImageUrl(tintuc.imageSummary)}
+                              src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`}
                               alt={tintuc.title}
                               width={940}
                               height={640}
@@ -142,7 +142,7 @@ export default function New() {
                         <div className="block-thumb">
                           <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                             <Image
-                              src={extractImageUrl(tintuc.imageSummary)}
+                              src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`}
                               alt={tintuc.title}
                               width={120}
                               height={120}
