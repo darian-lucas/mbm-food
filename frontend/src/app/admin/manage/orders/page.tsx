@@ -235,7 +235,7 @@ const OrderManagementPage = () => {
             paginatedOrders.map((order) => (
               <tr key={order._id} className={styles.row}>
                 <td>
-                  <a href={`https://mbmfood.store/admin/manage/custumerList/${order.id_user._id}`}>
+                  <a href={`http://localhost:3002/admin/manage/custumerList/${order.id_user._id}`}>
                     #{order.order_code}
                   </a>
                 </td>
