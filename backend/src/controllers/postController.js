@@ -129,24 +129,40 @@ exports.getAllPostsSummary = async (req, res) => {
 
 exports.createPost = async (req, res) => {
     try {
-        const { title, content, summary, imageSummary, author, status, hot, view } = req.body;
-        
-        // Kiểm tra xem dữ liệu cần thiết có đầy đủ không
+        const { title,slug, content, summary, author, status, hot, view } = req.body;
+
         if (!title || !content || !author) {
             return res.status(400).json({ message: 'Thiếu dữ liệu cần thiết' });
         }
 
-        // Gọi service để tạo bài viết mới
+        // Xử lý variants và ảnh
+        const variants = [];
+        let imageSummary = null;
+
+        for (let i = 0; i < 10; i++) {
+            const file = req.files[`variants[${i}][image]`];
+            if (file && file.length > 0) {
+                const filename = file[0].filename;
+                const imagePath = `${filename}`;
+                variants.push({ image: imagePath });
+
+                if (!imageSummary) {
+                    imageSummary = imagePath;
+                }
+            }
+        }
+
         const newPost = await postService.createPost({
             title,
+            slug,
             content,
             summary,
             imageSummary,
-
             author,
             status,
             hot,
-            view
+            view,
+            variants,
         });
 
         res.status(201).json(newPost);
@@ -155,29 +171,49 @@ exports.createPost = async (req, res) => {
     }
 };
 
+
 exports.updatePost = async (req, res) => {
     try {
-        const { title, content, summary, imageSummary, author, status, hot } = req.body;
+        const { title, content, summary, author, status, hot } = req.body;
+
+        // Xử lý variants và ảnh
+        const variants = [];
+        let imageSummary = null;
+
+        for (let i = 0; i < 10; i++) {
+            const file = req.files[`variants[${i}][image]`];
+            if (file && file.length > 0) {
+                const filename = file[0].filename;
+                const imagePath = `${filename}`;
+                variants.push({ image: imagePath });
+
+                if (!imageSummary) {
+                    imageSummary = imagePath;
+                }
+            }
+        }
 
         const updatedPost = await postService.updatePost(req.params.id, {
             title,
             content,
             summary,
             imageSummary,
-           
-            
             author,
             status,
-            hot
+            hot,
+            variants,
         });
 
-        if (!updatedPost) return res.status(404).json({ message: 'Không tìm thấy bài viết' });
+        if (!updatedPost) {
+            return res.status(404).json({ message: 'Không tìm thấy bài viết' });
+        }
 
         res.json(updatedPost);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 };
+
 
 exports.deletePost = async (req, res) => {
     try {

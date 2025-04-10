@@ -77,7 +77,11 @@ export default function New() {
                         <div className="block-thumb">
                           <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                             <Image
-                              src={extractImageUrl(tintuc.imageSummary)}
+                              src={
+                                tintuc.imageSummary
+                                    ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`
+                                    : "/placeholder.jpg"
+                            }
                               alt={tintuc.title}
                               width={940}
                               height={640}
@@ -142,7 +146,11 @@ export default function New() {
                         <div className="block-thumb">
                           <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
                             <Image
-                              src={extractImageUrl(tintuc.imageSummary)}
+                              src={
+                                tintuc.imageSummary
+                                    ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`
+                                    : "/placeholder.jpg"
+                            }
                               alt={tintuc.title}
                               width={120}
                               height={120}

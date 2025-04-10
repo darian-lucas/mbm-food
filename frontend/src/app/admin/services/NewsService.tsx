@@ -17,23 +17,38 @@ const getNewsById = async (id: string) => {
   return response.json();
 };
 
-const addNews = async (newsData: any) => {
+const addNews = async (formData: FormData) => {
   const response = await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newsData),
+    body: formData, // KHÔNG set Content-Type khi gửi FormData
   });
-  return response.json();
+
+  if (!response.ok) {
+    throw new Error(`Server error: ${response.status}`);
+  }
+
+  return response;
 };
 
-const updateNews = async (id: string, newsData: any) => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newsData),
-  });
-  return response.json();
+
+const updateNews = async (id: string, formData: FormData): Promise<Response> => {
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      body: formData, // ❌ KHÔNG thêm headers
+    });
+
+    if (!response.ok) {
+      throw new Error(`Lỗi server: ${response.status}`);
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Lỗi cập nhật bài viết:", error);
+    throw error;
+  }
 };
+
 
 const deleteNews = async (id: string) => {
   await fetch(`${API_URL}/${id}`, { method: "DELETE" });
