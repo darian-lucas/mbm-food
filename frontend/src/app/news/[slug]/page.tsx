@@ -56,11 +56,11 @@ export default function NewsDetail() {
   if (!post) return null;
 
   // Trích xuất URL ảnh từ chuỗi HTML (nếu có)
-  const extractImageSrc = (htmlString: string | undefined): string | null => {
-    if (!htmlString) return null;
-    const match = htmlString.match(/<img[^>]+src="([^">]+)"/);
-    return match ? match[1] : null;
-  };
+  // const extractImageSrc = (htmlString: string | undefined): string | null => {
+  //   if (!htmlString) return null;
+  //   const match = htmlString.match(/<img[^>]+src="([^">]+)"/);
+  //   return match ? match[1] : null;
+  // };
 
 //   const truncateHTML = (html: string) => {
 //     const tempDiv = document.createElement("div");
@@ -136,7 +136,11 @@ export default function NewsDetail() {
                     <div className="block-thumb">
                       <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
                         <Image
-                          src={extractImageSrc(ttnoibat.imageSummary) || "/images/default.png"}
+                          src={
+                            ttnoibat.imageSummary
+                                ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${ttnoibat.imageSummary}`
+                                : "/placeholder.jpg"
+                        }
                           alt={ttnoibat.title}
                           width={120}
                           height={120}

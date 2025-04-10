@@ -120,22 +120,36 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
     setPost((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+  
+    // Bổ sung thêm các field text thủ công (vì nhiều input dùng ReactQuill)
+    formData.append("author", post.author);
+    formData.append("title", post.title);
+    formData.append("slug", post.slug);
+    formData.append("content", post.content);
+    formData.append("summary", post.summary);
+    formData.append("status", post.status ? "1" : "0");
+    formData.append("hot", post.hot ? "1" : "0");
+  
     try {
-      await newsService.updateNews(id, {
-        ...post,
-        status: post.status ? 1 : 0, // ✅ Chuyển đổi thành 1/0 để lưu vào DB
-        hot: post.hot ? 1 : 0, // 🔥 Chuyển đổi hot thành 1/0
-      });
-      
+      const res = await newsService.updateNews(id, formData);
+  
+      if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
+  
       alert("Bài viết đã được cập nhật!");
       onSuccess();
       onClose();
     } catch (error) {
       alert("Cập nhật thất bại!");
+      console.error("Lỗi cập nhật bài viết:", error);
     }
   };
+  
+  
 
   return (
     <div className="container mx-auto p-4 max-w-3xl bg-white shadow rounded">
@@ -186,12 +200,21 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
         />
 
         <label className="block font-bold mb-2">Hình ảnh tóm tắt:</label>
-        <ReactQuill
-          value={post.imageSummary}
-          onChange={(val: string) => handleChange("imageSummary", val)}
-          modules={imageOnlyModules}
-          className="mb-4"
+        <input
+          type="file"
+          accept="image/*"
+          name="variants[0][image]"
+          className="mb-2"
         />
+
+        {post.imageSummary && (
+          <img
+            src={post.imageSummary.startsWith("http") ? post.imageSummary : `/images/${post.imageSummary}`}
+            alt="Preview"
+            className="mb-4 max-h-48 rounded"
+          />
+        )}
+
 
         <label className="block font-bold mb-2 flex items-center">
           <input

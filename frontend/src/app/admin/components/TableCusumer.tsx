@@ -95,18 +95,30 @@ export default function Table() {
   // Xử lý tìm kiếm có debounce
   useEffect(() => {
     const delaySearch = setTimeout(async () => {
-      if (search.trim() === "") {
-        loadUsers(page);
-      } else {
-        const user = await userService.findUserByName(search);
-        setUsers(user ? [user] : []);
-        // Khi tìm kiếm, ta có thể reset phân trang (nếu API hỗ trợ nhiều kết quả, có thể cần sửa lại)
-        setTotalPages(1);
+      const trimmed = search.trim();
+      if (trimmed === "") {
+        loadUsers(page); // Khi không tìm kiếm thì gọi loadUsers
+      } else if (trimmed.length >= 2) {
+        const foundUser = await userService.findUserByName(trimmed);
+  
+        // ✅ Đây là nơi cần sửa:
+        if (foundUser) {
+          const userArray = Array.isArray(foundUser) ? foundUser : [foundUser];
+          setUsers(userArray);
+        } else {
+          setUsers([]); // Trường hợp không tìm thấy thì set rỗng
+        }
+  
+        setTotalPages(1); // Vì kết quả tìm kiếm không cần phân trang
         setPage(1);
+      } else {
+        setUsers([]);
       }
     }, 500);
+  
     return () => clearTimeout(delaySearch);
   }, [search]);
+  
 
   // Xử lý chỉnh sửa người dùng
   const handleEdit = (user: any) => {
@@ -120,9 +132,19 @@ export default function Table() {
   };
 
   const handleUpdate = async () => {
-    await userService.updateUser(editingUser, editData);
+    if (!editData.username || !editData.email || !editData.role) {
+      alert("Vui lòng nhập đầy đủ thông tin");
+      return;
+    }
+
+    const updatePayload = {
+      ...editData,
+
+    };
+
+    await userService.updateUser(editingUser, updatePayload);
     setEditingUser(null);
-    // Reload dữ liệu ở trang hiện tại
+    // Reload lại danh sách
     if (search.trim() === "") {
       loadUsers(page);
     } else {
@@ -130,6 +152,7 @@ export default function Table() {
       setUsers(user ? [user] : []);
     }
   };
+
 
   return (
     <div className={`${styles.tableContainer} mt-4`}>
@@ -144,14 +167,13 @@ export default function Table() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <button onClick={() => loadUsers(page)}>🔍</button>
+
         </div>
       </div>
 
       <table className="table table-hover">
         <thead>
           <tr>
-
             <th>Tên</th>
             <th>Email</th>
             <th>Vai trò</th>
@@ -164,7 +186,6 @@ export default function Table() {
           {users && users.length > 0 ? (
             users.map((user) => (
               <tr key={user._id}>
-
                 <td>
                   <div className={styles.avatarContainer}>
                     <Link href={`custumerList/${user._id}`}>
@@ -173,7 +194,6 @@ export default function Table() {
                   </div>
                 </td>
                 <td>{user.email}</td>
-
                 <td>
                   <span className={styles.role}>{user.role}</span>
                 </td>
@@ -208,14 +228,17 @@ export default function Table() {
           ) : (
             <tr>
               <td colSpan={8} style={{ textAlign: "center", padding: "20px" }}>
-                No users found.
+                {search.trim()
+                  ? `Không tìm thấy tài khoản với tên "${search}"`
+                  : "Không có người dùng nào."}
               </td>
             </tr>
           )}
         </tbody>
       </table>
 
-    
+
+
       {/* Phân trang */}
       {search.trim() === "" && totalPages > 1 && (
         <div className="d-flex justify-content-center mt-3">

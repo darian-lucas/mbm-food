@@ -43,8 +43,20 @@ const updateUser = async (id, updateData) => {
 
 const findUserByName = async (username) => {
   const response = await fetch(`${API_URL}/search?username=${username}`);
-  return response.json();
+  const data = await response.json();
+
+  // Giả sử API trả về: { user: {...} } hoặc { users: [...] } hoặc null
+  if (Array.isArray(data.users)) {
+    return data.users; // nếu trả về dạng danh sách
+  }
+
+  if (data.user) {
+    return [data.user]; // nếu trả về 1 user
+  }
+
+  return []; // nếu không tìm thấy
 };
+
 
 const toggleUserStatus = async (id) => {
   console.log(

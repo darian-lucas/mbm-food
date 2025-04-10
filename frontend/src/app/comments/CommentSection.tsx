@@ -127,7 +127,7 @@ export default function CommentSection({ postId }: { postId: string }) {
             comments.map((comment) => (
               <div key={comment._id} className="article-comment clearfix">
                 <figure className="article-comment-user-image">
-                  <Image src="" alt="user-avatar" className="block" />
+                  <Image src="/images/avatar.png" alt="user-avatar" width={50} height={50} className="block" />
                 </figure>
                 <div className="article-comment-user-comment">
                   <p className="user-name-comment">
