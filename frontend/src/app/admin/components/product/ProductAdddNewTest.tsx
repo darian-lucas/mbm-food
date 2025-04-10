@@ -90,6 +90,7 @@ function ProductAddNew() {
         hot: values.hot || 0,
         variants: [
           {
+            _id: "",
             option: values.option || "",
             image: file ? URL.createObjectURL(file) : "",
             price: values.price ? parseFloat(values.price) : 0,
@@ -161,7 +162,7 @@ function ProductAddNew() {
               </FormItem>
             )}
           />
-               <FormField
+          <FormField
             control={form.control}
             name="option"
             render={({ field }) => (

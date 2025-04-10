@@ -45,7 +45,9 @@ interface PaymentMethod {
 
 const CheckoutPage = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(
+    null
+  );
   const [cart, setCart] = useState<CartItem[]>([]);
   const [discountCode, setDiscountCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -70,9 +72,14 @@ const CheckoutPage = () => {
   // Lấy danh sách phương thức thanh toán (BỎ VNPAY)
   useEffect(() => {
     const fetchPaymentMethods = async () => {
-      const data = await fetchData("http://localhost:3001/api/payments/", "Không thể lấy phương thức thanh toán!");
+      const data = await fetchData(
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/payments/`,
+        "Không thể lấy phương thức thanh toán!"
+      );
       if (data) {
-        const filteredMethods = data.filter((method: PaymentMethod) => method.payment_name !== "vnpay");
+        const filteredMethods = data.filter(
+          (method: PaymentMethod) => method.payment_name !== "vnpay"
+        );
         setPaymentMethods(filteredMethods);
         setPaymentMethod(filteredMethods[0] || null);
       }
@@ -85,7 +92,10 @@ const CheckoutPage = () => {
     const fetchUser = async () => {
       const userId = localStorage.getItem("userId");
       if (!userId) return;
-      const data = await fetchData(`http://localhost:3001/api/user/${userId}`, "Lỗi khi lấy thông tin người dùng!");
+      const data = await fetchData(
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/user/${userId}`,
+        "Lỗi khi lấy thông tin người dùng!"
+      );
       if (data) setUser(data);
     };
     fetchUser();
@@ -103,7 +113,10 @@ const CheckoutPage = () => {
   }, []);
 
   // Tính tổng tiền
-  const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalAmount = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
   const finalAmount = Math.max(0, totalAmount - discount); // Không để âm
 
   // Xử lý mã giảm giá
@@ -114,7 +127,9 @@ const CheckoutPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/coupons/check?code=${discountCode}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons/check?code=${discountCode}`
+      );
       const data = await response.json();
 
       if (!response.ok) {
@@ -124,7 +139,9 @@ const CheckoutPage = () => {
 
       setDiscount(data.discount);
       setSelectedCoupon(data);
-      toast.success(`Áp dụng mã ${data.code}! Giảm ${data.discount.toLocaleString()}đ`);
+      toast.success(
+        `Áp dụng mã ${data.code}! Giảm ${data.discount.toLocaleString()}đ`
+      );
     } catch (e) {
       toast.error(`Lỗi đặt hàng: ${(e as Error).message}`);
     }
@@ -162,7 +179,7 @@ const CheckoutPage = () => {
         price: item.price,
       })),
     };
-    
+
     const orderDetails = cart.map((item) => ({
       id_product: item._id,
       name: item.name,
@@ -170,21 +187,22 @@ const CheckoutPage = () => {
       price: item.price,
     }));
 
-
     // 🛑 Console log để debug
     console.log("🛒 Cart trước khi gửi:", cart);
     console.log("📦 orderData trước khi gửi:", orderData);
     console.log("🧾 orderDetails trước khi gửi:", orderDetails);
     console.log("💰 Phương thức thanh toán đã chọn (_id):", paymentMethod);
     console.log("🎟️ Mã giảm giá đã chọn:", selectedCoupon?._id);
-    
 
     try {
-      const orderResponse = await fetch("http://localhost:3001/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderData, orderDetails }), 
-      });
+      const orderResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/orders`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderData, orderDetails }),
+        }
+      );
 
       const orderDataResponse = await orderResponse.json();
       console.log("📢 Phản hồi từ backend:", orderDataResponse);
@@ -196,7 +214,7 @@ const CheckoutPage = () => {
           email: user.email,
           orderData: orderDataResponse.data.order,
         });
-        await fetch("http://localhost:3001/api/email/send", {
+        await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/email/send`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -215,25 +233,28 @@ const CheckoutPage = () => {
       }
       // Xử lý thanh toán nếu là MoMo
       if (paymentMethod.payment_name === "momo") {
-        const momoResponse = await fetch("http://localhost:3001/api/payments/momo", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            _id: orderDataResponse.data.order._id,
-            id_user: orderDataResponse.data.order.id_user,
-            order_code: orderDataResponse.data.order.order_code,
-            amount: orderDataResponse.data.order.total_payment,
-            id_coupon: orderDataResponse.data.order.id_coupon,
-            order_status: orderDataResponse.data.order.order_status,
-            payment_status: orderDataResponse.data.order.payment_status,
-            receive_address: orderDataResponse.data.order.receive_address,
-            id_payment_method: orderDataResponse.data.order.id_payment_method,
-            address: orderDataResponse.data.order.address,
-            phone: orderDataResponse.data.order.phone,
-            name: orderDataResponse.data.order.name,
-            note: orderDataResponse.data.order.note,
-          }),
-        });
+        const momoResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/payments/momo`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              _id: orderDataResponse.data.order._id,
+              id_user: orderDataResponse.data.order.id_user,
+              order_code: orderDataResponse.data.order.order_code,
+              amount: orderDataResponse.data.order.total_payment,
+              id_coupon: orderDataResponse.data.order.id_coupon,
+              order_status: orderDataResponse.data.order.order_status,
+              payment_status: orderDataResponse.data.order.payment_status,
+              receive_address: orderDataResponse.data.order.receive_address,
+              id_payment_method: orderDataResponse.data.order.id_payment_method,
+              address: orderDataResponse.data.order.address,
+              phone: orderDataResponse.data.order.phone,
+              name: orderDataResponse.data.order.name,
+              note: orderDataResponse.data.order.note,
+            }),
+          }
+        );
 
         const momoData = await momoResponse.json();
         if (!momoResponse.ok) {
@@ -248,7 +269,7 @@ const CheckoutPage = () => {
       localStorage.removeItem("cart");
       // 🔥 Phát sự kiện cập nhật
       window.dispatchEvent(new Event("cartUpdated"));
-      
+
       setCart([]);
       router.push(`/success?_id=${orderDataResponse.data.order._id}`);
     } catch (e) {
@@ -323,27 +344,52 @@ const CheckoutPage = () => {
           </select>
 
           <div className={styles.paymentOptions}>
-          <label>Phương thức thanh toán:</label>
-          <div>
-          {paymentMethods.map((method) => (
-            <label key={method._id} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-              <input type="radio" name="paymentMethod" value={method._id} checked={paymentMethod?._id === method._id} onChange={() => setPaymentMethod(method)} />
-              {method.payment_name === "cash" ? (
-                <>
-                  <Image src={`${API_URL}/images/cash.png`} alt="Tiền mặt" width={24} height={24} /> Tiền Mặt
-                </>
-              ) : method.payment_name === "momo" ? (
-                <>
-                  <Image src={`${API_URL}/images/momo.png`} alt="Momo" width={24} height={24} /> Chuyển khoản Momo
-                </>
-              ) : (
-                method.payment_name
-              )}
-            </label>
-          ))}
-        </div>
-        </div>
-
+            <label>Phương thức thanh toán:</label>
+            <div>
+              {paymentMethods.map((method) => (
+                <label
+                  key={method._id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={method._id}
+                    checked={paymentMethod?._id === method._id}
+                    onChange={() => setPaymentMethod(method)}
+                  />
+                  {method.payment_name === "cash" ? (
+                    <>
+                      <Image
+                        src={`${API_URL}/images/cash.png`}
+                        alt="Tiền mặt"
+                        width={24}
+                        height={24}
+                      />{" "}
+                      Tiền Mặt
+                    </>
+                  ) : method.payment_name === "momo" ? (
+                    <>
+                      <Image
+                        src={`${API_URL}/images/momo.png`}
+                        alt="Momo"
+                        width={24}
+                        height={24}
+                      />{" "}
+                      Chuyển khoản Momo
+                    </>
+                  ) : (
+                    method.payment_name
+                  )}
+                </label>
+              ))}
+            </div>
+          </div>
         </form>
       </div>
 
@@ -405,9 +451,8 @@ const CheckoutPage = () => {
         <button className={styles.orderBtn} onClick={handleOrder}>
           ĐẶT HÀNG
         </button>
-        </div>
       </div>
-    
+    </div>
   );
 };
 

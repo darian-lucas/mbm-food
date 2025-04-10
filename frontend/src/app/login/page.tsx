@@ -18,7 +18,8 @@ interface ForgotPasswordForm {
 
 const Login = () => {
   const { register, handleSubmit } = useForm<LoginForm>();
-  const { register: registerForgot, handleSubmit: handleForgotSubmit } = useForm<ForgotPasswordForm>();
+  const { register: registerForgot, handleSubmit: handleForgotSubmit } =
+    useForm<ForgotPasswordForm>();
 
   const [error, setError] = useState<string>("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -30,7 +31,7 @@ const Login = () => {
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/api/user/login", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -81,14 +82,19 @@ const Login = () => {
   };
 
   // Xử lý gửi email quên mật khẩu
-  const onForgotPasswordSubmit: SubmitHandler<ForgotPasswordForm> = async (data) => {
+  const onForgotPasswordSubmit: SubmitHandler<ForgotPasswordForm> = async (
+    data
+  ) => {
     setForgotLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/api/user/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/user/forgot-password`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Gửi yêu cầu thất bại");
@@ -144,7 +150,11 @@ const Login = () => {
       </p>
 
       {/* Modal Quên Mật Khẩu (Bootstrap) */}
-      <Modal show={showForgotPassword} onHide={() => setShowForgotPassword(false)} centered>
+      <Modal
+        show={showForgotPassword}
+        onHide={() => setShowForgotPassword(false)}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Quên mật khẩu</Modal.Title>
         </Modal.Header>
@@ -157,11 +167,23 @@ const Login = () => {
               className="form-control mb-3"
             />
             <div className="d-flex justify-content-end">
-              <Button variant="secondary" onClick={() => setShowForgotPassword(false)}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowForgotPassword(false)}
+              >
                 Hủy
               </Button>
-              <Button type="submit" variant="primary" className="ms-2" disabled={forgotLoading}>
-                {forgotLoading ? <Spinner animation="border" size="sm" /> : "Gửi yêu cầu"}
+              <Button
+                type="submit"
+                variant="primary"
+                className="ms-2"
+                disabled={forgotLoading}
+              >
+                {forgotLoading ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  "Gửi yêu cầu"
+                )}
               </Button>
             </div>
           </form>

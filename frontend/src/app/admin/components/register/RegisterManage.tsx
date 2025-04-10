@@ -97,8 +97,9 @@ const RegisterManage = () => {
 
   // Lọc danh sách đăng ký theo tên người dùng
   const filteredRegisters = registers.filter((register) =>
-    register.id_user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    register.id_user?.username?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
 
   const {
     currentPage,
@@ -185,25 +186,6 @@ const RegisterManage = () => {
 
   return (
     <>
-      <Link
-        href="/admin/manage/register/new"
-        className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 animate-bounce"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
-          />
-        </svg>
-      </Link>
       <div className="flex items-center gap-5 justify-between mb-3 mt-4">
         <Heading>Quản lý khách hàng đặt bàn</Heading>
         <div className="flex gap-3">

@@ -165,60 +165,60 @@ function CategoryUpdate() {
               </FormItem>
             )}
           />
-       
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả danh mục</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Nhập mô tả..."
-                  {...field}
-                  className="h-[250px]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="image"
-          render={() => (
-            <FormItem>
-              <FormLabel>Ảnh đại diện</FormLabel>
-              <FormControl>
-                <div className="border border-gray-300 p-2 rounded-md h-[250px]">
-                  <input
-                    type="file"
-                    accept="images/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setFile(file);
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
-                    }}
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả danh mục</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Nhập mô tả..."
+                    {...field}
+                    className="h-[250px]"
                   />
-                  {previewImage && (
-                    <Image
-                      src={previewImage}
-                      alt="Ảnh danh mục"
-                      width={250}
-                      height={250}
-                      className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="image"
+            render={() => (
+              <FormItem>
+                <FormLabel>Ảnh đại diện</FormLabel>
+                <FormControl>
+                  <div className="border border-gray-300 p-2 rounded-md h-[250px]">
+                    <input
+                      type="file"
+                      accept="images/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setFile(file);
+                          setPreviewImage(URL.createObjectURL(file));
+                        }
+                      }}
                     />
-                  )}
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-         </div>
+                    {previewImage && (
+                      <Image
+                        src={previewImage}
+                        alt="Ảnh danh mục"
+                        width={250}
+                        height={250}
+                        className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                      />
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <Button
           isLoading={isSubmitting}

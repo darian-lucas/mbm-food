@@ -29,7 +29,9 @@ export default function CommentSection({ postId }: { postId: string }) {
 
   const fetchComments = async (postId: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/cmt/post/${postId}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/cmt/post/${postId}`
+      );
       if (!response.ok) throw new Error("Lỗi tải bình luận");
       const data = await response.json();
       setComments(data);
@@ -51,7 +53,7 @@ export default function CommentSection({ postId }: { postId: string }) {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/cmt", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/cmt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +82,11 @@ export default function CommentSection({ postId }: { postId: string }) {
         {!userId ? (
           <div className="alert alert-warning">
             <p>
-              Bạn cần <Link href="/login" className="text-primary">đăng nhập</Link> để bình luận.
+              Bạn cần{" "}
+              <Link href="/login" className="text-primary">
+                đăng nhập
+              </Link>{" "}
+              để bình luận.
             </p>
           </div>
         ) : (
@@ -109,7 +115,10 @@ export default function CommentSection({ postId }: { postId: string }) {
         )}
 
         <div id="article-comments">
-          <h5 className="title-form-comment margin-bottom-25" style={{ paddingTop: "10px" }}>
+          <h5
+            className="title-form-comment margin-bottom-25"
+            style={{ paddingTop: "10px" }}
+          >
             Bình luận ({comments.length})
           </h5>
           {comments.length === 0 ? (
@@ -125,7 +134,9 @@ export default function CommentSection({ postId }: { postId: string }) {
                     <strong>{comment.id_user?.username || "Ẩn danh"}</strong>{" "}
                   </p>
                   <span className="article-comment-date-bull">
-                    {comment.create_at ? new Date(comment.create_at).toLocaleDateString() : "Không xác định"}
+                    {comment.create_at
+                      ? new Date(comment.create_at).toLocaleDateString()
+                      : "Không xác định"}
                   </span>
                   <p className="cm">{comment.comment}</p>
                 </div>

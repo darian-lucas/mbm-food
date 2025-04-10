@@ -120,7 +120,7 @@ function ProductUpdate() {
           productData.variants?.map((variant) => variant.image || "") || [];
 
         setExistingImages(initialExistingImages);
-        // setPreviewImages(initialExistingImages); 
+        // setPreviewImages(initialExistingImages);
 
         // Reset form với dữ liệu sản phẩm
         form.reset({
@@ -210,7 +210,7 @@ function ProductUpdate() {
         idcate: values.idcate || "",
         hot: values.hot || 0,
         variants: values.variants.map((variant, index) => ({
-          _id: variant._id, // Thêm _id của variant nếu có
+          _id: variant._id || "", // Thêm _id của variant nếu có
           option: variant.option || "",
           price: parseFloat(variant.price || "0"),
           sale_price: parseFloat(variant.sale_price || "0"),

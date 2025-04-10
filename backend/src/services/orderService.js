@@ -1,8 +1,8 @@
 const Order = require("../models/Order");
 const OrderDetail = require("../models/OrderDetail");
-// const PaymentMethod = require("../models/PaymentMethod");
+const axios = require("axios");
 const mongoose = require("mongoose");
-// const Coupon = require("../models/CouponModel");
+
 class OrderService {
   async updateOrder(orderId, updateData) {
     try {
@@ -126,6 +126,67 @@ class OrderService {
     }
   }
   
+  async getTop5SellingProducts() {
+    try {
+      const topProducts = await OrderDetail.aggregate([
+        {
+          $group: {
+            _id: "$id_product",
+            totalSold: { $sum: "$quantity" }, // Tính tổng số lượng đã bán
+          },
+        },
+        { $sort: { totalSold: -1 } }, // Sắp xếp theo số lượng bán giảm dần
+        { $limit: 5 }, // Chỉ lấy 5 sản phẩm bán chạy nhất
+      ]);
+  
+      if (topProducts.length === 0) {
+        console.log("⚠️ Không có sản phẩm nào được bán.");
+        return [];
+      }
+  
+      // Lấy danh sách ID sản phẩm
+      const productIds = topProducts.map((product) => product._id.toString());
+  
+      console.log("✅ 5 sản phẩm bán chạy nhất:", productIds);
+  
+      // Gọi API để lấy thông tin sản phẩm
+      return await this.fetchProductDetails(productIds);
+    } catch (error) {
+      console.error("❌ Lỗi khi lấy sản phẩm bán chạy:", error.message);
+      throw new Error("Lỗi khi lấy sản phẩm bán chạy: " + error.message);
+    }
+  }
+  
+  
+
+  async fetchProductDetails(productIds) {
+    try {
+      if (!productIds.length) {
+        throw new Error("Không có sản phẩm nào để lấy thông tin.");
+      }
+  
+      // Tạo một array chứa các promises của từng yêu cầu API
+      const productPromises = productIds.map((id) =>
+        axios.get(`http://localhost:3001/api/products/${id}`)
+      );
+  
+      // Chờ tất cả các promises hoàn thành
+      const responses = await Promise.all(productPromises);
+  
+      // Lấy dữ liệu từ các responses
+      const products = responses.map((response) => response.data);
+  
+      console.log("📦 Thông tin các sản phẩm bán chạy:", products);
+  
+      return products;
+    } catch (error) {
+      console.error("❌ Lỗi khi lấy thông tin sản phẩm:", error.message);
+      throw new Error("Lỗi khi lấy thông tin sản phẩm: " + error.message);
+    }
+  }
+  
+  
+
 
   async getOrderById(orderId) {
     const order = await Order.findById(orderId)

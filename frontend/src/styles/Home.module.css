@@ -101,9 +101,10 @@
 }
 
 .categoryItem img {
-  width: 90px;
-  height: 85px;
+  max-width: 100px;
+  max-height: 95px;
   border-radius: 5px;
+  object-fit: cover;
 }
 
 .aboutContainer {
@@ -974,6 +975,7 @@
   text-decoration: none !important;
   font-size: 14px !important;
   margin-bottom: 5px;
+  text-align: left;
 }
 
 .menufoodMore:hover {

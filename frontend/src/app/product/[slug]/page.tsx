@@ -51,7 +51,7 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/products/slug/${slug}`
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products/slug/${slug}`
         );
         if (!res.ok) throw new Error("Lỗi khi tải sản phẩm");
         const data = await res.json();
@@ -66,7 +66,7 @@ const ProductDetail = () => {
   }, [slug]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/coupons")
+    fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons`)
       .then((res) => res.json())
       .then((data) => setCoupons(data.data))
       .catch((error) => console.error("Lỗi khi lấy dữ liệu coupon:", error));
@@ -87,7 +87,7 @@ const ProductDetail = () => {
 
   const handleClickAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (!product || !selectedVariant) return; 
+    if (!product || !selectedVariant) return;
     handleAddToCart(product, selectedVariant, quantity, note);
   };
 
@@ -102,7 +102,7 @@ const ProductDetail = () => {
             <div className={styles.productLeft}>
               <div className={styles.productImage}>
                 <Image
-                  src={`http://localhost:3001/images/${selectedVariant.image}`}
+                  src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${selectedVariant.image}`}
                   alt={product.name}
                   width={400}
                   height={400}
@@ -243,7 +243,12 @@ const ProductDetail = () => {
                         </div>
                       </div>
                       <div className={styles.groupBtn}>
-                        <button className={styles.buyNow} onClick={handleClickAddToCart}>Thêm vào giỏ hàng</button>
+                        <button
+                          className={styles.buyNow}
+                          onClick={handleClickAddToCart}
+                        >
+                          Thêm vào giỏ hàng
+                        </button>
                         <button className={styles.booking}>Đặt bàn</button>
                       </div>
                       <div className={styles.hotline}>
@@ -257,11 +262,15 @@ const ProductDetail = () => {
             <div className={styles.order_3}>
               <div className={styles.product_lq}>
                 <h3 className={styles.title}>
-                  <a href="" className={styles.titleName} title="Món ăn liên quan">Món ăn liên quan</a>
+                  <a
+                    href=""
+                    className={styles.titleName}
+                    title="Món ăn liên quan"
+                  >
+                    Món ăn liên quan
+                  </a>
                   <div className={styles.fix_swipper_border}>
-                    <div className={styles.swiper_wrapper}>
-                                
-                    </div>
+                    <div className={styles.swiper_wrapper}></div>
                   </div>
                 </h3>
               </div>

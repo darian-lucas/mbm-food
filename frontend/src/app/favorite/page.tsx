@@ -127,7 +127,7 @@ const FavoritePage = () => {
                         <Image
                           src={product.variants[0].image.startsWith("http")
                             ? product.variants[0].image
-                            : `http://localhost:3001/images/${product.variants[0].image}`
+                            : `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${product.variants[0].image}`
                           }
                           alt={product.name}
                           width={300}

@@ -5,7 +5,11 @@ import { Heart } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../../styles/ProductListCate.module.css";
-import { addFavorite, removeFavorite, checkFavorite } from "@/services/Favorite";
+import {
+  addFavorite,
+  removeFavorite,
+  checkFavorite,
+} from "@/services/Favorite";
 import QuickView from "../layout/QuickView";
 
 interface Variant {
@@ -22,7 +26,7 @@ interface Product {
   slug: string;
   idcate: string;
   variants: Variant[];
-  matchedVariant : Variant;
+  matchedVariant: Variant;
   hot: number;
   view: number;
   status: string;
@@ -60,11 +64,13 @@ const ProductListCate = ({
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = `http://localhost:3001/api/products/categories/${idcate}`;
+        let url = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products/categories/${idcate}`;
         const queryParams = new URLSearchParams();
 
-        if (minPrice !== undefined) queryParams.append("minPrice", String(minPrice));
-        if (maxPrice !== undefined) queryParams.append("maxPrice", String(maxPrice));
+        if (minPrice !== undefined)
+          queryParams.append("minPrice", String(minPrice));
+        if (maxPrice !== undefined)
+          queryParams.append("maxPrice", String(maxPrice));
         if (queryParams.toString()) url += `?${queryParams.toString()}`;
 
         const res = await fetch(url);
@@ -82,7 +88,10 @@ const ProductListCate = ({
 
             return matchedVariant ? { ...product, matchedVariant } : null;
           })
-          .filter((product): product is Product & { matchedVariant: Variant } => product !== null);
+          .filter(
+            (product): product is Product & { matchedVariant: Variant } =>
+              product !== null
+          );
 
         // **Lọc theo size nếu có**
         if (selectedSize) {
@@ -94,10 +103,14 @@ const ProductListCate = ({
         // **Áp dụng sắp xếp theo sortOption**
         switch (sortOption) {
           case "price-asc":
-            filteredProducts.sort((a, b) => a.matchedVariant.price - b.matchedVariant.price);
+            filteredProducts.sort(
+              (a, b) => a.matchedVariant.price - b.matchedVariant.price
+            );
             break;
           case "price-desc":
-            filteredProducts.sort((a, b) => b.matchedVariant.price - a.matchedVariant.price);
+            filteredProducts.sort(
+              (a, b) => b.matchedVariant.price - a.matchedVariant.price
+            );
             break;
           case "name-asc":
             filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
@@ -106,7 +119,11 @@ const ProductListCate = ({
             filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
             break;
           case "newest":
-            filteredProducts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            filteredProducts.sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
             break;
           default:
             break;
@@ -152,7 +169,7 @@ const ProductListCate = ({
     }
   };
 
-  const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
+  const API_URL =  process.env.NEXT_PUBLIC_URL_IMAGE;
 
   return (
     <div className={styles.container}>
@@ -162,7 +179,10 @@ const ProductListCate = ({
             <div className={styles.colFix} key={item._id}>
               <div className={styles.productAction}>
                 <div className={styles.productThumnail}>
-                  <Link href={`/product/${item.slug}`} className={styles.imageThum}>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    className={styles.imageThum}
+                  >
                     <Image
                       className={styles.img}
                       src={`${API_URL}/images/${item.matchedVariant.image}`}
@@ -171,7 +191,10 @@ const ProductListCate = ({
                       height={234}
                     />
                   </Link>
-                  <button className={styles.whistList} onClick={() => toggleFavorite(item._id)}>
+                  <button
+                    className={styles.whistList}
+                    onClick={() => toggleFavorite(item._id)}
+                  >
                     <Heart
                       size={20}
                       color={favorites[item._id] ? "#E51735" : "gray"}
@@ -192,9 +215,13 @@ const ProductListCate = ({
                   </div>
                   <div className={styles.groupForm}>
                     <div className={styles.priceBox}>
-                      <span>Giá: </span> {item.matchedVariant.price.toLocaleString()}₫
+                      <span>Giá: </span>{" "}
+                      {item.matchedVariant.price.toLocaleString()}₫
                     </div>
-                    <button className={styles.add} onClick={() => setSelectedProduct(item)}>
+                    <button
+                      className={styles.add}
+                      onClick={() => setSelectedProduct(item)}
+                    >
                       Thêm
                     </button>
                   </div>
@@ -206,7 +233,10 @@ const ProductListCate = ({
       </section>
 
       {selectedProduct && (
-        <QuickView product={{ ...selectedProduct, id: selectedProduct._id }} onClose={() => setSelectedProduct(null)} />
+        <QuickView
+          product={{ ...selectedProduct, id: selectedProduct._id }}
+          onClose={() => setSelectedProduct(null)}
+        />
       )}
     </div>
   );

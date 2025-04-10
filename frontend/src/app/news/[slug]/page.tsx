@@ -136,7 +136,11 @@ export default function NewsDetail() {
                     <div className="block-thumb">
                       <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
                         <Image
-                          src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${ttnoibat.imageSummary}`}
+                          src={
+                            ttnoibat.imageSummary
+                                ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${ttnoibat.imageSummary}`
+                                : "/placeholder.jpg"
+                        }
                           alt={ttnoibat.title}
                           width={120}
                           height={120}

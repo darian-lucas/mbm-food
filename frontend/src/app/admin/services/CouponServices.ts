@@ -1,6 +1,6 @@
 import { TCreateCouponParams } from "../types";
 
-const API_URL = "http://localhost:3001/api/coupons";
+const API_URL = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons`;
 
 const createCoupon = async (couponData: TCreateCouponParams) => {
   try {
@@ -70,10 +70,7 @@ const deleteCoupon = async (id: string) => {
   return response.json();
 };
 
-const updatedStatusCoupon = async (
-  id: string,
-  status: string,
-) => {
+const updatedStatusCoupon = async (id: string, status: string) => {
   const response = await fetch(`${API_URL}/${id}/status`, {
     method: "PUT",
     headers: {
@@ -97,6 +94,6 @@ const CouponServices = {
   getCouponById,
   updateCoupon,
   deleteCoupon,
-  updatedStatusCoupon
+  updatedStatusCoupon,
 };
 export default CouponServices;
