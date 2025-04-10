@@ -33,11 +33,16 @@ export default function CommentsPage() {
     const fetchComments = async () => {
         try {
             const data = await getAllComments();
-            setComments(data);
+    
+            // Sắp xếp giảm dần theo thời gian
+            const sorted = data.sort((a, b) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime());
+    
+            setComments(sorted);
         } catch (error) {
             console.error("Error fetching comments:", error);
         }
     };
+    
 
     const handleToggleVisibility = async (commentId: any) => {
         try {
@@ -71,7 +76,7 @@ export default function CommentsPage() {
                 <tbody>
                     {currentComments.map((cmt) => (
                         <tr key={cmt._id} className="text-center">
-                            <td>{cmt.id_user?.username || "Ẩn danh"}</td>
+                            <td>{cmt.id_user?.username || "Tài khoản đã bị xóa"}</td>
                             <td>{cmt.id_post?.title || "Không xác định"}</td>
                             <td>{new Date(cmt.create_at).toLocaleString()}</td>
                             <td>{cmt.hidden ? "(Bình luận đã ẩn)" : cmt.comment}</td>

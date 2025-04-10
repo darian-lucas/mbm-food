@@ -114,7 +114,7 @@ export default function NewsTable() {
                         value={search}
                         onChange={handleInputChange}
                     />
-                    <button onClick={() => loadNews(page)}>🔍</button>
+                    
                 </div>
             </div>
 
@@ -130,51 +130,54 @@ export default function NewsTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {news.map((post, index) => (
-                        <tr key={post._id}>
-                            <td>{(page - 1) * limit + index + 1}</td>
-                            <td>{post.title}</td>
-                            <td>{post.author}</td>
-                            <td>{new Date(post.create_at).toLocaleDateString()}</td>
-                            <td>
-                                <Image
-                                    alt="Ảnh tóm tắt"
-                                    src={
-                                        post.imageSummary
-                                            ? `${API_URL}/images/${post.imageSummary}`
-                                            : "/placeholder.jpg"
-                                    }
-                                    width={100}
-                                    height={100}
-                                    
-                                />
+                    {news.length === 0 ? (
+                        <tr>
+                            <td colSpan={6} className="text-center text-muted py-3">
+                                Không tìm thấy bài viết nào.
                             </td>
-                            <td>
-                                <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(post._id)}>
-                                    <FontAwesomeIcon icon={faPen} />
-                                </button>
-                                <button
-                                    className="btn btn-danger btn-sm me-2"
-                                    onClick={() => {
-                                        const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bài viết này?");
-                                        if (confirmDelete) handleDelete(post._id);
-                                    }}
-                                >
-                                    <FontAwesomeIcon icon={faTrash} />
-                                </button>
-                                <button
-                                    className={`btn btn-sm ${post.status === 1 ? "btn-secondary" : "btn-success"}`}
-                                    onClick={() => handleToggleStatus(post._id, post.status)}
-                                >
-                                    {post.status === 1 ? "Hủy kích hoạt" : "Kích hoạt"}
-                                </button>
-
-
-
-                            </td>
-
                         </tr>
-                    ))}
+                    ) : (
+                        news.map((post, index) => (
+                            <tr key={post._id}>
+                                <td>{(page - 1) * limit + index + 1}</td>
+                                <td>{post.title}</td>
+                                <td>{post.author}</td>
+                                <td>{new Date(post.create_at).toLocaleDateString()}</td>
+                                <td>
+                                    <Image
+                                        alt="Ảnh tóm tắt"
+                                        src={
+                                            post.imageSummary
+                                                ? `${API_URL}/images/${post.imageSummary}`
+                                                : "/placeholder.jpg"
+                                        }
+                                        width={100}
+                                        height={100}
+                                    />
+                                </td>
+                                <td>
+                                    <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(post._id)}>
+                                        <FontAwesomeIcon icon={faPen} />
+                                    </button>
+                                    <button
+                                        className="btn btn-danger btn-sm me-2"
+                                        onClick={() => {
+                                            const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bài viết này?");
+                                            if (confirmDelete) handleDelete(post._id);
+                                        }}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
+                                    <button
+                                        className={`btn btn-sm ${post.status === 1 ? "btn-secondary" : "btn-success"}`}
+                                        onClick={() => handleToggleStatus(post._id, post.status)}
+                                    >
+                                        {post.status === 1 ? "Hủy kích hoạt" : "Kích hoạt"}
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 
