@@ -5,7 +5,7 @@ import React from "react";
 const page = () => {
   return (
     <div>
-      <Heading>Cập nhật mã giảm giá</Heading>
+      <Heading className="mt-4">Cập nhật mã giảm giá</Heading>
       <CouponUpdate></CouponUpdate>
     </div>
   );

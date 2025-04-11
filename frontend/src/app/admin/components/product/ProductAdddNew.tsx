@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import CategoryServices from "../../services/CategoryServices";
 import { Editor } from "@tinymce/tinymce-react";
+import { useTheme } from "next-themes";
 import { Plus, Trash2 } from "lucide-react";
 
 import {
@@ -134,7 +135,7 @@ function ProductAddNew() {
         idcate: values.idcate || "",
         hot: values.hot || 0,
         variants: values.variants.map((variant, index) => ({
-          _id:variant._id || "",
+          _id: variant._id || "",
           option: variant.option || "",
           price: parseFloat(variant.price || "0"),
           sale_price: parseFloat(variant.sale_price || "0"),
@@ -168,6 +169,8 @@ function ProductAddNew() {
 
       // Gửi formData đến server
       const response = await ProductServices.createProduct(formData);
+      console.log("🚀 ~ onSubmit ~ response:", response)
+      
       if (response.success) {
         toast.success("Tạo sản phẩm thành công");
         router.push("/admin/manage/products/new");
@@ -184,10 +187,11 @@ function ProductAddNew() {
       setPreviewImages([null]);
     }
   }
+  const { theme } = useTheme();
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-        <div className="grid grid-cols-2 gap-8 mt-10 mb-8">
+        <div className="grid grid-cols-2 gap-8 mt-6">
           <FormField
             control={form.control}
             name="name"
@@ -246,6 +250,29 @@ function ProductAddNew() {
                       ))}
                     </SelectContent>
                   </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Mô tả sản phẩm</FormLabel>
+                <FormControl>
+                  <Editor
+                    apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                    onInit={(_evt, editor) => {
+                      (editorRef.current = editor).setContent(
+                        field.value || ""
+                      );
+                    }}
+                    value={field.value}
+                    {...editorOptions(field, theme)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -350,33 +377,6 @@ function ProductAddNew() {
               </div>
             ))}
           </div>
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormLabel>Mô tả sản phẩm</FormLabel>
-                <FormControl>
-                  <Editor
-                    apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
-                    onInit={(_evt, editor) => {
-                      editorRef.current = editor;
-                      editor.setContent(field.value || "");
-                    }}
-                    initialValue={field.value}
-                    init={editorOptions}
-                    onEditorChange={(content: string) => {
-                      form.setValue("description", content, {
-                        shouldValidate: true,
-                      });
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
         <Button
           isLoading={isSubmitting}
