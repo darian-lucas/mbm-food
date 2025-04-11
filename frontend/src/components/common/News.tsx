@@ -48,7 +48,7 @@ export default function News(): JSX.Element {
       <div className={styles.newsList}>
         {newsData.map((news) => (
           <Link
-            href={`/news/${encodeURIComponent(news.slug)}`}
+            href={`/news/${news.slug}`}
             key={news._id}
             className={styles.newsLink}
           >
@@ -76,7 +76,7 @@ export default function News(): JSX.Element {
                 />
                 <button
                   onClick={() =>
-                    router.push(`/news/${encodeURIComponent(news.slug)}`)
+                    router.push(`/news/${news.slug}`)
                   }
                   className={styles.readMore}
                 >

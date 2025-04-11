@@ -44,13 +44,6 @@ export default function New() {
   
     getData();
   }, []);
-  
-
-  // const extractImageUrl = (htmlString?: string) => {
-  //   if (!htmlString) return "/images/default.png";
-  //   const match = htmlString.match(/src=['"]([^'"]+)['"]/);
-  //   return match ? match[1] : "/images/default.png";
-  // };
 
   const truncateHTML = (html: string, maxLength: number) => {
     const tempDiv = document.createElement("div");
@@ -75,7 +68,7 @@ export default function New() {
                     <div className="col-fix" key={tintuc._id}>
                       <div className="item-blog">
                         <div className="block-thumb">
-                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                          <Link href={`/news/${tintuc.slug}`}>
                             <Image
                               src={
                                 tintuc.imageSummary
@@ -91,7 +84,7 @@ export default function New() {
                         </div>
                         <div className="block-content">
                           <h3>
-                            <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                            <Link href={`/news/${tintuc.slug}`}>
                               {tintuc.title}
                             </Link>
                           </h3>
@@ -144,7 +137,7 @@ export default function New() {
                     {tintucNoibat.map((tintuc) => (
                       <li className="aside-news-item" key={tintuc.slug}>
                         <div className="block-thumb">
-                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                          <Link href={`/news/${tintuc.slug}`}>
                             <Image
                               src={
                                 tintuc.imageSummary
@@ -158,7 +151,7 @@ export default function New() {
                           </Link>
                         </div>
                         <div className="block-content">
-                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                          <Link href={`/news/${tintuc.slug}`}>
                             {tintuc.title}
                           </Link>
                         </div>
