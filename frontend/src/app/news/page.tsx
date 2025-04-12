@@ -108,7 +108,7 @@ export default function New() {
                   <li><Link href="/">Trang chủ</Link></li>
                   <li><Link href="/about">Giới thiệu</Link></li>
                   <li className="menu-item">
-                    <Link href="/products">Sản phẩm</Link>
+                    <Link href="/product">Sản phẩm</Link>
                     <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
                       {isOpen ? "−" : "+"}
                     </button>
