@@ -209,13 +209,11 @@ export default function Menu(): JSX.Element {
                     href={`/product/${item.slug}`}
                     onClick={() => incrementView(item._id, item.view)}
                   >
-                    <Image
+                    <img
                       src={`${API_URL}/images/${
                         item.variants[0]?.image || "default.png"
                       }`}
                       alt={item.name}
-                      width={100}
-                      height={70}
                       className={styles.menufoodImage}
                     />
                   </Link>

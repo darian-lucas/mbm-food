@@ -69,7 +69,7 @@ export default function New() {
                       <div className="item-blog">
                         <div className="block-thumb">
                           <Link href={`/news/${tintuc.slug}`}>
-                            <Image
+                            <img
                               src={
                                 tintuc.imageSummary
                                     ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`
@@ -78,7 +78,7 @@ export default function New() {
                               alt={tintuc.title}
                               width={940}
                               height={640}
-                              unoptimized
+                             
                             />
                           </Link>
                         </div>
@@ -138,7 +138,7 @@ export default function New() {
                       <li className="aside-news-item" key={tintuc.slug}>
                         <div className="block-thumb">
                           <Link href={`/news/${tintuc.slug}`}>
-                            <Image
+                            <img
                               src={
                                 tintuc.imageSummary
                                     ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`

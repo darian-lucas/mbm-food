@@ -50,7 +50,7 @@ export default function PageProduct(): JSX.Element {
             >
               <div className={styles.categoryItem}>
                 <p>{category.name}</p>
-                <Image
+                <img
                   src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${category.image}`}
                   alt={category.name}
                   width={50}

@@ -450,16 +450,16 @@ function ProductUpdate() {
                           }}
                         />
                         {previewImages[index] ? (
-                          <Image
+                          <img
                             src={previewImages[index]!}
                             alt="Ảnh mới"
                             width={250}
                             height={250}
                             className="h-[200px] w-auto rounded-lg object-cover mt-2"
-                            unoptimized
+                         
                           />
                         ) : existingImages[index] ? (
-                          <Image
+                          <img
                             src={`${API_URL}/images/${existingImages[index]}`}
                             alt="Ảnh cũ"
                             width={250}

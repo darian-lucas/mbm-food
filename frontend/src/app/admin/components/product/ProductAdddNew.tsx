@@ -352,7 +352,7 @@ function ProductAddNew() {
                         }}
                       />
                       {previewImages[index] && (
-                        <Image
+                        <img
                           src={previewImages[index]!}
                           alt="Ảnh biến thể"
                           width={250}

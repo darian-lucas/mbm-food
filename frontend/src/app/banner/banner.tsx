@@ -72,12 +72,12 @@ const Banner = () => {
             }
             passHref
           >
-            <Image
+            <img
               src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${banner.image}`}
               alt={banner.title || "Banner"}
               width={1280}
               height={500}
-              priority
+            
               className={styles.bannerImage}
               style={{ cursor: "pointer" }}
             />

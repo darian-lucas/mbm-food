@@ -185,7 +185,7 @@ export default function FeaturedDishes(): JSX.Element {
                   href={`/product/${food.slug}`}
                   onClick={() => incrementView(food._id, food.view)}
                 >
-                  <Image
+                  <img
                     src={`${API_URL}/images/${
                       food.variants[0]?.image || "default.png"
                     }`}

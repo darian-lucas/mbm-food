@@ -152,7 +152,7 @@ function CategoryAddNew() {
                       }}
                     />
                     {previewImage && (
-                      <Image
+                      <img
                         src={previewImage}
                         alt="Ảnh danh mục"
                         width={250}

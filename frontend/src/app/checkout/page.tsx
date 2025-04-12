@@ -365,7 +365,7 @@ const CheckoutPage = () => {
                   />
                   {method.payment_name === "cash" ? (
                     <>
-                      <Image
+                      <img
                         src={`${API_URL}/images/cash.png`}
                         alt="Tiền mặt"
                         width={24}
@@ -375,7 +375,7 @@ const CheckoutPage = () => {
                     </>
                   ) : method.payment_name === "momo" ? (
                     <>
-                      <Image
+                      <img
                         src={`${API_URL}/images/momo.png`}
                         alt="Momo"
                         width={24}
@@ -398,7 +398,7 @@ const CheckoutPage = () => {
 
         {cart.map((item, index) => (
           <div key={index} className={styles.orderItem}>
-            <Image
+            <img
               className={styles.img}
               src={`${API_URL}/images/${item.image}`}
               alt={item.name}

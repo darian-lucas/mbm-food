@@ -51,7 +51,7 @@ export default function Home(): JSX.Element {
           >
             <div className={styles.categoryItem}>
               <p>{category.name}</p>
-              <Image
+              <img
                 src={`${API_URL}/images/${category.image}`}
                 alt={category.name}
                 width={85}

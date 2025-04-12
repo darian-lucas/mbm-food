@@ -166,7 +166,7 @@ function BannerUpdate() {
                       }}
                     />
                     {previewImage && (
-                      <Image
+                      <img
                         src={previewImage}
                         alt="Ảnh banner"
                         width={250}

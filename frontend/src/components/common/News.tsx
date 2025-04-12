@@ -55,7 +55,7 @@ export default function News(): JSX.Element {
             <div className={styles.newsItem}>
               {news.imageSummary && (
                 <div className={styles.newsImgWrapper}>
-                  <Image
+                  <img
                     src={`${API_URL}/images/${news.imageSummary}`}
                     alt={news.title}
                     className={styles.newsImg}

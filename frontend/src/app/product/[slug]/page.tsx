@@ -101,7 +101,7 @@ const ProductDetail = () => {
           <div className={styles.row}>
             <div className={styles.productLeft}>
               <div className={styles.productImage}>
-                <Image
+                <img
                   src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${selectedVariant.image}`}
                   alt={product.name}
                   width={400}

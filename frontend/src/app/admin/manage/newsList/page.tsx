@@ -144,7 +144,7 @@ export default function NewsTable() {
                                 <td>{post.author}</td>
                                 <td>{new Date(post.create_at).toLocaleDateString()}</td>
                                 <td>
-                                    <Image
+                                    <img
                                         alt="Ảnh tóm tắt"
                                         src={
                                             post.imageSummary

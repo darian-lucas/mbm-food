@@ -918,8 +918,8 @@
 }
 
 .menufoodImage {
-  width: 100%;
-  height: auto;
+  width: 100px;
+  height: 70px;
   object-fit: contain;
 }
 

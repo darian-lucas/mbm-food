@@ -135,7 +135,7 @@ export default function NewsDetail() {
                   <li className="aside-news-item" key={i}>
                     <div className="block-thumb">
                       <Link href={`/news/${ttnoibat.slug}`}>
-                        <Image
+                        <img
                           src={
                             ttnoibat.imageSummary
                                 ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${ttnoibat.imageSummary}`

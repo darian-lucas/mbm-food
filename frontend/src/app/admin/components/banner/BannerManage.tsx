@@ -154,7 +154,7 @@ const BannerManage = () => {
                   <TableRow key={banner._id}>
                     <TableCell className="pr-20">
                       <div className="flex items-center gap-3">
-                        <Image
+                        <img
                           alt=""
                           src={`${API_URL}/images/${banner.image}`}
                           width={100}

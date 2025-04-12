@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
+// import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
@@ -204,7 +204,7 @@ function CategoryUpdate() {
                       }}
                     />
                     {previewImage && (
-                      <Image
+                      <img
                         src={previewImage}
                         alt="Ảnh danh mục"
                         width={250}

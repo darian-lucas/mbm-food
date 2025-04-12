@@ -183,7 +183,7 @@ const ProductListCate = ({
                     href={`/product/${item.slug}`}
                     className={styles.imageThum}
                   >
-                    <Image
+                    <img
                       className={styles.img}
                       src={`${API_URL}/images/${item.matchedVariant.image}`}
                       alt={item.name}
