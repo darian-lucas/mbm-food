@@ -115,11 +115,11 @@ export default function New() {
                   </li>
                   {isOpen && (
                     <ul className="submenu">
-                      <li><Link href="/product/pizza">Pizza</Link></li>
-                      <li><Link href="/products/khaivi">Khai vị</Link></li>
-                      <li><Link href="/products/myy">Mỳ Ý</Link></li>
-                      <li><Link href="/products/salad">Salad</Link></li>
-                      <li><Link href="/products/thucuong">Thức uống</Link></li>
+                      <li><Link href="/pizza">Pizza</Link></li>
+                      <li><Link href="/khai-vi">Khai vị</Link></li>
+                      <li><Link href="/my-y">Mỳ Ý</Link></li>
+                      <li><Link href="/salad">Salad</Link></li>
+                      <li><Link href="/thuc-uong">Thức uống</Link></li>
                     </ul>
                   )}
                   <li><Link className="font-bold" href="/news">Tin tức</Link></li>
