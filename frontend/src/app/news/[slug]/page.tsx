@@ -134,7 +134,7 @@ export default function NewsDetail() {
                 {tintucNoibat.map((ttnoibat, i) => (
                   <li className="aside-news-item" key={i}>
                     <div className="block-thumb">
-                      <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
+                      <Link href={`/news/${ttnoibat.slug}`}>
                         <Image
                           src={
                             ttnoibat.imageSummary
@@ -148,7 +148,7 @@ export default function NewsDetail() {
                       </Link>
                     </div>
                     <div className="block-content">
-                      <Link href={`/news/${encodeURIComponent(ttnoibat.slug)}`}>
+                      <Link href={`/news/${ttnoibat.slug}`}>
                         {ttnoibat.title}
                       </Link>
                     </div>
