@@ -19,7 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { TCreateCouponParams } from "../../types";
 import { Textarea } from "@/components/ui/textarea";
@@ -47,25 +51,27 @@ function CouponAddNew() {
       start_date: new Date(),
       end_date: new Date(),
       quantity: "0",
-      description:"",
+      description: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    const endDate = new Date(values.end_date);
+    endDate.setHours(23, 59, 59, 999); // Set về cuối ngày
     try {
       const couponData: TCreateCouponParams = {
         code: values.code,
         discount: parseFloat(values.discount || "0"),
         type: values.type,
         start_date: values.start_date,
-        end_date: values.end_date,
+        end_date: endDate,
         quantity: parseFloat(values.quantity || "0"),
         description: values.description || "",
       };
-  
+
       const res = await CouponServices.createCoupon(couponData);
-      
+
       if (!res?.success) {
         toast.error(res?.message || "Có lỗi xảy ra");
         return;
@@ -136,11 +142,20 @@ function CouponAddNew() {
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start">
                       <CalendarIcon className="size-5 mr-3" />
-                      {field.value ? format(field.value, "dd/MM/yyyy") : "Chọn ngày"}
+                      {field.value
+                        ? format(field.value, "dd/MM/yyyy")
+                        : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 z-50 shadow-lg bg-white border rounded-md" align="start">
-                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} />
+                  <PopoverContent
+                    className="w-auto p-0 z-50 shadow-lg bg-white border rounded-md"
+                    align="start"
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                    />
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
@@ -156,12 +171,21 @@ function CouponAddNew() {
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start">
-                      <CalendarIcon  className="size-5 mr-3" />
-                      {field.value ? format(field.value, "dd/MM/yyyy") : "Chọn ngày"}
+                      <CalendarIcon className="size-5 mr-3" />
+                      {field.value
+                        ? format(field.value, "dd/MM/yyyy")
+                        : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 z-50 shadow-lg bg-white border rounded-md" align="start">
-                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} />
+                  <PopoverContent
+                    className="w-auto p-0 z-50 shadow-lg bg-white border rounded-md"
+                    align="start"
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                    />
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
@@ -199,7 +223,13 @@ function CouponAddNew() {
             )}
           />
         </div>
-        <Button isLoading={isSubmitting} variant="primary" type="submit" className="w-[120px]" disabled={isSubmitting}>
+        <Button
+          isLoading={isSubmitting}
+          variant="primary"
+          type="submit"
+          className="w-[120px]"
+          disabled={isSubmitting}
+        >
           Tạo mã
         </Button>
       </form>
