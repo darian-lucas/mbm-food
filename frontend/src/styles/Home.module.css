@@ -219,7 +219,7 @@
   font-weight: bold;
 }
 
-.TitleHot:hover{
+.TitleHot:hover {
   color: #E51735;
 }
 
@@ -1669,9 +1669,23 @@
     font-size: 20px;
   }
 
+  .menufoodTabs {
+    display: flex;
+    background: #136734;
+    padding: 10px;
+    border-radius: 5px;
+    gap: 10px;
+    width: 340px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
   .menufoodTab {
-    width: 100px;
-    height: 60px;
+    width: 60px;
+    height: 50px;
     font-size: 13px;
     display: flex;
     align-items: center;
@@ -1756,7 +1770,7 @@
     width: 50%;
     max-width: 200px;
     text-align: center;
-}
+  }
 
 
   .menufoodAdd {
@@ -1844,7 +1858,7 @@
     background-color: #E51735;
   }
 
-  .danhgiaContent{
+  .danhgiaContent {
     max-width: 300px;
   }
 
