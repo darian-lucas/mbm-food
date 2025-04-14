@@ -44,13 +44,6 @@ export default function New() {
   
     getData();
   }, []);
-  
-
-  // const extractImageUrl = (htmlString?: string) => {
-  //   if (!htmlString) return "/images/default.png";
-  //   const match = htmlString.match(/src=['"]([^'"]+)['"]/);
-  //   return match ? match[1] : "/images/default.png";
-  // };
 
   const truncateHTML = (html: string, maxLength: number) => {
     const tempDiv = document.createElement("div");
@@ -75,8 +68,8 @@ export default function New() {
                     <div className="col-fix" key={tintuc._id}>
                       <div className="item-blog">
                         <div className="block-thumb">
-                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                            <Image
+                          <Link href={`/news/${tintuc.slug}`}>
+                            <img
                               src={
                                 tintuc.imageSummary
                                     ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`
@@ -85,13 +78,13 @@ export default function New() {
                               alt={tintuc.title}
                               width={940}
                               height={640}
-                              unoptimized
+                             
                             />
                           </Link>
                         </div>
                         <div className="block-content">
                           <h3>
-                            <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                            <Link href={`/news/${tintuc.slug}`}>
                               {tintuc.title}
                             </Link>
                           </h3>
@@ -115,18 +108,18 @@ export default function New() {
                   <li><Link href="/">Trang chủ</Link></li>
                   <li><Link href="/about">Giới thiệu</Link></li>
                   <li className="menu-item">
-                    <Link href="/products">Sản phẩm</Link>
+                    <Link href="/product">Sản phẩm</Link>
                     <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
                       {isOpen ? "−" : "+"}
                     </button>
                   </li>
                   {isOpen && (
                     <ul className="submenu">
-                      <li><Link href="/product/pizza">Pizza</Link></li>
-                      <li><Link href="/products/khaivi">Khai vị</Link></li>
-                      <li><Link href="/products/myy">Mỳ Ý</Link></li>
-                      <li><Link href="/products/salad">Salad</Link></li>
-                      <li><Link href="/products/thucuong">Thức uống</Link></li>
+                      <li><Link href="/pizza">Pizza</Link></li>
+                      <li><Link href="/khai-vi">Khai vị</Link></li>
+                      <li><Link href="/my-y">Mỳ Ý</Link></li>
+                      <li><Link href="/salad">Salad</Link></li>
+                      <li><Link href="/thuc-uong">Thức uống</Link></li>
                     </ul>
                   )}
                   <li><Link className="font-bold" href="/news">Tin tức</Link></li>
@@ -144,8 +137,8 @@ export default function New() {
                     {tintucNoibat.map((tintuc) => (
                       <li className="aside-news-item" key={tintuc.slug}>
                         <div className="block-thumb">
-                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
-                            <Image
+                          <Link href={`/news/${tintuc.slug}`}>
+                            <img
                               src={
                                 tintuc.imageSummary
                                     ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`
@@ -158,7 +151,7 @@ export default function New() {
                           </Link>
                         </div>
                         <div className="block-content">
-                          <Link href={`/news/${encodeURIComponent(tintuc.slug)}`}>
+                          <Link href={`/news/${tintuc.slug}`}>
                             {tintuc.title}
                           </Link>
                         </div>

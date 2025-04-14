@@ -125,7 +125,7 @@ const CartPage = () => {
                     <div key={item._id} className={styles.cartBody}>
                       <div className={styles.ajaxCartRow}>
                         <div className={styles.ajaxCartProduct}>
-                          <Image
+                          <img
                             className={styles.ajaxImage}
                             src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${item.image}`}
                             alt={item.name}

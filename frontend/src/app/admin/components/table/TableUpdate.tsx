@@ -95,7 +95,7 @@ function TableUpdate() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-        <div className="grid grid-cols-2 gap-8 mt-10 mb-8">
+        <div className="grid grid-cols-2 gap-8 mt-6 mb-4">
           <FormField
             control={form.control}
             name="name"

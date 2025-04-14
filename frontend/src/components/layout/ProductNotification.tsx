@@ -99,7 +99,7 @@ const ProductNotification: React.FC = () => {
           randomProduct && incrementView(randomProduct._id, randomProduct.view)
         }
       >
-        <Image
+        <img
           src={productImage}
           alt={randomProduct?.name ?? "Sản phẩm"}
           width={60}

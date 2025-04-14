@@ -9,10 +9,10 @@ const MOMO_PARTNER_CODE = "MOMO";
 const MOMO_ACCESS_KEY = "F8BBA842ECF85"; 
 const MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"; 
 const MOMO_ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create";
-const RETURN_URL = "http://localhost:3002/result";
-// const RETURN_URL = "https://mbmfood.store/result";
-const NOTIFY_URL = "http://localhost:3001/api/payment/momo/callback"; // URL backend nhận callback
-// const NOTIFY_URL = "https://mbmfood.store/api/payment/momo/callback"; // URL backend nhận callback
+// const RETURN_URL = "http://localhost:3002/result";
+const RETURN_URL = "https://mbmfood.store/result";
+// const NOTIFY_URL = "http://localhost:3001/api/payment/momo/callback"; // URL backend nhận callback
+const NOTIFY_URL = "https://mbmfood.store/api/payment/momo/callback"; // URL backend nhận callback
 
 // Tạo thanh toán Momo
 const createMomoPayment = async (req, res) => {

@@ -192,7 +192,7 @@ export default function Home(): JSX.Element {
                 href={`/product/${item.slug}`}
                 onClick={() => incrementView(item._id, item.view)}
               >
-                <Image
+                <img
                   src={`${API_URL}/images/${
                     item.variants?.[0]?.image || "default.png"
                   }`}

@@ -114,7 +114,7 @@ const ProductList = ({ idcate, showAll = false }: ProductListProps) => {
                     href={`/product/${item.slug}`}
                     className={styles.imageThum}
                   >
-                    <Image
+                    <img
                       className={styles.img}
                       src={`${API_URL}/images/${item.variants[0].image}`}
                       alt={item.name}

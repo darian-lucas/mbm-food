@@ -191,7 +191,7 @@ import Swal from "sweetalert2";
                     href={`/product/${item.slug}`}
                     onClick={() => incrementView(item._id, item.view)}
                   >
-                    <Image
+                    <img
                       src={`${API_URL}/images/${variant.image}`}
                       alt={item.name}
                       width={240}

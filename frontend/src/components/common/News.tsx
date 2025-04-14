@@ -48,14 +48,14 @@ export default function News(): JSX.Element {
       <div className={styles.newsList}>
         {newsData.map((news) => (
           <Link
-            href={`/news/${encodeURIComponent(news.slug)}`}
+            href={`/news/${news.slug}`}
             key={news._id}
             className={styles.newsLink}
           >
             <div className={styles.newsItem}>
               {news.imageSummary && (
                 <div className={styles.newsImgWrapper}>
-                  <Image
+                  <img
                     src={`${API_URL}/images/${news.imageSummary}`}
                     alt={news.title}
                     className={styles.newsImg}
@@ -76,7 +76,7 @@ export default function News(): JSX.Element {
                 />
                 <button
                   onClick={() =>
-                    router.push(`/news/${encodeURIComponent(news.slug)}`)
+                    router.push(`/news/${news.slug}`)
                   }
                   className={styles.readMore}
                 >

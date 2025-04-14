@@ -220,7 +220,7 @@ const ProductManage = () => {
                     <TableRow key={product.slug}>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <Image
+                          <img
                             alt=""
                             src={
                               product.variants?.[0]?.image

@@ -122,7 +122,7 @@ const BannerManage = () => {
         </svg>
       </Link>
       <div className="flex items-center gap-5 justify-between mb-3 mt-4">
-        <Heading className="">Quản lý Banner</Heading>
+        <Heading className="">Quản lý banner</Heading>
         <div className="flex gap-3">
           <div className="w-full lg:w-[300px]">
             <Input
@@ -154,7 +154,7 @@ const BannerManage = () => {
                   <TableRow key={banner._id}>
                     <TableCell className="pr-20">
                       <div className="flex items-center gap-3">
-                        <Image
+                        <img
                           alt=""
                           src={`${API_URL}/images/${banner.image}`}
                           width={100}

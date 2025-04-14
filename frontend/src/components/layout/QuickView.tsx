@@ -54,7 +54,7 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
       <button className={styles.closeButton} onClick={handleClose}>✖</button>
 
         <div className={styles.content}>
-          <Image
+          <img
             src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${selectedVariant.image}`}
             alt={product.name}
             width={400}

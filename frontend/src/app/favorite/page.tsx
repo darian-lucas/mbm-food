@@ -124,7 +124,7 @@ const FavoritePage = () => {
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     {product.variants[0]?.image && (
                       <div className={`${styles.productImageWrapper}`}>
-                        <Image
+                        <img
                           src={product.variants[0].image.startsWith("http")
                             ? product.variants[0].image
                             : `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${product.variants[0].image}`
@@ -133,7 +133,7 @@ const FavoritePage = () => {
                           width={300}
                           height={300}
                           className={`${styles.productImage}`}
-                          priority
+                        
                         />
                       </div>
                     )}
