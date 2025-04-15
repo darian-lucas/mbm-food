@@ -170,6 +170,24 @@ const ProductListCate = ({
   };
 
   const API_URL =  process.env.NEXT_PUBLIC_URL_IMAGE;
+  
+ if (products.length === 0) {
+  return (
+    <div
+      style={{
+        padding: "15px",
+        margin: "20px 0",
+        color: "#856404",
+        backgroundColor: "#fff3cd",
+        border: "1px solid #ffeeba",
+        borderRadius: "4px",
+      }}
+    >
+      Không có sản phẩm nào trong danh mục này.
+    </div>
+  );
+}
+
 
   return (
     <div className={styles.container}>

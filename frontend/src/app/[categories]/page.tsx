@@ -58,7 +58,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       const extractedSizes = products
         .flatMap((product) => product.variants?.map((v) => v.option) || [])
         .filter((size, index, self) => self.indexOf(size) === index && size);
-
       setSizes(extractedSizes);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu kích thước:", error);
@@ -178,16 +177,21 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     ].map(({ min, max, label }) => (
                       <li key={label} className={style.filter_item}>
                         <label>
-                          <input
-                            type="checkbox"
-                            name="price"
-                            checked={minPrice === min && maxPrice === max}
-                            className={style.input}
-                            onChange={() => {
+                        <input
+                          type="checkbox"
+                          name="price"
+                          checked={minPrice === min && maxPrice === max}
+                          className={style.input}
+                          onChange={() => {
+                            if (minPrice === min && maxPrice === max) {
+                              setMinPrice(null);
+                              setMaxPrice(null);
+                            } else {
                               setMinPrice(min);
                               setMaxPrice(max);
-                            }}
-                          />
+                            }
+                          }}
+                        />
                           {label}
                         </label>
                       </li>
@@ -205,13 +209,19 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       {sizes.map((size) => (
                         <li key={size} className={style.filter_item}>
                           <label>
-                            <input
-                              type="checkbox"
-                              name="size"
-                              checked={selectedSize === size}
-                              onChange={() => setSelectedSize(size)}
-                              className={style.input}
-                            />
+                          <input
+                            type="checkbox"
+                            name="size"
+                            checked={selectedSize === size}
+                            onChange={() => {
+                              if (selectedSize === size) {
+                                setSelectedSize(null);
+                              } else {
+                                setSelectedSize(size);
+                              }
+                            }}
+                            className={style.input}
+                          />
                             {size}
                           </label>
                         </li>
