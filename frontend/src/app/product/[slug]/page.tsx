@@ -2,9 +2,10 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import styles from "../../../styles/ProductDetail.module.css";
 import useCart from "../../hooks/useCart";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface Variant {
   option: string;
@@ -90,6 +91,24 @@ const ProductDetail = () => {
     if (!product || !selectedVariant) return;
     handleAddToCart(product, selectedVariant, quantity, note);
   };
+
+  const router = useRouter();
+  const handleBuyNow = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!product || !selectedVariant) return;
+  
+    const user = localStorage.getItem("user");
+  
+    if (!user) {
+      toast.error("Bạn cần đăng nhập để mua ngay sản phẩm.");
+      router.push("/login");
+      return;
+    }
+  
+    handleAddToCart(product, selectedVariant, quantity, note);
+    router.push("/checkout");
+  };
+  
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
 
@@ -249,10 +268,13 @@ const ProductDetail = () => {
                         >
                           Thêm vào giỏ hàng
                         </button>
-                        <button className={styles.booking}>Đặt bàn</button>
+                        <button 
+                          className={styles.booking}
+                          onClick={handleBuyNow}
+                        >Mua Ngay</button>
                       </div>
                       <div className={styles.hotline}>
-                        Gọi<a href="$"> 123456</a>Để được hỗ trợ ngay
+                        Gọi<a href="$"> 1900 6750</a> Để được hỗ trợ ngay
                       </div>
                     </div>
                   </div>
