@@ -111,7 +111,7 @@ const Login = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Đăng nhập</h2>
+      <h2 className={styles.title}>ĐĂNG NHẬP</h2>
       {error && <p className={styles.error}>{error}</p>}
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <input
@@ -126,26 +126,29 @@ const Login = () => {
           {...register("password", { required: "Vui lòng nhập mật khẩu" })}
           className={styles.input}
         />
+        <hr />
         <div className={styles.rememberForgot}>
           <label>
-            <input type="checkbox" /> Ghi nhớ đăng nhập
+            <input type="checkbox" /> Ghi nhớ đăng nhập. 
           </label>
           <a
             href="#"
             className={styles.link}
             onClick={() => setShowForgotPassword(true)}
           >
-            Quên mật khẩu?
+             {" "} <strong>Quên mật khẩu ?</strong>
           </a>
         </div>
         <button type="submit" className={styles.button} disabled={loading}>
           {loading ? <Spinner animation="border" size="sm" /> : "Đăng nhập"}
         </button>
       </form>
+      <br />
+      <hr />
       <p>
-        Bạn chưa có tài khoản?{" "}
+        Bạn chưa có tài khoản? {" "}
         <a href="/register" className={styles.link}>
-          Đăng ký
+          <strong>Đăng ký ngay</strong>
         </a>
       </p>
 
