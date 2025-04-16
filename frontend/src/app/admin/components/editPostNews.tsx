@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import newsService from "../services/NewsService";
 import slugify from "slugify";
-
+const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 // Import ReactQuill với dynamic import để tránh lỗi Next.js SSR
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -126,14 +126,25 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
     const form = e.currentTarget;
     const formData = new FormData(form);
   
-    // Bổ sung thêm các field text thủ công (vì nhiều input dùng ReactQuill)
-    formData.append("author", post.author);
-    formData.append("title", post.title);
-    formData.append("slug", post.slug);
-    formData.append("content", post.content);
-    formData.append("summary", post.summary);
-    formData.append("status", post.status ? "1" : "0");
-    formData.append("hot", post.hot ? "1" : "0");
+    const fileInput = form.querySelector(
+      'input[name="imageSummary"]'
+    ) as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+  
+    if (file) {
+      formData.set("imageSummary", file); // nếu có file mới
+    } else {
+      formData.set("imageSummary", post.imageSummary); // nếu không có file, giữ ảnh cũ
+    }
+  
+    // Thêm các trường khác thủ công
+    formData.set("author", post.author);
+    formData.set("title", post.title);
+    formData.set("slug", post.slug);
+    formData.set("content", post.content);
+    formData.set("summary", post.summary);
+    formData.set("status", post.status ? "1" : "0");
+    formData.set("hot", post.hot ? "1" : "0");
   
     try {
       const res = await newsService.updateNews(id, formData);
@@ -149,7 +160,8 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
     }
   };
   
-  
+
+
 
   return (
     <div className="container mx-auto p-4 max-w-3xl bg-white shadow rounded">
@@ -207,9 +219,14 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
           className="mb-2"
         />
 
+
         {post.imageSummary && (
           <img
-            src={post.imageSummary.startsWith("http") ? post.imageSummary : `/images/${post.imageSummary}`}
+          src={
+            post.imageSummary
+                ? `${API_URL}/images/${post.imageSummary}`
+                : "/placeholder.jpg"
+        }
             alt="Preview"
             className="mb-4 max-h-48 rounded"
           />

@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef  } from "react";
 // import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { fetchFeaturedNews, fetchNewsDetail, Post } from "../../../services/post";
+import { fetchFeaturedNews, fetchNewsDetail, Post,incrementView } from "../../../services/post";
 import "../../../styles/id.css";
 import "../../../styles/new.css";
 import CommentSection from "@/app/comments/CommentSection";
@@ -19,7 +19,7 @@ export default function NewsDetail() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const hasViewed = useRef(false); 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,17 +28,23 @@ export default function NewsDetail() {
           setLoading(false);
           return;
         }
-
-        const [featuredNews, data] = await Promise.all([
-          fetchFeaturedNews(),
-          fetchNewsDetail(slug as string),
-        ]);
-
-        if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
+  
+        // 🔥 Tách riêng fetch chi tiết bài viết
+        const data = await fetchNewsDetail(slug as string);
         if (!data) throw new Error("Bài viết không tồn tại.");
-
-        setTintucNoibat(featuredNews);
+  
+        // 🔥 Sau khi chắc chắn có _id thì mới gọi tăng view
+        if (!hasViewed.current) {
+          await incrementView(data._id);
+          hasViewed.current = true;  // Đánh dấu là đã tăng lượt xem
+        }
+  
+        const featuredNews = await fetchFeaturedNews();
+        if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
+  
+        // ✅ Lưu vào state
         setPost(data);
+        setTintucNoibat(featuredNews);
         setError(null);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
@@ -47,9 +53,10 @@ export default function NewsDetail() {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [slug]);
+  
 
   if (loading) return <p>Đang tải bài viết...</p>;
   if (error) return <p>{error}</p>;

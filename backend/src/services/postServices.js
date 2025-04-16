@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const mongoose = require("mongoose");
 
 // Lấy tất cả bài viết
 exports.getAllPosts = async (page, limit) => {
@@ -123,7 +124,19 @@ exports.createPost = async (postData) => {
 
   return await post.save();
 };
+exports.incrementPostView = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error("ID không hợp lệ");
+  }
 
+  const post = await Post.findByIdAndUpdate(
+    id,
+    { $inc: { view: 1 } },
+    { new: true }
+  );
+
+  return post;
+};
 // Cập nhật bài viết theo id
 exports.updatePost = async (id, postData) => {
   return await Post.findByIdAndUpdate(
@@ -140,6 +153,8 @@ exports.updatePost = async (id, postData) => {
     { new: true }
   ); // Trả về bản ghi đã được cập nhật
 };
+
+
 
 // Xóa bài viết theo id
 exports.deletePost = async (id) => {
