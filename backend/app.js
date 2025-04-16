@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./src/config/db');
 const userRoutes = require('./src/routes/users');
+const cron = require("node-cron");
+const couponServices = require("./src/services/couponServices");
 //Bổ sung search
 const searchRoutes = require("./src/routes/search");
 const categoryRoutes = require('./src/routes/category');
@@ -59,10 +61,13 @@ app.use('/api/banners', bannerRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/registers', registerRoutes);
 app.use("/api/auth", authRoutes);
+
+require("./src/middleware/cron");
+
 app.listen(PORT, () => {
     console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
-
 });
+
 
 
 

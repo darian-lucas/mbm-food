@@ -93,15 +93,13 @@ function CouponUpdate() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    const endDate = new Date(values.end_date);
-    endDate.setHours(23, 59, 59, 999);
     try {
       const couponData: TCreateCouponParams = {
         code: values.code,
         discount: parseFloat(values.discount || "0"),
         type: values.type,
         start_date: values.start_date,
-        end_date: endDate,
+        end_date: values.end_date,
         quantity: parseFloat(values.quantity || "0"),
         description: values.description || "",
       };
