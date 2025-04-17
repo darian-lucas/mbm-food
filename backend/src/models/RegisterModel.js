@@ -13,7 +13,7 @@ const registerSchema = new Schema(
       enum: ["Confirmed", "Completed", "Cancelled"],
       default: "Confirmed",
     },
-    note: { type: String },
+    cancel_reason: { type: String },
   },
   { timestamps: true }
 );

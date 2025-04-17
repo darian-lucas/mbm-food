@@ -3,23 +3,22 @@ const mongoose = require("mongoose");
 const connectDB = require("../backend/src/config/db");
 const Register = require("../backend/src/models/RegisterModel");
 
-const updateProductFlags = async () => {
+const renameNoteToCancelReason = async () => {
   try {
     await connectDB();
 
-    // Cập nhật tất cả sản phẩm chưa có trường 'flag' hoặc có giá trị khác true
     const result = await Register.updateMany(
-      { flag: { $exists: false } }, // Chỉ cập nhật nếu trường flag chưa tồn tại
-      { $set: {  note: ""} }
+      { note: { $exists: true } },
+      { $rename: { note: "cancel_reason" } }
     );
 
-    console.log(`✔ Đã cập nhật trường note cho ${result.modifiedCount} đăng kí.`);
+    console.log(`✔ Đã đổi tên trường note thành cancel_reason cho ${result.modifiedCount} đăng kí.`);
   } catch (error) {
-    console.error("❌ Lỗi khi cập nhật flag:", error.message);
+    console.error("❌ Lỗi khi đổi tên trường:", error.message);
   } finally {
     mongoose.disconnect();
   }
 };
 
 // Chạy script
-updateProductFlags();
+renameNoteToCancelReason();

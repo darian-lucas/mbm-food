@@ -33,7 +33,7 @@ exports.createRegister = async (registerData) => {
       id_table: registerData.id_table,
       start_time: registerData.start_time,
       end_time: registerData.end_time || "",
-      note: registerData.note || "",
+      cancel_reason: registerData.cancel_reason || "",
       status: "Confirmed",
     });
 
@@ -109,7 +109,7 @@ exports.getRegistersByUserId = async (userId) => {
 
 
 // Hủy đơn đăng ký
-exports.updateRegisterStatus = async (id, note) => {
+exports.updateRegisterStatus = async (id, cancel_reason) => {
   try {
     const register = await Register.findById(id);
     if (!register) {
@@ -118,8 +118,8 @@ exports.updateRegisterStatus = async (id, note) => {
 
     // Cập nhật trạng thái đơn đăng ký
     register.status = "Cancelled";
-    if (note) {
-      register.note = note;
+    if (cancel_reason) {
+      register.cancel_reason = cancel_reason;
     }
     await register.save();
 

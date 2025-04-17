@@ -19,7 +19,7 @@ interface Register {
   };
   start_time: string;
   createdAt: string;
-  note: string;
+  cancel_reason: string;
   status: "Confirmed" | "Completed" | "Cancelled";
 }
 
@@ -95,7 +95,7 @@ const ShowHistoryBooking = () => {
 
       setRegisters((prev) =>
         prev.map((item) =>
-          item._id === selectedRegister._id ? { ...item, status: "Cancelled", note: cancelReason } : item
+          item._id === selectedRegister._id ? { ...item, status: "Cancelled", cancel_reason: cancelReason } : item
         )
       );
 

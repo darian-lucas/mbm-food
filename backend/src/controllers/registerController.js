@@ -89,10 +89,10 @@ exports.getRegistersByUser = async (req, res) => {
 exports.updateRegisterStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { note } = req.body;
+    const { cancel_reason } = req.body;
     const cancelledRegister = await registerService.updateRegisterStatus(
       id,
-      note
+      cancel_reason
     );
 
     return res.status(200).json({
