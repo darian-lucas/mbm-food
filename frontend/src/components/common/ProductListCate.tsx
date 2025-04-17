@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Heart } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -56,7 +55,10 @@ const ProductListCate = ({
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const [token, setToken] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+  const [totalPages, setTotalPages] = useState(1);
+  
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, []);
@@ -128,8 +130,32 @@ const ProductListCate = ({
           default:
             break;
         }
+       
+        // ⭐ Kiểm tra nếu không có sản phẩm
+        if (filteredProducts.length === 0) {
+          setProducts([]);
+          return;
+        }
 
-        setProducts(showAll ? filteredProducts : filteredProducts.slice(0, 10));
+        // ⭐ Tính tổng số trang & kiểm tra currentPage hợp lệ
+        const total = filteredProducts.length;
+        const newTotalPages = Math.ceil(total / itemsPerPage);
+        setTotalPages(newTotalPages);
+
+        if (!showAll && currentPage > newTotalPages) {
+          setCurrentPage(1);
+          return;
+        }
+
+        // ⭐ Cắt trang
+        const paginatedProducts = showAll
+          ? filteredProducts
+          : filteredProducts.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage
+            );
+
+        setProducts(paginatedProducts);
 
         if (token) {
           const favoriteStatuses: { [key: string]: boolean } = {};
@@ -146,7 +172,7 @@ const ProductListCate = ({
       }
     };
     fetchProducts();
-  }, [token, idcate, minPrice, maxPrice, selectedSize, sortOption]);
+  }, [token, idcate, minPrice, maxPrice, selectedSize, sortOption, currentPage]);
 
   const toggleFavorite = async (id: string) => {
     if (!token) {
@@ -249,6 +275,28 @@ const ProductListCate = ({
           ))}
         </div>
       </section>
+
+         {/* ⭐ PHÂN TRANG */}
+         {!showAll && totalPages > 1 && (
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => setCurrentPage(i + 1)}
+              style={{
+                margin: "0 5px",
+                padding: "5px 10px",
+                border: currentPage === i + 1 ? "2px solid" : "1px solid #ccc",
+                background: currentPage === i + 1 ? "#016a31" : "#fff",
+                color: currentPage === i + 1 ? "#fff" : "#000",
+                cursor: "pointer",
+              }}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      )}
 
       {selectedProduct && (
         <QuickView

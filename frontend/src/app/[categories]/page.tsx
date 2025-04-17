@@ -308,7 +308,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             <section className={style.product_view}>
               <ProductListCate
                 idcate={categoryId}
-                showAll={true}
+                showAll={false}
                 minPrice={minPrice ?? undefined}
                 maxPrice={maxPrice ?? undefined}
                 selectedSize={selectedSize}

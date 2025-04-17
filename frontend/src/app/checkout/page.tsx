@@ -30,6 +30,7 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  note?:string;
 }
 
 interface Coupon {
@@ -168,7 +169,6 @@ const CheckoutPage = () => {
       address: user.address[0]?.address || "",
       phone: user.address[0]?.phone || "",
       name: user.address[0]?.name || "",
-      note: "Không có ghi chú",
       receive_address: user.address[0]?.address || "",
       order_status: "Pending",
       payment_status: "Pending",
@@ -177,6 +177,7 @@ const CheckoutPage = () => {
         name: item.name,
         quantity: item.quantity,
         price: item.price,
+        note: item.note || "Không có ghi chú",
       })),
     };
 
@@ -185,6 +186,7 @@ const CheckoutPage = () => {
       name: item.name,
       quantity: item.quantity,
       price: item.price,
+      note: item.note || "Không có ghi chú",
     }));
 
     // 🛑 Console log để debug
@@ -226,6 +228,7 @@ const CheckoutPage = () => {
                 name: item.name,
                 quantity: item.quantity,
                 price: item.price,
+                note: item.note || "Không có ghi chú",
               })),
             },
           }),
