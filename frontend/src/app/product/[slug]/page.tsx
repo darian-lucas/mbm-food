@@ -6,6 +6,19 @@ import styles from "../../../styles/ProductDetail.module.css";
 import useCart from "../../hooks/useCart";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Link from "next/link";
+import { fetchNews, fetchFeaturedNews } from "../../../services/post";
+import {
+  addFavorite,
+  removeFavorite,
+  checkFavorite,
+} from "@/services/Favorite";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
+import { Heart } from "lucide-react";
+import QuickView from "@/components/layout/QuickView";
 
 interface Variant {
   option: string;
@@ -16,12 +29,16 @@ interface Variant {
 
 interface Product {
   _id: string;
-  id: string;
   name: string;
-  description: string;
   slug: string;
-  variants: Variant[];
   idcate: string;
+  variants: Variant[];
+  hot: number;
+  view: number;
+  status: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 }
 interface Coupon {
   _id: string;
@@ -29,14 +46,54 @@ interface Coupon {
   discount: number;
 }
 
-const ProductDetail = () => {
+interface Post {
+  _id: string;
+  title: string;
+  slug: string;
+  create_at: string | number | Date;
+  content: string;
+  imageSummary?: string;
+  author: string;
+}
+
+const ProductDetail = ({ idcate }) => {
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [note, setNote] = useState<string>("");
+  const [tintucNoibat, setTintucNoibat] = useState<Post[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
+  const [token, setToken] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, []);
+  const toggleFavorite = async (id: string) => {
+    if (!token) {
+      toast.warning("⚠ Bạn cần đăng nhập để yêu thích sản phẩm!");
+      return;
+    }
+
+    try {
+      if (favorites[id]) {
+        await removeFavorite(id, token);
+        toast.error("Đã xóa sản phẩm khỏi danh sách yêu thích!");
+      } else {
+        await addFavorite(id, token);
+        toast.success("Đã thêm sản phẩm vào danh sách yêu thích!");
+      }
+      setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
+    } catch (error) {
+      console.error("Lỗi khi cập nhật yêu thích:", error);
+      toast.error("⚠ Có lỗi xảy ra, vui lòng thử lại!");
+    }
+  };
   const couponConditions: Record<string, string> = {
     MBM20:
       "Áp dụng cho đơn hàng từ 200k trở lên. Không đi kèm với chương trình khác.",
@@ -45,6 +102,82 @@ const ProductDetail = () => {
     MBM50:
       "Áp dụng cho đơn hàng từ 500k trở lên. Không đi kèm với chương trình khác.",
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const [news, featuredNews] = (await Promise.all([
+          fetchNews(),
+          fetchFeaturedNews(),
+        ])) as [Post[], Post[]];
+
+        if (!news.length) throw new Error("Không có bài viết nào.");
+        if (!featuredNews.length) throw new Error("Không có tin nổi bật.");
+
+        setTintucNoibat(featuredNews);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+        setError("Không thể tải dữ liệu. Vui lòng thử lại sau.");
+      }
+    };
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products`
+        );
+        const data = await res.json();
+        const filteredProducts = data.data.filter(
+          (product: Product) => product.idcate === idcate
+        );
+        if (token) {
+          const favoriteStatuses: { [key: string]: boolean } = {};
+          await Promise.all(
+            filteredProducts.map(async (product: Product) => {
+              const result = await checkFavorite(product._id, token);
+              favoriteStatuses[product._id] = result?.isFavorite || false;
+            })
+          );
+          setFavorites(favoriteStatuses);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải danh sách sản phẩm:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [token, idcate]);
+
+  // useEffect lấy sản phẩm liên quan
+  useEffect(() => {
+    if (!product || !product.idcate) return;
+
+    const fetchRelated = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/products`
+        );
+        const data = await res.json();
+
+        console.log("Dữ liệu sản phẩm:", data); // Kiểm tra dữ liệu trả về
+
+        const filtered = data.data.filter(
+          (p: Product) => p.idcate === product.idcate && p._id !== product._id
+        );
+
+        console.log("Sản phẩm liên quan:", filtered); // Kiểm tra sau khi lọc
+        setRelatedProducts(filtered);
+      } catch (err) {
+        console.error("Lỗi khi tải món ăn liên quan:", err);
+      }
+    };
+
+    fetchRelated();
+  }, [product]);
 
   useEffect(() => {
     if (!slug) return;
@@ -96,19 +229,18 @@ const ProductDetail = () => {
   const handleBuyNow = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!product || !selectedVariant) return;
-  
+
     const user = localStorage.getItem("user");
-  
+
     if (!user) {
       toast.error("Bạn cần đăng nhập để mua ngay sản phẩm.");
       router.push("/login");
       return;
     }
-  
+
     handleAddToCart(product, selectedVariant, quantity, note);
     router.push("/checkout");
   };
-  
 
   if (!product || !selectedVariant) return <p>Loading...</p>;
 
@@ -268,10 +400,12 @@ const ProductDetail = () => {
                         >
                           Thêm vào giỏ hàng
                         </button>
-                        <button 
+                        <button
                           className={styles.booking}
                           onClick={handleBuyNow}
-                        >Mua Ngay</button>
+                        >
+                          Mua Ngay
+                        </button>
                       </div>
                       <div className={styles.hotline}>
                         Gọi<a href="$"> 1900 6750</a> Để được hỗ trợ ngay
@@ -281,31 +415,143 @@ const ProductDetail = () => {
                 </form>
               </div>
             </div>
+
+            {/* Món ăn liên quan */}
             <div className={styles.order_3}>
-              <div className={styles.product_lq}>
-                <h3 className={styles.title}>
-                  <a
-                    href=""
-                    className={styles.titleName}
-                    title="Món ăn liên quan"
+              {relatedProducts.length > 0 && (
+                <section className={styles.relatedSection}>
+                  <h2 className={styles.title}>Món ăn liên quan</h2>
+                  <Swiper
+                    key={relatedProducts.length}
+                    modules={[Navigation]}
+                    navigation
+                    spaceBetween={20}
+                    slidesPerView={4}
+                    breakpoints={{
+                      320: { slidesPerView: 1 },
+                      640: { slidesPerView: 2 },
+                      1024: { slidesPerView: 4 },
+                    }}
                   >
-                    Món ăn liên quan
-                  </a>
-                  <div className={styles.fix_swipper_border}>
-                    <div className={styles.swiper_wrapper}></div>
-                  </div>
-                </h3>
-              </div>
+                    {relatedProducts.map((item) => (
+                      <SwiperSlide key={item._id}>
+                        <div className={styles.relatedItem}>
+                          <div className={styles.productAction}>
+                            <div className={styles.productThumnail}>
+                              <Link
+                                href={`/product/${item.slug}`}
+                                className={styles.imageThum}
+                              >
+                                <img
+                                  className={styles.img}
+                                  src={`${API_URL}/images/${item.variants[0].image}`}
+                                  alt={item.name}
+                                  width={234}
+                                  height={234}
+                                />
+                              </Link>
+                              <button
+                                className={styles.whistList}
+                                onClick={() => toggleFavorite(item._id)}
+                              >
+                                <Heart
+                                  size={20}
+                                  color={
+                                    favorites[item._id] ? "#E51735" : "gray"
+                                  }
+                                  fill={
+                                    favorites[item._id]
+                                      ? "#E51735"
+                                      : "transparent"
+                                  }
+                                />
+                              </button>
+                            </div>
+                            <div className={styles.productInfo}>
+                              <h3 className={styles.productName}>
+                                <Link
+                                  href={`/product/${item.slug}`}
+                                  className={styles.productName}
+                                >
+                                  {item.name}
+                                </Link>
+                              </h3>
+                              <div className={styles.productContent}>
+                                <span
+                                  className={styles.ProductDesc}
+                                  dangerouslySetInnerHTML={{
+                                    __html: item.description,
+                                  }}
+                                />
+                                <Link className={styles.More} href={`/product/${item.slug}`}>
+                                  Xem thêm
+                                </Link>
+                              </div>
+                              <div className={styles.groupForm}>
+                                <div className={styles.priceBox}>
+                                  <span>Giá chỉ từ: </span>{" "}
+                                  {item.variants[0].price.toLocaleString()}₫
+                                </div>
+                                <button
+                                  className={styles.add}
+                                  onClick={() => setSelectedProduct(item)}
+                                >
+                                  Thêm
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </section>
+              )}
             </div>
-            <div className="order_4">
-              <div className="blog"></div>
-              <a href=""></a>
+
+            {/* Tin tức */}
+            <div className={styles.col4}>
+              <div className={styles.blockBlog}>
+                <h2 className={styles.title}>Tin tức nổi bật</h2>
+                <div className={styles.blog_small}>
+                  <ul className="aside-list">
+                    {tintucNoibat.map((tintuc) => (
+                      <li className={styles.aside_news_item} key={tintuc.slug}>
+                        <div className={styles.block_thumb}>
+                          <Link href={`/news/${tintuc.slug}`}>
+                            <img
+                              src={
+                                tintuc.imageSummary
+                                  ? `${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${tintuc.imageSummary}`
+                                  : "/placeholder.jpg"
+                              }
+                              alt={tintuc.title}
+                              width={120}
+                              height={120}
+                            />
+                          </Link>
+                        </div>
+                        <div className={styles.block_content}>
+                          <Link href={`/news/${tintuc.slug}`}>
+                            {tintuc.title}
+                          </Link>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      {selectedProduct && (
+        <QuickView
+          product={{ ...selectedProduct, id: selectedProduct._id }}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 };
-
 export default ProductDetail;
