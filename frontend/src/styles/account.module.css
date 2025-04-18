@@ -65,7 +65,9 @@
     cursor: pointer;
     border-radius: 4px;
 }
-
+.text{
+    font-size: 1.25rem;
+}
 .btnRed:hover {
     background-color: darkred;
 }

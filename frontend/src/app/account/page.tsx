@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { getUserById } from "@/services/user";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import styles from "@/styles/account.module.css";
 export default function AccountPage() {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ export default function AccountPage() {
 
     return (
         <div className="" style={{ maxWidth: "1300px" }}>
-            <h5 className="fw-bold text-uppercase mb-3">Thông tin tài khoản</h5>
+            <h5 className={`fw-bold text-uppercase mb-3 ${styles.text}`}>Thông tin tài khoản</h5>
             {user ? (
                 <>
                     <div className="card border-0 shadow-sm p-3 mb-4">

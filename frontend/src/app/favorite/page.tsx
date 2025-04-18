@@ -102,7 +102,7 @@ const FavoritePage = () => {
 
   return (
     <div className={`container mt-4 ${styles.favoriteContainer}`}>
-      <h2 className="mb-4">Danh sách yêu thích</h2>
+      <h2 className={`mb-4 ${styles.favtile}`}>Danh sách yêu thích</h2>
 
       {favorites.length === 0 ? (
         <p className="text-center">Chưa có sản phẩm yêu thích.</p>

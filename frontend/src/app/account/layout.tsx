@@ -20,7 +20,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
                     {/* Sidebar */}
                     <div className={`col-md-3 ${isOpen ? "d-block" : "d-none d-md-block"} ${styles.sidebar}`}>
-                        <h5>TRANG TÀI KHOẢN</h5>
+                        <h5 className={styles.text}>TRANG TÀI KHOẢN</h5>
                         <p><strong>Xin chào, <span className="text-danger">Quý Khách</span>!</strong></p>
                         <ul className="list-unstyled d-flex flex-column gap-2">
                             <li><Link href="/account">Thông tin tài khoản</Link></li>
