@@ -75,14 +75,14 @@
   will-change: opacify;
   transition: 0.3s all ease-in-out;
   vertical-align: middle;
-    border-style: none;
-    max-width: 100%;
-    height: auto;
+  border-style: none;
+  max-width: 100%;
+  height: auto;
 }
 .whistList{
   position: absolute;
-    top: 10px;
-    right: 10px;
+  top: 10px;
+  right: 10px;
 }
 .productInfo{
   padding: 10px;
