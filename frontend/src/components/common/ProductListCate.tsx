@@ -49,7 +49,7 @@ const ProductListCate = ({
   minPrice,
   maxPrice,
   selectedSize,
-  sortOption = "newest",
+  sortOption,
 }: ProductListProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
@@ -73,6 +73,11 @@ const ProductListCate = ({
           queryParams.append("minPrice", String(minPrice));
         if (maxPrice !== undefined)
           queryParams.append("maxPrice", String(maxPrice));
+        if (selectedSize !== undefined && selectedSize !== null)
+          queryParams.append("size", selectedSize);
+        if (sortOption !== undefined)
+          queryParams.append("sort", sortOption);
+          
         if (queryParams.toString()) url += `?${queryParams.toString()}`;
 
         const res = await fetch(url);
@@ -128,6 +133,12 @@ const ProductListCate = ({
             );
             break;
           default:
+            // Mặc định sắp xếp theo mới nhất
+            filteredProducts.sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
             break;
         }
        

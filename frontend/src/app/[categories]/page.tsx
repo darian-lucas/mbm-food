@@ -1,5 +1,5 @@
 "use client";
-import { notFound } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import ProductListCate from "@/components/common/ProductListCate";
 import style from "@/styles/Categories.module.css";
 import { useState, useEffect, useCallback } from "react";
@@ -27,6 +27,9 @@ const categoryNameMap: Record<string, string> = {
 };
 
 export default function CategoryPage({ params }: CategoryPageProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const categoryId = categoryMap[params.categories];
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
@@ -36,6 +39,39 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [activeSortOption, setActiveSortOption] = useState<string>("default");
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
+  // Đọc tham số từ URL khi trang được tải
+  useEffect(() => {
+    const minPriceParam = searchParams.get('minPrice');
+    const maxPriceParam = searchParams.get('maxPrice');
+    const sizeParam = searchParams.get('size');
+    const sortParam = searchParams.get('sort');
+
+    if (minPriceParam) setMinPrice(parseInt(minPriceParam));
+    if (maxPriceParam) setMaxPrice(parseInt(maxPriceParam));
+    if (sizeParam) setSelectedSize(sizeParam);
+    if (sortParam) {
+      setSortOption(sortParam);
+      setActiveSortOption(sortParam);
+    }
+  }, [searchParams]);
+
+  // Cập nhật URL khi các filter thay đổi
+  const updateURL = useCallback(() => {
+    const urlParams = new URLSearchParams();
+    
+    if (minPrice !== null) urlParams.append('minPrice', minPrice.toString());
+    if (maxPrice !== null) urlParams.append('maxPrice', maxPrice.toString());
+    if (selectedSize !== null) urlParams.append('size', selectedSize);
+    if (sortOption !== 'default') urlParams.append('sort', sortOption);
+    
+    const newURL = `/${params.categories}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+    router.replace(newURL, { scroll: false });
+  }, [minPrice, maxPrice, selectedSize, sortOption, router, params.categories]);
+
+  useEffect(() => {
+    updateURL();
+  }, [minPrice, maxPrice, selectedSize, sortOption, updateURL]);
+
   const toggleSubMenu = () => {
     setIsSubMenuOpen((prev) => !prev);
   };
@@ -43,6 +79,26 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const handleSort = (option: string) => {
     setSortOption(option);
     setActiveSortOption(option);
+  };
+
+  // Lọc giá
+  const handlePriceFilter = (min: number, max: number | null) => {
+    if (minPrice === min && maxPrice === max) {
+      setMinPrice(null);
+      setMaxPrice(null);
+    } else {
+      setMinPrice(min);
+      setMaxPrice(max);
+    }
+  };
+
+  // Lọc kích thước
+  const handleSizeFilter = (size: string) => {
+    if (selectedSize === size) {
+      setSelectedSize(null);
+    } else {
+      setSelectedSize(size);
+    }
   };
 
   // Hàm lấy danh sách kích thước sản phẩm theo danh mục
@@ -69,6 +125,14 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   }, [fetchSizes]);
 
   if (!categoryId) return notFound();
+
+  // Chuyển đổi sortOption để phù hợp với ProductListCate
+  const convertSortOption = () => {
+    if (sortOption === "default") return undefined;
+    if (sortOption === "name-az") return "name-asc";
+    if (sortOption === "name-za") return "name-desc";
+    return sortOption as "price-asc" | "price-desc" | "newest";
+  };
 
   return (
     <div className={style.container}>
@@ -182,15 +246,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                           name="price"
                           checked={minPrice === min && maxPrice === max}
                           className={style.input}
-                          onChange={() => {
-                            if (minPrice === min && maxPrice === max) {
-                              setMinPrice(null);
-                              setMaxPrice(null);
-                            } else {
-                              setMinPrice(min);
-                              setMaxPrice(max);
-                            }
-                          }}
+                          onChange={() => handlePriceFilter(min, max)}
                         />
                           {label}
                         </label>
@@ -213,13 +269,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                             type="checkbox"
                             name="size"
                             checked={selectedSize === size}
-                            onChange={() => {
-                              if (selectedSize === size) {
-                                setSelectedSize(null);
-                              } else {
-                                setSelectedSize(size);
-                              }
-                            }}
+                            onChange={() => handleSizeFilter(size)}
                             className={style.input}
                           />
                             {size}
@@ -255,9 +305,9 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 <li className={style.btn_quick_sort}>
                   <button
                     className={
-                      activeSortOption === "name-asc" ? style.active : ""
+                      activeSortOption === "name-az" ? style.active : ""
                     }
-                    onClick={() => handleSort("name-asc")}
+                    onClick={() => handleSort("name-az")}
                   >
                     Tên A-Z
                   </button>
@@ -265,9 +315,9 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 <li className={style.btn_quick_sort}>
                   <button
                     className={
-                      activeSortOption === "name-desc" ? style.active : ""
+                      activeSortOption === "name-za" ? style.active : ""
                     }
-                    onClick={() => handleSort("name-desc")}
+                    onClick={() => handleSort("name-za")}
                   >
                     Tên Z-A
                   </button>
@@ -312,14 +362,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 minPrice={minPrice ?? undefined}
                 maxPrice={maxPrice ?? undefined}
                 selectedSize={selectedSize}
-                sortOption={
-                  sortOption as
-                    | "price-asc"
-                    | "price-desc"
-                    | "name-asc"
-                    | "name-desc"
-                    | "newest"
-                }
+                sortOption={convertSortOption()}
               />
             </section>
           </div>
