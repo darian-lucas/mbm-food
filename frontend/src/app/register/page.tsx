@@ -64,9 +64,15 @@ export default function RegisterPage() {
         )}
 
         <input
-          type="email"
+          type="text"
           placeholder="Email"
-          {...register("email", { required: "Email là bắt buộc" })}
+          {...register("email", {
+            required: "Email là bắt buộc",
+            pattern: {
+              value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+              message: "Email không đúng định dạng",
+            },
+          })}
           className={styles.input}
         />
         {errors.email && <p className={styles.error}>{errors.email.message}</p>}
@@ -74,13 +80,21 @@ export default function RegisterPage() {
         <input
           type="password"
           placeholder="Mật khẩu"
-          {...register("password", { required: "Mật khẩu là bắt buộc" })}
+          {...register("password", {
+            required: "Mật khẩu là bắt buộc",
+            pattern: {
+              value:
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{6,}$/,
+              message:
+                "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ, số và ký tự đặc biệt",
+            },
+          })}
           className={styles.input}
         />
         {errors.password && (
           <p className={styles.error}>{errors.password.message}</p>
         )}
-<hr />
+        <hr />
         <p className={styles.terms}>
           Bằng cách đăng ký, bạn đồng ý với{" "}
           <a href="#" className={styles.link}>
@@ -91,8 +105,11 @@ export default function RegisterPage() {
         <button type="submit" className={styles.button}>
           Đăng ký
         </button>
-      </form><br /><hr />
-      <p><br />
+      </form>
+      <br />
+      <hr />
+      <p>
+        <br />
         Bạn đã có tài khoản?{" "}
         <a href="/login" className={styles.link}>
           Đăng nhập ngay!

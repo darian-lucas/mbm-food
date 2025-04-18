@@ -81,7 +81,7 @@ export const fetchNewsDetail = async (slug: string): Promise<Post | null> => {
 export const incrementView = async (postId: string): Promise<void> => {
   try {
     const res = await fetch(
-      `http://localhost:3001/api/posts/${postId}/increment-view`, // 👈 URL cụ thể
+      `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/posts/${postId}/increment-view`, // 👈 URL cụ thể
       {
         method: "PUT",
       }
