@@ -1,4 +1,5 @@
 const postService = require('../services/postServices');
+const Post = require("../models/Post");
 
 exports.getAllPosts = async (req, res) => {
     try {
@@ -171,7 +172,23 @@ exports.createPost = async (req, res) => {
     }
 };
 
-
+exports.incrementView = async (req, res) => {
+    const id = req.params.id;
+    console.log("👉 Đang tăng view cho ID:", id);
+  
+    try {
+      const updatedPost = await postService.incrementPostView(id);
+  
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Bài viết không tồn tại" });
+      }
+  
+      res.json(updatedPost);
+    } catch (error) {
+      console.error("Lỗi khi tăng view:", error.message);
+      res.status(400).json({ message: error.message });
+    }
+  };
 exports.updatePost = async (req, res) => {
     try {
         const { title, content, summary, author, status, hot } = req.body;
@@ -214,6 +231,7 @@ exports.updatePost = async (req, res) => {
     }
 };
 
+  
 
 exports.deletePost = async (req, res) => {
     try {

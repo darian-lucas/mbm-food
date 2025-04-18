@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import styles from "@/styles/Header.module.css";
 import Image from "next/image";
@@ -7,6 +6,7 @@ import { useState, useEffect } from "react";
 import { getFavorites } from "@/services/Favorite";
 import { useRouter } from "next/navigation";
 import countCart from "../../app/hooks/countCart";
+import { toast } from "react-toastify";
 
 export default function Header(): JSX.Element {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
@@ -136,11 +136,11 @@ export default function Header(): JSX.Element {
   // Xử lí dăng xuất !
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userId"); // Xóa userId
-    localStorage.removeItem("user"); // Xóa thông tin đăng nhập
-    localStorage.removeItem("token"); // Xóa token nếu có
+    localStorage.removeItem("userId");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
-    window.location.reload();
+    toast.success("Đã đăng xuất tài khoản của bạn !");
+    router.push("/");
   };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

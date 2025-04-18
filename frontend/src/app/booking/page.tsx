@@ -31,6 +31,8 @@ const Booking = () => {
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -215,6 +217,17 @@ const Booking = () => {
               </div>
             </div>
           </div>
+          {previewImage && (
+            <div className="fixed bottom-[280px] left-[320px] z-50 rounded-lg w-[600px] h-[350px] p-3 flex items-center justify-center">
+              <img
+                src={previewImage}
+                alt="Preview Table"
+                className="w-full h-full object-cover rounded-2xl border-[6px] border-white shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
+              />
+            </div>
+          )}
+
+
           <div className="2xl:flex-[0_1_50%] md:w-full w-full sm:w-full 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-5 sm:mt-5 xl:flex-[0_1_50%] lg:flex-[0_1_50%] xmall:mt-5">
             <div className="thumb-time rounded-lg bg-[#006a31] p-4 h-full">
               <form className="space-y-4" onSubmit={handleSubmit}>
@@ -288,30 +301,45 @@ const Booking = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 justify-center mt-4">
-                  {dataTable?.map((table, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      className={`w-16 h-16 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
-                        table.status === "Reserved"
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : selectedTable === table._id
-                          ? "bg-red-600 text-white"
-                          : "bg-[url(/images/tablebg.jpg)] bg-cover hover:bg-red-600 hover:bg-none hover:text-white "
-                      }`}
-                      onClick={() => handleTableSelection(table._id)}
-                      onMouseEnter={() => setHoveredIndex(index)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                      disabled={table.status === "Reserved"}
-                    >
-                      {table.status === "Reserved"
-                        ? "Đã đặt"
-                        : hoveredIndex === index
-                        ? "Đặt bàn"
-                        : table.name}
-                    </button>
-                  ))}
+                  {dataTable.map((table, index) => {
+                    const isReserved = table.status === "Reserved";
+                    const isSelected = selectedTable === table._id;
+                    const isHovered = hoveredIndex === index;
+
+                    const imgPath = `/images/tables/${table.name}.png`;
+
+                    return (
+                      <div key={table._id} className="relative flex flex-col items-center">
+                        <button
+                          type="button"
+                          className={`w-32 h-32 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
+                            isReserved
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : isSelected
+                              ? "bg-red-600 text-white"
+                              : "bg-[url(/images/tablebg.png)] bg-cover text-white text-lg font-extrabold drop-shadow-[0_0_4px_#ffffff] hover:bg-red-600 hover:bg-none hover:text-white"
+                          }`}
+                          onClick={() => handleTableSelection(table._id)}
+                          onMouseEnter={() => {
+                            setHoveredIndex(index);
+                            setPreviewImage(imgPath);
+                            setPreviewIndex(index);
+                          }}
+                          onMouseLeave={() => {
+                            setHoveredIndex(null);
+                            setPreviewImage(null);
+                            setPreviewIndex(null);
+                          }}
+                          disabled={isReserved}
+                        >
+                          {isReserved ? "Đã đặt" : isHovered ? "Đặt bàn" : table.name}
+                        </button>
+
+                      </div>
+                    );
+                  })}
                 </div>
+
 
                 <div className="text-center mt-4">
                   <button

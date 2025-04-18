@@ -29,7 +29,7 @@ router.get('/posts/search', postController.searchPostsByTitle);
 router.get('/posts', postController.getAllPosts);
 
 router.get("/posts/slug/:slug", postController.getPostBySlug);
-
+router.put("/posts/:id/increment-view", postController.incrementView);
 
 // Lấy bài viết theo id
 router.get('/posts/:id', postController.getPostById);
@@ -47,6 +47,7 @@ router.post('/posts',upload.fields(multerFields), postController.createPost);
 
 // Cập nhật bài viết theo id
 router.put('/posts/:id',upload.fields(multerFields), postController.updatePost);
+
 
 // Xóa bài viết theo id
 router.delete('/posts/:id', postController.deletePost);

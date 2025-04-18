@@ -80,7 +80,7 @@ export default function RegisterPage() {
         {errors.password && (
           <p className={styles.error}>{errors.password.message}</p>
         )}
-
+<hr />
         <p className={styles.terms}>
           Bằng cách đăng ký, bạn đồng ý với{" "}
           <a href="#" className={styles.link}>
@@ -91,8 +91,8 @@ export default function RegisterPage() {
         <button type="submit" className={styles.button}>
           Đăng ký
         </button>
-      </form>
-      <p>
+      </form><br /><hr />
+      <p><br />
         Bạn đã có tài khoản?{" "}
         <a href="/login" className={styles.link}>
           Đăng nhập ngay!

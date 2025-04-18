@@ -8,6 +8,7 @@ export interface Post {
   imageSummary?: string;
   author?: string;
   status: number; // Thêm status vào interface
+  view:number;
 }
 
 // ✅ Fetch tất cả bài viết có status = 1
@@ -77,3 +78,25 @@ export const fetchNewsDetail = async (slug: string): Promise<Post | null> => {
     return null;
   }
 };
+export const incrementView = async (postId: string): Promise<void> => {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/posts/${postId}/increment-view`, // 👈 URL cụ thể
+      {
+        method: "PUT",
+      }
+    );
+
+
+    if (!res.ok) {
+      const errorBody = await res.text(); // 👈 Lấy nội dung lỗi từ backend
+      console.error("Không thể tăng lượt xem. Mã lỗi:", res.status, "Chi tiết:", errorBody);
+      return;
+    }
+
+    console.log("✅ Lượt xem đã được tăng!");
+  } catch (error) {
+    console.error("❌ Lỗi khi gọi API tăng lượt xem:", error);
+  }
+};
+
