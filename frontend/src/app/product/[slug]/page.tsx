@@ -309,13 +309,16 @@ const ProductDetail = ({ idcate }) => {
                   <h1>{product.name}</h1>
                 </div>
                 <form action="#" className={styles.form}>
-                  <div className={styles.price}>
-                    <p>
-                      {selectedVariant.sale_price > 0
-                        ? selectedVariant.sale_price
-                        : selectedVariant.price.toLocaleString()}{" "}
-                      đ
-                    </p>
+                  <div className={styles.price_container}>
+                  <span className={styles.price}>{selectedVariant.price.toLocaleString()}{" "}đ</span> 
+                  {selectedVariant.sale_price > 0 && (
+                    <>
+                      <s className={styles.oldPrice}>{selectedVariant.sale_price.toLocaleString()}{" "}đ</s>
+                      <div className={styles.savePrice}>
+                        Tiết kiệm: <span className={styles.savePriceValue}>{(selectedVariant.sale_price - selectedVariant.price).toLocaleString()}đ</span>
+                      </div>
+                    </>
+                  )}
                   </div>
                   <div className={styles.formProduct}>
                     <div className={styles.select}>

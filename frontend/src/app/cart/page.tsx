@@ -79,10 +79,7 @@ const CartPage = () => {
 
   const getTotalPrice = () => {
     return cart.reduce(
-      (total, item) =>
-        total + (item.sale_price && item.sale_price > 0 ? item.sale_price : item.price) * item.quantity,
-      0
-    );
+      (total, item) =>total + (item.price * item.quantity),0);
   };
 
   const handleCheckout = () => {
@@ -154,9 +151,7 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {item.sale_price && item.sale_price > 0
-                                    ? item.sale_price
-                                    : item.price.toLocaleString()} đ
+                                  {item.price.toLocaleString()} đ
                                 </span>
                               </div>
                             </div>
@@ -182,7 +177,7 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {((item.sale_price && item.sale_price > 0 ? item.sale_price : item.price) * item.quantity).toLocaleString()} đ
+                                  {(item.price * item.quantity).toLocaleString()} đ
                                 </span>
                               </div>
                             </div>

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import styles from "../../styles/QuickView.module.css";
 import useCart from "../../app/hooks/useCart";
 
@@ -63,13 +62,17 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
           <div className={styles.form}>
             <div className={styles.detailProduct2}>
               <h1 className={styles.titleProduct}>{product.name}</h1>
-              <div className={styles.price}>
-                <p>
-                  {selectedVariant.sale_price > 0
-                    ? selectedVariant.sale_price
-                    : selectedVariant.price.toLocaleString()}{" "}đ
-                </p>
-              </div>
+              <div className={styles.price_container}>
+                  <span className={styles.price}>{selectedVariant.price.toLocaleString()}{" "}đ</span> 
+                  {selectedVariant.sale_price > 0 && (
+                    <>
+                      <s className={styles.oldPrice}>{selectedVariant.sale_price.toLocaleString()}{" "}đ</s>
+                      <div className={styles.savePrice}>
+                        Tiết kiệm: <span className={styles.savePriceValue}>{(selectedVariant.sale_price - selectedVariant.price).toLocaleString()}đ</span>
+                      </div>
+                    </>
+                  )}
+                  </div>
 
               {/* Chọn kích thước */}
               {product.variants.some((v) => v.option.trim() !== "") && (

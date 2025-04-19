@@ -141,12 +141,10 @@
   margin-top: 0em;
   unicode-bidi: isolate;
 }
-.price {
+.price_container {
   margin-bottom: 20px;
-  font-size: 30px;
-  font-weight: bold;
-  color: #e31837;
-  display: inline-block;
+  display: block;
+  unicode-bidi: isolate;
 }
 .formProduct {
   display: block;
@@ -541,4 +539,19 @@
 }
 .More{
   background-color: red;
+}
+.oldPrice{
+  color: #545454;
+  font-size: 16px;
+  display: inline-block;
+  text-decoration: line-through;
+  margin-left: 10px;
+}
+.price{
+  font-size: 30px;
+  font-weight: bold;
+  color: #e31837;
+}
+.savePriceValue{
+  color: #e31837;
 }
