@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "../../styles/CheckoutPage.module.css";
-import Image from "next/image";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
@@ -37,7 +36,14 @@ interface Coupon {
   _id: string;
   code: string;
   discount: number;
-}
+  type: string;
+  start_date: string;
+  end_date: string;
+  status: string;
+  quantity: number;
+  description: string;
+};
+
 
 interface PaymentMethod {
   _id: string;
@@ -45,17 +51,21 @@ interface PaymentMethod {
 }
 
 const CheckoutPage = () => {
+  const shippingFee = 30000;
   const [user, setUser] = useState<User | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(
     null
   );
   const [cart, setCart] = useState<CartItem[]>([]);
   const [discountCode, setDiscountCode] = useState("");
-  const [discount, setDiscount] = useState(0);
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   const router = useRouter();
+
+  const [discountApplied, setDiscountApplied] = useState<number>(0);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+
 
   // Hàm fetch API tái sử dụng
   const fetchData = useCallback(async (url: string, errorMessage: string) => {
@@ -70,7 +80,7 @@ const CheckoutPage = () => {
     }
   }, []);
 
-  // Lấy danh sách phương thức thanh toán (BỎ VNPAY)
+  
   useEffect(() => {
     const fetchPaymentMethods = async () => {
       const data = await fetchData(
@@ -118,36 +128,55 @@ const CheckoutPage = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
-  const finalAmount = Math.max(0, totalAmount - discount); // Không để âm
+  const finalAmount = Math.max(0, totalAmount + shippingFee - discountApplied);
 
   // Xử lý mã giảm giá
-  const handleApplyDiscount = async () => {
-    if (!discountCode) {
-      toast.error("Vui lòng nhập mã giảm giá!");
-      return;
-    }
-
+  const handleCheckDiscountCode = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons/check?code=${discountCode}`
+      const response = await fetch("http://localhost:3001/api/coupons");
+      const result = await response.json();
+      const coupon = result.data.find(
+        (item) => item.code === discountCode.trim() 
       );
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast.error(data.message || "Mã giảm giá không hợp lệ!");
+      if (!coupon) {
+        toast.error("Mã giảm giá không tồn tại!");
         return;
       }
-
-      setDiscount(data.discount);
-      setSelectedCoupon(data);
-      toast.success(
-        `Áp dụng mã ${data.code}! Giảm ${data.discount.toLocaleString()}đ`
-      );
-    } catch (e) {
-      toast.error(`Lỗi đặt hàng: ${(e as Error).message}`);
+      // Kiểm tra trạng thái
+      if (coupon.status !== "Active") {
+        toast.error("Mã giảm giá đã hết hạn hoặc không còn hiệu lực!");
+        return;
+      }
+      // Kiểm tra thời gian
+      const now = new Date();
+      const start = new Date(coupon.start_date);
+      const end = new Date(coupon.end_date);
+      if (now < start || now > end) {
+        toast.error("Mã giảm giá không còn trong thời gian sử dụng!");
+        return;
+      }
+      // Kiểm tra đơn hàng tối thiểu (từ mô tả)
+      const minOrderMatch = coupon.description.match(/đơn hàng từ (\d+)k?/i);
+      if (minOrderMatch) {
+        const minOrder = parseInt(minOrderMatch[1]) * 1000;
+        if (totalAmount < minOrder) {
+          toast.error(`Mã này chỉ áp dụng cho đơn hàng từ ${minOrder.toLocaleString()}đ trở lên!`);
+          return;
+        }
+      }
+      // Áp dụng mã
+      setSelectedCoupon(coupon);
+      setAppliedCoupon(coupon);
+      setDiscountApplied(coupon.type === "Amount" ? coupon.discount : 0); // Có thể xử lý freeship riêng ở đây
+      toast.success(`Áp dụng mã "${coupon.code}" thành công!`);
+    } catch (error) {
+      console.error(error);
+      toast.error("Có lỗi xảy ra khi kiểm tra mã giảm giá!");
     }
   };
 
+  
+  
   // Xử lý đặt hàng
   const handleOrder = async () => {
     if (!user) {
@@ -162,7 +191,7 @@ const CheckoutPage = () => {
     const orderData = {
       id_user: user._id,
       order_code: `MBM${Date.now()}`,
-      id_coupon: selectedCoupon?._id || null, // Send null if no coupon
+      id_coupon: appliedCoupon?._id || null,
       id_payment_method: paymentMethod?._id || "",
       total_amount: totalAmount,
       total_payment: finalAmount,
@@ -278,12 +307,31 @@ const CheckoutPage = () => {
     } catch (e) {
       toast.error(`Lỗi đặt hàng: ${(e as Error).message}`);
     }
+    // Xử lý coupon sau khi áp mã : 
+    if (discountCode) {
+      try {
+        const response = await fetch("http://localhost:3001/api/coupons/apply-coupon", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: discountCode }),
+        });
+    
+        const data = await response.json();
+        if (!response.ok) {
+          console.error("⚠️ Lỗi:", data.message);
+        } else {
+          console.log("✅ Mã giảm giá áp dụng thành công:", data);
+        }
+      } catch (error) {
+        console.error("⚠️ Lỗi khi áp dụng mã giảm giá:", error);
+      }
+    }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.checkoutForm}>
-        <h2>Thông tin nhận hàng</h2>
+        <h2>THÔNG TIN NHẬN HÀNG</h2>
         <form>
           <label htmlFor="address" className={styles.formLabel}>
             Số địa chỉ
@@ -397,7 +445,7 @@ const CheckoutPage = () => {
       </div>
 
       <div className={styles.orderSummary}>
-        <h2>Đơn hàng ({cart.length} sản phẩm)</h2>
+        <h2>ĐƠN HÀNG ({cart.length} sản phẩm)</h2>
 
         {cart.map((item, index) => (
           <div key={index} className={styles.orderItem}>
@@ -424,33 +472,16 @@ const CheckoutPage = () => {
           onChange={(e) => setDiscountCode(e.target.value)}
           className={styles.formInput}
         />
-        <button className={styles.applyBtn} onClick={handleApplyDiscount}>
+        <button className={styles.applyBtn} onClick={handleCheckDiscountCode}>
           Áp dụng
-        </button>
-        <br />
-        <br />
-
-        <p>
-          Phí vận chuyển: <strong>30,000đ</strong>
-        </p>
-        <br />
-        <p>
-          Tạm tính: <strong>{totalAmount.toLocaleString()}đ</strong>
-        </p>
-        {discount > 0 && (
-          <>
-            <p>
-              Giảm giá: <strong>-{discount.toLocaleString()}đ</strong>
-            </p>
-          </>
+        </button><br/><br/>
+        {discountApplied > 0 && (
+          <p className={styles.discountText}>Giảm : <strong>{discountApplied.toLocaleString()}đ</strong></p>
         )}
-        <br />
-        <hr />
-        <br />
-        <p>
-          <strong>Tổng cộng: {finalAmount.toLocaleString()}đ</strong>
-        </p>
-
+        <p>Phí vận chuyển: <strong>{shippingFee.toLocaleString()}đ</strong></p><br/>
+        <p>Tổng giá đơn hàng: <strong>{totalAmount.toLocaleString()}đ</strong></p>
+        <br/><hr/><br/>
+        <p>Tổng cộng:<strong> {finalAmount.toLocaleString()}đ</strong></p>
         <button className={styles.orderBtn} onClick={handleOrder}>
           ĐẶT HÀNG
         </button>
