@@ -10,11 +10,11 @@ const nextConfig = {
         hostname: "mbmfood.store",
         pathname: "/images/**",
       },
-      // {
-      //   protocol: "http",
-      //   hostname: "localhost",
-      //   pathname: "/images/**",
-      // },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/images/**",
+      },
     ],
   },
   eslint: {

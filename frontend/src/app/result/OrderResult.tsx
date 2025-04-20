@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -235,7 +234,7 @@ const OrderResult = () => {
         <div className="mt-6 border p-4 rounded-lg text-center">
           <h3 className="font-semibold">Trạng thái thanh toán</h3>
           <p
-            className={`font-bold ${
+            className={`${
               order.payment_status === "Completed"
                 ? "text-green-600"
                 : "text-red-600"
