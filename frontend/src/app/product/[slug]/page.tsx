@@ -56,7 +56,7 @@ interface Post {
   author: string;
 }
 
-const ProductDetail = ({ idcate }) => {
+const ProductDetail = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
@@ -132,7 +132,7 @@ const ProductDetail = ({ idcate }) => {
         );
         const data = await res.json();
         const filteredProducts = data.data.filter(
-          (product: Product) => product.idcate === idcate
+          (product: Product) => product.idcate
         );
         if (token) {
           const favoriteStatuses: { [key: string]: boolean } = {};
@@ -150,7 +150,7 @@ const ProductDetail = ({ idcate }) => {
     };
 
     fetchProducts();
-  }, [token, idcate]);
+  }, [token,]);
 
   // useEffect lấy sản phẩm liên quan
   useEffect(() => {
