@@ -212,13 +212,11 @@
     .productName {
       font-size: 14px;
       font-weight: bold;
-      color: #333;
       margin-bottom: 6px;
     }
   
     .productContent {
       font-size: 12px;
-      color: #666;
       margin-bottom: 8px;
     }
   
