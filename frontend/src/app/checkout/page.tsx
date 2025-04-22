@@ -133,7 +133,7 @@ const CheckoutPage = () => {
   // Xử lý mã giảm giá
   const handleCheckDiscountCode = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/coupons");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons`);
       const result = await response.json();
       const coupon = result.data.find(
         (item) => item.code === discountCode.trim() 
@@ -310,7 +310,7 @@ const CheckoutPage = () => {
     // Xử lý coupon sau khi áp mã : 
     if (discountCode) {
       try {
-        const response = await fetch("http://localhost:3001/api/coupons/apply-coupon", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons/apply-coupon`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: discountCode }),

@@ -2,14 +2,11 @@ import { TCreateTableParams } from "../types";
 
 const API_URL = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/tables`;
 
-const createTable = async (data: TCreateTableParams) => {
+const createTable = async (formData: FormData) => {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     if (!response.ok) {
@@ -48,14 +45,11 @@ const getTableById = async (id: string) => {
   }
 };
 
-const updateTable = async (id: string, data: TCreateTableParams) => {
+const updateTable = async (id: string, formData: FormData) => {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
     return await response.json();
   } catch (error) {
