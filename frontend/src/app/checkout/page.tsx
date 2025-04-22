@@ -330,7 +330,7 @@ const CheckoutPage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.checkoutForm}>
+      <div className={`${styles.checkoutForm} ${styles.mobileSecond}`}>
         <h2>THÔNG TIN NHẬN HÀNG</h2>
         <form>
           <label htmlFor="address" className={styles.formLabel}>
@@ -444,7 +444,7 @@ const CheckoutPage = () => {
         </form>
       </div>
 
-      <div className={styles.orderSummary}>
+      <div className={`${styles.orderSummary} ${styles.mobileFirst}`}>
         <h2>ĐƠN HÀNG ({cart.length} sản phẩm)</h2>
 
         {cart.map((item, index) => (

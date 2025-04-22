@@ -87,3 +87,59 @@
   gap: 10px;
   margin-bottom: 8px;
 }
+
+/* Mobile: dưới 768px */
+@media (max-width: 767px) {
+  .container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .checkoutForm,
+  .orderSummary {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .orderSummary {
+    margin-top: 20px;
+  }
+
+  .applyBtn,
+  .orderBtn {
+    padding: 12px;
+  }
+
+  .itemImage {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+/* Tablet: từ 768px đến dưới 1024px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .checkoutForm,
+  .orderSummary {
+    width: 100%;
+    padding: 18px;
+  }
+
+  .orderSummary {
+    margin-top: 25px;
+  }
+
+  .applyBtn,
+  .orderBtn {
+    font-size: 16px;
+  }
+
+  .itemImage {
+    width: 50px;
+    height: 50px;
+  }
+}
