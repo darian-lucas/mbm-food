@@ -352,6 +352,9 @@
     .VariantTitle {
         display: none;
     }
+    .ajaxCartProduct .gridQuantity {
+        margin-right: 16px;
+    }
 
 }
 
