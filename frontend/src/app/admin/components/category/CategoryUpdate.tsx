@@ -24,7 +24,10 @@ import { Textarea } from "@/components/ui/textarea";
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 const formSchema = z.object({
-  name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
+  name: z
+    .string()
+    .nonempty("Tên danh mục không được bỏ trống")
+    .min(6, "Tên danh mục phải có ít nhất 6 ký tự"),
   description: z.string().optional(),
   slug: z.string().optional(),
   image: z.string().optional(),

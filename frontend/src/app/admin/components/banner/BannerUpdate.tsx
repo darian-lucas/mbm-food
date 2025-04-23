@@ -24,9 +24,12 @@ import { Textarea } from "@/components/ui/textarea";
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 const formSchema = z.object({
-  title: z.string().min(3, "Tên banner phải có ít nhất 3 ký tự"),
+  title: z
+    .string()
+    .nonempty("Tên banner không được bỏ trống")
+    .min(6, "Tên banner phải có ít nhất 6 ký tự"),
   description: z.string().optional(),
-  image: z.string().optional(),
+  image: z.string().min(1, "Ảnh không được để trống"),
 });
 
 function BannerUpdate() {

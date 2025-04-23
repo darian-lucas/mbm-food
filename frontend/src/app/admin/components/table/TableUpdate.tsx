@@ -21,8 +21,8 @@ import { Input } from "@/components/ui/input";
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 const formSchema = z.object({
-  name: z.string().min(3, "Tên bàn phải có ít nhất 3 ký tự"),
-  position: z.string().min(3, "Vị trí phải có ít nhất 3 ký tự"),
+  name: z.string().nonempty("Tên bàn không được bỏ trống").min(3, "Tên bàn phải có ít nhất 3 ký tự"),
+  position: z.string().optional(),
   image: z.string().optional(),
 });
 
@@ -80,7 +80,7 @@ function TableUpdate() {
     try {
       const tableData: TCreateTableParams = {
         name: values.name,
-        position: values.position,
+        position: values.position || "",
         image: file ? URL.createObjectURL(file) : "",
       };
 

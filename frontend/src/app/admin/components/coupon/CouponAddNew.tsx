@@ -29,12 +29,27 @@ import { TCreateCouponParams } from "../../types";
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-  code: z.string().min(3, "Mã giảm giá phải có ít nhất 3 ký tự"),
-  discount: z.string().optional(),
+  code: z
+    .string()
+    .nonempty("Tên mã giảm giá không được bỏ trống")
+    .min(3, "Mã giảm giá phải có ít nhất 3 ký tự")
+    .regex(/^[A-Z0-9]+$/, "Chỉ được dùng chữ in hoa và số, không có dấu cách"),
+
+  discount: z
+    .string()
+    .min(1, "Vui lòng nhập giá trị giảm")
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+      message: "Giá trị giảm phải là số và lớn hơn 0",
+    }),
   type: z.enum(["Amount", "Shipping"]),
   start_date: z.date(),
   end_date: z.date(),
-  quantity: z.string().optional(),
+  quantity: z
+    .string()
+    .min(1, "Vui lòng nhập số lượng")
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+      message: "Số lượng phải là số và lớn hơn 0",
+    }),
   description: z.string().optional(),
 });
 
@@ -108,7 +123,7 @@ function CouponAddNew() {
               <FormItem>
                 <FormLabel>Giá trị giảm *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nhập số tiền hoặc %" {...field} />
+                  <Input placeholder="Nhập số tiền giảm" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
