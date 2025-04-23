@@ -13,7 +13,7 @@ interface Category {
   slug: string;
 }
 
-export default function Home(): JSX.Element {
+export default function FeaturedCategories(): JSX.Element {
   const [categories, setCategories] = useState<Category[]>([]);
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   useEffect(() => {

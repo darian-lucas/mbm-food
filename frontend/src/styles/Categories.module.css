@@ -102,7 +102,8 @@
     content: '';
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg); /* Mặc định ngang (dấu -) */
+    transform: translate(-50%, -50%) rotate(0deg);
+    /* Mặc định ngang (dấu -) */
     background-color: #000;
     transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 }
@@ -114,17 +115,20 @@
     content: '';
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg); /* Mặc định dọc (dấu +) */
+    transform: translate(-50%, -50%) rotate(0deg);
+    /* Mặc định dọc (dấu +) */
     background-color: #000;
     transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 }
 
 .down_icon.open::before {
-    transform: translate(-50%, -50%) rotate(0deg); /* Khi mở, giữ nguyên dấu - */
+    transform: translate(-50%, -50%) rotate(0deg);
+    /* Khi mở, giữ nguyên dấu - */
 }
 
 .down_icon.open::after {
-    opacity: 0; /* Khi mở, ẩn dấu + */
+    opacity: 0;
+    /* Khi mở, ẩn dấu + */
 }
 
 
@@ -132,9 +136,11 @@
     padding-left: 10px !important;
     display: none;
 }
+
 .menu_down.open {
     display: block;
-  }
+}
+
 .filter_content {
     display: inline-block;
     width: 100%;
@@ -180,7 +186,7 @@
 .filter_item {
     transition: all 0.4s ease;
     display: list-item;
-    
+
 }
 
 .filter_item label {
@@ -188,7 +194,8 @@
     margin-bottom: .5rem;
     cursor: pointer;
 }
-.input{
+
+.input {
     margin-right: 10px;
 }
 
@@ -234,6 +241,7 @@
     transition: all 0.4s ease;
     list-style: none;
 }
+
 .btn_quick_sort button {
     border: 1px solid #e31837;
     background-color: transparent;
@@ -255,3 +263,43 @@
     padding-right: 10px;
     margin-bottom: 20px;
 }
+
+/* Mobile responsive - dưới 768px */
+@media (max-width: 768px) {
+    .container {
+      padding: 0 16px;
+    }
+
+    .filter_tag{
+        display: none;
+    }
+
+    .filter_content{
+        display: none;
+    }
+
+    .dqdt_sidebar{
+        display: none;
+    }
+  
+    .row {
+      flex-direction: column;
+    }
+  
+    .block_collection {
+      width: 100%;
+    }
+  
+    .sort_cate ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+    }
+  
+    .btn_quick_sort button {
+      font-size: 14px;
+      padding: 6px 10px;
+    }
+  }
+  

@@ -7,6 +7,7 @@ import { getFavorites } from "@/services/Favorite";
 import { useRouter } from "next/navigation";
 import countCart from "../../app/hooks/countCart";
 import { toast } from "react-toastify";
+import { usePathname } from 'next/navigation';
 
 export default function Header(): JSX.Element {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
@@ -24,6 +25,7 @@ export default function Header(): JSX.Element {
   });
   const [showResults, setShowResults] = useState<boolean>(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -85,6 +87,7 @@ export default function Header(): JSX.Element {
     { href: "/salad", label: "Salad" },
     { href: "/thuc-uong", label: "Thức Uống" },
   ];
+  
 
   useEffect(() => {
     const checkAuth = () => {
@@ -132,6 +135,10 @@ export default function Header(): JSX.Element {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  useEffect(() => {
+    setShowProductMenu(false);
+  }, [pathname]);
 
   // Xử lí dăng xuất !
   const handleLogout = () => {
@@ -399,14 +406,22 @@ export default function Header(): JSX.Element {
         <nav>
           {menuItems.map(({ href, label, isDropdown }) =>
             isDropdown ? (
-              <div
-                key={href}
-                className={styles.productMenuContainer}
-                onClick={() => setShowProductMenu(!showProductMenu)}
-              >
-                <div className={styles.menuItem}>
-                  {label} <span>{showProductMenu ? "−" : "+"}</span>
-                </div>
+              <div key={href} className={styles.productMenuContainer}>
+                <Link href={href} className={styles.menuItem}>
+                  {label}
+                </Link>
+
+                <span
+                  className={styles.toggleDropdownIcon}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setShowProductMenu(!showProductMenu);
+                  }}
+                >
+                  {showProductMenu ? "−" : "+"}
+                </span>
+
                 {showProductMenu && (
                   <div className={styles.dropdownMenu}>
                     {productCategories.map(({ href, label }) => (
