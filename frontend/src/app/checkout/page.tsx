@@ -133,7 +133,7 @@ const CheckoutPage = () => {
   // Xử lý mã giảm giá
   const handleCheckDiscountCode = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/coupons");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons`);
       const result = await response.json();
       const coupon = result.data.find(
         (item) => item.code === discountCode.trim() 
@@ -310,7 +310,7 @@ const CheckoutPage = () => {
     // Xử lý coupon sau khi áp mã : 
     if (discountCode) {
       try {
-        const response = await fetch("http://localhost:3001/api/coupons/apply-coupon", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/coupons/apply-coupon`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: discountCode }),
@@ -330,7 +330,7 @@ const CheckoutPage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.checkoutForm}>
+      <div className={`${styles.checkoutForm} ${styles.mobileSecond}`}>
         <h2>THÔNG TIN NHẬN HÀNG</h2>
         <form>
           <label htmlFor="address" className={styles.formLabel}>
@@ -444,7 +444,7 @@ const CheckoutPage = () => {
         </form>
       </div>
 
-      <div className={styles.orderSummary}>
+      <div className={`${styles.orderSummary} ${styles.mobileFirst}`}>
         <h2>ĐƠN HÀNG ({cart.length} sản phẩm)</h2>
 
         {cart.map((item, index) => (

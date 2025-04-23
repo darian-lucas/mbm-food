@@ -155,7 +155,7 @@ const CartPage = () => {
                                 </span>
                               </div>
                             </div>
-                            <div className={styles.grid}>
+                            <div className={`${styles.grid} ${styles.gridQuantity}`}>
                               <div className={styles.cartSelect}>
                                 <div className={styles.qtyBtnCart}>
                                   <button

@@ -5,12 +5,16 @@ import { TCreateRegisterParams } from "@/types/enum";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Image from "next/image";
+
+const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 interface Table {
   _id: string;
   name: string;
   position: string;
   status: "Available" | "Reserved";
+  image: string;
 }
 
 interface Address {
@@ -218,7 +222,7 @@ const Booking = () => {
             </div>
           </div>
           {previewImage && (
-            <div className="fixed bottom-[280px] left-[320px] z-50 rounded-lg w-[600px] h-[350px] p-3 flex items-center justify-center">
+            <div className="fixed bottom-[280px] sm:left-[320px] left-0 z-50 rounded-lg sm:w-[600px] sm:h-[350px] p-3 flex items-center justify-center">
               <img
                 src={previewImage}
                 alt="Preview Table"
@@ -226,7 +230,6 @@ const Booking = () => {
               />
             </div>
           )}
-
 
           <div className="2xl:flex-[0_1_50%] md:w-full w-full sm:w-full 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-5 sm:mt-5 xl:flex-[0_1_50%] lg:flex-[0_1_50%] xmall:mt-5">
             <div className="thumb-time rounded-lg bg-[#006a31] p-4 h-full">
@@ -306,18 +309,21 @@ const Booking = () => {
                     const isSelected = selectedTable === table._id;
                     const isHovered = hoveredIndex === index;
 
-                    const imgPath = `/images/tables/${table.name}.png`;
+                    const imgPath = `${API_URL}/images/${table.image}`;
 
                     return (
-                      <div key={table._id} className="relative flex flex-col items-center">
+                      <div
+                        key={table._id}
+                        className="relative flex flex-col items-center"
+                      >
                         <button
                           type="button"
-                          className={`w-32 h-32 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
+                          className={`relative sm:w-32 sm:h-32 w-16 h-16 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
                             isReserved
                               ? "bg-gray-400 cursor-not-allowed"
                               : isSelected
                               ? "bg-red-600 text-white"
-                              : "bg-[url(/images/tablebg.png)] bg-cover text-white text-lg font-extrabold drop-shadow-[0_0_4px_#ffffff] hover:bg-red-600 hover:bg-none hover:text-white"
+                              : "text-white text-lg font-extrabold drop-shadow-[0_0_4px_#ffffff] hover:bg-red-600"
                           }`}
                           onClick={() => handleTableSelection(table._id)}
                           onMouseEnter={() => {
@@ -332,14 +338,24 @@ const Booking = () => {
                           }}
                           disabled={isReserved}
                         >
-                          {isReserved ? "Đã đặt" : isHovered ? "Đặt bàn" : table.name}
+                          {!isReserved && !isSelected && (
+                            <Image
+                              src="/images/tablebg.png"
+                              fill
+                              alt="Ảnh bàn"
+                              className=""
+                            />
+                          )}
+                          {isReserved
+                            ? "Đã đặt"
+                            : isHovered
+                            ? "Đặt bàn"
+                            : table.name}
                         </button>
-
                       </div>
                     );
                   })}
                 </div>
-
 
                 <div className="text-center mt-4">
                   <button
