@@ -2,12 +2,12 @@
 import styles from "@/styles/Header.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { getFavorites } from "@/services/Favorite";
 import { useRouter } from "next/navigation";
 import countCart from "../../app/hooks/countCart";
 import { toast } from "react-toastify";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 export default function Header(): JSX.Element {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
@@ -26,6 +26,21 @@ export default function Header(): JSX.Element {
   const [showResults, setShowResults] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
+  const menuRef = useRef<HTMLDivElement>(null);
+  // Xử lí dăng xuất !
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    toast.success("Đã đăng xuất tài khoản của bạn !");
+    router.push("/");
+  };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -87,7 +102,6 @@ export default function Header(): JSX.Element {
     { href: "/salad", label: "Salad" },
     { href: "/thuc-uong", label: "Thức Uống" },
   ];
-  
 
   useEffect(() => {
     const checkAuth = () => {
@@ -140,20 +154,24 @@ export default function Header(): JSX.Element {
     setShowProductMenu(false);
   }, [pathname]);
 
-  // Xử lí dăng xuất !
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-    toast.success("Đã đăng xuất tài khoản của bạn !");
-    router.push("/");
-  };
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+        setShowProductMenu(false);
+      }
+    };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   return (
     <header>
@@ -397,25 +415,34 @@ export default function Header(): JSX.Element {
       </div>
 
       {/* Navbar Overlay */}
-      <div className={`${styles.menuOverlay} ${isMenuOpen ? styles.open : ""}`}>
+      <div
+        ref={menuRef}
+        className={`${styles.menuOverlay} ${isMenuOpen ? styles.open : ""}`}
+      >
         <button onClick={toggleMenu} className={styles.closeButton}>
           ×
         </button>
 
-        {/* Danh sách menu */}
         <nav>
           {menuItems.map(({ href, label, isDropdown }) =>
             isDropdown ? (
               <div key={href} className={styles.productMenuContainer}>
-                <Link href={href} className={styles.menuItem}>
+                <Link
+                  href={href}
+                  className={styles.menuItem}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setShowProductMenu(false);
+                  }}
+                >
                   {label}
                 </Link>
 
                 <span
                   className={styles.toggleDropdownIcon}
                   onClick={(e) => {
-                    e.stopPropagation();
                     e.preventDefault();
+                    e.stopPropagation();
                     setShowProductMenu(!showProductMenu);
                   }}
                 >
@@ -425,7 +452,15 @@ export default function Header(): JSX.Element {
                 {showProductMenu && (
                   <div className={styles.dropdownMenu}>
                     {productCategories.map(({ href, label }) => (
-                      <Link key={href} href={href} className={styles.menuItem}>
+                      <Link
+                        key={href}
+                        href={href}
+                        className={styles.menuItem}
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setShowProductMenu(false);
+                        }}
+                      >
                         {label}
                       </Link>
                     ))}
@@ -433,7 +468,15 @@ export default function Header(): JSX.Element {
                 )}
               </div>
             ) : (
-              <Link key={href} href={href} className={styles.menuItem}>
+              <Link
+                key={href}
+                href={href}
+                className={styles.menuItem}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setShowProductMenu(false);
+                }}
+              >
                 {label}
               </Link>
             )

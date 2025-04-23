@@ -459,7 +459,9 @@
   }
 
   .dropdownMenu{
-    width: 110px;
+    width: 200px;
+    position: absolute;
+    left: -85px;
   }
 
   .menuIcon {
