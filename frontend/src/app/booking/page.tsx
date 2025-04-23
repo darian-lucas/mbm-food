@@ -5,6 +5,7 @@ import { TCreateRegisterParams } from "@/types/enum";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
@@ -221,7 +222,7 @@ const Booking = () => {
             </div>
           </div>
           {previewImage && (
-            <div className="fixed bottom-[280px] left-[320px] z-50 rounded-lg w-[600px] h-[350px] p-3 flex items-center justify-center">
+            <div className="fixed bottom-[280px] sm:left-[320px] left-0 z-50 rounded-lg sm:w-[600px] sm:h-[350px] p-3 flex items-center justify-center">
               <img
                 src={previewImage}
                 alt="Preview Table"
@@ -317,12 +318,12 @@ const Booking = () => {
                       >
                         <button
                           type="button"
-                          className={`w-32 h-32 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
+                          className={`relative sm:w-32 sm:h-32 w-16 h-16 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
                             isReserved
                               ? "bg-gray-400 cursor-not-allowed"
                               : isSelected
                               ? "bg-red-600 text-white"
-                              : "bg-[url(/images/tablebg.png)] bg-cover text-white text-lg font-extrabold drop-shadow-[0_0_4px_#ffffff] hover:bg-red-600 hover:bg-none hover:text-white"
+                              : "text-white text-lg font-extrabold drop-shadow-[0_0_4px_#ffffff] hover:bg-red-600"
                           }`}
                           onClick={() => handleTableSelection(table._id)}
                           onMouseEnter={() => {
@@ -337,6 +338,14 @@ const Booking = () => {
                           }}
                           disabled={isReserved}
                         >
+                          {!isReserved && !isSelected && (
+                            <Image
+                              src="/images/tablebg.png"
+                              fill
+                              alt="Ảnh bàn"
+                              className=""
+                            />
+                          )}
                           {isReserved
                             ? "Đã đặt"
                             : isHovered
