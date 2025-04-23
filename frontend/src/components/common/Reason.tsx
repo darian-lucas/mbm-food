@@ -32,7 +32,7 @@ import Image from "next/image";
           {reasons.map((item, index) => (
             <div key={index} className={styles["lydo-item"]}>
               <div className={styles["lydo-iconWrapper"]}>
-                <img src={item.img} alt={item.text} width={80} height={80} />
+                <Image src={item.img} alt={item.text} width={80} height={80} />
               </div>
               <p className={styles["lydo-text"]}>{item.text}</p>
             </div>

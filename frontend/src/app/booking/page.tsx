@@ -6,11 +6,14 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
+
 interface Table {
   _id: string;
   name: string;
   position: string;
   status: "Available" | "Reserved";
+  image: string;
 }
 
 interface Address {
@@ -227,7 +230,6 @@ const Booking = () => {
             </div>
           )}
 
-
           <div className="2xl:flex-[0_1_50%] md:w-full w-full sm:w-full 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-5 sm:mt-5 xl:flex-[0_1_50%] lg:flex-[0_1_50%] xmall:mt-5">
             <div className="thumb-time rounded-lg bg-[#006a31] p-4 h-full">
               <form className="space-y-4" onSubmit={handleSubmit}>
@@ -306,10 +308,13 @@ const Booking = () => {
                     const isSelected = selectedTable === table._id;
                     const isHovered = hoveredIndex === index;
 
-                    const imgPath = `/images/tables/${table.name}.png`;
+                    const imgPath = `${API_URL}/images/${table.image}`;
 
                     return (
-                      <div key={table._id} className="relative flex flex-col items-center">
+                      <div
+                        key={table._id}
+                        className="relative flex flex-col items-center"
+                      >
                         <button
                           type="button"
                           className={`w-32 h-32 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
@@ -332,14 +337,16 @@ const Booking = () => {
                           }}
                           disabled={isReserved}
                         >
-                          {isReserved ? "Đã đặt" : isHovered ? "Đặt bàn" : table.name}
+                          {isReserved
+                            ? "Đã đặt"
+                            : isHovered
+                            ? "Đặt bàn"
+                            : table.name}
                         </button>
-
                       </div>
                     );
                   })}
                 </div>
-
 
                 <div className="text-center mt-4">
                   <button
