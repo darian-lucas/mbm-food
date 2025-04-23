@@ -35,4 +35,5 @@ export type TCreateTableParams = {
   name: string;
   status?: "Available" | "Reserved";
   position:string;
+  image:string;
 };
