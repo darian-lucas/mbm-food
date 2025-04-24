@@ -38,15 +38,23 @@ const variantSchema = z.object({
   _id: z.string().optional(),
   option: z.string().optional(),
   image: z.string().optional(),
-  price: z.string().optional(),
+  price: z
+    .string()
+    .nonempty("Giá không được bỏ trống")
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+      message: "Giá sản phẩm phải là số và lớn hơn 0",
+    }),
   sale_price: z.string().optional(),
 });
 
 const formSchema = z.object({
-  name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
+  name: z
+    .string()
+    .nonempty("Tên sản phẩm không được bỏ trống")
+    .min(12, "Tên sản phẩm phải có ít nhất 12 ký tự"),
   description: z.string().optional(),
   slug: z.string().optional(),
-  idcate: z.string().optional(),
+  idcate: z.string().nonempty("Tên danh mục không được bỏ trống"),
   hot: z.number().optional(),
   variants: z.array(variantSchema),
 });
@@ -169,11 +177,11 @@ function ProductAddNew() {
 
       // Gửi formData đến server
       const response = await ProductServices.createProduct(formData);
-      console.log("🚀 ~ onSubmit ~ response:", response)
-      
+      console.log("🚀 ~ onSubmit ~ response:", response);
+
       if (response.success) {
         toast.success("Tạo sản phẩm thành công");
-        router.push("/admin/manage/products/new");
+        router.push("/admin/manage/products");
       } else {
         toast.error(response.message || "Có lỗi xảy ra");
       }

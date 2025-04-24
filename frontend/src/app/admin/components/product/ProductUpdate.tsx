@@ -39,16 +39,19 @@ const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 const variantSchema = z.object({
   option: z.string().optional(),
   image: z.string().optional(),
-  price: z.string().optional(),
+  price: z.string().nonempty("Giá không được bỏ trống"),
   sale_price: z.string().optional(),
   _id: z.string().optional(), // Thêm _id để lưu ID của variant
 });
 
 const formSchema = z.object({
-  name: z.string().min(3, "Tên sản phẩm phải có ít nhất 3 ký tự"),
+  name: z
+    .string()
+    .nonempty("Tên sản phẩm không được bỏ trống")
+    .min(12, "Tên sản phẩm phải có ít nhất 12 ký tự"),
   description: z.string().optional(),
   slug: z.string().optional(),
-  idcate: z.string().optional(),
+  idcate: z.string().nonempty("Tên danh mục không được bỏ trống"),
   hot: z.number().optional(),
   variants: z.array(variantSchema),
 });
@@ -353,7 +356,7 @@ function ProductUpdate() {
             )}
           />
 
-<FormField
+          <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
@@ -456,7 +459,6 @@ function ProductUpdate() {
                             width={250}
                             height={250}
                             className="h-[200px] w-auto rounded-lg object-cover mt-2"
-                         
                           />
                         ) : existingImages[index] ? (
                           <img
