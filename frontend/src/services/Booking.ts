@@ -83,8 +83,7 @@ const createRegister = async (data: TCreateRegisterParams) => {
 
 const updateRegisterStatus = async (
   id: string,
-  status: string,
-  note: string
+  cancel_reason: string
 ) => {
   const response = await fetch(`${API_URL_REGISTER}/${id}/status`, {
     method: "PUT",
@@ -92,13 +91,12 @@ const updateRegisterStatus = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      status,
-      note,
+      cancel_reason,
     }),
   });
 
   if (!response.ok) {
-    throw new Error("Lỗi khi cập nhật trạng thái bàn ăn");
+    throw new Error("Lỗi khi cập nhật trạng thái bàn ăn");  
   }
 
   return await response.json();

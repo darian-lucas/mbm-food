@@ -142,14 +142,14 @@ const Booking = () => {
     try {
       setLoading(true);
 
-      const creatAt = formData.bookingDate;
+      const bookingDate = formData.bookingDate;
       const startTime = formData.bookingTime;
 
       const registerData: TCreateRegisterParams = {
         id_user: userData._id,
         id_table: selectedTable,
         start_time: startTime,
-        create_at: creatAt,
+        booking_date: bookingDate,
         status: "Confirmed",
       };
 

@@ -31,6 +31,7 @@ exports.createRegister = async (registerData) => {
     const newRegister = new Register({
       id_user: registerData.id_user,
       id_table: registerData.id_table,
+      booking_date: registerData.booking_date,
       start_time: registerData.start_time,
       end_time: registerData.end_time || "",
       cancel_reason: registerData.cancel_reason || "",

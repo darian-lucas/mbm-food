@@ -1,6 +1,7 @@
 .container {
   width: 100%;
   max-width: 1300px;
+  overflow-x: auto;
   margin: 0 auto;
   padding: 20px;
 }
@@ -200,4 +201,10 @@
 
 .keepButton:hover {
   background-color: #ddd;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0px;
+  }
 }

@@ -7,6 +7,7 @@ const registerSchema = new Schema(
     id_table: { type: Schema.Types.ObjectId, ref: "Table", required: true },
     start_time: { type: String, required: true },
     end_time: { type: String },
+    booking_date: { type: String, required: true },
     status: {
       type: String,
       required: true,

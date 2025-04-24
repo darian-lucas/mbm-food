@@ -38,9 +38,9 @@ interface RegisterData {
   };
   start_time: string;
   end_time: string;
-  createdAt: string;
+  booking_date: string;
   updatedAt: string;
-  note: string;
+  cancel_reason: string;
   status: "Confirmed" | "Completed" | "Cancelled";
 }
 
@@ -139,7 +139,7 @@ const RegisterManage = () => {
       setRegisters((prev) =>
         prev.map((item) =>
           item._id === selectedRegister._id
-            ? { ...item, status: "Cancelled", note: cancelReason }
+            ? { ...item, status: "Cancelled", cancel_reason: cancelReason }
             : item
         )
       );
@@ -159,12 +159,10 @@ const RegisterManage = () => {
 
   const formatCreateDate = (dateString: string) => {
     const date = new Date(dateString);
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
+    return `${day}/${month}/${year}`;
   };
 
   const formatEndTime = (dateString: string) => {
@@ -209,7 +207,7 @@ const RegisterManage = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Khách hàng</TableHead>
-                <TableHead>Sđt</TableHead>
+                <TableHead>Số điện thoại</TableHead>
                 <TableHead>Bàn</TableHead>
                 <TableHead>Ngày đặt</TableHead>
                 <TableHead>Thời gian bắt đầu</TableHead>
@@ -232,7 +230,7 @@ const RegisterManage = () => {
                       {register.id_table.name}
                     </TableCell>
                     <TableCell className="font-medium px-2">
-                      {formatCreateDate(register.createdAt)}
+                      {formatCreateDate(register.booking_date)}
                     </TableCell>
                     <TableCell className="font-medium px-2">
                       {register.start_time}
@@ -242,8 +240,8 @@ const RegisterManage = () => {
                       {showEndTime(register)}
                     </TableCell>
                     <TableCell className="font-medium px-2">
-                      {register.note !== "" ? (
-                        <span>{register.note}</span>
+                      {register.cancel_reason !== "" ? (
+                        <span>{register.cancel_reason}</span>
                       ) : (
                         "Không có"
                       )}
