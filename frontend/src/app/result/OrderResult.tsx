@@ -86,6 +86,33 @@ const OrderResult = () => {
 
     fetchOrder();
   }, [orderId]);
+  
+  useEffect(() => {
+    if (!orderId) return;
+  
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/orders/code/${orderId}`
+        );
+        const data = await response.json();
+  
+        if (data.success && data.data) {
+          setOrder(data.data);
+  
+          // Nếu thanh toán đã thành công, dừng polling
+          if (data.data.payment_status === "Completed") {
+            clearInterval(interval);
+          }
+        }
+      } catch (error) {
+        console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
+      }
+    }, 5000); // Kiểm tra lại mỗi 5 giây
+  
+    return () => clearInterval(interval); // Cleanup interval khi component unmount
+  }, [orderId]);
+  
 
   // 🎯 Theo dõi order.payment_status để cập nhật lại UI khi thay đổi
   useEffect(() => {
