@@ -61,7 +61,7 @@ interface PaymentMethod {
 }
 
 const CheckoutPage = () => {
-  const shippingFee = 30000;
+  
   const [user, setUser] = useState<User | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -70,7 +70,7 @@ const CheckoutPage = () => {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
   const router = useRouter();
-
+  const [shippingFee, setShippingFee] = useState(30000);
   const [discountApplied, setDiscountApplied] = useState<number>(0);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
 
@@ -220,17 +220,21 @@ const CheckoutPage = () => {
           return;
         }
       }
+      if (coupon?.code === 'FREESHIP' || coupon?.type === 'Shipping') {
+        setShippingFee((prev) => Math.max(0, prev - coupon.discount));
+      }
+      
       // Áp dụng mã
       setSelectedCoupon(coupon);
       setAppliedCoupon(coupon);
-      setDiscountApplied(coupon.type === "Amount" ? coupon.discount : 0); // Có thể xử lý freeship riêng ở đây
+      setDiscountApplied(coupon.type === "Amount" ? coupon.discount : 0);
       toast.success(`Áp dụng mã "${coupon.code}" thành công!`);
     } catch (error) {
       console.error(error);
       toast.error("Có lỗi xảy ra khi kiểm tra mã giảm giá!");
     }
   };
-
+  
   
   
   // Xử lý đặt hàng
@@ -387,91 +391,88 @@ const CheckoutPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.checkoutForm}>
-        <h2>THÔNG TIN NHẬN HÀNG</h2>
+        <h4>THÔNG TIN NHẬN HÀNG</h4>
         <form>
           {/* Email luôn hiển thị */}
           <div className="p-4 border rounded mb-4">
-            <h3 className="font-bold mb-2">Email</h3>
-            <p>{user?.email}</p>
+            <strong className="font-bold mb-2">Email : </strong><span>{user?.email}</span>
           </div>
-{/* Nếu có địa chỉ thì hiện địa chỉ đó, còn không thì hiện form nhập */}
-{hasSavedAddress ? (
-  <div className="p-4 border rounded mb-4">
-    <h3 className="font-bold mb-2">Địa chỉ giao hàng</h3>
-    <p><strong>Họ tên:</strong> {user.address[0].name}</p>
-    <p><strong>Số điện thoại:</strong> {user.address[0].phone}</p>
-    <p><strong>Địa chỉ:</strong> {`${user.address[0].address}, ${user.address[0].ward}, ${user.address[0].district}, ${user.address[0].city}`}</p>
-  </div>
-) : (
-  <div className="space-y-4">
-      <label htmlFor="name" className={styles.formLabel}>
-        Họ và tên :
-      </label>
-      <input
-        type="text"
-        id="name"
-        className={styles.formInput}
-        value={userInfo.name}
-        onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
-      />
+          {/* Nếu có địa chỉ thì hiện địa chỉ đó, còn không thì hiện form nhập */}
+          {hasSavedAddress ? (
+            <div className="p-4 border rounded mb-4">
+              <h4 className="font-bold mb-2">Địa chỉ giao hàng</h4>
+              <p><strong>Họ tên:</strong> {user.address[0].name}</p>
+              <p><strong>Số điện thoại:</strong> {user.address[0].phone}</p>
+              <p><strong>Địa chỉ:</strong> {`${user.address[0].address}, ${user.address[0].ward}, ${user.address[0].district}, ${user.address[0].city}`}</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+                <label htmlFor="name" className={styles.formLabel}>
+                  Họ và tên :
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  className={styles.formInput}
+                  value={userInfo.name}
+                  onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+                />
 
-      <label htmlFor="address" className={styles.formLabel}>
-        Địa chỉ :
-      </label>
-        <input
-          type="text"
-          id="address"
-          className={styles.formInput}
-          value={userInfo.address}
-          onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
-        />
+                <label htmlFor="address" className={styles.formLabel}>
+                  Địa chỉ :
+                </label>
+                  <input
+                    type="text"
+                    id="address"
+                    className={styles.formInput}
+                    value={userInfo.address}
+                    onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
+                  />
 
-      <label htmlFor="phone" className={styles.formLabel}>
-        Số điện thoại :
-      </label>
-      <input
-        type="tel"
-        id="phone"
-        className={styles.formInput}
-        value={userInfo.phone}
-        onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
-      />
-    
-    
-    {/* Dropdown chọn tỉnh/thành, quận/huyện, phường/xã */}
-    <label htmlFor="city" className={styles.formLabel}>
-            Tỉnh thành
-    </label>
-    <select disabled value="Thành phố Hồ Chí Minh">
-      <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
-    </select>
+                <label htmlFor="phone" className={styles.formLabel}>
+                  Số điện thoại :
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  className={styles.formInput}
+                  value={userInfo.phone}
+                  onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
+                />
+              
+              
+              {/* Dropdown chọn tỉnh/thành, quận/huyện, phường/xã */}
+              <label htmlFor="city" className={styles.formLabel}>
+                      Tỉnh thành
+              </label>
+              <select disabled value="Thành phố Hồ Chí Minh">
+                <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+              </select>
 
-    <label htmlFor="district" className={styles.formLabel}>
-      Quận huyện
-    </label>
-    <select value={userInfo.district} onChange={handleDistrictChange}>
-      <option value="">Chọn quận/huyện</option>
-      {districts.map((d) => (
-        <option key={d.code} value={d.name}>{d.name}</option>
-      ))}
-    </select>
+              <label htmlFor="district" className={styles.formLabel}>
+                Quận huyện
+              </label>
+              <select value={userInfo.district} onChange={handleDistrictChange}>
+                <option value="">Chọn quận/huyện</option>
+                {districts.map((d) => (
+                  <option key={d.code} value={d.name}>{d.name}</option>
+                ))}
+              </select>
 
-    <label htmlFor="ward" className={styles.formLabel}>
-            Phường xã
-          </label>
-          <select value={userInfo.ward} onChange={(e) => setUserInfo({ ...userInfo, ward: e.target.value })}>
-            <option value="">Chọn phường/xã</option>
-            {wards.map((w) => (
-              <option key={w.code} value={w.name}>{w.name}</option>
-            ))}
-          </select>
-  </div>
-)}
+              <label htmlFor="ward" className={styles.formLabel}>
+                      Phường xã
+                    </label>
+                    <select value={userInfo.ward} onChange={(e) => setUserInfo({ ...userInfo, ward: e.target.value })}>
+                      <option value="">Chọn phường/xã</option>
+                      {wards.map((w) => (
+                        <option key={w.code} value={w.name}>{w.name}</option>
+                      ))}
+                    </select>
+            </div>
+          )}
 
-
-          <div className={styles.paymentOptions}>
-            <label>Phương thức thanh toán:</label>
-            <div>
+          <div className="p-4 border rounded mb-4">
+          <h4 className="font-bold mb-2">Phương thức thanh toán</h4>
               {paymentMethods.map((method) => (
                 <label
                   key={method._id}
@@ -515,12 +516,11 @@ const CheckoutPage = () => {
                 </label>
               ))}
             </div>
-          </div>
         </form>
       </div>
 
       <div className={styles.orderSummary}>
-        <h2>ĐƠN HÀNG ({cart.length} sản phẩm)</h2>
+        <h4 className="font-bold mb-2">ĐƠN HÀNG <span>({cart.length} sản phẩm)</span></h4>
 
         {cart.map((item, index) => (
           <div key={index} className={styles.orderItem}>
@@ -532,9 +532,9 @@ const CheckoutPage = () => {
               height={50}
             />
             <div>
-              <p>{item.name}</p>
+              <p>Tên sản phẩm : {item.name}</p>
               <p>{item.size}</p>
-              <p className={styles.price}>{item.price.toLocaleString()}đ</p>
+              <p className={styles.price}>Giá :{item.price.toLocaleString()}đ</p>
               <p>Số lượng: {item.quantity}</p>
             </div>
           </div>

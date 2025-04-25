@@ -45,6 +45,7 @@ const OrderResult = () => {
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
+  const resultCode = searchParams.get("resultCode");
 
   useEffect(() => {
     if (!orderId) return;
@@ -63,7 +64,8 @@ const OrderResult = () => {
           };
 
           // 🔥 Kiểm tra callback Momo
-          const momoSuccess = await handleMomoCallback(data.data.order_code);
+          const momoSuccess = await handleMomoCallback(data.data.order_code, Number(resultCode));
+
 
           // ✅ Nếu thanh toán thành công, cập nhật lại state
           if (updatedOrder.payment_status === "Completed" || momoSuccess) {
@@ -108,7 +110,7 @@ const OrderResult = () => {
       } catch (error) {
         console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
       }
-    }, 5000); // Kiểm tra lại mỗi 5 giây
+    }, 2000); // Kiểm tra lại mỗi 5 giây
   
     return () => clearInterval(interval); // Cleanup interval khi component unmount
   }, [orderId]);
@@ -121,34 +123,45 @@ const OrderResult = () => {
     }
   }, [order?.payment_status]);
 
+
+
+
   // 🏦 Gửi yêu cầu callback Momo để cập nhật trạng thái thanh toán
-  const handleMomoCallback = async (orderCode: string) => {
+  const handleMomoCallback = async (orderCode: string, resultCode: number) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/payments/momo/callback`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: orderCode, resultCode: 0 }),
+          body: JSON.stringify({ orderId: orderCode, resultCode }),
         }
       );
-
+  
       const data = await response.json();
       console.log("🔄 Kết quả xử lý Momo:", data);
-
-      if (data.success) {
-        // ✅ Cập nhật ngay trạng thái để render lại UI
+  
+      // Nếu người dùng huỷ giao dịch
+      if (data.resultCode === 1006) {
+        console.warn("❌ Giao dịch bị huỷ bởi người dùng (resultCode 1006)");
+        return false;
+      }
+  
+      // Nếu giao dịch thành công
+      if (data.success && data.resultCode === 0) {
         setOrder((prevOrder) =>
           prevOrder ? { ...prevOrder, payment_status: "Completed" } : prevOrder
         );
+        return true;
       }
-
-      return data.success;
+  
+      return false;
     } catch (error) {
       console.error("❌ Lỗi gửi callback Momo:", error);
       return false;
     }
   };
+  
 
   // 📧 Gửi email xác nhận đơn hàng
   const sendConfirmationEmail = async (orderData: Order) => {
