@@ -49,14 +49,24 @@ const OrderResult = () => {
 
   useEffect(() => {
     if (!orderId) return;
-
+    const fetchPaymentMethods = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/payments`
+        );
+        const data = await response.json();
+        setPaymentMethods(data);
+      } catch (error) {
+        console.error("Lỗi lấy phương thức thanh toán:", error);
+      }
+    };
     const fetchOrder = async () => {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/orders/code/${orderId}`
         );
         const data = await response.json();
-
+        
         if (data.success && data.data) {
           const updatedOrder = {
             ...data.data,
@@ -86,7 +96,7 @@ const OrderResult = () => {
       }
     };
 
-    fetchOrder();
+    fetchOrder();fetchPaymentMethods();
   }, [orderId]);
   
   useEffect(() => {
