@@ -25,15 +25,18 @@
 .formLabel {
   font-weight: bold;
   display: block;
-  margin-top: 10px;
+  margin-top: 15px;
+  padding-right: 10px;
 }
 
-.formInput, .formSelect {
+.formInput {
   width: 100%;
+  max-width: 400px;
   padding: 8px;
   margin-top: 5px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  margin-bottom: 16px;
 }
 
 .orderItem {
@@ -86,4 +89,34 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 8px;
+}
+.formSelect {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  appearance: none;         /* Xóa giao diện mặc định */
+  -webkit-appearance: none; /* Safari */
+  -moz-appearance: none;    /* Firefox */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
+}
+.formSelect:hover {
+  border-color: #3498db;
+}
+
+.formSelect:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+.flexSelect{
+  display: flex;
+  gap: 10px;
+  padding-bottom: 20px;
 }

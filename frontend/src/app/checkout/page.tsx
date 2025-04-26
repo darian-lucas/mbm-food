@@ -391,10 +391,10 @@ const CheckoutPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.checkoutForm}>
-        <h4>THÔNG TIN NHẬN HÀNG</h4>
+        <h4 className="font-bold mb-2">THÔNG TIN NHẬN HÀNG</h4>
         <form>
           {/* Email luôn hiển thị */}
-          <div className="p-4 border rounded mb-4">
+          <div className={styles.formInput}>
             <strong className="font-bold mb-2">Email : </strong><span>{user?.email}</span>
           </div>
           {/* Nếu có địa chỉ thì hiện địa chỉ đó, còn không thì hiện form nhập */}
@@ -442,17 +442,20 @@ const CheckoutPage = () => {
               
               
               {/* Dropdown chọn tỉnh/thành, quận/huyện, phường/xã */}
+              
+              <div className={styles.flexSelect}>
               <label htmlFor="city" className={styles.formLabel}>
                       Tỉnh thành
               </label>
-              <select disabled value="Thành phố Hồ Chí Minh">
+              <select className={styles.formSelect} disabled value="Thành phố Hồ Chí Minh">
                 <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
               </select>
-
+              </div>
+              <div className={styles.flexSelect}>
               <label htmlFor="district" className={styles.formLabel}>
                 Quận huyện
               </label>
-              <select value={userInfo.district} onChange={handleDistrictChange}>
+              <select className={styles.formSelect} value={userInfo.district} onChange={handleDistrictChange}>
                 <option value="">Chọn quận/huyện</option>
                 {districts.map((d) => (
                   <option key={d.code} value={d.name}>{d.name}</option>
@@ -460,18 +463,19 @@ const CheckoutPage = () => {
               </select>
 
               <label htmlFor="ward" className={styles.formLabel}>
-                      Phường xã
-                    </label>
-                    <select value={userInfo.ward} onChange={(e) => setUserInfo({ ...userInfo, ward: e.target.value })}>
-                      <option value="">Chọn phường/xã</option>
-                      {wards.map((w) => (
-                        <option key={w.code} value={w.name}>{w.name}</option>
-                      ))}
-                    </select>
+                Phường xã
+              </label>
+              <select className={styles.formSelect} value={userInfo.ward} onChange={(e) => setUserInfo({ ...userInfo, ward: e.target.value })}>
+                <option value="">Chọn phường/xã</option>
+                {wards.map((w) => (
+                  <option key={w.code} value={w.name}>{w.name}</option>
+                ))}
+              </select>
+              </div>
             </div>
           )}
 
-          <div className="p-4 border rounded mb-4">
+          <div className="p-4 pt-8 border rounded mb-4">
           <h4 className="font-bold mb-2">Phương thức thanh toán</h4>
               {paymentMethods.map((method) => (
                 <label
