@@ -1491,7 +1491,7 @@
 
   .categoryItem {
     width: 100%;
-    height: auto;
+    height: 100px;
     padding: 10px;
   }
 
