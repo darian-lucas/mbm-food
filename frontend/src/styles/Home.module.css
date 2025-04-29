@@ -1681,7 +1681,7 @@
     left: 50%;
     transform: translateX(-50%);
   }
-  
+
   .menufoodTab {
     width: 60px;
     height: 50px;
@@ -1862,27 +1862,46 @@
   }
 
   .subscribe {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
     text-align: center;
-    height: auto;
+    gap: 20px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    text-align: center;
+    margin-left: 15px;
   }
 
   .subscribeForm {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100%;
   }
 
-  .subscribeForm input {
+  .subscribeForm input,
+  .subscribeForm button {
     width: 90%;
+    max-width: 400px;
     border-radius: 5px;
     margin-bottom: 10px;
   }
 
-  .subscribeForm button {
-    width: 90%;
-    border-radius: 5px;
-  }
-
-  .imageLeft, .imageRight {
+  .imageLeft,
+  .imageRight {
     display: none;
   }
+
 }
