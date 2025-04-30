@@ -15,7 +15,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const { token, user } = await authService.login(email, password); // 🟢 Lấy `user` thay vì `userId`
-    res.status(200).json({ token, userId: user._id, role: user.role }); // ✅ Trả về cả `role`
+    res.status(200).json({ token, userId: user._id, role: user.role , isActive : user.isActive}); // ✅ Trả về cả `role`
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
