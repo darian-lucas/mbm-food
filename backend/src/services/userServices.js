@@ -261,8 +261,29 @@ const addAddressFromBooking = async (userId, name, phone) => {
     throw error;
   }
 };
+const deleteAddress = async (userId, addressId) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error('User not found');
 
+  const addressIndex = user.address.findIndex(addr => addr._id.toString() === addressId);
+  if (addressIndex === -1) throw new Error('Address not found');
+
+  // Nếu địa chỉ bị xóa là địa chỉ mặc định
+  const isDefault = user.address[addressIndex].default;
+
+  user.address.splice(addressIndex, 1);
+
+  // Cập nhật lại defaultAddress nếu cần
+  if (isDefault) {
+      const newDefault = user.address.find(addr => addr.default);
+      user.defaultAddress = newDefault ? newDefault._id : null;
+  }
+
+  await user.save();
+  return user;
+};
 module.exports = {
+  deleteAddress,
   sendResetPasswordEmail,
   resetPassword,
   toggleUserStatus,
