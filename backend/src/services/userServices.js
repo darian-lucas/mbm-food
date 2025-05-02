@@ -176,7 +176,7 @@ const sendResetPasswordEmail = async (email) => {
   console.log("JWT_SECRET khi tạo token:", process.env.JWT_SECRET);
   // Tạo token JWT có hiệu lực 15 phút
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "5m",
   });
 
   const resetLink = `https://mbmfood.store/reset-password/${token}`;
@@ -194,9 +194,10 @@ const sendResetPasswordEmail = async (email) => {
     from: process.env.EMAIL_USER,
     to: email,
     subject: "Đặt lại mật khẩu",
+    text: `Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào link sau để tiếp tục: ${resetLink}. Link có hiệu lực trong 5 phút.`,
     html: `<p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào link sau để tiếp tục:</p>
              <a href="${resetLink}">Đặt lại mật khẩu</a>
-             <p>Link có hiệu lực trong 15 phút.</p>`,
+             <p>Link có hiệu lực trong 5 phút.</p>`,
   });
 
   return "Email đặt lại mật khẩu đã được gửi!";
