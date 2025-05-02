@@ -16,6 +16,7 @@ interface Order {
   id_payment_method: { _id: string };
   details: { _id: string; id_product: { name: string }; quantity: number; price: number }[];
   total_amount: number;
+  total_payment :number;
 }
 
 const STATUS_FLOW: Record<Order["order_status"], Order["order_status"][]> = {
@@ -247,7 +248,7 @@ const OrderManagementPage = () => {
                     </div>
                   ))}
                 </td>
-                <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
+                <td>{order.total_payment.toLocaleString("vi-VN")} VND</td>
                 <td className="text-center">
                   <button
                     className={`${styles.statusBtn} ${styles[order.order_status]}`}
