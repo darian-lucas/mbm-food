@@ -276,8 +276,19 @@ const ProductListCate = ({
                   </div>
                   <div className={styles.groupForm}>
                     <div className={styles.priceBox}>
-                      <span>Giá: </span>{" "}
-                      {item.matchedVariant.price.toLocaleString()}₫
+                      <span className={styles.titlePrice}>Giá: </span>
+                      <div className="flex flex-col">
+                        <span className={styles.price}>
+                          {item.matchedVariant.price.toLocaleString()}₫
+                        </span>
+                        {item.matchedVariant.sale_price > 0 ? (
+                          <span className={styles.salePrice}>
+                            {item.matchedVariant.sale_price.toLocaleString()}đ
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                     </div>
                     <button
                       className={styles.add}
@@ -288,8 +299,8 @@ const ProductListCate = ({
                   </div>
                 </div>
               </div>
-              <span className={styles.bestSellingNewTag}>
-                {item.matchedVariant.sale_price && item.matchedVariant.sale_price > 0 ? (
+              {item.matchedVariant.sale_price > 0 && (
+                <span className={styles.bestSellingNewTag}>
                   <span>
                     -
                     {Math.round(
@@ -300,10 +311,8 @@ const ProductListCate = ({
                     )}
                     %
                   </span>
-                ) : (
-                  <span className="bg-none"></span>
-                )}
-              </span>
+                </span>
+              )}
             </div>
           ))}
         </div>
