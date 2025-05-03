@@ -245,8 +245,21 @@ const addAddressFromBooking = async (req, res) => {
     });
   }
 };
-
+const deleteAddress = async (req, res) => {
+  const { userId, addressId } = req.params;
+  try {
+      const updatedUser = await authService.deleteAddress(userId, addressId);
+      res.status(200).json({
+          message: 'Address deleted successfully',
+          addressList: updatedUser.address,
+          defaultAddress: updatedUser.defaultAddress,
+      });
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+};
 module.exports = {
+  deleteAddress,
   toggleActiveStatus,
   getAllUsers,
   deleteUser,
