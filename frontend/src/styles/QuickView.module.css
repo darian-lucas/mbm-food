@@ -189,6 +189,7 @@
   font-weight: 700;
   margin: 0px 0px 15px;
   color: #006a31;
+  text-align: left;
   word-break: break-word;
 }
 
@@ -228,6 +229,7 @@
 .selectOption {
   display: flex;
   flex-wrap: wrap;
+  column-gap: 12px;
 }
 
 .selectOptionElement {
