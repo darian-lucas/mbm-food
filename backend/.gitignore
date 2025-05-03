@@ -13,8 +13,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Env files
-.env
-.env.*     # ví dụ: .env.local, .env.production
+
 
 # OS / Editor
 .DS_Store
