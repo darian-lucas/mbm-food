@@ -80,7 +80,6 @@ const OrderResult = () => {
           // ✅ Nếu thanh toán thành công, cập nhật lại state
           if (updatedOrder.payment_status === "Completed" || momoSuccess) {
             updatedOrder.payment_status = "Completed";
-            await sendConfirmationEmail(updatedOrder);
           }
 
           // 🛒 Xóa giỏ hàng
@@ -173,49 +172,7 @@ const OrderResult = () => {
   };
   
 
-  // 📧 Gửi email xác nhận đơn hàng
-  const sendConfirmationEmail = async (orderData: Order) => {
-    if (
-      !orderData.id_user?.email ||
-      !orderData.details ||
-      orderData.details.length === 0
-    ) {
-      console.error("❌ Lỗi: Thiếu email hoặc dữ liệu đơn hàng!", orderData);
-      return;
-    }
-
-    try {
-      console.log("📩 Đang gửi email với dữ liệu:", {
-        email: orderData.id_user.email,
-        orderDetails: orderData.details.map((item) => ({
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-      });
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/email/send`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: orderData.id_user.email,
-            orderDetails: orderData.details.map((item) => ({
-              name: item.name,
-              price: item.price,
-              quantity: item.quantity,
-            })),
-          }),
-        }
-      );
-
-      const data = await response.json();
-      console.log("📩 Kết quả gửi email:", data);
-    } catch (error) {
-      console.error("❌ Lỗi gửi email xác nhận:", error);
-    }
-  };
+  
 
   if (loading) {
     return <p>Loading...</p>;
@@ -290,7 +247,7 @@ const OrderResult = () => {
 
         {/* Thông tin đơn hàng */}
         <div className="mt-6 border p-4 rounded-lg">
-          <h3 className="font-semibold mb-2">Mã đơn #{order.order_code}</h3>
+          <span className="font-semibold mb-2">Mã đơn : </span><span>{order.order_code}</span>
           {order.details.map((item, index) => (
             <div
               key={index}
@@ -316,7 +273,7 @@ const OrderResult = () => {
 
         <div className="mt-6 text-center">
           <Link href="/">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            <button className="bg-[#016a31] text-white px-6 py-2 rounded-lg hover:bg-blue-700">
               Tiếp tục mua hàng
             </button>
           </Link>
