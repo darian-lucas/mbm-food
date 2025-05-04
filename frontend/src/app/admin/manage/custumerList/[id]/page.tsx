@@ -31,6 +31,7 @@ interface Order {
     order_status: string;
     total_amount: number;
     phone: string;
+    receive_address: string;
     details?: OrderDetail[];
 }
 
@@ -84,7 +85,7 @@ const UserDetailPage: React.FC = () => {
                 Thông tin người dùng: {user?.username}
             </h4>
             <div className="row pt-1">
-                <div className="col-md-3">
+                <div className="col-md-3 text-sm">
                     <div
                         className="card text-center p-3 shadow-sm"
                         style={{ backgroundColor: "#e9f7ef", borderRadius: "10px" }}
@@ -96,30 +97,30 @@ const UserDetailPage: React.FC = () => {
                             style={{ width: "120px", height: "120px", objectFit: "cover", marginBottom: "15px" }}
                         />
                         <h5 className="mt-4 mb-2 text-success fw-bold">Tên: {user.username}</h5>
-                        <p className="text-muted mb-3">Số điện thoại: {userPhone}</p>
+                        <p className="text-success fw-bold mb-2">Số điện thoại: {userPhone}</p>
                         <a
                             href={`mailto:${user.email}`}
-                            className="text-success fw-bold text-decoration-none mb-3 d-block"
+                            className="text-success fw-bold text-decoration-none d-block"
                         >
                             Email: {user.email}
                         </a>
-                        <button className="btn btn-success w-100 mt-4 py-2 fw-bold">
+                        <button className="btn btn-success w-100 mt-4 py-2 fw-bold text-sm">
                             Tổng tiền: {totalSpent.toLocaleString("vi-VN")} VND
                         </button>
                     </div>
 
                 </div>
-                <div className="col-md-9">
+                <div className="col-md-9 text-sm">
                     <div className="card p-3">
                         <h2 className="fw-bold fs-5">Đơn hàng của người dùng</h2>
                         <table className="table">
                             <thead>
                                 <tr>
                                     <th>Mã đơn hàng</th>
-                                    <th>Ngày tháng</th>
-                                    <th>Trạng thái đơn hàng</th>
+                                    <th className="text-nowrap">Ngày tháng</th>
+                                    <th>Địa chỉ</th>
                                     <th>Sản phẩm</th>
-                                    <th>Thành tiền</th>
+                                    <th className="text-nowrap">Thành tiền</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,23 +128,20 @@ const UserDetailPage: React.FC = () => {
                                     <tr key={order._id}>
                                         <td><a href="#">#{order.order_code}</a></td>
                                         <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                                        <td>
-                                            <span className={`badge bg-${order.order_status === "pending" ? "warning" : "success"}`}>
-                                                {order.order_status}
-                                            </span>
-                                        </td>
-                                        <td>
+                                     
+                                        <td>{order.receive_address}</td>
+                                        <td className="text-nowrap">
                                             {order.details.length > 0 ? (
                                                 order.details.map((item, index) => (
                                                     <div key={item._id || index}>
-                                                        {item.id_product.name} - {item.quantity} x {item.price.toLocaleString("vi-VN")} VND
+                                                        {item.id_product.name} x {item.quantity}
                                                     </div>
                                                 ))
                                             ) : (
                                                 "N/A"
                                             )}
                                         </td>
-                                        <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
+                                        <td className="text-nowrap">{order.total_amount.toLocaleString("vi-VN")} VND</td>
                                     </tr>
                                 ))}
                             </tbody>

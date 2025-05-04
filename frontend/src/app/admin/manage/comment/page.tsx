@@ -73,7 +73,7 @@ export default function CommentsPage() {
                         <th>Hành động</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-sm">
                     {currentComments.map((cmt) => (
                         <tr key={cmt._id} className="text-center">
                             <td>{cmt.id_user?.username || "Tài khoản đã bị xóa"}</td>
