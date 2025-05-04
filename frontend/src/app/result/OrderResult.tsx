@@ -243,12 +243,6 @@ const OrderResult = () => {
         <div className="mt-6 text-center">
           <div className="text-green-600 text-5xl">✔</div>
           <h2 className="text-xl font-semibold mt-3">Cảm ơn bạn đã đặt hàng</h2>
-          {order.id_user.email && order.payment_status === "Completed" && (
-            <p className="text-gray-600 text-sm">
-              Một email xác nhận đã được gửi tới <b>{order.id_user.email}</b>.
-              Xin vui lòng kiểm tra email của bạn.
-            </p>
-          )}
         </div>
 
         <div className="mt-6 flex justify-between border p-4 rounded-lg">
@@ -292,6 +286,32 @@ const OrderResult = () => {
           >
             {order.payment_status === "Completed" ? "Thành công" : "Thất bại"}
           </p>
+        </div>
+
+        {/* Thông tin đơn hàng */}
+        <div className="mt-6 border p-4 rounded-lg">
+          <h3 className="font-semibold mb-2">Mã đơn #{order.order_code}</h3>
+          {order.details.map((item, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center border-b py-2"
+            >
+              <div>
+                <p className="font-semibold">{item.id_product.name}</p>
+                <p className="text-sm text-gray-500">
+                  Số lượng: {item.quantity}
+                </p>
+              </div>
+              <p className="font-semibold">{item.price.toLocaleString()}đ</p>
+            </div>
+          ))}
+
+          <div className="flex justify-between font-semibold mt-3">
+            <p>TỔNG TIỀN THANH TOÁN</p>
+            <p className="text-blue-600">
+              {order.total_payment.toLocaleString()}đ
+            </p>
+          </div>
         </div>
 
         <div className="mt-6 text-center">
