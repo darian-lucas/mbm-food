@@ -2,6 +2,8 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const resetPasswordTemplate = require("./resetPasswordTemplate");
+const { sendMail } = require("./emailService");
 
 // Đăng ký người dùng
 const register = async (userData) => {
@@ -181,24 +183,9 @@ const sendResetPasswordEmail = async (email) => {
 
   const resetLink = `https://mbmfood.store/reset-password/${token}`;
 
-  // Cấu hình gửi email
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  const htmlContent = resetPasswordTemplate(resetLink);
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Đặt lại mật khẩu",
-    text: `Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào link sau để tiếp tục: ${resetLink}. Link có hiệu lực trong 5 phút.`,
-    html: `<p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào link sau để tiếp tục:</p>
-             <a href="${resetLink}">Đặt lại mật khẩu</a>
-             <p>Link có hiệu lực trong 5 phút.</p>`,
-  });
+  await sendMail(email, "Đặt lại mật khẩu", htmlContent);
 
   return "Email đặt lại mật khẩu đã được gửi!";
 };
@@ -264,10 +251,12 @@ const addAddressFromBooking = async (userId, name, phone) => {
 };
 const deleteAddress = async (userId, addressId) => {
   const user = await User.findById(userId);
-  if (!user) throw new Error('User not found');
+  if (!user) throw new Error("User not found");
 
-  const addressIndex = user.address.findIndex(addr => addr._id.toString() === addressId);
-  if (addressIndex === -1) throw new Error('Address not found');
+  const addressIndex = user.address.findIndex(
+    (addr) => addr._id.toString() === addressId
+  );
+  if (addressIndex === -1) throw new Error("Address not found");
 
   // Nếu địa chỉ bị xóa là địa chỉ mặc định
   const isDefault = user.address[addressIndex].default;
@@ -276,8 +265,8 @@ const deleteAddress = async (userId, addressId) => {
 
   // Cập nhật lại defaultAddress nếu cần
   if (isDefault) {
-      const newDefault = user.address.find(addr => addr.default);
-      user.defaultAddress = newDefault ? newDefault._id : null;
+    const newDefault = user.address.find((addr) => addr.default);
+    user.defaultAddress = newDefault ? newDefault._id : null;
   }
 
   await user.save();
