@@ -5,6 +5,7 @@ import { addAddress, getUserById, updateAddress, deleteAddress } from "@/service
 import styles from "@/styles/Address.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Edit3, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
 export default function Address() {
     const [showModal, setShowModal] = useState(false);
     const [cities, setCities] = useState<City[]>([]);
@@ -230,8 +231,18 @@ export default function Address() {
             return;
         }
 
-        const confirmDelete = window.confirm("Bạn có chắc muốn xóa địa chỉ này?");
-        if (!confirmDelete) return;
+        const result = await Swal.fire({
+            title: "Xác nhận xóa",
+            text: "Bạn có chắc muốn xóa địa chỉ này?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy",
+        });
+    
+        if (!result.isConfirmed) return;
 
         try {
             await deleteAddress(userId, addressId, token);

@@ -30,8 +30,7 @@ yarn-error.log*
 
 # local env files
 # Env files
-.env
-.env.*     # ví dụ: .env.local, .env.production
+
 
 # vercel
 .vercel
