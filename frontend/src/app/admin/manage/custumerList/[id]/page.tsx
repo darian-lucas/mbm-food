@@ -118,7 +118,7 @@ const UserDetailPage: React.FC = () => {
                                 <tr>
                                     <th>Mã đơn hàng</th>
                                     <th className="text-nowrap">Ngày tháng</th>
-                                    <th>Địa chỉ</th>
+                                    <th>Địa chỉ nhận hàng</th>
                                     <th>Sản phẩm</th>
                                     <th className="text-nowrap">Thành tiền</th>
                                 </tr>

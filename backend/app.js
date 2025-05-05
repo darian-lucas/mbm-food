@@ -18,6 +18,7 @@ const tableRoutes = require('./src/routes/table');
 const registerRoutes = require('./src/routes/register');
 const authRoutes = require("./src/routes/authRoutes");
 const emailCustomerRouter = require("./src/routes/emailCustomerRoutes");
+const breadCrumRoutes = require("./src/routes/breadCrum");
 
 //Bổ sung email gửi về khách hàng khi điền form
 const nodemailer = require("nodemailer");
@@ -59,6 +60,7 @@ app.use('/api/banners', bannerRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/registers', registerRoutes);
 app.use("/api/auth", authRoutes);
+app.use('/api/breadcrum',breadCrumRoutes);
 
 require("./src/middleware/cron");
 
