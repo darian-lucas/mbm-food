@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { log } from "console";
+import axios from "axios";
 
 export default function RootLayout({
   children,
@@ -16,25 +17,45 @@ export default function RootLayout({
   const isAdmin = pathname.startsWith("/admin");
   useEffect(() => {
     if (!pathname) return;
-    let formattedTitle = "Mbmfood";
-    if (pathname !== "/") {
-      const parts = pathname
-        .split("/")
-        .filter((part) => part)
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1));
-      formattedTitle = `Mbmfood | ${parts.join(" | ")}`;
+    const pathNames = pathname.split("/").filter((path) => path);
+
+    if (pathNames.length === 0) {
+      document.title = "Mbmfood";
+      return;
     }
-    document.title = formattedTitle;
+
+    let formattedTitle = "Mbmfood";
+
+    const fetchNames = async () => {
+      const newNames: Record<string, string> = {};
+      await Promise.all(
+        pathNames.map(async (slug) => {
+          try {
+            const res = await axios.get(
+              `http://localhost:3001/api/breadcrum?slug=${slug}`
+            );
+            newNames[slug] = res.data.name || slug;
+          } catch {
+            newNames[slug] = slug;
+          }
+        })
+      );
+
+      const formattedParts = pathNames
+        .map((part) => newNames[part] || part)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1));
+
+      formattedTitle = `Mbmfood | ${formattedParts.join(" | ")}`;
+      document.title = formattedTitle;
+    };
+
+    fetchNames();
   }, [pathname]);
 
   return (
     <html lang="en">
       <head>
-        <link
-          rel="icon"
-          sizes="120x120"
-          href="/apple-icon-120x120.png"
-        ></link>
+        <link rel="icon" sizes="120x120" href="/apple-icon-120x120.png"></link>
       </head>
       <body className={manrope.className}>
         <ToastContainer position="top-right" autoClose={1500} />
