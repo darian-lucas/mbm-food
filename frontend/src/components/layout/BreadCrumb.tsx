@@ -30,7 +30,7 @@ const Breadcrumb = ({
       await Promise.all(
         pathNames.map(async (slug) => {
           try {
-            const res = await axios.get(`http://localhost:3001/api/breadcrum?slug=${slug}`);
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_URL_IMAGE}/api/breadcrum?slug=${slug}`);
             newNames[slug] = res.data.name || slug;
           } catch {
             newNames[slug] = slug;

@@ -5,6 +5,7 @@ import Image from "next/image";
 import styles from "../../styles/CartPage.module.css";
 import CartIcon from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface CartItem {
   _id: string;
@@ -15,6 +16,7 @@ interface CartItem {
   image: string;
   variants?: string;
   note?: string;
+  slug?: string;
 }
 
 const CartPage = () => {
@@ -32,6 +34,7 @@ const CartPage = () => {
         price: item.price || 0,
         sale_price: item.sale_price || 0,
         quantity: item.quantity || 1,
+        slug: item.slug || "",
         image: item.image || "default.jpg",
         variants: item.option ? item.option : undefined,
         note: item.note || "Không có ghi chú",
@@ -127,13 +130,15 @@ const CartPage = () => {
                     <div key={item._id} className={styles.cartBody}>
                       <div className={styles.ajaxCartRow}>
                         <div className={styles.ajaxCartProduct}>
-                          <img
-                            className={styles.ajaxImage}
-                            src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${item.image}`}
-                            alt={item.name}
-                            width={100}
-                            height={100}
-                          />
+                          <Link href={`/product/${item.slug}`}>
+                            <img
+                              className={styles.ajaxImage}
+                              src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${item.image}`}
+                              alt={item.name}
+                              width={100}
+                              height={100}
+                            />
+                          </Link>
                           <div className={styles.gridItemInfo}>
                             <div className={styles.cartName}>
                               <a className={styles.ProductName}>{item.name}</a>

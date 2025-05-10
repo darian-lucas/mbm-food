@@ -181,7 +181,7 @@ const sendResetPasswordEmail = async (email) => {
     expiresIn: "5m",
   });
 
-  const resetLink = `https://mbmfood.store/reset-password/${token}`;
+  const resetLink = `http://localhost:3002/reset-password/${token}`;
 
   const htmlContent = resetPasswordTemplate(resetLink);
 

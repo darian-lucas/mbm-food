@@ -10,6 +10,7 @@ interface CartItem {
   image: string;
   quantity: number;
   note?: string;
+  slug?: string;
 }
 
 interface Product {
@@ -90,6 +91,7 @@ const useCart = () => {
     const newItem: CartItem = {
       _id: product._id, 
       name: product.name,
+      slug: product.slug,
       price: selectedVariant.price,
       sale_price: selectedVariant.sale_price,
       option: selectedVariant.option,

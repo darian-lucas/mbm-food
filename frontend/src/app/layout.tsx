@@ -32,7 +32,7 @@ export default function RootLayout({
         pathNames.map(async (slug) => {
           try {
             const res = await axios.get(
-              `http://localhost:3001/api/breadcrum?slug=${slug}`
+              `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/breadcrum?slug=${slug}`
             );
             newNames[slug] = res.data.name || slug;
           } catch {

@@ -9,7 +9,6 @@ const getNameBySlug = async (slug) => {
 
   // Tìm trong tin tức
   const news = await News.findOne({ slug }).select("title");
-  console.log("🚀 ~ getNameBySlug ~ news:", news)
   if (news) return news.title;
 
   const categories = await Categories.findOne({ slug }).select("name");
